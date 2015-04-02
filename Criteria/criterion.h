@@ -27,7 +27,7 @@ class Criterion
 	~Criterion();
 	
 	//Other methods
-	double evaluate(int x, int y, double[] map);
+	virtual double evaluate(int x, int y, double[] map);
 	double getEvaluation(Point p) const;
 	
 	//Setters and getters

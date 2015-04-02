@@ -16,18 +16,23 @@
  */
 
 #include "traveldistancecriterion.h"
+#include "criteriaName.h"
 
-travelDistanceCriterion::travelDistanceCriterion()
+travelDistanceCriterion::travelDistanceCriterion(double weight)
+	: Criterion(TRAVELDISTANCE, weight, false)
 {
 
 }
 
-travelDistanceCriterion::travelDistanceCriterion(const travelDistanceCriterion& other)
-{
-
-}
 
 travelDistanceCriterion::~travelDistanceCriterion()
 {
 
 }
+
+double evaluate(int x, int y, double[] map)
+{
+    
+}
+
+

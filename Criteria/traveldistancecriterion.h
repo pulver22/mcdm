@@ -18,12 +18,13 @@
 #ifndef TRAVELDISTANCECRITERION_H
 #define TRAVELDISTANCECRITERION_H
 
+#include "criterion.h"
+
 class travelDistanceCriterion :  criterion.cpp
 {
-public:
-travelDistanceCriterion();
-travelDistanceCriterion(const travelDistanceCriterion& other);
-~travelDistanceCriterion();
+    public:
+	travelDistanceCriterion(double weight);
+	~travelDistanceCriterion();
 };
 
 #endif // TRAVELDISTANCECRITERION_H
