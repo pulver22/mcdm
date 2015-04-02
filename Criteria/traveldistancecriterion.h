@@ -20,7 +20,7 @@
 
 #include "criterion.h"
 
-class travelDistanceCriterion :  criterion.cpp
+class travelDistanceCriterion :  public Criterion
 {
     public:
 	travelDistanceCriterion(double weight);
