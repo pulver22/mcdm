@@ -20,11 +20,11 @@
 
 #include "criterion.h"
 
-class travelDistanceCriterion :  public Criterion
+class TravelDistanceCriterion :  public Criterion
 {
     public:
-	travelDistanceCriterion(double weight);
-	~travelDistanceCriterion();
+	TravelDistanceCriterion(double weight);
+	~TravelDistanceCriterion();
 };
 
 #endif // TRAVELDISTANCECRITERION_H

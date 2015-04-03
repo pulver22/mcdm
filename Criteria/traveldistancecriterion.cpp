@@ -17,20 +17,21 @@
 
 #include "traveldistancecriterion.h"
 #include "criteriaName.h"
+#include <iostream>
 
-travelDistanceCriterion::travelDistanceCriterion(double weight)
+TravelDistanceCriterion::TravelDistanceCriterion(double weight)
 	: Criterion(TRAVELDISTANCE, weight, false)
 {
 
 }
 
 
-travelDistanceCriterion::~travelDistanceCriterion()
+TravelDistanceCriterion::~TravelDistanceCriterion()
 {
 
 }
 
-double evaluate(int x, int y, double[] map)
+double TravelDistanceCriterion::evaluate( Point p, Map map)
 {
     
 }
