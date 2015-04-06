@@ -27,13 +27,13 @@ class Criterion
 	~Criterion();
 	
 	//Other methods
-	virtual double evaluate(int x, int y, double[] map);
-	double getEvaluation(Point p) const;
+	virtual double evaluate( Pose p, Map &map);
+	double getEvaluation(Pose p) const;
 	
 	//Setters and getters
 	const String &getName() const;
 	double getWeight() const;
-	void setName(const QString &name);
+	void setName(const String &name);
 	void setWeight(double weight);
   
   protected:
