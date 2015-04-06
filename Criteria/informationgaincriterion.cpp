@@ -13,17 +13,19 @@ InformationGainCriterion::~InformationGainCriterion()
 {
 }
 
-double InformationGainCriterion::evaluate(Pose p, Map map)
+double InformationGainCriterion::evaluate(Pose &p, Map &map)
 {
     int px = p.getX();
     int py = p.getY();
-    float resolution = map.map2D.getResolution();
-    char orientation = p.getOrientation();
+    float resolution = map.getResolution();
+    //Get the orientation
+    int orientation = p.getTheta();
     int minSensedX, maxSensedX;
     int minSensedY,maxSensedY;
     int *intersection;    
-    int maxValueY = map.map2D.size();
-    int maxValueX = map.map2D[0].size();
+    vector<vector<int>> map2D = map.getMap2D;
+    int maxValueY = map2D.size();
+    int maxValueX = map2D[0].size();
     
     //area contained in the sensor cone
     int sensedArea;
@@ -32,17 +34,18 @@ double InformationGainCriterion::evaluate(Pose p, Map map)
     //effective information gain
     int unExploredMap;
     
-    /* Approximate way to calculate the sensed area inside the circular sector
-    //calculate the area of the circular sector and then divide it by the map resolution to get the number of cell in it
+    /* Approximate way to calculate the sensed area inside the circular sector: calculate the area of the circular sector and 
+     * then divide it by the map resolution to get the number of cell in it
+    
     sensedArea = (int) 1/2 * pow(p.getRadius(),2) * p.getGamma();
     sensedArea = (int) sensedArea / map.map2D.getResolution();
     */
     
     //calcuate the sensed map based on the robot orientation
-    if( orientation == 'N'){
-	minSensedX = px - p.getRadius() * cos(p.getGamma()/2);
-	maxSensedX = px + p.getRadius() * cos(p.getGamma()/2);
-	minSensedY = py - p.getRadius() ;
+    if( orientation == 90 ){
+	minSensedX = px - p.getR() * cos(p.getPhi()/2);
+	maxSensedX = px + p.getR() * cos(p.getPhi()/2);
+	minSensedY = py - p.getR() ;
 	maxSensedY = py;
 	normalize(maxSensedY, 0);
 	normalize(maxSensedX,maxValueX);
@@ -65,16 +68,16 @@ double InformationGainCriterion::evaluate(Pose p, Map map)
 		}
 		sensedArea++;
 		//Hp: free cells are zero value
-		if(map.map2D[i].at(j) > 0){
+		if(map2D[i].at(j) > 0){
 		    occupiedArea++;
 		}
 	    }
 	}
-    }else if ( orientation == 'S'){
-	minSensedX = px - p.getRadius() * cos(p.getGamma()/2);
-	maxSensedX = px + p.getRadius() * cos(p.getGamma()/2);
+    }else if ( orientation == 270){
+	minSensedX = px - p.getR() * cos(p.getPhi()/2);
+	maxSensedX = px + p.getR() * cos(p.getPhi()/2);
 	minSensedY = py ;
-	maxSensedY = py + p.getRadius();
+	maxSensedY = py + p.getR();
 	normalize(maxSensedY, maxValueY);
 	normalize(maxSensedX,maxValueX);
 	normalize(minSensedX,0);
@@ -95,16 +98,16 @@ double InformationGainCriterion::evaluate(Pose p, Map map)
 		}
 		sensedArea++;
 		//Hp: free cells are zero value
-		if(map.map2D[i].at(j) > 0){
+		if(map2D[i].at(j) > 0){
 		    occupiedArea++;
 		}
 	    }
 	}
-    }else if ( orientation == 'E'){
+    }else if ( orientation == 0){
 	minSensedX = px;
-	maxSensedX = px + p.getRadius();
-	minSensedY = py - p.getRadius() * sin(p.getGamma()/2);
-	maxSensedY = py + p.getRadius() * sin(p.getGamma()/2);
+	maxSensedX = px + p.getR();
+	minSensedY = py - p.getR() * sin(p.getPhi()/2);
+	maxSensedY = py + p.getR() * sin(p.getPhi()/2);
 	normalize(maxSensedX,maxValueX);
 	normalize(maxSensedY,0);
 	normalize(minSensedY,maxValueY);
@@ -125,16 +128,16 @@ double InformationGainCriterion::evaluate(Pose p, Map map)
 		}
 		sensedArea++;
 		//Hp: free cells are zero value
-		if(map.map2D[i].at(j) > 0){
+		if(map2D[i].at(j) > 0){
 		    occupiedArea++;
 		}
 	    }
 	}
-    }else if (orientation == 'W'){
+    }else if (orientation == 180){
 	maxSensedX = px;
-	minSensedX = px - p.getRadius() ;
-	minSensedY = py - p.getRadius() * sin(p.getGamma()/2);
-	maxSensedY = py + p.getRadius() * sin(p.getGamma()/2);
+	minSensedX = px - p.getR() ;
+	minSensedY = py - p.getR() * sin(p.getPhi()/2);
+	maxSensedY = py + p.getR() * sin(p.getPhi()/2);
 	for(int i=minSensedY + ; i< maxSensedY; i++){
 	    for (int j = minSensedX; j< maxSensedX; j++){
 		/* If the intersection of the two segment, the one limited by the robot's position and the considered cell and the one limitating the circular sector, is false then 
@@ -152,7 +155,7 @@ double InformationGainCriterion::evaluate(Pose p, Map map)
 		}
 		sensedArea++;
 		//Hp: free cells are zero value
-		if(map.map2D[i].at(j) > 0){
+		if(map2D[i].at(j) > 0){
 		    occupiedArea++;
 		}
 	    }
@@ -194,7 +197,7 @@ int * InformationGainCriterion::intersect(int p1x, int p1y, int p2x, int p2y, Po
      *		q = (x2*y1 - x1*y2) / (x2 - x1)
      */
    
-    //Forst segment
+    //First segment
     mNum1 = py - p1y;
     mDen1 = px - p1x;
     m1 = mNum1 / mDen1;
@@ -216,7 +219,7 @@ int * InformationGainCriterion::intersect(int p1x, int p1y, int p2x, int p2y, Po
     result[1] = intersectX;
     result[2] = intersectY;
     
-    //if angular coefficient are identical it means that two segments are parallel
+    //return the coordinations of the interesection point
     return (result);
 }
 
