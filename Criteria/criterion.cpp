@@ -34,7 +34,7 @@ Criterion::~Criterion()
 }
 
 
-double Criterion::getEvaluation(Point p) const
+double Criterion::getEvaluation(Pose p) const
 {
     return evaluation[p];
 }
@@ -50,7 +50,7 @@ double Criterion::getWeight() const
     return weight;
 }
 
-void Criterion::setName(const QString& name)
+void Criterion::setName(const String& name)
 {
     this->name = name;
 }
