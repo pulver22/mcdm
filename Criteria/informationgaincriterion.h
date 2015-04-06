@@ -12,7 +12,7 @@ public:
     double evaluate(Pose p, int map[][]);
 private:
     void normalize(int minSensedX, int arg2);
-    bool& intersect(int i, int j, int minSensedX, int minSensedY, Pose p);
+   int* intersect(int p1x, int p1y, int p2x, int p2y, Pose p);
 };
 
 
