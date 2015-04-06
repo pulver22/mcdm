@@ -15,34 +15,17 @@
  * 
  */
 
-#ifndef CRITERION_H
-#define CRITERION_H
+#ifndef SENSINGTIMECRITERION_H
+#define SENSINGTIMECRITERION_H
 
-class Criterion
+#include "criterion.h"
+
+class SensingTimeCriterion : public Criterion
 {
-    public:
-	//Constructor and destructor
-	Criterion();
-	Criterion(const String &name, double weight);
-	~Criterion();
-	
-	//Other methods
-	virtual double evaluate( Pose p, Map &map);
-	double getEvaluation(Pose p) const;
-	void insertEvaluation(Pose *p, double value);
-	
-	//Setters and getters
-	const String &getName() const;
-	double getWeight() const;
-	void setName(const String &name);
-	void setWeight(double weight);
-  
-  protected:
-	String name;
-	double weight;
-	
-  private:
-	Hash<Point *, double> evaluation;
+public:
+SensingTimeCriterion(double weight);
+~SensingTimeCriterion();
+double SensingTimeCriterion::evaluate( Pose &p, Map &map);
 };
 
-#endif // CRITERION_H
+#endif // SENSINGTIMECRITERION_H

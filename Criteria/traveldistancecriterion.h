@@ -25,6 +25,7 @@ class TravelDistanceCriterion :  public Criterion
     public:
 	TravelDistanceCriterion(double weight);
 	~TravelDistanceCriterion();
+	double TravelDistanceCriterion::evaluate( Pose &p, Map &map);
 };
 
 #endif // TRAVELDISTANCECRITERION_H

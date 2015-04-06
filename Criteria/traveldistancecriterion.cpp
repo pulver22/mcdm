@@ -19,8 +19,10 @@
 #include "criteriaName.h"
 #include <iostream>
 
+
+
 TravelDistanceCriterion::TravelDistanceCriterion(double weight)
-	: Criterion(TRAVELDISTANCE, weight, false)
+	: Criterion(TRAVEL_DISTANCE, weight, false)
 {
 
 }
@@ -31,9 +33,12 @@ TravelDistanceCriterion::~TravelDistanceCriterion()
 
 }
 
-double TravelDistanceCriterion::evaluate( Point p, Map map)
+double TravelDistanceCriterion::evaluate( Pose &p, Map &map)
 {
-    
+    Pose robotPosition = map.getRobotPosition();
+    double distance = robotPosition.getDistance(p);
+    insertEvaluation(p, distance);
+    return distance;
 }
 
 

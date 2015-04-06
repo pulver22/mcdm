@@ -163,6 +163,7 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
     }
     
     unExploredMap = sensedArea - occupiedArea;
+    insertEvaluation(p,unExploredMap);
     return unExploredMap;
 }
 

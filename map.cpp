@@ -20,10 +20,6 @@
 
 using namespace std;
 
-int width, height;
-float resolution;
-vector<vector<int>> map2D;
-
 Map::Map()
 {
 }
@@ -55,6 +51,9 @@ vector<vector<int>> Map::getMap2D(){
     return map2D;
 }
 
+Pose Map::getRobotPosition(){
+    // do something, maybe with the planner...
+}
 
 
 

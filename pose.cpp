@@ -12,13 +12,9 @@ Pose::Pose()
   phi(0);
 }
 
-Pose::Pose(int aX, int aY, double aTheta, int r, int phi)
+Pose::Pose(int aX, int aY, double aTheta, int r, int phi):
+    aX(aX), aY(aY), aTheta(aTheta), r(r), phi(phi)
 {
-  aX(aX);
-  aY(aY);
-  aTheta(aTheta);
-  r(r);
-  phi(phi);
 }
 
 Pose::~Pose()
@@ -28,7 +24,7 @@ Pose::~Pose()
 
 double Pose::getDistance(const Pose& pose)
 {
-  return std::sqrt((aX - pose.aX)*(aX - pose.aX) + (aY - pose.aY)*(aY - pose.aY));
+  return std::sqrt((aX - pose.getX())*(aX - pose.getX()) + (aY - pose.getY())*(aY - pose.getY()));
 }
 
 int Pose::getX()
