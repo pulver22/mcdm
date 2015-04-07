@@ -15,7 +15,7 @@ public:
   
   int getX();
   int getY();
-  double getTheta();
+  double getOrientation();
   int getR();
   double getPhi();
   

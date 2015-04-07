@@ -19,6 +19,8 @@
 #define SENSINGTIMECRITERION_H
 
 #include "criterion.h"
+#include "pose.h"
+#include "map.h"
 
 class SensingTimeCriterion : public Criterion
 {

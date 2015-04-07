@@ -18,6 +18,7 @@
 #include "sensingtimecriterion.h"
 #include "criteriaName.h"
 
+
 SensingTimeCriterion::SensingTimeCriterion(double weight):
     Criterion(SENSING_TIME, weight, true)
 {
@@ -30,10 +31,21 @@ SensingTimeCriterion::~SensingTimeCriterion()
 
 }
 
-double SensingTimeCriterion::SensingTimeCriterion::evaluate(Pose& p, Map& map)
+double SensingTimeCriterion::SensingTimeCriterion::evaluate(Pose &p, Map &map)
 {
     double sensingTime;
-    //do something....
+    float phi = p.getPhi();
+    if (phi <= 30){
+	sensingTime = 0.2;
+    }else if (phi >30 & phi <= 60){
+	sensingTime = 0.4;
+    }else if (phi > 60 & phi <=90){
+	sensingTime = 0.6;
+    }else if (phi > 90 & phi <= 120){
+	sensingTime = 0.8;
+    }else {
+	sensingTime = 1;
+    }
     insertEvaluation(p,sensingTime);
 }
 

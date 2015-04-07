@@ -29,7 +29,7 @@ class Criterion
 	//Other methods
 	virtual double evaluate( Pose p, Map &map);
 	double getEvaluation(Pose p) const;
-	void insertEvaluation(Pose *p, double value);
+	void insertEvaluation(Pose &p, double value);
 	
 	//Setters and getters
 	const String &getName() const;
@@ -40,9 +40,10 @@ class Criterion
   protected:
 	String name;
 	double weight;
+	double maxValue, minValue;
 	
   private:
-	Hash<Point *, double> evaluation;
+	Hash<Pose *, double> evaluation;
 };
 
 #endif // CRITERION_H

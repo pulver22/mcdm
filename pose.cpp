@@ -37,7 +37,7 @@ int Pose::getY()
   return aY;
 }
 
-double Pose::getTheta()
+double Pose::getOrientation()
 {
   return aTheta;
 }

@@ -33,6 +33,16 @@ Criterion::~Criterion()
 
 }
 
+void Criterion::insertEvaluation(Pose &p, double value)
+{
+//    if(evaluation.contains(point))
+//        lprint << "#repeated frontier!!!" << endl;
+    evaluation.insert(p, value);
+    if(value >= maxValue)
+        maxValue = value;
+    if(value <= minValue)
+        minValue = value;
+}
 
 double Criterion::getEvaluation(Pose p) const
 {

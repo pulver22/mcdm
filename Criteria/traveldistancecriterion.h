@@ -19,6 +19,8 @@
 #define TRAVELDISTANCECRITERION_H
 
 #include "criterion.h"
+#include "pose.h"
+#include "map.h"
 
 class TravelDistanceCriterion :  public Criterion
 {

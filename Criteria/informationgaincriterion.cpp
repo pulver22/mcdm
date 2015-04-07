@@ -19,7 +19,7 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
     int py = p.getY();
     float resolution = map.getResolution();
     //Get the orientation
-    int orientation = p.getTheta();
+    int orientation = p.getOrientation();
     int minSensedX, maxSensedX;
     int minSensedY,maxSensedY;
     int *intersection;    
@@ -181,7 +181,7 @@ void InformationGainCriterion::normalize (int position, int number)
 
 }
 
-int * InformationGainCriterion::intersect(int p1x, int p1y, int p2x, int p2y, Pose p)
+int InformationGainCriterion::intersect(int p1x, int p1y, int p2x, int p2y, Pose p)
 {
     float m1, m2, q1, q2;
     float mNum1, mNum2, mDen1, mDen2;
@@ -196,7 +196,7 @@ int * InformationGainCriterion::intersect(int p1x, int p1y, int p2x, int p2y, Po
      * 		m = (y2 - y1) / (x2 - x1)
      * 
      *		q = (x2*y1 - x1*y2) / (x2 - x1)
-     */
+     
    
     //First segment
     mNum1 = py - p1y;
@@ -206,7 +206,11 @@ int * InformationGainCriterion::intersect(int p1x, int p1y, int p2x, int p2y, Po
     qDen1 = px - p1x;
     q1 = qNum1 / qDen1;
     
-    //Second segment
+    
+    
+
+   
+    //Second segment: the radius at the end of the circular sector
     mNum2 = p.getY() - p2y;
     mDen2 = p.getX() - p2x;
     m2 = mNum2 / mDen2;
@@ -217,8 +221,20 @@ int * InformationGainCriterion::intersect(int p1x, int p1y, int p2x, int p2y, Po
     intersectX = (q2 - q1) / ( m1 - m2);
     intersectY = m1 * intersectX + q1;
     
-    result[1] = intersectX;
-    result[2] = intersectY;
+    */
+    
+        //Vertical or horizontal segment from the considered cell 
+   if(p.getOrientation == 90 || p.getOrientation == 270){
+	intersectX = p1x;
+	intersectY =py + (intersectX - px)*(p2y - py) / (p2x - px);     
+    } else if (p.getOrientation == 0 || p.getOrientation == 180){
+	intersectY = p1y;
+	intersectX = p2x + (intersectY - py) * (p2x -px) / (p2y - py);
+    }
+
+    result[1] = (int) intersectX;
+    result[2] = (int) intersectY;
+    
     
     //return the coordinations of the interesection point
     return (result);

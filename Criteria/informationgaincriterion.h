@@ -2,6 +2,8 @@
 #define INFORMATIONGAINCRITERION_H
 
 #include "criterion.h"
+#include "pose.h"
+#include "map.h"
 
 
 class InformationGainCriterion : public Criterion
@@ -12,7 +14,7 @@ public:
     double evaluate(Pose &p, Map &map);
 private:
     void normalize(int minSensedX, int arg2);
-   int* intersect(int p1x, int p1y, int p2x, int p2y, Pose p);
+    int intersect(int p1x, int p1y, int p2x, int p2y, Pose p);
 };
 
 
