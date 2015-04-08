@@ -1,10 +1,11 @@
 #include "weightmatrix.h"
 
 
-
+/* mapping contains the criterion's name and his encoding
+ * weights is a list (vector - for pratical purpose) of <encoding, weight> pairs */
 WeightMatrix::WeightMatrix(int numOfCriteria) :
-    mapping(new map<string, string>()),
-    weights(new list<map<string, double> *>()), 
+    mapping(new unordered_map<string, string>()),
+    weights(new vector<unordered_map<string, double> *>()), 
     lastInsertedCriteria(64), 
     mutex(new mutex())
 {
@@ -26,6 +27,8 @@ WeightMatrix::~WeightMatrix()
     delete mapping;
 }
 
+/*insert the criterion's name and its encoding in mapping unordered_map(hast_table) and 
+ * his encoding and his weight in weights vector */
 void WeightMatrix::insertSingleCriterion(string name, double weight)
 {
     mutex->lock();
@@ -33,18 +36,21 @@ void WeightMatrix::insertSingleCriterion(string name, double weight)
     lastInsertedCriteria++;
     //encode the inserted criterion.
     //The coding of the single criteria is "A" for the first on,m "B" for the second one, "C" for the third...
-
     //ldbg << "Criterion Names: " << name << endl;
     string code((char)lastInsertedCriteria);
     //ldbg << "Criterion Code: " << code << endl;
     //insert the entry in the mapping table
-    mapping->insert(name, code);
+    std::pair<string,string> pair (name,code); 
+    mapping->insert(pair);
     //insert the weight of the single criterion in the first row of the weight matrix
     if (weights->size() > 0)
-	weights->pop_front(code,weight);
+	weights->emplace(0,code,weight);
+	//weights->push_front(code,weight);
     mutex->unlock();
 }
 
+/*
+ */
 double WeightMatrix::getWeight(list<string> criteriaNames) const
 {
 
@@ -66,15 +72,19 @@ double WeightMatrix::getWeight(list<string> criteriaNames) const
 }
 
 
-
+/* return the encoding of the name searching for it in the mapping structure
+ */
 const string WeightMatrix::getNameEncoding(string name) const
 {
-    mutex->lock();
-    const QString toRet = mapping->value(name);
+    mutex->lock();   
+    const string toRet = mapping[name];
     mutex->unlock();
     return toRet;
 }
 
+/*  given a list of criteria, call the proper function to encode the list in a single string and then insert
+ * it with the provided weight
+ */
 void WeightMatrix::insertCombinationWeight(list<string> criteriaNames, double weight)
 {
 
@@ -82,6 +92,9 @@ void WeightMatrix::insertCombinationWeight(list<string> criteriaNames, double we
 
 }
 
+/*  insert in the weights structure the pair <enconding, weight> where enconding is a string taking care of more
+ * than one criterion. 
+ */
 void WeightMatrix::insertCombinationWeight(const string &encoding, double weight)
 {
     int card = encoding.length();
@@ -95,27 +108,26 @@ void WeightMatrix::insertCombinationWeight(const string &encoding, double weight
         return;
 
     mutex->lock();
-    weights->at(card-1)->insert(encoding, weight);
+    weights->insert(card-1, std::pair<string,double>(encoding,weight));
+    //weights->at(card-1)->emplace(encoding, weight);
     mutex->unlock();
 }
 
+/* given an encoding of a criterion, return the weight associated to that criterion
+ */
 double WeightMatrix::getWeight(const string &encoding) const
 {
     //ldbg << "wights length = " << weights->length() << endl;
     int card = encoding.length();
     mutex->lock();
-    int numActiveCrit = numOfActiveCriteria;
-    mutex->unlock();
-    if(card >= numActiveCrit)
-        return 1;
-    if(card <= 0)
-        return 0;
-    mutex->lock();
-    double toRet = weights->at(card-1)->value(encoding);
+    double toRet = weights->at(card-1)[encoding];
     mutex->unlock();
     return toRet;
 }
 
+/* given a list of criteria names (could be only one), copy the list of the respective encoding in the enc list, 
+ * then sort it and append every single encoded criterion in the toRet string
+ */
 string WeightMatrix::computeNamesEncoding(list<string> criteriaNames) const
 {
     //ldbg << "Criteria Names: " << criteriaNames << endl;
@@ -123,15 +135,17 @@ string WeightMatrix::computeNamesEncoding(list<string> criteriaNames) const
     if (criteriaNames.empty())
             return "";
     list<string> enc;
-    for(int i=0; i<criteriaNames.size(); i++){
-        enc.append(mapping->value(criteriaNames.at(i)));
+    list< string >::iterator l_front = criteriaNames.begin();
+    for(l_front; l_front != criteriaNames.end(); ++l_front){
+        enc.emplace(mapping[l_front]);
+	
     }
 //    ldbg << "Encode before sorting: " << enc << endl;
-    qSort(enc);
+    enc.sort();
 //    ldbg << "Encode after sorting: " << enc << endl;
-    QString toRet;
-    for(int i=0; i<enc.size(); i++){
-        toRet.append(enc.at(i));
+    string toRet;
+    for(l_front=enc.begin(); l_front != enc.end(); ++l_front){
+        toRet.append(l_front);
     }
     mutex->unlock();
     //ldbg << "Encoding " << toRet << endl;

@@ -3,9 +3,12 @@
 
 #include <functional>
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <list>
+#include <vector>
+#include <iterator> 
 #include <mutex>
+#include <map>
 
 using namespace std;
 class WeightMatrix
@@ -26,13 +29,13 @@ public:
 private:
 
     //This member maps a criterion name with its encoding
-    map<string, string> *mapping;
+    unordered_map<string, string> *mapping;
     
     //This is the double entrance table that contains all the weight.
     // - the index of the list indicate the cardinality of the weight combination.
     // - the Hash contains the pairs criteria_combination<->weight
     // NOTE: all the keys of the String must be sorted by lexicographic order.
-    list<map<string, double> * > *weights;
+    vector<unordered_map<string, double> * > *weights;
     int lastInsertedCriteria;
     std::mutex *mutex;
 };
