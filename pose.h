@@ -1,7 +1,6 @@
 #ifndef POSE_H
 #define POSE_H
 
-namespace Data{
 
   
 class Pose
@@ -29,4 +28,3 @@ private:
   
 };
  
-}

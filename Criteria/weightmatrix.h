@@ -25,6 +25,7 @@ public:
     double getWeight(list<string> criteriaNames) const;
     double getWeight(const string &encoding) const;        
     string computeNamesEncoding(list<string> criteriaNames) const;
+    list<string> getKnownCriteria() const;
    
 private:
 

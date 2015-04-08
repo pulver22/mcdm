@@ -39,7 +39,7 @@ private:
 int height;
 int width;
 float resolution;
-std::vector< std::vector< int, std::allocator< void > >, std::allocator< void > > map2D;
+std::vector< std::vector< int > > map2D;
 };
 
 #endif // MAP_H

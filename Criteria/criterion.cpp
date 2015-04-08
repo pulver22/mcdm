@@ -17,13 +17,14 @@
 
 #include "criterion.h"
 
+
 Criterion::Criterion()
 {
 
 }
 
-Criterion:: Criterion(const String &name, double weight):
-    name(name), weight(weight)
+Criterion:: Criterion(const string &name, double weight, bool highGood):
+    name(name), weight(weight),highGood(highGood)
 {
 
 }
@@ -44,13 +45,54 @@ void Criterion::insertEvaluation(Pose &p, double value)
         minValue = value;
 }
 
+void Criterion::clean()
+{
+//    for(QHash<SLAM::Geometry::Frontier *, double>::iterator it = evaluation.begin(); it!=evaluation.end(); it++){
+//        delete it.key();
+//    }
+    evaluation.clear();
+}
+
+void Criterion::normalize()
+{
+    if(highGood)
+        normalizeHighGood();
+    else
+        normalizeLowGood();
+}
+
+void Criterion::normalizeHighGood()
+{
+    unordered_map<const Pose *, double> temp;
+    for (auto& it : evaluation ){
+	pair p =  it;
+       double value =p.second;
+       value = (value-minValue)/(maxValue-minValue);
+       temp.emplace(p.first, value);
+   }
+    evaluation = temp;
+}
+
+void Criterion::normalizeLowGood()
+{
+    unordered_map<const Pose *, double> temp;
+    for (auto& it : evaluation ){
+	pair p =  it;
+        double value =p.second;
+        value = (maxValue-value)/(maxValue-minValue);
+        temp.emplace(p.first, value);
+    }
+    evaluation = temp;
+}
+
+
 double Criterion::getEvaluation(Pose p) const
 {
     return evaluation[p];
 }
 
 
-const String& Criterion::getName() const
+const string& Criterion::getName() const
 {
     return name;
 }
@@ -60,7 +102,7 @@ double Criterion::getWeight() const
     return weight;
 }
 
-void Criterion::setName(const String& name)
+void Criterion::setName(const string& name)
 {
     this->name = name;
 }

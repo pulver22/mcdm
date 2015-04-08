@@ -152,5 +152,17 @@ string WeightMatrix::computeNamesEncoding(list<string> criteriaNames) const
     return toRet;
 }
 
+/* return the list of all criteria considered
+ */
+list<string> WeightMatrix::getKnownCriteria() const
+{
+    list<string> toRet;
+    mutex->lock();
+    for (int i=0; i < mapping->size(); i++){
+	toRet.emplace_back(mapping->at(i));
+    }
+    mutex->unlock();
+    return toRet;
+}
 
 

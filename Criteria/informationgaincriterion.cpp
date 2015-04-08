@@ -4,7 +4,7 @@
 
 
 InformationGainCriterion::InformationGainCriterion(double weight) :
-    Criterion(INFORMATION_GAIN, weight, true)
+    Criterion(INFORMATION_GAIN, weight,true)
 {
 }
 

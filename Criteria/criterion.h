@@ -17,33 +17,44 @@
 
 #ifndef CRITERION_H
 #define CRITERION_H
+#include <unordered_map>
+#include <string>
+#include "pose.h"
+#include "map.h"
 
+using namespace std;
 class Criterion
 {
     public:
 	//Constructor and destructor
 	Criterion();
-	Criterion(const String &name, double weight);
+	Criterion(const string &name, double weight,bool highGood);
 	~Criterion();
 	
 	//Other methods
 	virtual double evaluate( Pose p, Map &map);
 	double getEvaluation(Pose p) const;
 	void insertEvaluation(Pose &p, double value);
+	void clean();
+	void normalize();
 	
 	//Setters and getters
-	const String &getName() const;
+	const string &getName() const;
 	double getWeight() const;
-	void setName(const String &name);
+	void setName(const string &name);
 	void setWeight(double weight);
+    private:
+	void normalizeHighGood();
+	void normalizeLowGood();
   
   protected:
-	String name;
+	string name;
 	double weight;
+	bool highGood;
 	double maxValue, minValue;
 	
   private:
-	Hash<Pose *, double> evaluation;
+	unordered_map<Pose *, double> evaluation;
 };
 
 #endif // CRITERION_H

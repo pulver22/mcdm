@@ -20,7 +20,7 @@
 
 
 SensingTimeCriterion::SensingTimeCriterion(double weight):
-    Criterion(SENSING_TIME, weight, true)
+    Criterion(SENSING_TIME, weight,true)
 {
 
 }
