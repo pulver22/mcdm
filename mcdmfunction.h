@@ -5,6 +5,7 @@
 #include "evaluationfunction.h"
 #include "Criteria/criterion.h"
 #include "Criteria/weightmatrix.h"
+#include "evaluationrecords.h"
 
 /**
     * This class implements the MCDM evaluation function

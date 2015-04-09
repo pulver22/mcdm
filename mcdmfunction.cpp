@@ -4,23 +4,27 @@
 #include "Criteria/traveldistancecriterion.h"
 #include "Criteria/informationgaincriterion.h"
 #include "Criteria/sensingtimecriterion.h"
-#include "Criteria//mcdmweightreader.h"
+#include "Criteria/mcdmweightreader.h"
 #include "Criteria/criterioncomparator.h"
 #include <string>
+#include <iostream>
 
 
-
+/* create a list of criteria with name and <encoded_name,weight> pair after reading that from a file
+ */
 MCDMFunction::MCDMFunction() :
-     criteria(new unordered_map<string, Criterion *>())
+     criteria(new unordered_map<string, Criterion *>()),activeCriteria(NULL)
     
 {
     //read the weight from somewhere
     MCDMWeightReader weightReader;
     matrix = weightReader.parseFile();
+    // get the list of all criteria to be considered
     list<string> listCriteria = matrix->getKnownCriteria();
     list< string >::iterator l_front = listCriteria.begin();
     for (l_front; l_front != listCriteria.end(); ++l_front){
-	string name = l_front;
+	string name = *l_front;
+	// retrieve the weight of the criterion using the encoded version of the name
 	double weight = matrix->getWeight(matrix->getNameEncoding(name));
 	Criterion *c = createCriterion(name, weight);
 	if(c != NULL)
@@ -54,7 +58,7 @@ MCDMFunction::~MCDMFunction()
 }
 
 
-Criterion * MCDMFunction::createCriterion(QString name, double weight)
+Criterion * MCDMFunction::createCriterion(string name, double weight)
 {
     Criterion *toRet = NULL;
     if(name == string(SENSING_TIME)){
@@ -67,12 +71,12 @@ Criterion * MCDMFunction::createCriterion(QString name, double weight)
     return toRet;
 }
 
-//ATTENZIONE: VA SISTEMATO PERCHE' AD .at() BISOGNA PASSARE LA CHIAVE E NON L'ITERATORE
+
 double MCDMFunction::evaluateFrontier( const Pose *p, const Map &map)
 {
     //Should keep the ordering of the criteria and the weight of each criteria combinations
-   for (int i = 0; i < criteria->size(); i++){
-       Criterion *c = criteria->at(i);
+   for (unordered_map<string,Criterion *>::iterator it = criteria->begin(); it != criteria->end(); it++){
+       Criterion *c = *it;
        c->evaluate(p,map);
    }
    
@@ -93,7 +97,7 @@ EvaluationRecords* MCDMFunction::evaluateFrontiers(const std::list< Pose* >& fro
 	criteria->clear(i);
     }
 
-
+  
     //Evaluate the frontiers
     for (int i=0; i<frontiers.size(); i++){
 	//Check if the frontier is reachable.
@@ -114,71 +118,64 @@ EvaluationRecords* MCDMFunction::evaluateFrontiers(const std::list< Pose* >& fro
     }
     
     //Normalize the values
-    foreach(Criterion *c, *activeCriteria){
-//             lprint << "#"<<c->getName() <<": "<<c->evaluationSize() <<endl;
-	c->normalize();
+    for(unordered_map<string,Criterion>::iterator it = criteria->begin(); it != criteria->end(); ++i){
+	(*it).second.normalize();
     }
-    semCrit.normalize();
+    
+    
     //Create the EvaluationRecords
-//         lprint << "#number of frontier to evaluate: "<<frontiers.size()<<endl;
+    //         lprint << "#number of frontier to evaluate: "<<frontiers.size()<<endl;
     EvaluationRecords *toRet = new EvaluationRecords();
-    for(int i=0; i<frontiers.size(); i++){
+    
+    for(list<Pose>::iterator i=frontiers.begin(); i!=frontiers.end(); i++){
 
-	Frontier *f = frontiers[i];
-	qSort(activeCriteria->begin(), activeCriteria->end(), CriterionComparator(f));
+	Pose *f = *i;
+	qsort(criteria,criteria->size(),sizeof(Criterion),CriterionComparator(f));
+	//qSort(activeCriteria->begin(), activeCriteria->end(), CriterionComparator(f));
+	
 	//apply the choquet integral
-
 	Criterion *lastCrit = NULL;
 	double finalValue = 0.0;
-	double semEval = -1.0;
 //             lprint << i << ") ";
 //             Point myPoint(map.lastRobotPose(Config::robotID)->x(), map.lastRobotPose(Config::robotID)->y());
 //             Point centroid = f->centroid();
 //             if(myPoint.distance(centroid) < LASER_RANGE){
-	    for(int i=0; i<activeCriteria->length(); i++){
-		//ldbg << "MCDM : value of i "<<i<<endl;
-		//ldbg << "MCDM : size of active criteria "<<activeCriteria->length()<<endl;
-		Criterion *c = NULL;
-		double weight = 0.0;
-		//Get the list of criterion that are >= than the one considered
-		QList<QString> names;
-		for(int j=i ; j<activeCriteria->length(); j++){
-		    Criterion *next = activeCriteria->at(j);
-		    names.append(next->getName());
-		}
-
-		weight = matrix->getWeight(names);
+	for(unordered_map<string,Criterion>::iterator i = criteria->begin(); i != criteria->end(); i++){
+	    Criterion *c = NULL;
+	    double weight = 0.0;
+	    //Get the list of criterion that are >= than the one considered
+	    vector<string> names;
+	   for(unordered_map<string,Criterion>::iterator j = i+1; j != criteria->end(); j++){
+	       //CHECK IF TH ITERATOR RETURN THE COUPLE <STRING,CRITERION>
+	       Criterion *c = (*j).second;
+	       names.push_back(c->getName());
+	   }
+	    weight = matrix->getWeight(names);
+	
 		//lprint << "#"<<names << " - w = " << weight << " - ";
 //                     lprint << names <<" with weight "<<weight<<endl;
-		if(i==0){
-		    c = activeCriteria->first();
-		    finalValue += c->getEvaluation(f) * weight;
-		    if (c->getName() == QString(SEMANTIC)){
-			semEval = c->getEvaluation(f);
-		    }
+	    if(i==criteria->begin()){
+		c = (*i).second;
+		finalValue += c->getEvaluation(f) * weight;
 //                         lprint << "#crit "<<c->getName()<<" - eval = "<<c->getEvaluation(f) << endl;
-		} else {
-		    c = activeCriteria->at(i);
-		    double tmpValue = c->getEvaluation(f)-lastCrit->getEvaluation(f);
+	    } else {
+		c = (*i).second;
+		double tmpValue = c->getEvaluation(f)-lastCrit->getEvaluation(f);
 //                         lprint << "#crit "<<c->getName()<<" - eval = "<<c->getEvaluation(f) << endl;
-		    finalValue += tmpValue*weight;
-		    if (c->getName() == QString(SEMANTIC)){
-			semEval = c->getEvaluation(f);
-		    }
-		}
-		lastCrit = c;
+		finalValue += tmpValue*weight;
 	    }
-	    if(semEval < 0.0){
-		semEval = semCrit.getEvaluation(f);
-	    }
-	    lprint << QString::number(f->centroid().x(), 'f', 2) <<";"<<QString::number(f->centroid().y(), 'f', 2);
-	    lprint <<";"<<QString::number(finalValue, 'f', 2) << ";"<< QString::number(semEval, 'f', 2) << endl;
+	    lastCrit = c;
+	}
+	cout << f->getX() <<";"<<f->getY();
+	cout <<";"<<finalValue << ";"<< endl;
 	toRet->putEvaluation(*f, finalValue);
     }
 //         }
-    lprint << endl;
+    cout << endl;
+    /*
     delete activeCriteria;
     activeCriteria = NULL;
+    */
     myMutex.unlock();
     return toRet;
 }
