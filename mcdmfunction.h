@@ -27,6 +27,7 @@ private:
 
     Criterion * createCriterion(string name, double weight);        
     unordered_map<string, Criterion *> *criteria;
+    vector<Criterion *> activeCriteria;
     WeightMatrix * matrix;
     mutex myMutex;
 

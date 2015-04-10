@@ -75,7 +75,7 @@ Criterion * MCDMFunction::createCriterion(string name, double weight)
 double MCDMFunction::evaluateFrontier( const Pose *p, const Map &map)
 {
     //Should keep the ordering of the criteria and the weight of each criteria combinations
-   for (unordered_map<string,Criterion *>::iterator it = criteria->begin(); it != criteria->end(); it++){
+   for (vector<Criterion *>::iterator it = *activeCriteria.begin(); it != activeCriteria.end(); it++){
        Criterion *c = *it;
        c->evaluate(p,map);
    }
@@ -96,6 +96,17 @@ EvaluationRecords* MCDMFunction::evaluateFrontiers(const std::list< Pose* >& fro
     for(int i=0; i< criteria->size(); i++){
 	criteria->clear(i);
     }
+
+    //Get the list of activeCriteria
+    if(activeCriteria == NULL){
+	activeCriteria = new vector<Criterion *>();
+    }
+    vector<string> listActiveCriteria = matrix->getActiveCriteria();
+    for(vector<string>::iterator it = listActiveCriteria.begin(); it != listActiveCriteria.end(); it++){
+	activeCriteria.push_back(criteria[*it]);
+    }
+    
+    //ldbg << "number of active criteria: "<<activeCriteria->size() << endl;
 
   
     //Evaluate the frontiers
@@ -118,8 +129,8 @@ EvaluationRecords* MCDMFunction::evaluateFrontiers(const std::list< Pose* >& fro
     }
     
     //Normalize the values
-    for(unordered_map<string,Criterion>::iterator it = criteria->begin(); it != criteria->end(); ++i){
-	(*it).second.normalize();
+    for(vector<Criterion *>::iterator it = activeCriteria.begin(); it != activeCriteria.end(); ++it){
+	(*it).normalize();
     }
     
     
@@ -130,7 +141,7 @@ EvaluationRecords* MCDMFunction::evaluateFrontiers(const std::list< Pose* >& fro
     for(list<Pose>::iterator i=frontiers.begin(); i!=frontiers.end(); i++){
 
 	Pose *f = *i;
-	qsort(criteria,criteria->size(),sizeof(Criterion),CriterionComparator(f));
+	qsort(activeCriteria,activeCriteria.size(),sizeof(Criterion),CriterionComparator(f));
 	//qSort(activeCriteria->begin(), activeCriteria->end(), CriterionComparator(f));
 	
 	//apply the choquet integral
@@ -140,26 +151,26 @@ EvaluationRecords* MCDMFunction::evaluateFrontiers(const std::list< Pose* >& fro
 //             Point myPoint(map.lastRobotPose(Config::robotID)->x(), map.lastRobotPose(Config::robotID)->y());
 //             Point centroid = f->centroid();
 //             if(myPoint.distance(centroid) < LASER_RANGE){
-	for(unordered_map<string,Criterion>::iterator i = criteria->begin(); i != criteria->end(); i++){
+	for(vector<Criterion *>::iterator i = activeCriteria.begin(); i != activeCriteria.end(); i++){
 	    Criterion *c = NULL;
 	    double weight = 0.0;
 	    //Get the list of criterion that are >= than the one considered
 	    vector<string> names;
-	   for(unordered_map<string,Criterion>::iterator j = i+1; j != criteria->end(); j++){
-	       //CHECK IF TH ITERATOR RETURN THE COUPLE <STRING,CRITERION>
-	       Criterion *c = (*j).second;
+	   for(vector<Criterion *>::iterator j = i+1; j != activeCriteria.end(); j++){
+	       //CHECK IF THE ITERATOR RETURN THE COUPLE <STRING,CRITERION>
+	       Criterion *c = (*j);
 	       names.push_back(c->getName());
 	   }
 	    weight = matrix->getWeight(names);
 	
-		//lprint << "#"<<names << " - w = " << weight << " - ";
-//                     lprint << names <<" with weight "<<weight<<endl;
-	    if(i==criteria->begin()){
-		c = (*i).second;
+//               lprint << "#"<<names << " - w = " << weight << " - ";
+//               lprint << names <<" with weight "<<weight<<endl;
+	    if(i==activeCriteria.begin()){
+		c = (*i);
 		finalValue += c->getEvaluation(f) * weight;
 //                         lprint << "#crit "<<c->getName()<<" - eval = "<<c->getEvaluation(f) << endl;
 	    } else {
-		c = (*i).second;
+		c = (*i);
 		double tmpValue = c->getEvaluation(f)-lastCrit->getEvaluation(f);
 //                         lprint << "#crit "<<c->getName()<<" - eval = "<<c->getEvaluation(f) << endl;
 		finalValue += tmpValue*weight;
@@ -172,44 +183,12 @@ EvaluationRecords* MCDMFunction::evaluateFrontiers(const std::list< Pose* >& fro
     }
 //         }
     cout << endl;
-    /*
+    
     delete activeCriteria;
     activeCriteria = NULL;
-    */
     myMutex.unlock();
     return toRet;
 }
 
-void MCDMFunction::onEnableUserCriteria(bool activate, const Data::HighLevelCommand *command)
-{
-    matrix->changeCriteriaActivation(USER_DIRECTION, false);
-    matrix->changeCriteriaActivation(USER_AREA, false);
-    if(activate){
-	bool expDir = command->exploreDirection();
-	if(expDir){
-	    matrix->changeCriteriaActivation(USER_DIRECTION, true);
-	    UserDirectionCriterion *c = (UserDirectionCriterion *)criteria->value(USER_DIRECTION);
-	    c->setAlphaX(command->getX());
-	    c->setAlphaY(command->getY());
-	    ldbg << "userDirection with weights: x = " << command->getX() <<", "<<command->getY()<<endl;
-	} else {
-	    matrix->changeCriteriaActivation(USER_AREA, true);
-	    UserAreaCriterion *c = (UserAreaCriterion *)criteria->value(USER_AREA);
-	    Point p(command->getX(), command->getY());
-	    c->setPoint(p);
-	    ldbg << "userArea with point: <" << command->getX() <<", "<<command->getY()<< ">" <<endl;
-	}
-    }
-}
 
-void MCDMFunction::setMultimap(Multimap *multiMap)
-{
-    this->multimap = multiMap;
-
-    foreach(Criterion *c, criteria->values()){
-	ldbg << "Set the global map to the criterion "<<c->getName()<<endl;
-	c->setMultimap(multiMap);
-    }
-
-}
 

@@ -17,7 +17,7 @@ public:
     WeightMatrix(int numOfCriteria);
     virtual ~WeightMatrix();
 
-    void insertSingleCriterion(string name, double weight);
+    void insertSingleCriterion(string name, double weight, bool active);
     const string getNameEncoding(string name) const;
 
     void insertCombinationWeight(list<string> criteriaNames, double weight);
@@ -26,6 +26,8 @@ public:
     double getWeight(const string &encoding) const;        
     string computeNamesEncoding(list<string> criteriaNames) const;
     list<string> getKnownCriteria() const;
+    vector<string> getActiveCriteria() const;
+    void changeCriteriaActivation(const string &name, bool active);
    
 private:
 
@@ -37,6 +39,8 @@ private:
     // - the Hash contains the pairs criteria_combination<->weight
     // NOTE: all the keys of the String must be sorted by lexicographic order.
     vector<unordered_map<string, double> * > *weights;
+    vector<string, bool> *activeCriteria;
+    int numOfActiveCriteria;
     int lastInsertedCriteria;
     std::mutex *mutex;
 };

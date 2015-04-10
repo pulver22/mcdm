@@ -5,9 +5,11 @@
  * weights is a list (vector - for pratical purpose) of <encoding, weight> pairs */
 WeightMatrix::WeightMatrix(int numOfCriteria) :
     mapping(new unordered_map<string, string>()),
+    activeCriteria(new vector<string, bool>()), 
     weights(new vector<unordered_map<string, double> *>()), 
     lastInsertedCriteria(64), 
-    mutex(new mutex())
+    mutex(new mutex()),
+    numOfActiveCriteria(0)
 {
     //Create a row in the weight matrix for each weight cardinality
     for(int i=0; i<numOfCriteria-1; i++){
@@ -23,13 +25,15 @@ WeightMatrix::~WeightMatrix()
         weights->erase(i);
     }
     delete weights;
+    activeCriteria->clear();
+    delete activeCriteria;
     mapping->clear();
     delete mapping;
 }
 
 /*insert the criterion's name and its encoding in mapping unordered_map(hast_table) and 
  * his encoding and his weight in weights vector */
-void WeightMatrix::insertSingleCriterion(string name, double weight)
+void WeightMatrix::insertSingleCriterion(string name, double weight, bool active)
 {
     mutex->lock();
     //increase the number of inserted criteria
@@ -42,10 +46,40 @@ void WeightMatrix::insertSingleCriterion(string name, double weight)
     //insert the entry in the mapping table
     std::pair<string,string> pair (name,code); 
     mapping->insert(pair);
+    std::pair<string,bool> pairActive (code, active);
+    activeCriteria->push_back(pairActive);
+    if(active)
+	numOfActiveCriteria++;
     //insert the weight of the single criterion in the first row of the weight matrix
     if (weights->size() > 0)
 	weights->emplace(0,code,weight);
 	//weights->push_front(code,weight);
+    mutex->unlock();
+}
+
+void WeightMatrix::changeCriteriaActivation(const string &name, bool active)
+{
+    mutex->lock();
+    //Get the encoding of the criterion
+    string enc = mapping[name];
+    //Get the actual state of the criterion activation
+    bool actualState;
+    for(vector<string,bool>::iterator it = activeCriteria->begin(); it != activeCriteria->end(); it++){
+	if((*it).first == enc)
+	   actualState = (*it).second;
+    }
+    
+    if(actualState == active){
+        //if the state should not change, return
+        mutex->unlock();
+        return;
+    }
+    //If the state should change, override the past state of activation.
+    activeCriteria->push_back(enc, active);
+    if(active) //if the new state is a positive one, increase the number of active criteria
+        numOfActiveCriteria++;
+    else  //if the state is negative, decrease the number of active criteria.
+        numOfActiveCriteria--;
     mutex->unlock();
 }
 
@@ -71,6 +105,13 @@ double WeightMatrix::getWeight(list<string> criteriaNames) const
     return w;
 }
 
+int WeightMatrix::getNumOfActiveCriteria() const
+{
+    mutex->lock();
+    int toRet = numOfActiveCriteria;
+    mutex->unlock();
+    return toRet;
+}
 
 /* return the encoding of the name searching for it in the mapping structure
  */
@@ -120,6 +161,13 @@ double WeightMatrix::getWeight(const string &encoding) const
     //ldbg << "wights length = " << weights->length() << endl;
     int card = encoding.length();
     mutex->lock();
+    int numActiveCrit = numOfActiveCriteria;
+    mutex->unlock();
+    if(card >= numActiveCrit)
+        return 1;
+    if(card <= 0)
+        return 0;
+    mutex->lock();
     double toRet = weights->at(card-1)[encoding];
     mutex->unlock();
     return toRet;
@@ -152,6 +200,24 @@ string WeightMatrix::computeNamesEncoding(list<string> criteriaNames) const
     return toRet;
 }
 
+
+vector<string> WeightMatrix::getActiveCriteria() const
+{
+    mutex->lock();
+    vector<string> toRet;
+    for(vector<string,bool>::iterator it =activeCriteria->begin(); it != activeCriteria->end(); it++){
+	const string k = (*it).first;
+	if((*it).second){
+	    string toApp = mapping[k];
+	    toRet.push_back(toApp);
+	    
+	}
+    }
+  
+    mutex->unlock();
+    return toRet;
+}
+
 /* return the list of all criteria considered
  */
 list<string> WeightMatrix::getKnownCriteria() const
@@ -164,5 +230,6 @@ list<string> WeightMatrix::getKnownCriteria() const
     mutex->unlock();
     return toRet;
 }
+
 
 
