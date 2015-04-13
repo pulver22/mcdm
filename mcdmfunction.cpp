@@ -147,10 +147,6 @@ EvaluationRecords* MCDMFunction::evaluateFrontiers(const std::list< Pose* >& fro
 	//apply the choquet integral
 	Criterion *lastCrit = NULL;
 	double finalValue = 0.0;
-//             lprint << i << ") ";
-//             Point myPoint(map.lastRobotPose(Config::robotID)->x(), map.lastRobotPose(Config::robotID)->y());
-//             Point centroid = f->centroid();
-//             if(myPoint.distance(centroid) < LASER_RANGE){
 	for(vector<Criterion *>::iterator i = activeCriteria.begin(); i != activeCriteria.end(); i++){
 	    Criterion *c = NULL;
 	    double weight = 0.0;

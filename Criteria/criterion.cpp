@@ -65,7 +65,7 @@ void Criterion::normalizeHighGood()
 {
     unordered_map<const Pose *, double> temp;
     for (auto& it : evaluation ){
-	pair p =  it;
+	pair p =  *it;
        double value =p.second;
        value = (value-minValue)/(maxValue-minValue);
        temp.emplace(p.first, value);
@@ -77,7 +77,7 @@ void Criterion::normalizeLowGood()
 {
     unordered_map<const Pose *, double> temp;
     for (auto& it : evaluation ){
-	pair p =  it;
+	pair p =  *it;
         double value =p.second;
         value = (maxValue-value)/(maxValue-minValue);
         temp.emplace(p.first, value);

@@ -20,10 +20,14 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
     float resolution = map.getResolution();
     //Get the orientation
     int orientation = p.getOrientation();
+    // Minimum and maximum coordinations sensed by the laser scan
     int minSensedX, maxSensedX;
     int minSensedY,maxSensedY;
+    // intersection point between the laser sensor (at the edge) and the vertical/horizontal segment passing from 
+    // the considered cell
     int *intersection;    
-    vector<vector<int>> map2D = map.getMap2D;
+    //Map as a bidimensional array (vector) starting
+    vector<vector<int>> map2D = map.getMap2D();
     int maxValueY = map2D.size();
     int maxValueX = map2D[0].size();
     
@@ -34,7 +38,8 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
     //effective information gain
     int unExploredMap;
     
-    /* Approximate way to calculate the sensed area inside the circular sector: calculate the area of the circular sector and 
+    /* NOT TO BE CONSIDERED
+     * Approximate way to calculate the sensed area inside the circular sector: calculate the area of the circular sector and 
      * then divide it by the map resolution to get the number of cell in it
     
     sensedArea = (int) 1/2 * pow(p.getRadius(),2) * p.getGamma();
@@ -42,30 +47,40 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
     */
     
     //calcuate the sensed map based on the robot orientation
+    // orientation == 90 means the robot is looking toward the upper border of the map
     if( orientation == 90 ){
+	//minSensedX is the robot position minus the radius projection on the x axis; the same also for maxSensedX but with plus 
+	//instead of minus
 	minSensedX = px - p.getR() * cos(p.getPhi()/2);
 	maxSensedX = px + p.getR() * cos(p.getPhi()/2);
+	//minSensedY is the robot position minus the radius
 	minSensedY = py - p.getR() ;
+	//maxSensedY is the robot position, since the index grow towards the bottom
 	maxSensedY = py;
+	//normalize the sensed cell to not allow to sense outside the map edges
 	normalize(maxSensedY, 0);
 	normalize(maxSensedX,maxValueX);
 	normalize(minSensedX,0);
 	//count how many sensed cells are occupied by an obstacles
-	for(int i=minSensedY + ; i< maxSensedY; i++){
+	for(int i=minSensedY  ; i< maxSensedY; i++){
 	    for (int j = minSensedX; j< maxSensedX; j++){
-		/* If the intersection of the two segment, the one limited by the robot's position and the considered cell and the one limitating the circular sector, is false then 
-		* the cell is inside the circular sector */
+		// if the considered cell is before the robot position (relating to the xaxis)
 		if( j < px ){
+		    // calculate the intersection point between the vertical segment passing for the cell and the radius at the left edge
 		    intersection = intersect(i,j,minSensedX,minSensedY,p);
+		    // if the j-coordinate of the considered cell is higher (y grow toward the bottom and x toward right) than the intersection's one, 
+		    //it means that the cell is not insidie the sensed area, so break this loop and look for the following cell
 		    if ( i > intersection[1]){
 			continue;
 		    }
 		}else{
+		    //as above but on the right side on the robot
 		    intersection = intersect(i,j,maxSensedX,minSensedY,p);
 		    if (i > intersection[1]){
 		    continue;
 		    }
 		}
+		// if the cell is inside the sensed area, we can increase our counter
 		sensedArea++;
 		//Hp: free cells are zero value
 		if(map2D[i].at(j) > 0){
@@ -74,6 +89,7 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
 	    }
 	}
     }else if ( orientation == 270){
+	// case in which the robot is looking toward the bottom of the map
 	minSensedX = px - p.getR() * cos(p.getPhi()/2);
 	maxSensedX = px + p.getR() * cos(p.getPhi()/2);
 	minSensedY = py ;
@@ -81,10 +97,8 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
 	normalize(maxSensedY, maxValueY);
 	normalize(maxSensedX,maxValueX);
 	normalize(minSensedX,0);
-	for(int i=minSensedY + ; i< maxSensedY; i++){
+	for(int i=minSensedY  ; i< maxSensedY; i++){
 	    for (int j = minSensedX; j< maxSensedX; j++){
-		/* If the intersection of the two segment, the one limited by the robot's position and the considered cell and the one limitating the circular sector, is false then 
-		* the cell is inside the circular sector */
 		if( j < px ){
 		    intersection = intersect(i,j,minSensedX,minSensedY,p);
 		    if ( i < intersection[1]){
@@ -104,6 +118,7 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
 	    }
 	}
     }else if ( orientation == 0){
+	// case in which the robot is looking toward east
 	minSensedX = px;
 	maxSensedX = px + p.getR();
 	minSensedY = py - p.getR() * sin(p.getPhi()/2);
@@ -111,10 +126,8 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
 	normalize(maxSensedX,maxValueX);
 	normalize(maxSensedY,0);
 	normalize(minSensedY,maxValueY);
-	for(int i=minSensedY + ; i< maxSensedY; i++){
+	for(int i=minSensedY  ; i< maxSensedY; i++){
 	    for (int j = minSensedX; j< maxSensedX; j++){
-		/* If the intersection of the two segment, the one limited by the robot's position and the considered cell and the one limitating the circular sector, is false then 
-		* the cell is inside the circular sector */
 		if( i < py ){
 		    intersection = intersect(i,j,maxSensedX,minSensedY,p);
 		    if ( i < intersection[1]){
@@ -134,14 +147,13 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
 	    }
 	}
     }else if (orientation == 180){
+	// case in which the robot is loooking toward west
 	maxSensedX = px;
 	minSensedX = px - p.getR() ;
 	minSensedY = py - p.getR() * sin(p.getPhi()/2);
 	maxSensedY = py + p.getR() * sin(p.getPhi()/2);
-	for(int i=minSensedY + ; i< maxSensedY; i++){
+	for(int i=minSensedY  ; i< maxSensedY; i++){
 	    for (int j = minSensedX; j< maxSensedX; j++){
-		/* If the intersection of the two segment, the one limited by the robot's position and the considered cell and the one limitating the circular sector, is false then 
-		* the cell is inside the circular sector */
 		if( i < py ){
 		    intersection = intersect(i,j,minSensedX,minSensedY,p);
 		    if ( i < intersection[1]){
@@ -161,8 +173,9 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
 	    }
 	}
     }
-    
+    // the information gain is caluclated as the subtraction between the sensed area and the occupied one
     unExploredMap = sensedArea - occupiedArea;
+    //insert in the evaluation record the pair <frontier,values>
     insertEvaluation(p,unExploredMap);
     return unExploredMap;
 }
@@ -170,7 +183,7 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
 void InformationGainCriterion::normalize (int position, int number)
 {
     if(number == 0){
-	 if(position <= 0){
+	if(position <= 0){
 	position = 0;
 	}
     }else{
@@ -190,38 +203,7 @@ int InformationGainCriterion::intersect(int p1x, int p1y, int p2x, int p2y, Pose
     float px = p.getX();
     float intersectX, intersectY;
     int result[2];
-    /*
-     *		x = (q' - q ) / (m - m') -> intersection point
-     * 
-     * 		m = (y2 - y1) / (x2 - x1)
-     * 
-     *		q = (x2*y1 - x1*y2) / (x2 - x1)
-     
-   
-    //First segment
-    mNum1 = py - p1y;
-    mDen1 = px - p1x;
-    m1 = mNum1 / mDen1;
-    qNum1 = px*p1y - p1x*py;
-    qDen1 = px - p1x;
-    q1 = qNum1 / qDen1;
-    
-    
-    
 
-   
-    //Second segment: the radius at the end of the circular sector
-    mNum2 = p.getY() - p2y;
-    mDen2 = p.getX() - p2x;
-    m2 = mNum2 / mDen2;
-    qNum2 = px*p2y - p2x*py;
-    qDen2 = px - p2x;
-    q2 = qNum2 / qDen2;
-    
-    intersectX = (q2 - q1) / ( m1 - m2);
-    intersectY = m1 * intersectX + q1;
-    
-    */
     
         //Vertical or horizontal segment from the considered cell 
    if(p.getOrientation == 90 || p.getOrientation == 270){

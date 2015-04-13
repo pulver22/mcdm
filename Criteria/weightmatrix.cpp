@@ -13,7 +13,7 @@ WeightMatrix::WeightMatrix(int numOfCriteria) :
 {
     //Create a row in the weight matrix for each weight cardinality
     for(int i=0; i<numOfCriteria-1; i++){
-        weights->push_back(new hash<string, double>());
+        weights->push_back(new pair<string, double>());
     }
 
 }
@@ -105,6 +105,26 @@ double WeightMatrix::getWeight(list<string> criteriaNames) const
     return w;
 }
 
+/* given an encoding of a criterion, return the weight associated to that criterion
+ */
+double WeightMatrix::getWeight(const string &encoding) const
+{
+    //ldbg << "wights length = " << weights->length() << endl;
+    int card = encoding.length();
+    mutex->lock();
+    int numActiveCrit = numOfActiveCriteria;
+    mutex->unlock();
+    if(card >= numActiveCrit)
+        return 1;
+    if(card <= 0)
+        return 0;
+    mutex->lock();
+    //ATTENZIONE....DA CONTROLLARE
+    double toRet = weights->at(card-1)[encoding];
+    mutex->unlock();
+    return toRet;
+}
+
 int WeightMatrix::getNumOfActiveCriteria() const
 {
     mutex->lock();
@@ -154,25 +174,6 @@ void WeightMatrix::insertCombinationWeight(const string &encoding, double weight
     mutex->unlock();
 }
 
-/* given an encoding of a criterion, return the weight associated to that criterion
- */
-double WeightMatrix::getWeight(const string &encoding) const
-{
-    //ldbg << "wights length = " << weights->length() << endl;
-    int card = encoding.length();
-    mutex->lock();
-    int numActiveCrit = numOfActiveCriteria;
-    mutex->unlock();
-    if(card >= numActiveCrit)
-        return 1;
-    if(card <= 0)
-        return 0;
-    mutex->lock();
-    double toRet = weights->at(card-1)[encoding];
-    mutex->unlock();
-    return toRet;
-}
-
 /* given a list of criteria names (could be only one), copy the list of the respective encoding in the enc list, 
  * then sort it and append every single encoded criterion in the toRet string
  */
@@ -183,17 +184,17 @@ string WeightMatrix::computeNamesEncoding(list<string> criteriaNames) const
     if (criteriaNames.empty())
             return "";
     list<string> enc;
-    list< string >::iterator l_front = criteriaNames.begin();
-    for(l_front; l_front != criteriaNames.end(); ++l_front){
-        enc.emplace(mapping[l_front]);
+    list< string >::iterator it = criteriaNames.begin();
+    for(it; it != criteriaNames.end(); ++it){
+        enc.emplace(mapping[*it]);
 	
     }
 //    ldbg << "Encode before sorting: " << enc << endl;
     enc.sort();
 //    ldbg << "Encode after sorting: " << enc << endl;
     string toRet;
-    for(l_front=enc.begin(); l_front != enc.end(); ++l_front){
-        toRet.append(l_front);
+    for(it=enc.begin(); it != enc.end(); ++it){
+        toRet.append(*it);
     }
     mutex->unlock();
     //ldbg << "Encoding " << toRet << endl;
@@ -206,12 +207,20 @@ vector<string> WeightMatrix::getActiveCriteria() const
     mutex->lock();
     vector<string> toRet;
     for(vector<string,bool>::iterator it =activeCriteria->begin(); it != activeCriteria->end(); it++){
+	// k = endoding
 	const string k = (*it).first;
+	// if the status is active..
 	if((*it).second){
-	    string toApp = mapping[k];
+	    // i search for the name of the criterion with the same encoding in the mapping structure
+	    string toApp;
+	    for(unordered_map<string,string>::iterator it2 = mapping->begin(); it2 != mapping->end(); ++it2){
+		if ((*it2).second = k ){
+		toApp = (*it2).first;    
+		}
+	    }
 	    toRet.push_back(toApp);
-	    
 	}
+	 
     }
   
     mutex->unlock();

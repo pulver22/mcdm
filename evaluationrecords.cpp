@@ -78,26 +78,13 @@ vector<Pose> *EvaluationRecords::getFrontiers()
     return toRet;
 }
 
-/*
-void EvaluationRecords::serializeTo(QDataStream &stream) const
-{
-    stream << robotId;
-    stream << *evaluations;
-}
-
-void EvaluationRecords::deserializeFrom(QDataStream &stream)
-{
-    stream >> robotId;
-    stream >> *evaluations;
-}
-*/
 
 unordered_map<Pose, double> * EvaluationRecords::getEvaluations()
 {
     return evaluations;
 }
 
-
+/*
 unordered_map<uint, double> EvaluationRecords::getEvaluationsWithHashCode()
 {
     unordered_map<uint, double> evaluationsRecords;
@@ -108,7 +95,7 @@ unordered_map<uint, double> EvaluationRecords::getEvaluationsWithHashCode()
 	evaluationsRecords.insert(hashPair);
     }
     return evaluationsRecords;
-}
+}*/
 
 
 void EvaluationRecords::removeFrontier(Pose frontier)
@@ -128,14 +115,18 @@ void EvaluationRecords::normalize(){
 	list.push_back((*it).first);
     } 
     
-    for(unordered_map<Pose,double>::iterator it = evaluations->begin(); it != evaluations->end(); it++){
-	double value = (*it).second;
-	value = (value - minValue)/(maxValue-minValue);
-	evaluations->erase((*it).first);
-	pair<Pose,double> newPair ((*it).first, value);
-	evaluations->insert(newPair);
-	
+    for(unordered_map<Pose,double>::iterator it = list.begin(); it != list.end(); it++ ){
+	for(unordered_map<Pose,double>::iterator it2 = evaluations->begin(); it2 != evaluations->end(); it2++){
+	    if ((*it) == (*it2).first){
+		double value = (*it2).second;
+		value = (value - minValue)/(maxValue-minValue);
+		evaluations->erase((*it2).first);
+		pair<Pose,double> newPair (*it, value);
+		evaluations->insert(newPair);
+	     }
+	 }
     }
+
 
 }
 
