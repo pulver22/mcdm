@@ -1,48 +1,36 @@
-/*
- * Copyright 2015 <copyright holder> <email>
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
- */
-
-#ifndef MAP_H
-#define MAP_H
+#include <fstream> // ifstream
+#include <sstream> // stringstream
 #include <vector>
+
+namespace import_map{
 
 class Map
 {
+
 public:
-Map();
-Map(int height, int width, float resolution, vector< vector<int>> &map2D);
-getWidth();
-~Map();
-     map2D;
-     resolution;
-     height;
-     width;
-getWidth();
-getHeight();
-getResolution();
-getMap2D();
-
-
-
-
+  
+  Map(std::ifstream& infile, int resolution);	//constructor, takes in binary map file .pgm
+ // ~Map();					//destructor
+  void setGridValue(int value, int i, int j);	//setter for value in position ij of the grid
+  int getGridValue(int i, int j);		//getter for value in position ij of the grid
+  int getMapValue(int i, int j);		//getter for value in position ij of the map
+  int getNumGridRows();
+  int getNumGridCols();
+  int getNumRows();
+  int getNumCols();
+  void findFreeEdges(int cX, int cY);
+  void addEdgePoint(int x, int y);
+  
 private:
-int height;
-int width;
-float resolution;
-std::vector< std::vector< int > > map2D;
+  std::vector<int> map;				//vector containing the original map as binary matrix (0 -> free, 1 -> obstacle)
+  std::vector<int> grid;			//vector containing the map as grid of cells sized 1 square metre
+  void createMap(std::ifstream& infile);
+  void createGrid(int resolution);
+  int numgridrows;
+  int numgridcols;
+  int numrows;
+  int numcols;
+  std::vector<std::pair<int, int>> edgePoints;
+  
 };
-
-#endif // MAP_H
+}
