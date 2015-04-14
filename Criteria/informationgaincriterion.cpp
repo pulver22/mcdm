@@ -1,7 +1,7 @@
 #include "informationgaincriterion.h"
 #include "criteriaName.h"
 #include <math.h>
-
+using namespace import_map;
 
 InformationGainCriterion::InformationGainCriterion(double weight) :
     Criterion(INFORMATION_GAIN, weight,true)
@@ -83,7 +83,7 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
 		// if the cell is inside the sensed area, we can increase our counter
 		sensedArea++;
 		//Hp: free cells are zero value
-		if(map2D[i].at(j) > 0){
+		if(map2D[i].at(j) = 1){
 		    occupiedArea++;
 		}
 	    }
@@ -112,7 +112,7 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
 		}
 		sensedArea++;
 		//Hp: free cells are zero value
-		if(map2D[i].at(j) > 0){
+		if(map2D[i].at(j) =1){
 		    occupiedArea++;
 		}
 	    }
@@ -141,7 +141,7 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
 		}
 		sensedArea++;
 		//Hp: free cells are zero value
-		if(map2D[i].at(j) > 0){
+		if(map2D[i].at(j) =1){
 		    occupiedArea++;
 		}
 	    }
@@ -167,7 +167,7 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
 		}
 		sensedArea++;
 		//Hp: free cells are zero value
-		if(map2D[i].at(j) > 0){
+		if(map2D[i].at(j) =1){
 		    occupiedArea++;
 		}
 	    }

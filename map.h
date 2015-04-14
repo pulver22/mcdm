@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
-
+using namespace std;
 namespace import_map{
 
 class Map
