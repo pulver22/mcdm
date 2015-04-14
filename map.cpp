@@ -9,6 +9,7 @@ Map::Map(std::ifstream& infile, int resolution)
   Map::createGrid(resolution);
 }
 
+// create a monodimensional vector containing the map 
 void Map::createMap(std::ifstream& infile)
 {
   int row = 0, col = 0;
@@ -44,23 +45,24 @@ void Map::createMap(std::ifstream& infile)
   infile.close();
 }
 
+// get the map as a monodimension vector with 0 and 1
 void Map::createGrid(int resolution)
 {
   //cluster cells into grid
-  int clustersize = (int)((double)(100/resolution));
-  Map::numGridRows = numRows/clustersize;
-  Map::numGridCols = numCols/clustersize;
-  int gridrow = 0, gridcol = 0;
+  int clusterSize = (int)((double)(100/resolution));
+  Map::numGridRows = numRows/clusterSize;
+  Map::numGridCols = numCols/clusterSize;
+  int gridRow = 0, gridCol = 0;
   
   //get the size of the array and initialize to 0
   
   Map::grid.reserve(numGridRows*numGridCols);
   
-  for (gridrow = 0; gridrow < numGridRows; ++gridrow)
+  for (gridRow = 0; gridRow < numGridRows; ++gridRow)
   {
-    for (gridcol = 0; gridcol < numGridCols; ++gridcol)
+    for (gridCol = 0; gridCol < numGridCols; ++gridCol)
     {
-      grid[gridrow*numGridCols + gridcol] = 0;
+      grid[gridRow*numGridCols + gridCol] = 0;
     }
   }
   
@@ -71,7 +73,7 @@ void Map::createGrid(int resolution)
   {
     for(int col = 0; col < numCols; ++col)
     {
-      if(map[row*numCols + col] == 0) grid[(int)((float)row/clustersize)*numGridCols + (int)((float)col/clustersize)] = 1;
+      if(map[row*numCols + col] == 0) grid[(int)((float)row/clusterSize)*numGridCols + (int)((float)col/clusterSize)] = 1;
     }
   }
 }
@@ -240,6 +242,29 @@ void Map::addEdgePoint(int x, int y)
   edgePoints.push_back(std::make_pair<int, int>(x, y));
 }
 
+std::vector<int> getMap(){
+    return Map::map;
+    
+}
+
+std::vector<int> getGrid(){
+    return Map::grid;
+}
+  
+std::vector<vector<int>> Map::getMap2D(){
+    vector<vector<int>> map2D;
+    
+    for (int gridRow = 0; gridRow < numGridRows; ++gridRow)
+  {
+    for (int gridCol = 0; gridCol < numGridCols; ++gridCol)
+    {
+      map2D[gridRow].at(gridCol) = getGridValue(gridRow,gridCol);
+    }
+  }
+    
+    return map2D;
+    
+}
 
 //various getters
 

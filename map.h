@@ -22,6 +22,10 @@ public:
   int getNumCols();
   void findFreeEdges(int cX, int cY);
   void addEdgePoint(int x, int y);
+  std::vector<int> getMap();
+  std::vector<int> getGrid();
+  std::vector<vector<int>> getMap2D();
+  
   
 private:
   std::vector<int> map;				//vector containing the original map as binary matrix (0 -> free, 1 -> obstacle)

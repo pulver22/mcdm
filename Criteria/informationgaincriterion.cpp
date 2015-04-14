@@ -17,7 +17,7 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
 {
     int px = p.getX();
     int py = p.getY();
-    float resolution = map.getResolution();
+    //float resolution = map.getResolution();
     //Get the orientation
     int orientation = p.getOrientation();
     // Minimum and maximum coordinations sensed by the laser scan
