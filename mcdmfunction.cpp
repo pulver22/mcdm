@@ -151,7 +151,7 @@ EvaluationRecords* MCDMFunction::evaluateFrontiers(const std::list< Pose* >& fro
 	    Criterion *c = NULL;
 	    double weight = 0.0;
 	    //Get the list of criterion that are >= than the one considered
-	    vector<string> names;
+	    list<string> names;
 	   for(vector<Criterion *>::iterator j = i+1; j != activeCriteria.end(); j++){
 	       //CHECK IF THE ITERATOR RETURN THE COUPLE <STRING,CRITERION>
 	       Criterion *c = (*j);

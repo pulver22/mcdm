@@ -28,7 +28,7 @@ void EvaluationRecords::putEvaluation(Pose frontier, double value)
 	maxValue = value;
     }
 
-    evaluations->insert(frontier, value);
+    evaluations->emplace(frontier,value);
 
     if(value >= maxValue)
 	maxValue = value;
