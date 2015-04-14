@@ -4,7 +4,7 @@
 #include "Criteria/traveldistancecriterion.h"
 #include "Criteria/informationgaincriterion.h"
 #include "Criteria/sensingtimecriterion.h"
-#include "Criteria/mcdmweightreader.h"
+//#include "Criteria/mcdmweightreader.h"
 #include "Criteria/criterioncomparator.h"
 #include <string>
 #include <iostream>
@@ -16,16 +16,32 @@ MCDMFunction::MCDMFunction() :
      criteria(new unordered_map<string, Criterion *>()),activeCriteria(NULL)
     
 {
-    //read the weight from somewhere
+    /*read the weight from somewhere
     MCDMWeightReader weightReader;
     matrix = weightReader.parseFile();
+    */
+    
+    // Initialization ad-hoc
+    WeightMatrix matrix = new WeightMatrix(3);
+    matrix.insertSingleCriterion(INFORMATION_GAIN,0.5,true);
+    matrix.insertSingleCriterion(TRAVEL_DISTANCE,0.2, true);
+    matrix.insertSingleCriterion(SENSING_TIME,0.3, true);
+    list<string> list1 (INFORMATION_GAIN,TRAVEL_DISTANCE);
+    list<string> list2 (INFORMATION_GAIN,SENSING_TIME);
+    list<string> list3 (SENSING_TIME,TRAVEL_DISTANCE);
+   list<string> list4 (SENSING_TIME,TRAVEL_DISTANCE,INFORMATION_GAIN);
+    matrix.insertCombinationWeight(list1,0.8);
+    matrix.insertCombinationWeight(list2,0.6);
+    matrix.insertCombinationWeight(list3,0.6);
+    matrix.insertCombinationWeight(list4,1);
+
     // get the list of all criteria to be considered
-    list<string> listCriteria = matrix->getKnownCriteria();
+    list<string> listCriteria = matrix.getKnownCriteria();
     list< string >::iterator l_front = listCriteria.begin();
     for (l_front; l_front != listCriteria.end(); ++l_front){
 	string name = *l_front;
 	// retrieve the weight of the criterion using the encoded version of the name
-	double weight = matrix->getWeight(matrix->getNameEncoding(name));
+	double weight = matrix.getWeight(matrix.getNameEncoding(name));
 	Criterion *c = createCriterion(name, weight);
 	if(c != NULL)
 	    criteria->insert(name, c);
