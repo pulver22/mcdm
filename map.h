@@ -1,6 +1,8 @@
 #include <fstream> // ifstream
 #include <sstream> // stringstream
 #include <vector>
+#include <string>
+#include <iostream>
 
 namespace import_map{
 
@@ -26,10 +28,10 @@ private:
   std::vector<int> grid;			//vector containing the map as grid of cells sized 1 square metre
   void createMap(std::ifstream& infile);
   void createGrid(int resolution);
-  int numgridrows;
-  int numgridcols;
-  int numrows;
-  int numcols;
+  int numGridRows;
+  int numGridCols;
+  int numRows;
+  int numCols;
   std::vector<std::pair<int, int>> edgePoints;
   
 };

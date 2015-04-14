@@ -1,7 +1,5 @@
-#include <fstream> // ifstream
-#include <sstream> // stringstream
-#include <vector>
 #include <map.h>
+using namespace std;
 
 namespace import_map{
   
@@ -29,19 +27,19 @@ void Map::createMap(std::ifstream& infile)
   // Continue with a stringstream
   ss << infile.rdbuf();
   // Third line : size
-  ss >> numcols >> numrows;
- // cout << numcols << " columns and " << numrows << " rows" << endl;
+  ss >> numCols >> numRows;
+ // cout << numCols << " columns and " << numRows << " rows" << endl;
   
  // Second line : comment
  getline(infile,inputLine);
  //cout << "Comment : " << inputLine << endl;
  
- //std::vector<int> array(numrows*numcols);
- Map::map.reserve(numrows*numcols);
+ //std::vector<int> array(numRows*numCols);
+ Map::map.reserve(numRows*numCols);
 
   // Following lines : data
-  for(row = 0; row < numrows; ++row)
-    for (col = 0; col < numcols; ++col) ss >> Map::map[row*numcols + col];
+  for(row = 0; row < numRows; ++row)
+    for (col = 0; col < numCols; ++col) ss >> Map::map[row*numCols + col];
  
   infile.close();
 }
@@ -50,30 +48,30 @@ void Map::createGrid(int resolution)
 {
   //cluster cells into grid
   int clustersize = (int)((double)(100/resolution));
-  Map::numgridrows = numrows/clustersize;
-  Map::numgridcols = numcols/clustersize;
+  Map::numGridRows = numRows/clustersize;
+  Map::numGridCols = numCols/clustersize;
   int gridrow = 0, gridcol = 0;
   
   //get the size of the array and initialize to 0
   
-  Map::grid.reserve(numgridrows*numgridcols);
+  Map::grid.reserve(numGridRows*numGridCols);
   
-  for (gridrow = 0; gridrow < numgridrows; ++gridrow)
+  for (gridrow = 0; gridrow < numGridRows; ++gridrow)
   {
-    for (gridcol = 0; gridcol < numgridcols; ++gridcol)
+    for (gridcol = 0; gridcol < numGridCols; ++gridcol)
     {
-      grid[gridrow*numgridcols + gridcol] = 0;
+      grid[gridrow*numGridCols + gridcol] = 0;
     }
   }
   
   
   //set 1 in the grid cells corrisponding to obstacles
   
-  for(int row = 0; row < numrows; ++row)
+  for(int row = 0; row < numRows; ++row)
   {
-    for(int col = 0; col < numcols; ++col)
+    for(int col = 0; col < numCols; ++col)
     {
-      if(map[row*numcols + col] == 0) grid[(int)((float)row/clustersize)*numgridcols + (int)((float)col/clustersize)] = 1;
+      if(map[row*numCols + col] == 0) grid[(int)((float)row/clustersize)*numGridCols + (int)((float)col/clustersize)] = 1;
     }
   }
 }
@@ -232,7 +230,7 @@ void Map::setGridValue(int value, int i, int j)
 {
   if(value == 0 || value == 1 || value == 2)
   {
-  grid[i*numgridcols + j] = value;
+  grid[i*numGridCols + j] = value;
   }
 }
 
@@ -247,33 +245,33 @@ void Map::addEdgePoint(int x, int y)
 
 int Map::getGridValue(int i, int j)
 {
-  return grid[i*numgridcols + j];
+  return grid[i*numGridCols + j];
 }
 
 int Map::getMapValue(int i, int j)
 {
-  return map[i*numcols + j];
+  return map[i*numCols + j];
 }
 
 
 int Map::getNumGridCols()
 {
-  return numgridcols;
+  return numGridCols;
 }
 
 int Map::getNumGridRows()
 {
-  return numgridrows;
+  return numGridRows;
 }
 
 int Map::getNumCols()
 {
-  return numcols;
+  return numCols;
 }
 
 int Map::getNumRows()
 {
-  return numrows;
+  return numRows;
 }
 
 
