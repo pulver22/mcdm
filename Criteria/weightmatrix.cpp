@@ -233,8 +233,8 @@ list<string> WeightMatrix::getKnownCriteria() const
 {
     list<string> toRet;
     mutex->lock();
-    for (int i=0; i < mapping->size(); i++){
-	toRet.emplace_back(mapping->at(i));
+    for(unordered_map<string,string>::iterator it = mapping->begin(); it != mapping->end(); it++){
+	toRet.emplace_back((*it).first);
     }
     mutex->unlock();
     return toRet;

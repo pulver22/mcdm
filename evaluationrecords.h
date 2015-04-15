@@ -11,7 +11,7 @@ using namespace std;
     * Data structure that contains, for each frontier, the utility
     * for the robot to reach the frontier.
     */
-class EvaluationRecords : public Data::Serializable
+class EvaluationRecords 
 {
 public:
     /**

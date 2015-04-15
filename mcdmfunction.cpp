@@ -10,6 +10,7 @@
 #include <iostream>
 
 
+
 /* create a list of criteria with name and <encoded_name,weight> pair after reading that from a file
  */
 MCDMFunction::MCDMFunction() :
@@ -29,7 +30,7 @@ MCDMFunction::MCDMFunction() :
     list<string> list1 (INFORMATION_GAIN,TRAVEL_DISTANCE);
     list<string> list2 (INFORMATION_GAIN,SENSING_TIME);
     list<string> list3 (SENSING_TIME,TRAVEL_DISTANCE);
-   list<string> list4 (SENSING_TIME,TRAVEL_DISTANCE,INFORMATION_GAIN);
+    list<string> list4 (SENSING_TIME,TRAVEL_DISTANCE,INFORMATION_GAIN);
     matrix.insertCombinationWeight(list1,0.8);
     matrix.insertCombinationWeight(list2,0.6);
     matrix.insertCombinationWeight(list3,0.6);
@@ -37,9 +38,8 @@ MCDMFunction::MCDMFunction() :
 
     // get the list of all criteria to be considered
     list<string> listCriteria = matrix.getKnownCriteria();
-    list< string >::iterator l_front = listCriteria.begin();
-    for (l_front; l_front != listCriteria.end(); ++l_front){
-	string name = *l_front;
+    for (list< string >::iterator it = listCriteria.begin(); it != listCriteria.end(); ++it){
+	string name = *it;
 	// retrieve the weight of the criterion using the encoded version of the name
 	double weight = matrix.getWeight(matrix.getNameEncoding(name));
 	Criterion *c = createCriterion(name, weight);
@@ -202,5 +202,19 @@ EvaluationRecords* MCDMFunction::evaluateFrontiers(const std::list< Pose* >& fro
     return toRet;
 }
 
+Pose MCDMFunction::selectNewPose(const EvaluationRecords &evaluationRecords)
+{
+    pair <Pose,double> newTarget;
+    unordered_map<Pose,double> evaluation = evaluationRecords.getEvaluations();
+    for(unordered_map<Pose,double>::iterator it = evaluation.begin(); it != evaluation.end(); it++){
+	if(newTarget.second == NULL){
+	    newTarget = *it ;
+	}else if(newTarget.second < (*it).second){
+		newTarget = *it;
+	    } else continue;
+    }
+    
+    return newTarget.first;
+}
 
 
