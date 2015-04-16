@@ -299,6 +299,9 @@ int Map::getNumRows()
   return numRows;
 }
 
-
+int import_map::Map::getGridValue(int i)
+{
+  return Map::grid.at(i);
+}
 
 }

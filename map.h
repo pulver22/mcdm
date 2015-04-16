@@ -1,3 +1,6 @@
+#ifndef MAP_H
+#define MAP_H
+
 #include <fstream> // ifstream
 #include <sstream> // stringstream
 #include <vector>
@@ -15,6 +18,7 @@ public:
  // ~Map();					//destructor
   void setGridValue(int value, int i, int j);	//setter for value in position ij of the grid
   int getGridValue(int i, int j);		//getter for value in position ij of the grid
+  int getGridValue(int i);			//getter for value in position i of the grid vector
   int getMapValue(int i, int j);		//getter for value in position ij of the map
   int getNumGridRows();
   int getNumGridCols();
@@ -40,3 +44,5 @@ private:
   
 };
 }
+
+#endif
