@@ -16,67 +16,83 @@
  */
 
 #include "graphpose.h"
+#include <iostream>
+
 using namespace std;
 
-graphPose::graphPose():
-    graph(new vector<vector<Pose,Edge>>())
+GraphPose::GraphPose()
 {
 }
 
-graphPose::~graphPose()
+GraphPose::~GraphPose()
 {
 
 }
 
-void graphPose::addPose(Pose& p,Pose &currentPose)
+void GraphPose::addPose(Pose &p,Pose &currentPose)
 {
+    
     Edge newEdge;
     newEdge.destination = p;
     newEdge.weight = currentPose.getDistance(p);
-    // search in the graph the actual position of the robot and add the selected pose to its neighbors
-    for(int i = 0; i != graph.size(); i++){
-	if(graph[i][0].first == currentPose){
-	    std::pair<Pose,Edge> pair(currentPose,newEdge);
-	    graph[i].push_back(pair);
-	}
+    
+    Edge fakeEdge;
+    fakeEdge.destination = currentPose;
+    fakeEdge.weight = 0;
+   
+    // first pose of the tour
+    if(graph2.size() == 0){
+	string key = getEncodedKey(currentPose);
+	std::list<Edge> list;
+	list.push_back(fakeEdge);
+	graph2.emplace(key,list);
+	//cout << "inserimento della prima posizione effettuato" << endl;
+	//int size = graph2->size();
+	//cout << size << endl;
     }
-    // Add the new reached pose at the end of the graph
-    pair<Pose,Edge> newPair (p, NULL);
-    graph.push_back(newPair);
+    
+    
+    // add the new pose at the end of the graph
+    string key2 = getEncodedKey(p);
+    Edge fakeEdge2;
+    fakeEdge2.destination =p;
+    fakeEdge2.weight = 0;
+    std::list<Edge> list;
+    list.push_back(fakeEdge2);
+    graph2.emplace(key2,list);
+    //cout << "inserimento di una nuova posizione effettuato" << endl;
+    
+    
+   
+    // add the new position to actual one's neighbors
+    string key = getEncodedKey(currentPose);
+    if (graph2.find(key) != graph2.end()) {
+	(graph2.at(key)).push_back(newEdge);
+    }
+  
+    
 }
 
-void graphPose::removePose(Pose& p)
+list< Edge >  GraphPose::getKnownDestination(Pose &p)
 {
-    vector<vector<pair<Pose,Edge>>> :: iterator it ;
-    
-    //delete a pose from the graph
-    for ( it = graph.begin(); it != graph.end(); it++){
-	if((*it).at(0).first == p){
-	graph[it].erase();
-	}
+    string key = getEncodedKey(p);
+    list < Edge > toRet ;
+    if (graph2.find(key) != graph2.end()) {
+	return toRet = graph2.at(key);
     }
-    
-    //delete a pose from other poses in which appears as neighbor
-    //scan the external vector
-    for(int i = 0; i != graph.size(); i++){
-	//scan each inner vector
-	for (int j = 0; j < graph[i].size() ; j++){
-	    if(graph[i][j].first ==p){
-		graph[i].erase(j);
-	    }
-	}
-    }
-    
 }
-
-
-vector< pair< Pose, graphPose::Edge > > graphPose::getKnownDestination(Pose& p)
+    
+std::unordered_map< string,list < Edge > > GraphPose::getGraph()
 {
-    for (int i = 0; i != graph.size(); i++){
-	if(graph[i][0].first == p){
-	return graph[i];
-	}
-    }
+   return graph2;
 }
+
+string GraphPose::getEncodedKey(Pose& p)
+{
+    string key =  to_string(p.getX()) + "/" + to_string( p.getY()) + "/" + to_string( (int)p.getOrientation());
+    return key;
+}
+
+
 
 

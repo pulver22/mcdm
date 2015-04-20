@@ -1,7 +1,15 @@
 cmake_minimum_required(VERSION 2.6)
 project(mcdm_online_exploration_ros)
 
-add_executable(mcdm_online_exploration_ros main.cpp ) 
-# target_link_libraries(exec -lboost_unit_test_framework)
+include_directories( . )
+
+add_library(lib pose.cpp pose.h graphpose.cpp graphpose.h edge.h)
+
+add_executable(mcdm_online_exploration_ros test/test_graphpose.cpp ) 
+target_link_libraries(mcdm_online_exploration_ros lib  -lboost_unit_test_framework)
 
 install(TARGETS mcdm_online_exploration_ros RUNTIME DESTINATION bin)
+add_subdirectory(test)
+
+#c++11
+list( APPEND CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS} -g -ftest-coverage -fprofile-arcs")

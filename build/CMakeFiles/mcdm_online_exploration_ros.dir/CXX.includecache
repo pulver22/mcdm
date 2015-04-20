@@ -6,7 +6,33 @@
 
 #IncludeRegexTransform: 
 
-/home/pulver/projects/mcdm_online_exploration_ros/main.cpp
+.././edge.h
+pose.h
+.././pose.h
+
+.././graphpose.h
+pose.h
+.././pose.h
+vector
+-
+utility
+-
+edge.h
+.././edge.h
+unordered_map
+-
+list
+-
+
+.././pose.h
+
+/home/pulver/projects/mcdm_online_exploration_ros/test/test_graphpose.cpp
+boost/test/unit_test.hpp
+-
+graphpose.h
+/home/pulver/projects/mcdm_online_exploration_ros/test/graphpose.h
+cmath
+-
 iostream
 -
 

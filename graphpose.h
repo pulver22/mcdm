@@ -20,32 +20,35 @@
 #include "pose.h"
 #include <vector>
 #include <utility>
+#include "edge.h"
+#include <unordered_map>
+#include <list>
+
 
 using namespace std;
 
-class graphPose
+class GraphPose
 {
+   
     
-struct Edge
-{
-    Pose destination;
-    double weight;
-};
-
 public:
-    graphPose();
-    ~graphPose();
-    //add the p pose in the graph of known pose as new state but also as reachable from a know position
+    GraphPose();
+    ~GraphPose();
+    //add the p pose in the graph of known pose as new state but also as reachable from a know position.
+    // ATTENTION: the first element of the list containing the reachable state from a pose is occupied by a "fake" edge that connects the pose to itself with a zero weight
     void addPose(Pose &p, Pose &currentPose);
     //remove one pose from the graph
     void removePose(Pose &p);
-    //return the vector contening the pose (and the travel cost express as distance) reachable from the one passed as variable
-    std::vector< std::pair< Pose,Edge > > getKnownDestination(Pose& p);
+    //return the vector contening the pose (and the travel cost express as distance) reachable from the one passed as variable 
+   list<Edge >  getKnownDestination(Pose &p);
+   unordered_map<string,list<Edge> >  getGraph();
+   string getEncodedKey(Pose &p);
     
-private:
+protected:
   Edge edge;
-  vector<vector<pair<Pose,Edge>>> graph;
-
+  unordered_map<string,list<Edge>>  graph2; 
+ 
+ 
     
 };
 

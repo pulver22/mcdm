@@ -28,10 +28,10 @@ public:
   void addEdgePoint(int x, int y);
   std::vector<int> getMap();
   std::vector<int> getGrid();
-  std::vector<vector<int>> getMap2D();
+  std::vector<vector<int> > getMap2D();
   
   
-private:
+protected:
   std::vector<int> map;				//vector containing the original map as binary matrix (0 -> free, 1 -> obstacle)
   std::vector<int> grid;			//vector containing the map as grid of cells sized 1 square metre
   void createMap(std::ifstream& infile);
@@ -40,7 +40,7 @@ private:
   int numGridCols;
   int numRows;
   int numCols;
-  std::vector<std::pair<int, int>> edgePoints;
+  std::vector<std::pair<int, int> > edgePoints;
   
 };
 }

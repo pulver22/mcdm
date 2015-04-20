@@ -140,6 +140,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named lib
+
+# Build rule for target.
+lib: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 lib
+.PHONY : lib
+
+# fast build rule for target.
+lib/fast:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/build
+.PHONY : lib/fast
+
+#=============================================================================
 # Target rules for targets named mcdm_online_exploration_ros
 
 # Build rule for target.
@@ -152,29 +165,77 @@ mcdm_online_exploration_ros/fast:
 	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/build
 .PHONY : mcdm_online_exploration_ros/fast
 
-main.o: main.cpp.o
-.PHONY : main.o
+graphpose.o: graphpose.cpp.o
+.PHONY : graphpose.o
 
 # target to build an object file
-main.cpp.o:
-	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o
-.PHONY : main.cpp.o
+graphpose.cpp.o:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/graphpose.cpp.o
+.PHONY : graphpose.cpp.o
 
-main.i: main.cpp.i
-.PHONY : main.i
+graphpose.i: graphpose.cpp.i
+.PHONY : graphpose.i
 
 # target to preprocess a source file
-main.cpp.i:
-	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.i
-.PHONY : main.cpp.i
+graphpose.cpp.i:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/graphpose.cpp.i
+.PHONY : graphpose.cpp.i
 
-main.s: main.cpp.s
-.PHONY : main.s
+graphpose.s: graphpose.cpp.s
+.PHONY : graphpose.s
 
 # target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.s
-.PHONY : main.cpp.s
+graphpose.cpp.s:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/graphpose.cpp.s
+.PHONY : graphpose.cpp.s
+
+pose.o: pose.cpp.o
+.PHONY : pose.o
+
+# target to build an object file
+pose.cpp.o:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/pose.cpp.o
+.PHONY : pose.cpp.o
+
+pose.i: pose.cpp.i
+.PHONY : pose.i
+
+# target to preprocess a source file
+pose.cpp.i:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/pose.cpp.i
+.PHONY : pose.cpp.i
+
+pose.s: pose.cpp.s
+.PHONY : pose.s
+
+# target to generate assembly for a file
+pose.cpp.s:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/pose.cpp.s
+.PHONY : pose.cpp.s
+
+test/test_graphpose.o: test/test_graphpose.cpp.o
+.PHONY : test/test_graphpose.o
+
+# target to build an object file
+test/test_graphpose.cpp.o:
+	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/test/test_graphpose.cpp.o
+.PHONY : test/test_graphpose.cpp.o
+
+test/test_graphpose.i: test/test_graphpose.cpp.i
+.PHONY : test/test_graphpose.i
+
+# target to preprocess a source file
+test/test_graphpose.cpp.i:
+	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/test/test_graphpose.cpp.i
+.PHONY : test/test_graphpose.cpp.i
+
+test/test_graphpose.s: test/test_graphpose.cpp.s
+.PHONY : test/test_graphpose.s
+
+# target to generate assembly for a file
+test/test_graphpose.cpp.s:
+	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/test/test_graphpose.cpp.s
+.PHONY : test/test_graphpose.cpp.s
 
 # Help Target
 help:
@@ -186,12 +247,19 @@ help:
 	@echo "... install"
 	@echo "... install/local"
 	@echo "... install/strip"
+	@echo "... lib"
 	@echo "... list_install_components"
 	@echo "... mcdm_online_exploration_ros"
 	@echo "... rebuild_cache"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... graphpose.o"
+	@echo "... graphpose.i"
+	@echo "... graphpose.s"
+	@echo "... pose.o"
+	@echo "... pose.i"
+	@echo "... pose.s"
+	@echo "... test/test_graphpose.o"
+	@echo "... test/test_graphpose.i"
+	@echo "... test/test_graphpose.s"
 .PHONY : help
 
 

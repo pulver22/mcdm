@@ -3,23 +3,22 @@
 
 
   
-class Pose
+class Pose 
 {
 public:
   Pose();
   Pose(int aX, int aY, double aTheta, int r, double phi);
   virtual ~Pose();
-  
-  double getDistance(const Pose &pose); 
-  
+  double getDistance( Pose &pose);   
   int getX();
   int getY();
   double getOrientation();
   int getR();
   double getPhi();
+  bool isEqual(Pose &p);
   
   
-private:
+protected:
   int aX, aY;		// x and y coordinates of the cell
   double aTheta;	// orientation theta of th robot
   int r;		// radius of the sensing operation 
@@ -28,3 +27,4 @@ private:
   
 };
  
+#endif

@@ -251,8 +251,8 @@ std::vector<int> getGrid(){
     return Map::grid;
 }
   
-std::vector<vector<int>> Map::getMap2D(){
-    vector<vector<int>> map2D;
+std::vector<vector<int> > Map::getMap2D(){
+    vector<vector<int> > map2D;
     
     for (int gridRow = 0; gridRow < numGridRows; ++gridRow)
   {

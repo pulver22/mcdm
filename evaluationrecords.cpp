@@ -5,13 +5,13 @@
 
 
 EvaluationRecords::EvaluationRecords() :
-    evaluations(new unordered_map<Frontier, double>())
+    evaluations(new unordered_map<Pose, double>())
 {
 
 }
 
 EvaluationRecords::EvaluationRecords() :
-    evaluations(new unordered_map<Frontier, double>())
+    evaluations(new unordered_map<Pose, double>())
 {
 
 }
@@ -38,12 +38,12 @@ void EvaluationRecords::putEvaluation(Pose frontier, double value)
 
 }
 
-double EvaluationRecords::getEvaluation(Frontier frontier)
+double EvaluationRecords::getEvaluation(Pose frontier)
 {
     return evaluations[frontier];
 }
 
-bool EvaluationRecords::contains(Frontier frontier)
+bool EvaluationRecords::contains(Pose frontier)
 {
     unordered_map<Pose,double>::const_iterator got = evaluations->find(frontier);
     if (got == evaluations->end()){
