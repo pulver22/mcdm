@@ -5,7 +5,7 @@
 
 # define PI           3.14159265358979323846  /* pi */
 
-void Ray::findCandidatePositions(import_map::Map map, int posX, int posY, int orientation, double FOV, int range)
+void Ray::findCandidatePositions(const import_map::Map &map, int posX, int posY, int orientation, double FOV, int range)
 {
   Ray::posX = posX;
   Ray::posY = posY;
@@ -91,18 +91,18 @@ vector< int > Ray::getCandidatePositions()
   return Ray::edgePoints;
 }
 
-void Ray::setGrid(import_map::Map map)
+void Ray::setGrid(const import_map::Map &map)
 {
   Ray::numGridCols = map.getNumGridCols();
   Ray::numGridRows = map.getNumGridRows();
   
-  for (int i = 0; i < grid.size(); ++i)
+  for (int i = 0; i < map.grid.size(); ++i)
   {
     Ray::grid.push_back(map.getGridValue(i));
   }
 }
 
-int Ray::getInformationGain(import_map::Map map, int posX, int posY, int orientation, double FOV, int range)
+int Ray::getInformationGain(const import_map::Map &map, int posX, int posY, int orientation, double FOV, int range)
 {
   setGrid(map);
   Ray::posX = posX;

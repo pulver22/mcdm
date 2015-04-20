@@ -13,10 +13,10 @@ public:
   
   Ray();
   ~Ray();
-  void findCandidatePositions(import_map::Map map, int posX, int posY, int orientation, double FOV, int range);
+  void findCandidatePositions(const import_map::Map &map, int posX, int posY, int orientation, double FOV, int range);
   std::vector<int> getCandidatePositions();
-  void setGrid(const std::vector<int> grid);
-  int getInformationGain(import_map::Map map, int posX, int posY, int orientation, double FOV, int range);
+  void setGrid(const import_map::Map &map);
+  int getInformationGain(const import_map::Map &map, int posX, int posY, int orientation, double FOV, int range);
   
 private:
   double mapX, mapY;			//coordinates in the map
