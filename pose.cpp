@@ -1,23 +1,20 @@
 #include "pose.h"
 #include <cmath>
 
-using namespace std;
-Pose::Pose():
-  aX(0),
-  aY(0),
-  aTheta(0),
-  r(0),
-  phi(0) 
-   {
+namespace dummy{
+
+Pose::Pose(int aX, int aY, int orientation, int range, double FOV)
+{
+  Pose::aX = aX;
+  Pose::aY = aY;
+  Pose::orientation = orientation;
+  Pose::range = range;
+  Pose::FOV = FOV;
 }
 
-Pose::Pose(int aX, int aY, double aTheta, int r, double phi):
-    aX(aX), 
-    aY(aY), 
-    aTheta(aTheta), 
-    r(r),
-    phi(phi)
+Pose::Pose()
 {
+  
 }
 
 
@@ -28,7 +25,7 @@ Pose::~Pose()
 
 double Pose::getDistance( Pose& pose)
 {
-  return sqrt((aX - pose.getX())*(aX - pose.getX()) + (aY - pose.getY())*(aY - pose.getY()));
+  return std::sqrt((aX - pose.getX())*(aX - pose.getX()) + (aY - pose.getY())*(aY - pose.getY()));
 }
 
 int Pose::getX()
@@ -41,40 +38,42 @@ int Pose::getY()
   return aY;
 }
 
-double Pose::getOrientation()
+int Pose::getOrientation()
 {
-  return aTheta;
+  return orientation;
 }
 
-int Pose::getR()
+int Pose::getRange()
 {
-  return r;
+  return range;
 }
 
-double Pose::getPhi()
+double Pose::getFOV()
 {
-  return phi;
+  return FOV;
 }
 
 bool Pose::isEqual(Pose& p)
 {
-    if(aX == p.getX() & aY == p.getY() & aTheta == p.getOrientation() & phi == p.getPhi() & r == p.getR()){
+    if(aX == p.getX() & aY == p.getY() & orientation == p.getOrientation() & FOV == p.getFOV() & range == p.getRange()){
 	return true;
     } else return false;
+	
     
+
 }
 
-
-void Pose::operator=(Pose& other)
+int Pose::getInformationGain()
 {
-    aX = other.getX();
-    aY = other.getY();
-    r = other.getR();
-    aTheta = other.getOrientation();
-    phi = other.getPhi();
+  return informationGain;
+}
+
+void Pose::setInformationGain(int value)
+{
+  Pose::informationGain = value;
 }
 
 
-
+}
 
 

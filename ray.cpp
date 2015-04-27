@@ -5,19 +5,23 @@
 
 # define PI           3.14159265358979323846  /* pi */
 
-void Ray::findCandidatePositions(const import_map::Map &map, int posX, int posY, int orientation, double FOV, int range)
+namespace dummy{
+  
+Ray::Ray()
 {
-  Ray::posX = posX;
-  Ray::posY = posY;
-  Ray::orientation = orientation;
-  Ray::FOV = FOV;
-  Ray::range = range;
+
+}
+
+
+void Ray::findCandidatePositions(dummy::Map *map, int posX, int posY, int orientation, double FOV, int range)
+{
   
-  
-  for(double phi = (PI/2 - FOV/2); phi < (PI/2 + FOV/2); phi += (FOV/32))		//range through the circular sector
+  for(double phi = (PI/2 - FOV/2); phi < (PI/2 + FOV/2); phi += (FOV/64))		//range through the circular sector
   {
     int hit = 0;			//set to 1 when obstacle is hit by ray
-    int u = 0;				//current distance of the ray
+    double u = 0;				//current distance of the ray
+    mapX = posX;
+    mapY = posY;
     double tempX, tempY;
     while(hit == 0 && u < range)	//scan the map along the ray until obstacle is found or end of range
     {
@@ -29,27 +33,29 @@ void Ray::findCandidatePositions(const import_map::Map &map, int posX, int posY,
       
       if(orientation == 0)
       {
-      mapY = posY + u*sin(phi);
-      mapX = posX + u*cos(phi);
+      mapY = posY + 0.5 +  u*sin(phi);
+      mapX = posX + 0.5 + u*cos(phi);
       }
       
       if(orientation == 90)
       {
-      mapY = posY + u*cos(phi);
-      mapX = posX - u*sin(phi);
+      mapY = posY + 0.5 + u*cos(phi);
+      mapX = posX + 0.5 - u*sin(phi);
       }
       
       if(orientation == 180)
       {
-      mapY = posY - u*sin(phi);
-      mapX = posX - u*cos(phi);
+      mapY = posY + 0.5 - u*sin(phi);
+      mapX = posX + 0.5 - u*cos(phi);
       }
       
       if(orientation == 270)
       {
-      mapY = posY - u*cos(phi);
-      mapX = posX + u*sin(phi);
+      mapY = posY + 0.5 - u*cos(phi);
+      mapX = posX + 0.5 + u*sin(phi);
       }
+      
+      if(mapX < 0 || mapX > numGridRows || mapY < 0 || mapY > numGridCols) hit = 1;
       
       //rounding of the cell indexes	TO BE REFINED
       
@@ -65,7 +71,7 @@ void Ray::findCandidatePositions(const import_map::Map &map, int posX, int posY,
       
       //std::cout << mapY << " " << mapX << std::endl;
       
-      if((map.getGridValue((int)mapX,(int)mapY) != 2) || (u + 1 == range && map.getGridValue((int)mapX,(int)mapY) == 2 )) 
+      if((map->getGridValue((int)mapX,(int)mapY) != 2) || (u + 1 == range && map->getGridValue((int)mapX,(int)mapY) == 2 )) 
       {
 	hit = 1;
 	int newposition = 1;
@@ -81,42 +87,55 @@ void Ray::findCandidatePositions(const import_map::Map &map, int posX, int posY,
 	  Ray::edgePoints.push_back(temp);
 	}
       }
-      ++u;
+      u += 0.5;
     }
   }
 }
 
-vector< int > Ray::getCandidatePositions()
+vector< std::pair<int, int> > Ray::getCandidatePositions()
 {
   return Ray::edgePoints;
 }
 
-void Ray::setGrid(const import_map::Map &map)
+void Ray::empyCandidatePositions()
 {
-  Ray::numGridCols = map.getNumGridCols();
-  Ray::numGridRows = map.getNumGridRows();
-  
-  for (int i = 0; i < map.grid.size(); ++i)
+  while(edgePoints.size() > 0)
   {
-    Ray::grid.push_back(map.getGridValue(i));
+    edgePoints.pop_back();
   }
 }
 
-int Ray::getInformationGain(const import_map::Map &map, int posX, int posY, int orientation, double FOV, int range)
+
+void Ray::setGrid(const dummy::Map* map)
 {
+  
+  while(grid.size() > 0)
+  {
+    grid.pop_back();
+  }
+  
+  Ray::numGridCols = map->getNumGridCols();
+  Ray::numGridRows = map->getNumGridRows();
+  
+  
+  for (int i = 0; i < numGridCols*numGridRows; ++i)
+  {
+    Ray::grid.push_back(map->getGridValue(i));
+  }
+}
+
+int Ray::getInformationGain(const dummy::Map* map, int posX, int posY, int orientation, double FOV, int range)
+{
+  
   setGrid(map);
-  Ray::posX = posX;
-  Ray::posY = posY;
-  Ray::orientation = orientation;
-  Ray::FOV = FOV;
-  Ray::range = range;
+  
   
   int counter = 0;			//count free cells that can be scanned
   
-  for(double phi = (PI/2 - FOV/2); phi < (PI/2 + FOV/2); phi += (FOV/32))		//range through the circular sector
+  for(double phi = (PI/2 - FOV/2); phi < (PI/2 + FOV/2); phi += (FOV/64))		//range through the circular sector
   {
     int hit = 0;			//set to 1 when obstacle is hit by ray
-    int u = 0;				//current distance of the ray
+    double u = 0;				//current distance of the ray
     while(hit == 0 && u < range)	//scan the map along the ray until obstacle is found or end of range
     {
       
@@ -124,48 +143,55 @@ int Ray::getInformationGain(const import_map::Map &map, int posX, int posY, int 
       
       if(orientation == 0)
       {
-      mapY = posY + u*sin(phi);
-      mapX = posX + u*cos(phi);
+      mapY = posY + 0.5 + u*sin(phi);
+      mapX = posX + 0.5 + u*cos(phi);
       }
       
       if(orientation == 90)
       {
-      mapY = posY + u*cos(phi);
-      mapX = posX - u*sin(phi);
+      mapY = posY + 0.5 + u*cos(phi);
+      mapX = posX + 0.5 - u*sin(phi);
       }
       
       if(orientation == 180)
       {
-      mapY = posY - u*sin(phi);
-      mapX = posX - u*cos(phi);
+      mapY = posY + 0.5 - u*sin(phi);
+      mapX = posX + 0.5 - u*cos(phi);
       }
       
       if(orientation == 270)
       {
-      mapY = posY - u*cos(phi);
-      mapX = posX + u*sin(phi);
+      mapY = posY + 0.5 - u*cos(phi);
+      mapX = posX + 0.5 + u*sin(phi);
       }
       
+      if(mapX < 0 || mapX > numGridRows || mapY < 0 || mapY > numGridCols)hit = 1;
+            
       //rounding of the cell indexes
       
-      if (mapY > 0) mapY += 0.5;
-      else mapY -= 0.5;
-	
-      if (mapX > 0) mapX += 0.5;
-      else mapX -= 0.5;
+      double decimalY;
+      double decimalX;
       
-      std::cout << mapY << " " << mapX << std::endl;
+      decimalY = mapY - (int)mapY;
+      decimalX = mapX - (int)mapX;
       
-      if(Ray::grid.at > 0) hit = 1;		//hit set to 1 if an obstacle is found
+      //std::cout << mapY << " " << mapX << std::endl;
+      
+      if(Ray::getGridValue((int)mapX, (int)mapY) == 1) hit = 1;		//hit set to 1 if an obstacle is found
+      
+      if(decimalY > 0.3 && decimalY < 0.7 && decimalX > 0.3 && decimalX < 0.7)
+      {
       if(Ray::getGridValue((int)mapX, (int)mapY) == 0)			//free cell found
       {
 	Ray::setGridValue((int)mapX, (int)mapY, -1);			//set the cell to -1 so it won't be counted again in the future
 	counter++;						//increase the count of free cells
       }
-      ++u;							//move forward with the ray
+      }
+      u += 0.5;							//move forward with the ray
     }
-    return counter;
   }
+  
+  return counter;
 }
   
 
@@ -182,5 +208,84 @@ int Ray::getGridValue(int i, int j)
   return Ray::grid[i*numGridCols + j];
 }
 
+}
 
+
+void dummy::Ray::performSensingOperation(dummy::Map *map, int posX, int posY, int orientation, double FOV, int range)
+{
+  
+  for(double phi = (PI/2 - FOV/2); phi < (PI/2 + FOV/2); phi += (FOV/64))		//range through the circular sector
+  {
+    int hit = 0;			//set to 1 when obstacle is hit by ray
+    double u = 0;				//current distance of the ray
+    while(hit == 0 && u < range)	//scan the map along the ray until obstacle is found or end of range
+    {
+      
+      
+      //drives the ray according to orientation    X and Y are inverted in the formula in order to consider the euclidian space, not the array i(x) and j(y) indexes
+      
+      if(orientation == 0)
+      {
+      mapY = posY + 0.5 + u*sin(phi);
+      mapX = posX + 0.5 + u*cos(phi);
+      }
+      
+      if(orientation == 90)
+      {
+      mapY = posY + 0.5 + u*cos(phi);
+      mapX = posX + 0.5 - u*sin(phi);
+      }
+      
+      if(orientation == 180)
+      {
+      mapY = posY + 0.5 - u*sin(phi);
+      mapX = posX + 0.5 - u*cos(phi);
+      }
+      
+      if(orientation == 270)
+      {
+      mapY = posY + 0.5 - u*cos(phi);
+      mapX = posX + 0.5 + u*sin(phi);
+      }
+      
+      if(mapX < 0 || mapX > numGridRows || mapY < 0 || mapY > numGridCols) hit = 1;
+      
+      //rounding of the cell indexes
+      
+      /*
+      if (mapY > 0) mapY += 0.5;
+      else mapY -= 0.5;
+	
+      if (mapX > 0) mapX += 0.5;
+      else mapX -= 0.5;
+      
+      */
+      
+      double decimalY;
+      double decimalX;
+      
+      decimalY = mapY - (int)mapY;
+      decimalX = mapX - (int)mapX;
+      
+      
+      //std::cout << phi << " " << u << " " << hit << " " << mapY << " " << mapX << std::endl;
+      
+      if(map->getGridValue((int)mapX,(int)mapY) == 1) hit = 1;		//hit set to 1 if an obstacle is found
+      
+      if(decimalY > 0.3 && decimalY < 0.7 && decimalX > 0.3 && decimalX < 0.7)
+      {
+      
+      if(map->getGridValue((int)mapX,(int)mapY) == 0)			//free cell found
+      {
+	map->setGridValue(2, (int)mapX, (int)mapY);
+	//std::cout << mapY << " " << mapX << std::endl;
+      }
+      }
+      u += 0.5;							//move forward with the ray
+    }
+    //std::cout << counter << std::endl;
+
+  }
+
+}
 

@@ -1,14 +1,20 @@
 #include <map.h>
-#include <utility>
 using namespace std;
 
-namespace import_map{
+namespace dummy{
   
 Map::Map(std::ifstream& infile, int resolution)
 {
   Map::createMap(infile);
   Map::createGrid(resolution);
 }
+
+Map::Map()
+{
+  
+}
+
+
 
 // create a monodimensional vector containing the map 
 void Map::createMap(std::ifstream& infile)
@@ -54,7 +60,6 @@ void Map::createGrid(int resolution)
   Map::numGridRows = numRows/clusterSize;
   Map::numGridCols = numCols/clusterSize;
   int gridRow = 0, gridCol = 0;
-  totalFreeCells = numGridCols * numGridRows;
   
   //get the size of the array and initialize to 0
   
@@ -72,15 +77,13 @@ void Map::createGrid(int resolution)
   //set 1 in the grid cells corrisponding to obstacles
   
   for(int row = 0; row < numRows; ++row)
+  {
+    for(int col = 0; col < numCols; ++col)
     {
-	for(int col = 0; col < numCols; ++col)
-	{
-	    if(map[row*numCols + col] == 0) {
-		grid[(int)((float)row/clusterSize)*numGridCols + (int)((float)col/clusterSize)] = 1;
-		totalFreeCells --;
-	    }
-	}
+      if(map[row*numCols + col] == 0) grid[(int)((float)row/clusterSize)*numGridCols + (int)((float)col/clusterSize)] = 1;
     }
+  }
+}
 
 
 
@@ -240,22 +243,12 @@ void Map::setGridValue(int value, int i, int j)
   }
 }
 
-/*
+
 void Map::addEdgePoint(int x, int y)
 {
-    pair <int,int> foo;
-    foo = make_pair (x,y);
-    edgePoints.push_back(pair);
-}*/
-
-std::vector<int> Map::getMap(){
-    return map;
-    
+  edgePoints.push_back(std::make_pair<int, int>(x, y));
 }
 
-std::vector<int> Map::getGrid(){
-    return Map::grid;
-}
   
 std::vector<vector<int> > Map::getMap2D(){
     vector<vector<int> > map2D;
@@ -274,7 +267,7 @@ std::vector<vector<int> > Map::getMap2D(){
 
 //various getters
 
-int Map::getGridValue(int i, int j)
+int Map::getGridValue(int i, int j) const
 {
   return grid[i*numGridCols + j];
 }
@@ -285,12 +278,12 @@ int Map::getMapValue(int i, int j)
 }
 
 
-int Map::getNumGridCols()
+int Map::getNumGridCols() const
 {
   return numGridCols;
 }
 
-int Map::getNumGridRows()
+int Map::getNumGridRows() const
 {
   return numGridRows;
 }
@@ -305,28 +298,9 @@ int Map::getNumRows()
   return numRows;
 }
 
-int import_map::Map::getGridValue(int i)
+int dummy::Map::getGridValue(int i) const
 {
-  return Map::grid.at(i);
+  return Map::grid[i];
 }
 
 }
-
-Pose import_map::Map::getRobotPosition()
-{
-    int x,y,r;
-    double orientation,angle;
-    x = rand() % 100;
-    y = rand() % 100;
-    r = rand() % 10;
-    orientation = 270;
-    angle = 45;
-    Pose p = Pose(x,y,orientation,r,angle);
-    return p;
-}
-
-int import_map::Map::getTotalFreeCells()
-{
-    return totalFreeCells;
-}
-

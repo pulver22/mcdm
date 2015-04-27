@@ -5,6 +5,7 @@
 #include "math.h"
 #include "map.h"
 
+namespace dummy{
 
 class Ray
 {
@@ -12,11 +13,14 @@ class Ray
 public:
   
   Ray();
-  ~Ray();
-  void findCandidatePositions(const import_map::Map &map, int posX, int posY, int orientation, double FOV, int range);
-  std::vector<int> getCandidatePositions();
-  void setGrid(const import_map::Map &map);
-  int getInformationGain(const import_map::Map &map, int posX, int posY, int orientation, double FOV, int range);
+  //~Ray();
+  void findCandidatePositions(dummy::Map *map, int posX, int posY, int orientation, double FOV, int range);
+  std::vector<std::pair<int, int> > getCandidatePositions();
+  void setGrid(const dummy::Map* map);
+  int getInformationGain(const dummy::Map* map, int posX, int posY, int orientation, double FOV, int range);
+  void performSensingOperation(dummy::Map *map, int posX, int posY, int orientation, double FOV, int range);
+  int getGridValue(int i, int j);
+  void empyCandidatePositions();
   
 private:
   double mapX, mapY;			//coordinates in the map
@@ -26,10 +30,10 @@ private:
   int range;			//range of the scanner
   std::vector<std::pair<int, int> > edgePoints;
   std::vector<int> grid;
-  int getGridValue(int i, int j);
   void setGridValue(int i, int j, int value);
   int numGridCols;
   int numGridRows;
 };
 
+}
 #endif
