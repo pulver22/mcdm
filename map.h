@@ -6,6 +6,8 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <utility>
+#include "pose.h"
 using namespace std;
 namespace import_map{
 
@@ -24,6 +26,7 @@ public:
   int getNumGridCols();
   int getNumRows();
   int getNumCols();
+  Pose getRobotPosition();
   void findFreeEdges(int cX, int cY);
   void addEdgePoint(int x, int y);
   std::vector<int> getMap();

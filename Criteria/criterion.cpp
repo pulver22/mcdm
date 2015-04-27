@@ -16,6 +16,7 @@
  */
 
 #include "criterion.h"
+#include "evaluationrecords.h"
 
 
 Criterion::Criterion()
@@ -34,11 +35,14 @@ Criterion::~Criterion()
 
 }
 
-void Criterion::insertEvaluation(Pose &p, double value)
+void Criterion::insertEvaluation( Pose &p, double value)
 {
 //    if(evaluation.contains(point))
 //        lprint << "#repeated frontier!!!" << endl;
-    evaluation.insert(p, value);
+    EvaluationRecords record = EvaluationRecords();
+    string pose = record.getEncodedKey(p);
+    evaluation.emplace(pose, value);
+    
     if(value >= maxValue)
         maxValue = value;
     if(value <= minValue)
@@ -55,29 +59,29 @@ void Criterion::clean()
 
 void Criterion::normalize()
 {
-    if(highGood)
+   // if(highGood)
         normalizeHighGood();
-    else
-        normalizeLowGood();
+   // else
+    //    normalizeLowGood();
 }
 
 void Criterion::normalizeHighGood()
 {
-    unordered_map<const Pose *, double> temp;
-    for (auto& it : evaluation ){
-	pair p =  *it;
-       double value =p.second;
-       value = (value-minValue)/(maxValue-minValue);
-       temp.emplace(p.first, value);
+    unordered_map<string, double> temp;
+    for (unordered_map<string,double>::iterator it = evaluation.begin(); it != evaluation.end(); it++){
+	pair<string,double> p =  *it;
+	double value =p.second;
+        value = (value-minValue)/(maxValue-minValue);
+        temp.emplace(p.first, value);
    }
     evaluation = temp;
 }
 
 void Criterion::normalizeLowGood()
 {
-    unordered_map<const Pose *, double> temp;
-    for (auto& it : evaluation ){
-	pair p =  *it;
+    unordered_map<string, double> temp;
+    for (unordered_map<string,double>::iterator it = evaluation.begin(); it != evaluation.end(); it++){
+	pair<string,double> p =  *it;
         double value =p.second;
         value = (maxValue-value)/(maxValue-minValue);
         temp.emplace(p.first, value);
@@ -86,9 +90,12 @@ void Criterion::normalizeLowGood()
 }
 
 
-double Criterion::getEvaluation(Pose p) const
+double Criterion::getEvaluation(Pose &p) const
 {
-    return evaluation[p];
+    EvaluationRecords record = EvaluationRecords();
+    string pose = record.getEncodedKey(p);
+    double value = evaluation.at(pose);
+    return value;
 }
 
 
@@ -111,4 +118,7 @@ void Criterion::setWeight(double weight)
 {
     this->weight = weight;
 }
+
+
+
 

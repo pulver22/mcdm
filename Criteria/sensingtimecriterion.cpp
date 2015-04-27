@@ -31,7 +31,7 @@ SensingTimeCriterion::~SensingTimeCriterion()
 
 }
 
-double SensingTimeCriterion::SensingTimeCriterion::evaluate(Pose &p, Map &map)
+double SensingTimeCriterion::SensingTimeCriterion::evaluate(Pose p, import_map::Map &map)
 {
     double sensingTime;
     float phi = p.getPhi();
@@ -48,4 +48,10 @@ double SensingTimeCriterion::SensingTimeCriterion::evaluate(Pose &p, Map &map)
     }
     insertEvaluation(p,sensingTime);
 }
+
+void SensingTimeCriterion::insertEvaluation(Pose& p, double value)
+{
+    insertEvaluation(p,value);
+}
+
 

@@ -23,3 +23,5 @@ BOOST_AUTO_TEST_CASE( test_pose )
     cout << "check distance" << endl ;
     BOOST_CHECK_EQUAL(p.getDistance(p2),sqrt(2));
 }
+
+// EVERYTHING WORK LIKE A CHARM

@@ -165,6 +165,198 @@ mcdm_online_exploration_ros/fast:
 	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/build
 .PHONY : mcdm_online_exploration_ros/fast
 
+Criteria/criterion.o: Criteria/criterion.cpp.o
+.PHONY : Criteria/criterion.o
+
+# target to build an object file
+Criteria/criterion.cpp.o:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/Criteria/criterion.cpp.o
+.PHONY : Criteria/criterion.cpp.o
+
+Criteria/criterion.i: Criteria/criterion.cpp.i
+.PHONY : Criteria/criterion.i
+
+# target to preprocess a source file
+Criteria/criterion.cpp.i:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/Criteria/criterion.cpp.i
+.PHONY : Criteria/criterion.cpp.i
+
+Criteria/criterion.s: Criteria/criterion.cpp.s
+.PHONY : Criteria/criterion.s
+
+# target to generate assembly for a file
+Criteria/criterion.cpp.s:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/Criteria/criterion.cpp.s
+.PHONY : Criteria/criterion.cpp.s
+
+Criteria/criterioncomparator.o: Criteria/criterioncomparator.cpp.o
+.PHONY : Criteria/criterioncomparator.o
+
+# target to build an object file
+Criteria/criterioncomparator.cpp.o:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.o
+.PHONY : Criteria/criterioncomparator.cpp.o
+
+Criteria/criterioncomparator.i: Criteria/criterioncomparator.cpp.i
+.PHONY : Criteria/criterioncomparator.i
+
+# target to preprocess a source file
+Criteria/criterioncomparator.cpp.i:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.i
+.PHONY : Criteria/criterioncomparator.cpp.i
+
+Criteria/criterioncomparator.s: Criteria/criterioncomparator.cpp.s
+.PHONY : Criteria/criterioncomparator.s
+
+# target to generate assembly for a file
+Criteria/criterioncomparator.cpp.s:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.s
+.PHONY : Criteria/criterioncomparator.cpp.s
+
+Criteria/informationgaincriterion.o: Criteria/informationgaincriterion.cpp.o
+.PHONY : Criteria/informationgaincriterion.o
+
+# target to build an object file
+Criteria/informationgaincriterion.cpp.o:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o
+.PHONY : Criteria/informationgaincriterion.cpp.o
+
+Criteria/informationgaincriterion.i: Criteria/informationgaincriterion.cpp.i
+.PHONY : Criteria/informationgaincriterion.i
+
+# target to preprocess a source file
+Criteria/informationgaincriterion.cpp.i:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.i
+.PHONY : Criteria/informationgaincriterion.cpp.i
+
+Criteria/informationgaincriterion.s: Criteria/informationgaincriterion.cpp.s
+.PHONY : Criteria/informationgaincriterion.s
+
+# target to generate assembly for a file
+Criteria/informationgaincriterion.cpp.s:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.s
+.PHONY : Criteria/informationgaincriterion.cpp.s
+
+Criteria/mcdmweightreader.o: Criteria/mcdmweightreader.cpp.o
+.PHONY : Criteria/mcdmweightreader.o
+
+# target to build an object file
+Criteria/mcdmweightreader.cpp.o:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.o
+.PHONY : Criteria/mcdmweightreader.cpp.o
+
+Criteria/mcdmweightreader.i: Criteria/mcdmweightreader.cpp.i
+.PHONY : Criteria/mcdmweightreader.i
+
+# target to preprocess a source file
+Criteria/mcdmweightreader.cpp.i:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.i
+.PHONY : Criteria/mcdmweightreader.cpp.i
+
+Criteria/mcdmweightreader.s: Criteria/mcdmweightreader.cpp.s
+.PHONY : Criteria/mcdmweightreader.s
+
+# target to generate assembly for a file
+Criteria/mcdmweightreader.cpp.s:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.s
+.PHONY : Criteria/mcdmweightreader.cpp.s
+
+Criteria/sensingtimecriterion.o: Criteria/sensingtimecriterion.cpp.o
+.PHONY : Criteria/sensingtimecriterion.o
+
+# target to build an object file
+Criteria/sensingtimecriterion.cpp.o:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.o
+.PHONY : Criteria/sensingtimecriterion.cpp.o
+
+Criteria/sensingtimecriterion.i: Criteria/sensingtimecriterion.cpp.i
+.PHONY : Criteria/sensingtimecriterion.i
+
+# target to preprocess a source file
+Criteria/sensingtimecriterion.cpp.i:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.i
+.PHONY : Criteria/sensingtimecriterion.cpp.i
+
+Criteria/sensingtimecriterion.s: Criteria/sensingtimecriterion.cpp.s
+.PHONY : Criteria/sensingtimecriterion.s
+
+# target to generate assembly for a file
+Criteria/sensingtimecriterion.cpp.s:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.s
+.PHONY : Criteria/sensingtimecriterion.cpp.s
+
+Criteria/traveldistancecriterion.o: Criteria/traveldistancecriterion.cpp.o
+.PHONY : Criteria/traveldistancecriterion.o
+
+# target to build an object file
+Criteria/traveldistancecriterion.cpp.o:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.o
+.PHONY : Criteria/traveldistancecriterion.cpp.o
+
+Criteria/traveldistancecriterion.i: Criteria/traveldistancecriterion.cpp.i
+.PHONY : Criteria/traveldistancecriterion.i
+
+# target to preprocess a source file
+Criteria/traveldistancecriterion.cpp.i:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.i
+.PHONY : Criteria/traveldistancecriterion.cpp.i
+
+Criteria/traveldistancecriterion.s: Criteria/traveldistancecriterion.cpp.s
+.PHONY : Criteria/traveldistancecriterion.s
+
+# target to generate assembly for a file
+Criteria/traveldistancecriterion.cpp.s:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.s
+.PHONY : Criteria/traveldistancecriterion.cpp.s
+
+Criteria/weightmatrix.o: Criteria/weightmatrix.cpp.o
+.PHONY : Criteria/weightmatrix.o
+
+# target to build an object file
+Criteria/weightmatrix.cpp.o:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.o
+.PHONY : Criteria/weightmatrix.cpp.o
+
+Criteria/weightmatrix.i: Criteria/weightmatrix.cpp.i
+.PHONY : Criteria/weightmatrix.i
+
+# target to preprocess a source file
+Criteria/weightmatrix.cpp.i:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.i
+.PHONY : Criteria/weightmatrix.cpp.i
+
+Criteria/weightmatrix.s: Criteria/weightmatrix.cpp.s
+.PHONY : Criteria/weightmatrix.s
+
+# target to generate assembly for a file
+Criteria/weightmatrix.cpp.s:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.s
+.PHONY : Criteria/weightmatrix.cpp.s
+
+evaluationrecords.o: evaluationrecords.cpp.o
+.PHONY : evaluationrecords.o
+
+# target to build an object file
+evaluationrecords.cpp.o:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/evaluationrecords.cpp.o
+.PHONY : evaluationrecords.cpp.o
+
+evaluationrecords.i: evaluationrecords.cpp.i
+.PHONY : evaluationrecords.i
+
+# target to preprocess a source file
+evaluationrecords.cpp.i:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/evaluationrecords.cpp.i
+.PHONY : evaluationrecords.cpp.i
+
+evaluationrecords.s: evaluationrecords.cpp.s
+.PHONY : evaluationrecords.s
+
+# target to generate assembly for a file
+evaluationrecords.cpp.s:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/evaluationrecords.cpp.s
+.PHONY : evaluationrecords.cpp.s
+
 graphpose.o: graphpose.cpp.o
 .PHONY : graphpose.o
 
@@ -188,6 +380,54 @@ graphpose.s: graphpose.cpp.s
 graphpose.cpp.s:
 	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/graphpose.cpp.s
 .PHONY : graphpose.cpp.s
+
+map.o: map.cpp.o
+.PHONY : map.o
+
+# target to build an object file
+map.cpp.o:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/map.cpp.o
+.PHONY : map.cpp.o
+
+map.i: map.cpp.i
+.PHONY : map.i
+
+# target to preprocess a source file
+map.cpp.i:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/map.cpp.i
+.PHONY : map.cpp.i
+
+map.s: map.cpp.s
+.PHONY : map.s
+
+# target to generate assembly for a file
+map.cpp.s:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/map.cpp.s
+.PHONY : map.cpp.s
+
+mcdmfunction.o: mcdmfunction.cpp.o
+.PHONY : mcdmfunction.o
+
+# target to build an object file
+mcdmfunction.cpp.o:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/mcdmfunction.cpp.o
+.PHONY : mcdmfunction.cpp.o
+
+mcdmfunction.i: mcdmfunction.cpp.i
+.PHONY : mcdmfunction.i
+
+# target to preprocess a source file
+mcdmfunction.cpp.i:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/mcdmfunction.cpp.i
+.PHONY : mcdmfunction.cpp.i
+
+mcdmfunction.s: mcdmfunction.cpp.s
+.PHONY : mcdmfunction.s
+
+# target to generate assembly for a file
+mcdmfunction.cpp.s:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/mcdmfunction.cpp.s
+.PHONY : mcdmfunction.cpp.s
 
 pose.o: pose.cpp.o
 .PHONY : pose.o
@@ -213,29 +453,29 @@ pose.cpp.s:
 	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/pose.cpp.s
 .PHONY : pose.cpp.s
 
-test/test_graphpose.o: test/test_graphpose.cpp.o
-.PHONY : test/test_graphpose.o
+test/test_mcdmfunction.o: test/test_mcdmfunction.cpp.o
+.PHONY : test/test_mcdmfunction.o
 
 # target to build an object file
-test/test_graphpose.cpp.o:
-	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/test/test_graphpose.cpp.o
-.PHONY : test/test_graphpose.cpp.o
+test/test_mcdmfunction.cpp.o:
+	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.o
+.PHONY : test/test_mcdmfunction.cpp.o
 
-test/test_graphpose.i: test/test_graphpose.cpp.i
-.PHONY : test/test_graphpose.i
+test/test_mcdmfunction.i: test/test_mcdmfunction.cpp.i
+.PHONY : test/test_mcdmfunction.i
 
 # target to preprocess a source file
-test/test_graphpose.cpp.i:
-	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/test/test_graphpose.cpp.i
-.PHONY : test/test_graphpose.cpp.i
+test/test_mcdmfunction.cpp.i:
+	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.i
+.PHONY : test/test_mcdmfunction.cpp.i
 
-test/test_graphpose.s: test/test_graphpose.cpp.s
-.PHONY : test/test_graphpose.s
+test/test_mcdmfunction.s: test/test_mcdmfunction.cpp.s
+.PHONY : test/test_mcdmfunction.s
 
 # target to generate assembly for a file
-test/test_graphpose.cpp.s:
-	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/test/test_graphpose.cpp.s
-.PHONY : test/test_graphpose.cpp.s
+test/test_mcdmfunction.cpp.s:
+	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.s
+.PHONY : test/test_mcdmfunction.cpp.s
 
 # Help Target
 help:
@@ -251,15 +491,45 @@ help:
 	@echo "... list_install_components"
 	@echo "... mcdm_online_exploration_ros"
 	@echo "... rebuild_cache"
+	@echo "... Criteria/criterion.o"
+	@echo "... Criteria/criterion.i"
+	@echo "... Criteria/criterion.s"
+	@echo "... Criteria/criterioncomparator.o"
+	@echo "... Criteria/criterioncomparator.i"
+	@echo "... Criteria/criterioncomparator.s"
+	@echo "... Criteria/informationgaincriterion.o"
+	@echo "... Criteria/informationgaincriterion.i"
+	@echo "... Criteria/informationgaincriterion.s"
+	@echo "... Criteria/mcdmweightreader.o"
+	@echo "... Criteria/mcdmweightreader.i"
+	@echo "... Criteria/mcdmweightreader.s"
+	@echo "... Criteria/sensingtimecriterion.o"
+	@echo "... Criteria/sensingtimecriterion.i"
+	@echo "... Criteria/sensingtimecriterion.s"
+	@echo "... Criteria/traveldistancecriterion.o"
+	@echo "... Criteria/traveldistancecriterion.i"
+	@echo "... Criteria/traveldistancecriterion.s"
+	@echo "... Criteria/weightmatrix.o"
+	@echo "... Criteria/weightmatrix.i"
+	@echo "... Criteria/weightmatrix.s"
+	@echo "... evaluationrecords.o"
+	@echo "... evaluationrecords.i"
+	@echo "... evaluationrecords.s"
 	@echo "... graphpose.o"
 	@echo "... graphpose.i"
 	@echo "... graphpose.s"
+	@echo "... map.o"
+	@echo "... map.i"
+	@echo "... map.s"
+	@echo "... mcdmfunction.o"
+	@echo "... mcdmfunction.i"
+	@echo "... mcdmfunction.s"
 	@echo "... pose.o"
 	@echo "... pose.i"
 	@echo "... pose.s"
-	@echo "... test/test_graphpose.o"
-	@echo "... test/test_graphpose.i"
-	@echo "... test/test_graphpose.s"
+	@echo "... test/test_mcdmfunction.o"
+	@echo "... test/test_mcdmfunction.i"
+	@echo "... test/test_mcdmfunction.s"
 .PHONY : help
 
 

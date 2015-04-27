@@ -22,6 +22,7 @@
 #include "pose.h"
 #include "map.h"
 
+//using namespace import_map;
 using namespace std;
 class Criterion
 {
@@ -32,9 +33,9 @@ class Criterion
 	~Criterion();
 	
 	//Other methods
-	virtual double evaluate( Pose p, Map &map);
-	double getEvaluation(Pose p) const;
-	void insertEvaluation(Pose &p, double value);
+	virtual double evaluate( Pose p, import_map::Map &map) {};
+	double getEvaluation(Pose & p) const;
+	void insertEvaluation(Pose& p, double value);
 	void clean();
 	void normalize();
 	
@@ -52,9 +53,9 @@ class Criterion
 	double weight;
 	bool highGood;
 	double maxValue, minValue;
-	
+  
   private:
-	unordered_map<Pose *, double> evaluation;
+	unordered_map<string , double> evaluation;
 };
 
 #endif // CRITERION_H

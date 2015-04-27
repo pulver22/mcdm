@@ -33,12 +33,17 @@ TravelDistanceCriterion::~TravelDistanceCriterion()
 
 }
 
-double TravelDistanceCriterion::evaluate( Pose &p, Map &map)
+double TravelDistanceCriterion::evaluate( Pose p, import_map::Map &map)
 {
     Pose robotPosition = map.getRobotPosition();
     double distance = robotPosition.getDistance(p);
     insertEvaluation(p, distance);
     return distance;
+}
+
+void TravelDistanceCriterion::insertEvaluation(Pose& p, double value)
+{
+    insertEvaluation(p,value);
 }
 
 

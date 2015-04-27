@@ -43,6 +43,8 @@ BOOST_AUTO_TEST_CASE( test_graphpose )
     
     cout << "4) check the encoding " << endl;
     string tmpStr = graph.getEncodedKey(actualPose);
-    BOOST_CHECK_EQUAL(tmpStr,"3/3/270");
+    BOOST_CHECK_EQUAL(tmpStr,"3/3/270/6/20");
     
 }
+
+//EVERYTHING WORK LIKE A CHARM

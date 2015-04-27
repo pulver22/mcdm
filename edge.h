@@ -8,5 +8,7 @@ struct Edge
 	Pose destination;
 	double weight;
     };
+
+
     
 #endif

@@ -21,13 +21,15 @@
 #include "criterion.h"
 #include "pose.h"
 #include "map.h"
-
+//using namespace import_map;
 class TravelDistanceCriterion :  public Criterion
 {
     public:
 	TravelDistanceCriterion(double weight);
 	~TravelDistanceCriterion();
-	double TravelDistanceCriterion::evaluate( Pose &p, Map &map);
+	double evaluate( Pose p, import_map::Map &map);
+	//only for testing purpose
+	void insertEvaluation(Pose &p, double value);
 };
 
 #endif // TRAVELDISTANCECRITERION_H

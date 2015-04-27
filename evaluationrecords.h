@@ -4,6 +4,8 @@
 #include <unordered_map>
 #include "pose.h"
 #include <vector>
+#include <sstream>
+#include <string.h>
 
 
 using namespace std;
@@ -14,10 +16,7 @@ using namespace std;
 class EvaluationRecords 
 {
 public:
-    /**
-	* Constructor
-	*/
-    EvaluationRecords();
+    
     /**
 	* Constructor
 	*/
@@ -48,14 +47,8 @@ public:
 	* when you delete this, you will delete also the evaluations.
 	* @return the evaluations of all the frontiers.
 	*/
-    unordered_map<Pose, double> * getEvaluations();
-    /**
-	* Method that return all the evaluation stored in this object.
-	* Note that this method does not create a copy of the evaluation so,
-	* when you delete this, you will delete also the evaluations.
-	* @return the evaluations of all the frontiers, identified by the hash code
-	*/
-    unordered_map<uint, double> getEvaluationsWithHashCode();
+    unordered_map<string, double>  getEvaluations();
+    
     /**
 	* Method that allow to query if a frontier is into the evaluation record
 	* @param frontier the frontier to query
@@ -74,29 +67,22 @@ public:
 	* and the frontiers when you do not need them.
 	* @return the list of the evaluated frontiers.
 	*/
-    vector<Pose> *getFrontiers();
+    vector<Pose> getFrontiers();
     /**
 	* Method that remove a frontier from the evaluation record.
 	* @param frontier the frontier to remove.
 	*/
     void removeFrontier(Pose frontier);
-
-    /**
-	* Getter for the robot id.
-	* @return the robot identifier
-	*/
+    
+    Pose getPoseFromEncoding(string encoding);
 
     void normalize();
-
-
-
-    virtual void serializeTo(QDataStream &stream) const;
-    virtual void deserializeFrom(QDataStream &stream);
+    string getEncodedKey(Pose& p);
 
 protected:
-    unordered_map<Pose, double> *evaluations;
-    uint robotId;
+    unordered_map<string, double> evaluations;
     double maxValue, minValue;
+
 };
 
 

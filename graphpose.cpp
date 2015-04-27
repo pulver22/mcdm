@@ -76,9 +76,9 @@ void GraphPose::addPose(Pose &p,Pose &currentPose)
 list< Edge >  GraphPose::getKnownDestination(Pose &p)
 {
     string key = getEncodedKey(p);
-    list < Edge > toRet ;
+    //list < Edge > toRet ;
     if (graph2.find(key) != graph2.end()) {
-	return toRet = graph2.at(key);
+	return  graph2.at(key);
     }
 }
     
@@ -89,7 +89,7 @@ std::unordered_map< string,list < Edge > > GraphPose::getGraph()
 
 string GraphPose::getEncodedKey(Pose& p)
 {
-    string key =  to_string(p.getX()) + "/" + to_string( p.getY()) + "/" + to_string( (int)p.getOrientation());
+    string key =  to_string(p.getX()) + "/" + to_string( p.getY()) + "/" + to_string( (int)p.getOrientation()) + "/"  + to_string(p.getR()) + "/" + to_string((int)p.getPhi());
     return key;
 }
 

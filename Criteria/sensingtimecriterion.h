@@ -27,7 +27,10 @@ class SensingTimeCriterion : public Criterion
 public:
 SensingTimeCriterion(double weight);
 ~SensingTimeCriterion();
-double SensingTimeCriterion::evaluate( Pose &p, Map &map);
+double evaluate( Pose p, import_map::Map &map);
+
+//only for testing purpose
+void insertEvaluation(Pose &p, double value);
 };
 
 #endif // SENSINGTIMECRITERION_H

@@ -3,6 +3,8 @@
 
 #include <functional>
 #include <string>
+#include <string.h>
+#include <cstring>
 #include <unordered_map>
 #include <list>
 #include <vector>
@@ -10,39 +12,38 @@
 #include <mutex>
 #include <map>
 
-using namespace std;
+
 class WeightMatrix
 {
 public:
     WeightMatrix(int numOfCriteria);
     virtual ~WeightMatrix();
-
-    void insertSingleCriterion(string name, double weight, bool active);
-    const string getNameEncoding(string name) const;
-
-    void insertCombinationWeight(list<string> criteriaNames, double weight);
-    void insertCombinationWeight(const string &encoding, double weight);
-    double getWeight(list<string> criteriaNames) const;
-    double getWeight(const string &encoding) const;        
-    string computeNamesEncoding(list<string> criteriaNames) const;
-    list<string> getKnownCriteria() const;
-    vector<string> getActiveCriteria() const;
-    void changeCriteriaActivation(const string &name, bool active);
+    void insertSingleCriterion(std::string name, double weight, bool active);
+    void insertCombinationWeight(std::list<std::string> criteriaNames, double weight);
+    void insertCombinationWeight(const std::string &encoding, double weight);
+    double getWeight(std::list< std::string > criteriaNames);
+    double getWeight(const std::string &encoding) ; 
+    std::string getNameEncoding(std::string name) ;
+    std::string computeNamesEncoding(std::list<std::string> criteriaNames);
+    std::list<std::string> getKnownCriteria() ;
+    std::vector<std::string> getActiveCriteria();
+    int getNumOfActiveCriteria() ;
+    void changeCriteriaActivation(const std::string& name, bool active);
    
 private:
 
     //This member maps a criterion name with its encoding
-    unordered_map<string, string> *mapping;
+    std::unordered_map<std::string, std::string> mapping;
     
     //This is the double entrance table that contains all the weight.
     // - the index of the list indicate the cardinality of the weight combination.
     // - the Hash contains the pairs criteria_combination<->weight
     // NOTE: all the keys of the String must be sorted by lexicographic order.
-    vector<unordered_map<string, double> * > *weights;
-    vector<string, bool> *activeCriteria;
+    std::vector<std::unordered_map<std::string, double> *> *weights;
+    std::vector<std::pair<std::string, bool> > activeCriteria;
     int numOfActiveCriteria;
     int lastInsertedCriteria;
-    std::mutex *mutex;
+    std::mutex mutex;
 };
 
 

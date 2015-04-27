@@ -1,4 +1,5 @@
 #include <map.h>
+#include <utility>
 using namespace std;
 
 namespace import_map{
@@ -236,18 +237,20 @@ void Map::setGridValue(int value, int i, int j)
   }
 }
 
-
+/*
 void Map::addEdgePoint(int x, int y)
 {
-  edgePoints.push_back(std::make_pair<int, int>(x, y));
-}
+    pair <int,int> foo;
+    foo = make_pair (x,y);
+    edgePoints.push_back(pair);
+}*/
 
-std::vector<int> getMap(){
-    return Map::map;
+std::vector<int> Map::getMap(){
+    return map;
     
 }
 
-std::vector<int> getGrid(){
+std::vector<int> Map::getGrid(){
     return Map::grid;
 }
   
@@ -304,4 +307,17 @@ int import_map::Map::getGridValue(int i)
   return Map::grid.at(i);
 }
 
+}
+
+Pose import_map::Map::getRobotPosition()
+{
+    int x,y,r;
+    double orientation,angle;
+    x = rand() % 100;
+    y = rand() % 100;
+    r = rand() % 10;
+    orientation = 270;
+    angle = 45;
+    Pose p = Pose(x,y,orientation,r,angle);
+    return p;
 }

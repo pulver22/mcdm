@@ -13,7 +13,7 @@ InformationGainCriterion::~InformationGainCriterion()
 {
 }
 
-double InformationGainCriterion::evaluate(Pose &p, Map &map)
+double InformationGainCriterion::evaluate(Pose p, Map &map)
 {
     int px = p.getX();
     int py = p.getY();
@@ -25,7 +25,7 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
     int minSensedY,maxSensedY;
     // intersection point between the laser sensor (at the edge) and the vertical/horizontal segment passing from 
     // the considered cell
-    int *intersection;    
+    //int* intersection;    
     //Map as a bidimensional array (vector) starting
     vector<vector<int>> map2D = map.getMap2D();
     int maxValueY = map2D.size();
@@ -67,7 +67,7 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
 		// if the considered cell is before the robot position (relating to the xaxis)
 		if( j < px ){
 		    // calculate the intersection point between the vertical segment passing for the cell and the radius at the left edge
-		    intersection = intersect(i,j,minSensedX,minSensedY,p);
+		    int* intersection =intersect(i,j,minSensedX,minSensedY,p);
 		    // if the j-coordinate of the considered cell is higher (y grow toward the bottom and x toward right) than the intersection's one, 
 		    //it means that the cell is not insidie the sensed area, so break this loop and look for the following cell
 		    if ( i > intersection[1]){
@@ -75,7 +75,7 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
 		    }
 		}else{
 		    //as above but on the right side on the robot
-		    intersection = intersect(i,j,maxSensedX,minSensedY,p);
+		    int*intersection = intersect(i,j,maxSensedX,minSensedY,p);
 		    if (i > intersection[1]){
 		    continue;
 		    }
@@ -100,12 +100,12 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
 	for(int i=minSensedY  ; i< maxSensedY; i++){
 	    for (int j = minSensedX; j< maxSensedX; j++){
 		if( j < px ){
-		    intersection = intersect(i,j,minSensedX,minSensedY,p);
+		    int* intersection = intersect(i,j,minSensedX,minSensedY,p);
 		    if ( i < intersection[1]){
 			continue;
 		    }
 		}else{
-		    intersection = intersect(i,j,maxSensedX,minSensedY,p);
+		    int* intersection = intersect(i,j,maxSensedX,minSensedY,p);
 		    if (i < intersection[1]){
 		    continue;
 		    }
@@ -129,12 +129,12 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
 	for(int i=minSensedY  ; i< maxSensedY; i++){
 	    for (int j = minSensedX; j< maxSensedX; j++){
 		if( i < py ){
-		    intersection = intersect(i,j,maxSensedX,minSensedY,p);
+		    int* intersection = intersect(i,j,maxSensedX,minSensedY,p);
 		    if ( i < intersection[1]){
 			continue;
 		    }
 		}else{
-		    intersection = intersect(i,j,maxSensedX,maxSensedY,p);
+		    int* intersection = intersect(i,j,maxSensedX,maxSensedY,p);
 		    if (i < intersection[1]){
 		    continue;
 		    }
@@ -155,12 +155,12 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
 	for(int i=minSensedY  ; i< maxSensedY; i++){
 	    for (int j = minSensedX; j< maxSensedX; j++){
 		if( i < py ){
-		    intersection = intersect(i,j,minSensedX,minSensedY,p);
+		    int* intersection = intersect(i,j,minSensedX,minSensedY,p);
 		    if ( i < intersection[1]){
 			continue;
 		    }
 		}else{
-		    intersection = intersect(i,j,minSensedX,maxSensedY,p);
+		    int* intersection = intersect(i,j,minSensedX,maxSensedY,p);
 		    if (i < intersection[1]){
 		    continue;
 		    }
@@ -194,7 +194,7 @@ void InformationGainCriterion::normalize (int position, int number)
 
 }
 
-int InformationGainCriterion::intersect(int p1x, int p1y, int p2x, int p2y, Pose p)
+int* InformationGainCriterion::intersect(int p1x, int p1y, int p2x, int p2y, Pose p)
 {
     float m1, m2, q1, q2;
     float mNum1, mNum2, mDen1, mDen2;
@@ -206,10 +206,10 @@ int InformationGainCriterion::intersect(int p1x, int p1y, int p2x, int p2y, Pose
 
     
         //Vertical or horizontal segment from the considered cell 
-   if(p.getOrientation == 90 || p.getOrientation == 270){
+   if(p.getOrientation() == 90 || p.getOrientation() == 270){
 	intersectX = p1x;
 	intersectY =py + (intersectX - px)*(p2y - py) / (p2x - px);     
-    } else if (p.getOrientation == 0 || p.getOrientation == 180){
+    } else if (p.getOrientation() == 0 || p.getOrientation() == 180){
 	intersectY = p1y;
 	intersectX = p2x + (intersectY - py) * (p2x -px) / (p2y - py);
     }

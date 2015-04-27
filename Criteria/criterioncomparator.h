@@ -10,12 +10,12 @@ class CriterionComparator
 {
 
 public:
-    explicit CriterionComparator(Pose *p);
+    explicit CriterionComparator(Pose& p);
     virtual ~CriterionComparator();
-    bool operator()(const Criterion *c1, const Criterion *c2 );
+    bool operator()(const Criterion* c1, const Criterion* c2 );
 
 private:
-    Pose *p;
+    Pose p;
     
 };
 

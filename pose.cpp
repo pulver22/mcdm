@@ -1,7 +1,7 @@
 #include "pose.h"
 #include <cmath>
 
-
+using namespace std;
 Pose::Pose():
   aX(0),
   aY(0),
@@ -28,7 +28,7 @@ Pose::~Pose()
 
 double Pose::getDistance( Pose& pose)
 {
-  return std::sqrt((aX - pose.getX())*(aX - pose.getX()) + (aY - pose.getY())*(aY - pose.getY()));
+  return sqrt((aX - pose.getX())*(aX - pose.getX()) + (aY - pose.getY())*(aY - pose.getY()));
 }
 
 int Pose::getX()
@@ -61,10 +61,19 @@ bool Pose::isEqual(Pose& p)
     if(aX == p.getX() & aY == p.getY() & aTheta == p.getOrientation() & phi == p.getPhi() & r == p.getR()){
 	return true;
     } else return false;
-	
     
-
 }
+
+
+void Pose::operator=(Pose& other)
+{
+    aX = other.getX();
+    aY = other.getY();
+    r = other.getR();
+    aTheta = other.getOrientation();
+    phi = other.getPhi();
+}
+
 
 
 
