@@ -17,7 +17,7 @@ public:
     virtual ~MCDMFunction();
     virtual double evaluateFrontier(Pose p, import_map::Map &map);
     virtual EvaluationRecords* evaluateFrontiers(list< Pose >& frontiers, import_map::Map &map);
-    virtual Pose selectNewPose(EvaluationRecords &evaluationRecords);
+    virtual Pose selectNewPose(EvaluationRecords* evaluationRecords);
     
 protected:
 

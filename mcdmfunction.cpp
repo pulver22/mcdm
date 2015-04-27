@@ -187,14 +187,14 @@ EvaluationRecords* MCDMFunction::evaluateFrontiers( std::list< Pose >& frontiers
     return toRet;
 }
 
-Pose MCDMFunction::selectNewPose(EvaluationRecords &evaluationRecords)
+Pose MCDMFunction::selectNewPose(EvaluationRecords *evaluationRecords)
 {
     Pose newTarget;
     double value;
-    unordered_map<string,double> evaluation = evaluationRecords.getEvaluations();
+    unordered_map<string,double> evaluation = evaluationRecords->getEvaluations();
     for(unordered_map<string,double>::iterator it = evaluation.begin(); it != evaluation.end(); it++){
 	string tmp = (*it).first;
-	Pose p = evaluationRecords.getPoseFromEncoding(tmp);
+	Pose p = evaluationRecords->getPoseFromEncoding(tmp);
 	if(value == 0){
 	    newTarget = p ;
 	}else if(value < (*it).second){

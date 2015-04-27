@@ -54,6 +54,7 @@ void Map::createGrid(int resolution)
   Map::numGridRows = numRows/clusterSize;
   Map::numGridCols = numCols/clusterSize;
   int gridRow = 0, gridCol = 0;
+  totalFreeCells = numGridCols * numGridRows;
   
   //get the size of the array and initialize to 0
   
@@ -71,13 +72,15 @@ void Map::createGrid(int resolution)
   //set 1 in the grid cells corrisponding to obstacles
   
   for(int row = 0; row < numRows; ++row)
-  {
-    for(int col = 0; col < numCols; ++col)
     {
-      if(map[row*numCols + col] == 0) grid[(int)((float)row/clusterSize)*numGridCols + (int)((float)col/clusterSize)] = 1;
+	for(int col = 0; col < numCols; ++col)
+	{
+	    if(map[row*numCols + col] == 0) {
+		grid[(int)((float)row/clusterSize)*numGridCols + (int)((float)col/clusterSize)] = 1;
+		totalFreeCells --;
+	    }
+	}
     }
-  }
-}
 
 
 
@@ -321,3 +324,9 @@ Pose import_map::Map::getRobotPosition()
     Pose p = Pose(x,y,orientation,r,angle);
     return p;
 }
+
+int import_map::Map::getTotalFreeCells()
+{
+    return totalFreeCells;
+}
+

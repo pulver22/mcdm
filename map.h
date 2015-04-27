@@ -32,6 +32,7 @@ public:
   std::vector<int> getMap();
   std::vector<int> getGrid();
   std::vector<vector<int> > getMap2D();
+  int getTotalFreeCells();
   
   
 protected:
@@ -44,6 +45,7 @@ protected:
   int numRows;
   int numCols;
   std::vector<std::pair<int, int> > edgePoints;
+  int totalFreeCells;
   
 };
 }
