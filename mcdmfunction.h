@@ -14,10 +14,10 @@ class MCDMFunction
 
 public:
     MCDMFunction();
-    virtual ~MCDMFunction();
-    virtual double evaluateFrontier(Pose p, import_map::Map &map);
-    virtual EvaluationRecords* evaluateFrontiers(list< Pose >& frontiers, import_map::Map &map);
-    virtual Pose selectNewPose(EvaluationRecords* evaluationRecords);
+    ~MCDMFunction();
+    double evaluateFrontier(Pose p, import_map::Map &map);
+    EvaluationRecords* evaluateFrontiers(list< Pose >& frontiers, import_map::Map &map);
+    Pose selectNewPose(EvaluationRecords* evaluationRecords);
     
 protected:
 
@@ -25,7 +25,7 @@ protected:
     unordered_map<string, Criterion* > criteria;
     vector<Criterion* > activeCriteria;
     WeightMatrix * matrix ;
-    mutex myMutex;
+   //mutex myMutex;
 
 };
 #endif // MCDMFUNCTION_H

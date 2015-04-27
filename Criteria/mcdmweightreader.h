@@ -14,6 +14,8 @@ public:
     WeightMatrix* getMatrix();
    
     
+    private:
+    void listCasual(std::string str2);
 };
 
 

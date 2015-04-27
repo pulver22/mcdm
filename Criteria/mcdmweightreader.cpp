@@ -20,7 +20,6 @@ WeightMatrix* MCDMWeightReader::getMatrix()
     list<string> list2 ;
     list<string> list3 ;
     list<string> list4;
-    list<string> listCasual;
     list1.push_back(str1);
     list1.push_back(str2);
     list2.push_back(str1);
@@ -30,8 +29,6 @@ WeightMatrix* MCDMWeightReader::getMatrix()
     list4.push_back(str1);
     list4.push_back(str2);
     list4.push_back(str3);
-    listCasual.push_back(str2);
-    listCasual.push_back(str1);
     matrix->insertCombinationWeight(list1,0.8);
     matrix->insertCombinationWeight(list2,0.6);
     matrix->insertCombinationWeight(list3,0.6);

@@ -19,16 +19,10 @@ using namespace import_map;
  */
 MCDMFunction::MCDMFunction() //:
      //criteria(new unordered_map<string, Criterion* >())
-     //activeCriteria(new vector<Criterion >() )
-    
+     //activeCriteria(new vector<Criterion >() ) 
 {
-    /*read the weight from somewhere
-    MCDMWeightReader weightReader;
-    matrix = weightReader.parseFile();
-    */
     
-    // Initialization ad-hoc
-    
+    // Initialization ad-hoc: create a weightmatrix for 3 criteria with predefined weight
     MCDMWeightReader reader;
     //cout << "test" << endl;
     matrix = reader.getMatrix();
@@ -58,7 +52,7 @@ MCDMFunction::~MCDMFunction()
 
 }
 
-
+//Create a criterion starting from its name and weight
 Criterion * MCDMFunction::createCriterion(string name, double weight)
 {
     Criterion *toRet = NULL;
@@ -72,7 +66,8 @@ Criterion * MCDMFunction::createCriterion(string name, double weight)
     return toRet;
 }
 
-
+// For a candidate frontier, calculate its evaluation regarding to considered criteria and put it in the evaluation record (through 
+//the evaluate method provided by Criterion class)
 double MCDMFunction::evaluateFrontier( Pose p,  import_map::Map &map)
 {
     //Should keep the ordering of the criteria and the weight of each criteria combinations
@@ -88,10 +83,10 @@ double MCDMFunction::evaluateFrontier( Pose p,  import_map::Map &map)
 }
 
 
-
+// Scan a list of candidate positions,then apply the choquet fuzzy algorithm
 EvaluationRecords* MCDMFunction::evaluateFrontiers( std::list< Pose >& frontiers,  Map& map)
 {         
-    myMutex.lock();
+    //myMutex.lock();
    
     //Clean the last evaluation
     //         lprint << "clean evaluations" << endl;
@@ -181,9 +176,11 @@ EvaluationRecords* MCDMFunction::evaluateFrontiers( std::list< Pose >& frontiers
 //         }
     cout << endl;
     
+    activeCriteria.clear();
+    
     //delete activeCriteria;
     //activeCriteria = NULL;
-    myMutex.unlock();
+    //myMutex.unlock();
     return toRet;
 }
 

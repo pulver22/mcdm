@@ -43,7 +43,7 @@ private:
     std::vector<std::pair<std::string, bool> > activeCriteria;
     int numOfActiveCriteria;
     int lastInsertedCriteria;
-    std::mutex mutex;
+   // std::mutex mutex;
 };
 
 
