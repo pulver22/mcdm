@@ -1,0 +1,1 @@
+/usr/bin/c++   -g    CMakeFiles/exec.dir/test_pose.cpp.o  -o exec -rdynamic -lboost_unit_test_framework 
