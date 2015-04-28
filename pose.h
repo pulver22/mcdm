@@ -2,7 +2,7 @@
 #define POSE_H
 
 
-namespace dummy{
+
 
 class Pose 
 {
@@ -32,6 +32,5 @@ protected:
   
 };
 
-}
- 
+
 #endif

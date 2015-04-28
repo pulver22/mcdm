@@ -95,9 +95,32 @@ CMakeFiles/lib.dir/map.cpp.o.provides: CMakeFiles/lib.dir/map.cpp.o.requires
 
 CMakeFiles/lib.dir/map.cpp.o.provides.build: CMakeFiles/lib.dir/map.cpp.o
 
+CMakeFiles/lib.dir/ray.cpp.o: CMakeFiles/lib.dir/flags.make
+CMakeFiles/lib.dir/ray.cpp.o: ../ray.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles $(CMAKE_PROGRESS_3)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/lib.dir/ray.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/ray.cpp.o -c /home/pulver/projects/mcdm_online_exploration_ros/ray.cpp
+
+CMakeFiles/lib.dir/ray.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/lib.dir/ray.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/pulver/projects/mcdm_online_exploration_ros/ray.cpp > CMakeFiles/lib.dir/ray.cpp.i
+
+CMakeFiles/lib.dir/ray.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/lib.dir/ray.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/pulver/projects/mcdm_online_exploration_ros/ray.cpp -o CMakeFiles/lib.dir/ray.cpp.s
+
+CMakeFiles/lib.dir/ray.cpp.o.requires:
+.PHONY : CMakeFiles/lib.dir/ray.cpp.o.requires
+
+CMakeFiles/lib.dir/ray.cpp.o.provides: CMakeFiles/lib.dir/ray.cpp.o.requires
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/ray.cpp.o.provides.build
+.PHONY : CMakeFiles/lib.dir/ray.cpp.o.provides
+
+CMakeFiles/lib.dir/ray.cpp.o.provides.build: CMakeFiles/lib.dir/ray.cpp.o
+
 CMakeFiles/lib.dir/graphpose.cpp.o: CMakeFiles/lib.dir/flags.make
 CMakeFiles/lib.dir/graphpose.cpp.o: ../graphpose.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles $(CMAKE_PROGRESS_3)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles $(CMAKE_PROGRESS_4)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/lib.dir/graphpose.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/graphpose.cpp.o -c /home/pulver/projects/mcdm_online_exploration_ros/graphpose.cpp
 
@@ -120,7 +143,7 @@ CMakeFiles/lib.dir/graphpose.cpp.o.provides.build: CMakeFiles/lib.dir/graphpose.
 
 CMakeFiles/lib.dir/mcdmfunction.cpp.o: CMakeFiles/lib.dir/flags.make
 CMakeFiles/lib.dir/mcdmfunction.cpp.o: ../mcdmfunction.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles $(CMAKE_PROGRESS_4)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles $(CMAKE_PROGRESS_5)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/lib.dir/mcdmfunction.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/mcdmfunction.cpp.o -c /home/pulver/projects/mcdm_online_exploration_ros/mcdmfunction.cpp
 
@@ -143,7 +166,7 @@ CMakeFiles/lib.dir/mcdmfunction.cpp.o.provides.build: CMakeFiles/lib.dir/mcdmfun
 
 CMakeFiles/lib.dir/evaluationrecords.cpp.o: CMakeFiles/lib.dir/flags.make
 CMakeFiles/lib.dir/evaluationrecords.cpp.o: ../evaluationrecords.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles $(CMAKE_PROGRESS_5)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles $(CMAKE_PROGRESS_6)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/lib.dir/evaluationrecords.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/evaluationrecords.cpp.o -c /home/pulver/projects/mcdm_online_exploration_ros/evaluationrecords.cpp
 
@@ -166,7 +189,7 @@ CMakeFiles/lib.dir/evaluationrecords.cpp.o.provides.build: CMakeFiles/lib.dir/ev
 
 CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.o: CMakeFiles/lib.dir/flags.make
 CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.o: ../Criteria/sensingtimecriterion.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles $(CMAKE_PROGRESS_6)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles $(CMAKE_PROGRESS_7)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.o -c /home/pulver/projects/mcdm_online_exploration_ros/Criteria/sensingtimecriterion.cpp
 
@@ -189,7 +212,7 @@ CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.o.provides.build: CMakeFile
 
 CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o: CMakeFiles/lib.dir/flags.make
 CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o: ../Criteria/informationgaincriterion.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles $(CMAKE_PROGRESS_7)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles $(CMAKE_PROGRESS_8)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o -c /home/pulver/projects/mcdm_online_exploration_ros/Criteria/informationgaincriterion.cpp
 
@@ -212,7 +235,7 @@ CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o.provides.build: CMake
 
 CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.o: CMakeFiles/lib.dir/flags.make
 CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.o: ../Criteria/mcdmweightreader.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles $(CMAKE_PROGRESS_8)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles $(CMAKE_PROGRESS_9)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.o -c /home/pulver/projects/mcdm_online_exploration_ros/Criteria/mcdmweightreader.cpp
 
@@ -235,7 +258,7 @@ CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.o.provides.build: CMakeFiles/li
 
 CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.o: CMakeFiles/lib.dir/flags.make
 CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.o: ../Criteria/traveldistancecriterion.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles $(CMAKE_PROGRESS_9)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles $(CMAKE_PROGRESS_10)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.o -c /home/pulver/projects/mcdm_online_exploration_ros/Criteria/traveldistancecriterion.cpp
 
@@ -258,7 +281,7 @@ CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.o.provides.build: CMakeF
 
 CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.o: CMakeFiles/lib.dir/flags.make
 CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.o: ../Criteria/weightmatrix.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles $(CMAKE_PROGRESS_10)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles $(CMAKE_PROGRESS_11)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.o -c /home/pulver/projects/mcdm_online_exploration_ros/Criteria/weightmatrix.cpp
 
@@ -281,7 +304,7 @@ CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.o.provides.build: CMakeFiles/lib.di
 
 CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.o: CMakeFiles/lib.dir/flags.make
 CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.o: ../Criteria/criterioncomparator.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles $(CMAKE_PROGRESS_11)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles $(CMAKE_PROGRESS_12)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.o -c /home/pulver/projects/mcdm_online_exploration_ros/Criteria/criterioncomparator.cpp
 
@@ -304,7 +327,7 @@ CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.o.provides.build: CMakeFiles
 
 CMakeFiles/lib.dir/Criteria/criterion.cpp.o: CMakeFiles/lib.dir/flags.make
 CMakeFiles/lib.dir/Criteria/criterion.cpp.o: ../Criteria/criterion.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles $(CMAKE_PROGRESS_12)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles $(CMAKE_PROGRESS_13)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/lib.dir/Criteria/criterion.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/Criteria/criterion.cpp.o -c /home/pulver/projects/mcdm_online_exploration_ros/Criteria/criterion.cpp
 
@@ -329,6 +352,7 @@ CMakeFiles/lib.dir/Criteria/criterion.cpp.o.provides.build: CMakeFiles/lib.dir/C
 lib_OBJECTS = \
 "CMakeFiles/lib.dir/pose.cpp.o" \
 "CMakeFiles/lib.dir/map.cpp.o" \
+"CMakeFiles/lib.dir/ray.cpp.o" \
 "CMakeFiles/lib.dir/graphpose.cpp.o" \
 "CMakeFiles/lib.dir/mcdmfunction.cpp.o" \
 "CMakeFiles/lib.dir/evaluationrecords.cpp.o" \
@@ -345,6 +369,7 @@ lib_EXTERNAL_OBJECTS =
 
 liblib.a: CMakeFiles/lib.dir/pose.cpp.o
 liblib.a: CMakeFiles/lib.dir/map.cpp.o
+liblib.a: CMakeFiles/lib.dir/ray.cpp.o
 liblib.a: CMakeFiles/lib.dir/graphpose.cpp.o
 liblib.a: CMakeFiles/lib.dir/mcdmfunction.cpp.o
 liblib.a: CMakeFiles/lib.dir/evaluationrecords.cpp.o
@@ -367,6 +392,7 @@ CMakeFiles/lib.dir/build: liblib.a
 
 CMakeFiles/lib.dir/requires: CMakeFiles/lib.dir/pose.cpp.o.requires
 CMakeFiles/lib.dir/requires: CMakeFiles/lib.dir/map.cpp.o.requires
+CMakeFiles/lib.dir/requires: CMakeFiles/lib.dir/ray.cpp.o.requires
 CMakeFiles/lib.dir/requires: CMakeFiles/lib.dir/graphpose.cpp.o.requires
 CMakeFiles/lib.dir/requires: CMakeFiles/lib.dir/mcdmfunction.cpp.o.requires
 CMakeFiles/lib.dir/requires: CMakeFiles/lib.dir/evaluationrecords.cpp.o.requires

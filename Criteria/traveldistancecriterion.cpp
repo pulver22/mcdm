@@ -33,17 +33,20 @@ TravelDistanceCriterion::~TravelDistanceCriterion()
 
 }
 
-double TravelDistanceCriterion::evaluate( Pose p, import_map::Map &map)
+double TravelDistanceCriterion::evaluate( Pose p, dummy::Map &map)
 {
     Pose robotPosition = map.getRobotPosition();
     double distance = robotPosition.getDistance(p);
-    insertEvaluation(p, distance);
+    Criterion::insertEvaluation(p, distance);
+    //cout << "alive in td" << endl;
     return distance;
 }
 
+/*
 void TravelDistanceCriterion::insertEvaluation(Pose& p, double value)
 {
+    cout << "alice" <<endl;
     insertEvaluation(p,value);
 }
-
+*/
 

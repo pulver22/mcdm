@@ -6,6 +6,8 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include "pose.h"
+
 using namespace std;
 namespace dummy{
 
@@ -33,6 +35,8 @@ public:
   std::vector<int> grid;			//vector containing the map as grid of cells sized 1 square metre
   int numGridRows;
   int numGridCols;
+  Pose getRobotPosition();
+  long getTotalFreeCells();
   
   
 protected:
@@ -42,6 +46,7 @@ protected:
   int numRows;
   int numCols;
   std::vector<std::pair<int, int> > edgePoints;
+  long totalFreeCells;
   
 };
 }

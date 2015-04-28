@@ -125,7 +125,7 @@ void EvaluationRecords::normalize(){
 
 string EvaluationRecords::getEncodedKey(Pose& p)
 {
-    string key =  to_string(p.getX()) + "/" + to_string( p.getY()) + "/" + to_string( (int)p.getOrientation()) + "/" + to_string(p.getR()) +"/" + to_string(p.getPhi());
+    string key =  to_string(p.getX()) + "/" + to_string( p.getY()) + "/" + to_string( (int)p.getOrientation()) + "/" + to_string(p.getRange()) +"/" + to_string(p.getFOV());
     return key;
 }
 

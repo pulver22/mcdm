@@ -22,15 +22,16 @@
 #include "pose.h"
 #include "map.h"
 
+using namespace dummy;
 class SensingTimeCriterion : public Criterion
 {
 public:
 SensingTimeCriterion(double weight);
 ~SensingTimeCriterion();
-double evaluate( Pose p, import_map::Map &map);
+double evaluate( Pose p, Map &map);
 
 //only for testing purpose
-void insertEvaluation(Pose &p, double value);
+//void insertEvaluation(Pose &p, double value);
 };
 
 #endif // SENSINGTIMECRITERION_H

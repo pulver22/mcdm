@@ -109,7 +109,7 @@ double WeightMatrix::getWeight(list<string> criteriaNames)
 {
     string enc = computeNamesEncoding(criteriaNames);
     double w = getWeight(enc);
-    cout << enc << " " << w << endl;
+    //cout << enc << " " << w << endl;
     if (w == 0){
         //no encoding saved. I must compute the weight by summing
         //up every single weight.

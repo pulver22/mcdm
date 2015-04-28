@@ -60,6 +60,8 @@ void Map::createGrid(int resolution)
   Map::numGridRows = numRows/clusterSize;
   Map::numGridCols = numCols/clusterSize;
   int gridRow = 0, gridCol = 0;
+  totalFreeCells = numGridCols * numGridRows;
+  //cout << "Total cell: " << totalFreeCells << endl;
   
   //get the size of the array and initialize to 0
   
@@ -73,14 +75,15 @@ void Map::createGrid(int resolution)
     }
   }
   
-  
   //set 1 in the grid cells corrisponding to obstacles
-  
   for(int row = 0; row < numRows; ++row)
   {
     for(int col = 0; col < numCols; ++col)
     {
-      if(map[row*numCols + col] == 0) grid[(int)((float)row/clusterSize)*numGridCols + (int)((float)col/clusterSize)] = 1;
+      if(map[row*numCols + col] == 0) 
+      {
+	    grid[(int)((float)row/clusterSize)*numGridCols + (int)((float)col/clusterSize)] = 1;
+      }
     }
   }
 }
@@ -246,7 +249,8 @@ void Map::setGridValue(int value, int i, int j)
 
 void Map::addEdgePoint(int x, int y)
 {
-  edgePoints.push_back(std::make_pair<int, int>(x, y));
+  std::pair<int,int> pair(x,y);
+  edgePoints.push_back(pair);
 }
 
   
@@ -301,6 +305,28 @@ int Map::getNumRows()
 int dummy::Map::getGridValue(int i) const
 {
   return Map::grid[i];
+}
+
+Pose Map::getRobotPosition()
+{
+ 
+    int x,y,orientation,range;
+    double FOV;
+    x = rand() % 100;
+    y = rand() % 100;
+    orientation = 0;
+    range = rand() % 30;
+    FOV = 45;
+    Pose p = Pose(x,y,orientation,range,FOV);
+    return p;
+}
+
+long int Map::getTotalFreeCells(){
+    for(int i=0; i<grid.size();i++){
+	if(grid[i] == 1) totalFreeCells--;
+    }
+    //cout << "Total free cells: " << totalFreeCells << endl;
+    return totalFreeCells;
 }
 
 }

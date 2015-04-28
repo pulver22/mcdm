@@ -5,11 +5,10 @@
 
 # define PI           3.14159265358979323846  /* pi */
 
-namespace dummy{
-  
+
+
 Ray::Ray()
 {
-
 }
 
 
@@ -208,10 +207,10 @@ int Ray::getGridValue(int i, int j)
   return Ray::grid[i*numGridCols + j];
 }
 
-}
 
 
-void dummy::Ray::performSensingOperation(dummy::Map *map, int posX, int posY, int orientation, double FOV, int range)
+
+void Ray::performSensingOperation(dummy::Map *map, int posX, int posY, int orientation, double FOV, int range)
 {
   
   for(double phi = (PI/2 - FOV/2); phi < (PI/2 + FOV/2); phi += (FOV/64))		//range through the circular sector

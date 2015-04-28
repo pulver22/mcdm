@@ -1,7 +1,8 @@
 #include "informationgaincriterion.h"
 #include "criteriaName.h"
 #include <math.h>
-using namespace import_map;
+#include "ray.h"
+using namespace dummy;
 
 InformationGainCriterion::InformationGainCriterion(double weight) :
     Criterion(INFORMATION_GAIN, weight,true)
@@ -15,11 +16,15 @@ InformationGainCriterion::~InformationGainCriterion()
 
 double InformationGainCriterion::evaluate(Pose p, Map &map)
 {
+
     int px = p.getX();
     int py = p.getY();
     //float resolution = map.getResolution();
     //Get the orientation
     int orientation = p.getOrientation();
+    int range = p.getRange();
+    double angle = p.getFOV();
+/*
     // Minimum and maximum coordinations sensed by the laser scan
     int minSensedX, maxSensedX;
     int minSensedY,maxSensedY;
@@ -38,13 +43,7 @@ double InformationGainCriterion::evaluate(Pose p, Map &map)
     //effective information gain
     int unExploredMap;
     
-    /* NOT TO BE CONSIDERED
-     * Approximate way to calculate the sensed area inside the circular sector: calculate the area of the circular sector and 
-     * then divide it by the map resolution to get the number of cell in it
-    
-    sensedArea = (int) 1/2 * pow(p.getRadius(),2) * p.getGamma();
-    sensedArea = (int) sensedArea / map.map2D.getResolution();
-    */
+   
     
     //calcuate the sensed map based on the robot orientation
     // orientation == 90 means the robot is looking toward the upper border of the map
@@ -177,6 +176,11 @@ double InformationGainCriterion::evaluate(Pose p, Map &map)
     unExploredMap = sensedArea - occupiedArea;
     //insert in the evaluation record the pair <frontier,values>
     insertEvaluation(p,unExploredMap);
+*/
+    Ray ray;
+    Map *map2 = &map;
+    double unExploredMap=ray.getInformationGain(map2,px,py,orientation,angle,range);
+    Criterion::insertEvaluation(p,unExploredMap);
     return unExploredMap;
 }
 

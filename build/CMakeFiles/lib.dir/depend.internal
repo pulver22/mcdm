@@ -16,6 +16,7 @@ CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.o
 CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o
  .././map.h
  .././pose.h
+ .././ray.h
  /home/pulver/projects/mcdm_online_exploration_ros/Criteria/criteriaName.h
  /home/pulver/projects/mcdm_online_exploration_ros/Criteria/criterion.h
  /home/pulver/projects/mcdm_online_exploration_ros/Criteria/informationgaincriterion.cpp
@@ -76,3 +77,8 @@ CMakeFiles/lib.dir/mcdmfunction.cpp.o
 CMakeFiles/lib.dir/pose.cpp.o
  /home/pulver/projects/mcdm_online_exploration_ros/pose.cpp
  /home/pulver/projects/mcdm_online_exploration_ros/pose.h
+CMakeFiles/lib.dir/ray.cpp.o
+ /home/pulver/projects/mcdm_online_exploration_ros/map.h
+ /home/pulver/projects/mcdm_online_exploration_ros/pose.h
+ /home/pulver/projects/mcdm_online_exploration_ros/ray.cpp
+ /home/pulver/projects/mcdm_online_exploration_ros/ray.h

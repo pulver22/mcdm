@@ -89,7 +89,7 @@ std::unordered_map< string,list < Edge > > GraphPose::getGraph()
 
 string GraphPose::getEncodedKey(Pose& p)
 {
-    string key =  to_string(p.getX()) + "/" + to_string( p.getY()) + "/" + to_string( (int)p.getOrientation()) + "/"  + to_string(p.getR()) + "/" + to_string((int)p.getPhi());
+    string key =  to_string(p.getX()) + "/" + to_string( p.getY()) + "/" + to_string( (int)p.getOrientation()) + "/"  + to_string(p.getRange()) + "/" + to_string((int)p.getFOV());
     return key;
 }
 

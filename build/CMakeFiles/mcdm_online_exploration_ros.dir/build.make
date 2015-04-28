@@ -49,37 +49,37 @@ include CMakeFiles/mcdm_online_exploration_ros.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/mcdm_online_exploration_ros.dir/flags.make
 
-CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.o: CMakeFiles/mcdm_online_exploration_ros.dir/flags.make
-CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.o: ../test/test_mcdmfunction.cpp
+CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o: CMakeFiles/mcdm_online_exploration_ros.dir/flags.make
+CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o: ../main.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles $(CMAKE_PROGRESS_1)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.o -c /home/pulver/projects/mcdm_online_exploration_ros/test/test_mcdmfunction.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o -c /home/pulver/projects/mcdm_online_exploration_ros/main.cpp
 
-CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/pulver/projects/mcdm_online_exploration_ros/test/test_mcdmfunction.cpp > CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.i
+CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/pulver/projects/mcdm_online_exploration_ros/main.cpp > CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.i
 
-CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/pulver/projects/mcdm_online_exploration_ros/test/test_mcdmfunction.cpp -o CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.s
+CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/pulver/projects/mcdm_online_exploration_ros/main.cpp -o CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.s
 
-CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.o.requires:
-.PHONY : CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.o.requires
+CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o.requires:
+.PHONY : CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o.requires
 
-CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.o.provides: CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.o.requires
-	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.o.provides.build
-.PHONY : CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.o.provides
+CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o.provides: CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o.requires
+	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o.provides.build
+.PHONY : CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o.provides
 
-CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.o.provides.build: CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.o
+CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o.provides.build: CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o
 
 # Object files for target mcdm_online_exploration_ros
 mcdm_online_exploration_ros_OBJECTS = \
-"CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.o"
+"CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o"
 
 # External object files for target mcdm_online_exploration_ros
 mcdm_online_exploration_ros_EXTERNAL_OBJECTS =
 
-mcdm_online_exploration_ros: CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.o
+mcdm_online_exploration_ros: CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o
 mcdm_online_exploration_ros: CMakeFiles/mcdm_online_exploration_ros.dir/build.make
 mcdm_online_exploration_ros: liblib.a
 mcdm_online_exploration_ros: CMakeFiles/mcdm_online_exploration_ros.dir/link.txt
@@ -90,7 +90,7 @@ mcdm_online_exploration_ros: CMakeFiles/mcdm_online_exploration_ros.dir/link.txt
 CMakeFiles/mcdm_online_exploration_ros.dir/build: mcdm_online_exploration_ros
 .PHONY : CMakeFiles/mcdm_online_exploration_ros.dir/build
 
-CMakeFiles/mcdm_online_exploration_ros.dir/requires: CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.o.requires
+CMakeFiles/mcdm_online_exploration_ros.dir/requires: CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o.requires
 .PHONY : CMakeFiles/mcdm_online_exploration_ros.dir/requires
 
 CMakeFiles/mcdm_online_exploration_ros.dir/clean:

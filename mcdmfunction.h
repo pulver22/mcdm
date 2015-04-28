@@ -9,14 +9,15 @@
     * This class implements the MCDM evaluation function
     * to evaluate the utility of the frontiers.
     */
+using namespace dummy;
 class MCDMFunction 
 {
 
 public:
     MCDMFunction();
     ~MCDMFunction();
-    double evaluateFrontier(Pose p, import_map::Map &map);
-    EvaluationRecords* evaluateFrontiers(list< Pose >& frontiers, import_map::Map &map);
+    double evaluateFrontier(Pose p,Map &map);
+    EvaluationRecords* evaluateFrontiers(list< Pose >& frontiers, Map &map);
     Pose selectNewPose(EvaluationRecords* evaluationRecords);
     
 protected:

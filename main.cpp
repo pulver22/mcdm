@@ -2,33 +2,53 @@
 #include "map.h"
 #include "ray.h"
 #include "mcdmfunction.h"
+# define PI           3.14159265358979323846  /* pi */
 
 
 using namespace std;
-using namespace import_map;
+using namespace dummy;
 
 int main(int argc, char **argv) {
     
-    ifstream infile;
-    infile.open(argv[1]);
-    Map map = Map(infile,100);
-    Pose initialPose = map.getRobotPosition();
+    //ifstream infile;
+    //infile.open(argv[1]);
+    ifstream infile("/home/pulver/Dropbox/Università/Laurea Magistrale/Thesis/testmap10.pgm");
+    Map map = Map(infile,10);
+    cout << map.numGridCols << " : "<<  map.numGridCols << endl;
+    // Pose initialPose = map.getRobotPosition();
+    Pose initialPose = Pose(34,40,0,2,30);
     Pose target = initialPose;
     Ray ray;
     MCDMFunction function ;
     int sensedCells = 0;
-    int totalFreeCells = map.getTotalFreeCells() ;
+    long totalFreeCells = map.getTotalFreeCells() ;
+    int count = 0;
+    //cout << "total free cells in the main: " << totalFreeCells << endl;
     
     while(sensedCells < 0.9 * totalFreeCells){
-	int count = 0;
+
+
 	int x = target.getX();
 	int y = target.getY();
 	int orientation = target.getOrientation();
-	int range = target.getR();
-	double FOV = target.getPhi();
-	ray.findCandidatePositions(map,x,y,orientation,FOV,range);
+	int range = target.getRange();
+	double FOV = target.getFOV();
+	Map *map2 = &map;
+	ray.findCandidatePositions(map2,x,y,orientation,FOV,range);
 	vector<pair<int, int> > candidatePosition = ray.getCandidatePositions();
-	sensedCells = sensedCells + ray.getInformationGain(map,x,y,orientation,FOV,range);
+	
+	//print the candidate position 
+	/*
+	for(vector<pair<int,int>>::iterator it=candidatePosition.begin(); it != candidatePosition.end(); it++){
+	    cout << (*it).first << " : " << (*it).second << endl;
+	}
+	*/
+	
+	int newSensedCells = sensedCells + ray.getInformationGain(map2,x,y,orientation,FOV,range);
+	cout << " Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;;
+	if(newSensedCells == sensedCells){
+	    break;
+	}
 	
 	// need to convert from a <int,int pair> to a Pose with also orientation,laser range and angle
 	list<Pose> frontiers;
@@ -39,10 +59,18 @@ int main(int argc, char **argv) {
 	    frontiers.push_back(p1);
 	    frontiers.push_back(p2);
 	}
+	
+	
 	EvaluationRecords *record = function.evaluateFrontiers(frontiers,map);
+	cout << "Evaluation Record obtained" << endl;
 	target = function.selectNewPose(record);
+	ray.performSensingOperation(map2,x,y,orientation,FOV,range);
 	cout << "Round : " << count<< endl;
-	count++;
+	count = count + 1;
+	sensedCells = newSensedCells;
+	
+	//ATTENTION:NEED TO BE IMPLEMENTED A THREAD TO STOP EXECUTION TO ALLOW ROBOT TO SCAN FOR GAS
+	//NOTE: not requested for testing purpose
     }
     
     cout << "Map explored" << endl;

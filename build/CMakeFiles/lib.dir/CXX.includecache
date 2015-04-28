@@ -17,14 +17,10 @@ string
 -
 iostream
 -
-utility
--
 pose.h
 .././pose.h
 
 .././pose.h
-functional
--
 
 /home/pulver/projects/mcdm_online_exploration_ros/Criteria/criteriaName.h
 
@@ -54,16 +50,6 @@ map.h
 vector
 -
 
-/home/pulver/projects/mcdm_online_exploration_ros/Criteria/mcdmweightreader.cpp
-mcdmweightreader.h
-/home/pulver/projects/mcdm_online_exploration_ros/Criteria/mcdmweightreader.h
-list
--
-string.h
--
-criteriaName.h
-/home/pulver/projects/mcdm_online_exploration_ros/Criteria/criteriaName.h
-
 /home/pulver/projects/mcdm_online_exploration_ros/Criteria/mcdmweightreader.h
 weightmatrix.h
 /home/pulver/projects/mcdm_online_exploration_ros/Criteria/weightmatrix.h
@@ -83,16 +69,6 @@ pose.h
 /home/pulver/projects/mcdm_online_exploration_ros/Criteria/pose.h
 map.h
 /home/pulver/projects/mcdm_online_exploration_ros/Criteria/map.h
-
-/home/pulver/projects/mcdm_online_exploration_ros/Criteria/weightmatrix.cpp
-weightmatrix.h
-/home/pulver/projects/mcdm_online_exploration_ros/Criteria/weightmatrix.h
-iostream
--
-sstream
--
-criteriaName.h
-/home/pulver/projects/mcdm_online_exploration_ros/Criteria/criteriaName.h
 
 /home/pulver/projects/mcdm_online_exploration_ros/Criteria/weightmatrix.h
 functional

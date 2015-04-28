@@ -1,5 +1,5 @@
 FILE(REMOVE_RECURSE
-  "CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.o"
+  "CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o"
   "mcdm_online_exploration_ros.pdb"
   "mcdm_online_exploration_ros"
 )

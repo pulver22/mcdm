@@ -1,7 +1,6 @@
 #include "pose.h"
 #include <cmath>
 
-namespace dummy{
 
 Pose::Pose(int aX, int aY, int orientation, int range, double FOV)
 {
@@ -74,6 +73,6 @@ void Pose::setInformationGain(int value)
 }
 
 
-}
+
 
 

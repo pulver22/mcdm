@@ -14,7 +14,7 @@
 
 
 using namespace std;
-using namespace import_map;
+using namespace dummy;
 /* create a list of criteria with name and <encoded_name,weight> pair after reading that from a file
  */
 MCDMFunction::MCDMFunction() //:
@@ -56,25 +56,38 @@ MCDMFunction::~MCDMFunction()
 Criterion * MCDMFunction::createCriterion(string name, double weight)
 {
     Criterion *toRet = NULL;
-    if(name == string(SENSING_TIME)){
-	SensingTimeCriterion toRet =  SensingTimeCriterion(weight);
-    } else if (name == string(INFORMATION_GAIN)) {
-	InformationGainCriterion toRet =  InformationGainCriterion(weight);
-    } else if (name == string(TRAVEL_DISTANCE)){
-	TravelDistanceCriterion toRet =  TravelDistanceCriterion(weight);
+    if(name == (SENSING_TIME)){
+	toRet =  new SensingTimeCriterion(weight);
+    } else if (name == (INFORMATION_GAIN)) {
+	toRet = new InformationGainCriterion(weight);
+    } else if (name == (TRAVEL_DISTANCE)){
+	toRet = new  TravelDistanceCriterion(weight);
     }
     return toRet;
 }
 
 // For a candidate frontier, calculate its evaluation regarding to considered criteria and put it in the evaluation record (through 
 //the evaluate method provided by Criterion class)
-double MCDMFunction::evaluateFrontier( Pose p,  import_map::Map &map)
+double MCDMFunction::evaluateFrontier( Pose p,  dummy::Map &map)
 {
+    //cout << activeCriteria.size() << endl;
     //Should keep the ordering of the criteria and the weight of each criteria combinations
-   for (vector<Criterion *>::iterator it = activeCriteria.begin(); it != activeCriteria.end(); it++){
-       Criterion *c = *it;
-
-       c->evaluate(p,map);
+   /*for (vector<Criterion *>::iterator it = activeCriteria.begin(); it != activeCriteria.end(); it++){
+	Criterion *c = *it;
+	string name = c->getName();
+	double weight = c->getWeight();
+	cout << name <<" " << weight <<  endl;
+	c->evaluate(p,map);
+	cout << "Alive in evaluateFrontier" << endl;
+   }*/
+   
+      for (int i =0; i < activeCriteria.size(); i++){
+	Criterion *c = activeCriteria.at(i);
+	//string name = c->getName();
+	//double weight = c->getWeight();
+	//cout << name <<" " << weight <<  endl;
+	c->evaluate(p,map);
+	//cout << "Alive in evaluateFrontier" << endl;
    }
    
     //for loop, over the criteria, to compute the utility of the frontier.
@@ -98,6 +111,7 @@ EvaluationRecords* MCDMFunction::evaluateFrontiers( std::list< Pose >& frontiers
 	(criteria.at(pair.first))->clean();
     }
     
+    
     /*
     //Get the list of activeCriteria
     if(activeCriteria.size() == 0){
@@ -112,7 +126,6 @@ EvaluationRecords* MCDMFunction::evaluateFrontiers( std::list< Pose >& frontiers
     }
     
     //ldbg << "number of active criteria: "<<activeCriteria->size() << endl;
-
   
     //Evaluate the frontiers
     list<Pose>::iterator it2 ;
@@ -121,25 +134,35 @@ EvaluationRecords* MCDMFunction::evaluateFrontiers( std::list< Pose >& frontiers
 	double value = 0.0;
 	value = evaluateFrontier(f, map);
     }
-    
+
     
     //Normalize the values
     for(vector<Criterion *>::iterator it = activeCriteria.begin(); it != activeCriteria.end(); ++it){
 	(*it)->normalize();
     }
     
-    
     //Create the EvaluationRecords
     //         lprint << "#number of frontier to evaluate: "<<frontiers.size()<<endl;
     EvaluationRecords *toRet = new EvaluationRecords();
     
+    
     // analyze every single frontier f, and add in the evaluationRecords <frontier, evaluation>
     for(list<Pose>::iterator i=frontiers.begin(); i!=frontiers.end(); i++){
-
+	
 	Pose f = *i;
 	// order criteria depending on the considered frontier
 	//qsort(&activeCriteria,activeCriteria.size(),sizeof(Criterion),CriterionComparator(f));
+	
+	//ATTENTION: doesn't work
+	//NOTE: maybe work
 	sort(activeCriteria.begin(),activeCriteria.end(),CriterionComparator(f));
+	/*
+	cout << "criteria ordered: " << endl;
+	for (int i =0; i < activeCriteria.size(); i++){
+	    Criterion *c = activeCriteria.at(i);
+	    cout << c->getName() << ": " << c->getEvaluation(f) << endl;
+	}*/
+	   
 	//apply the choquet integral
 	Criterion *lastCrit = NULL;
 	double finalValue = 0.0;
@@ -169,8 +192,7 @@ EvaluationRecords* MCDMFunction::evaluateFrontiers( std::list< Pose >& frontiers
 	    }
 	    lastCrit = c;
 	}
-	cout << f.getX() <<";"<<f.getY();
-	cout <<";"<<finalValue << ";"<< endl;
+	cout <<"X: "<< f.getX() <<"; Y : " <<f.getY()<<", Orientation :"<<f.getOrientation() <<", Evaluation : "<<finalValue << endl;
 	toRet->putEvaluation(f, finalValue);
     }
 //         }
@@ -187,18 +209,19 @@ EvaluationRecords* MCDMFunction::evaluateFrontiers( std::list< Pose >& frontiers
 Pose MCDMFunction::selectNewPose(EvaluationRecords *evaluationRecords)
 {
     Pose newTarget;
-    double value;
+    double value = 0;
     unordered_map<string,double> evaluation = evaluationRecords->getEvaluations();
     for(unordered_map<string,double>::iterator it = evaluation.begin(); it != evaluation.end(); it++){
 	string tmp = (*it).first;
 	Pose p = evaluationRecords->getPoseFromEncoding(tmp);
-	if(value == 0){
-	    newTarget = p ;
-	}else if(value < (*it).second){
+	if(value < (*it).second){
 		newTarget = p;
-	    } else continue;
+		value = (*it).second;
+	    }//else continue;
     }
     
+    cout << "New target : " << "x = "<<newTarget.getX() <<", y = "<< newTarget.getY() << ", orientation = " 
+	    <<newTarget.getOrientation() << ", Evaluation: "<< value << endl;
     return newTarget;
 }
 

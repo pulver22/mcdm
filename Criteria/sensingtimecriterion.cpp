@@ -31,10 +31,10 @@ SensingTimeCriterion::~SensingTimeCriterion()
 
 }
 
-double SensingTimeCriterion::SensingTimeCriterion::evaluate(Pose p, import_map::Map &map)
+double SensingTimeCriterion::SensingTimeCriterion::evaluate(Pose p,dummy::Map &map)
 {
     double sensingTime;
-    float phi = p.getPhi();
+    float phi = p.getFOV();
     if (phi <= 30){
 	sensingTime = 0.2;
     }else if (phi >30 & phi <= 60){
@@ -46,12 +46,14 @@ double SensingTimeCriterion::SensingTimeCriterion::evaluate(Pose p, import_map::
     }else {
 	sensingTime = 1;
     }
-    insertEvaluation(p,sensingTime);
+    Criterion::insertEvaluation(p,sensingTime);
+    return sensingTime;
 }
 
+/*
 void SensingTimeCriterion::insertEvaluation(Pose& p, double value)
 {
     insertEvaluation(p,value);
 }
-
+*/
 

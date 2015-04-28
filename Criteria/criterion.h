@@ -24,25 +24,26 @@
 
 //using namespace import_map;
 using namespace std;
+using namespace dummy;
 class Criterion
 {
     public:
 	//Constructor and destructor
 	Criterion();
-	Criterion(const string &name, double weight,bool highGood);
+	Criterion( string name, double weight,bool highGood);
 	~Criterion();
 	
 	//Other methods
-	virtual double evaluate( Pose p, import_map::Map &map) {};
+	virtual double evaluate( Pose p, Map &map) {};
 	double getEvaluation(Pose & p) const;
 	void insertEvaluation(Pose& p, double value);
 	void clean();
 	void normalize();
 	
 	//Setters and getters
-	const string &getName() const;
-	double getWeight() const;
-	void setName(const string &name);
+	string getName() ;
+	double getWeight() ;
+	void setName( string name);
 	void setWeight(double weight);
     private:
 	void normalizeHighGood();

@@ -5,8 +5,8 @@
 #include "math.h"
 #include "map.h"
 
-namespace dummy{
 
+using namespace dummy;
 class Ray
 {
   
@@ -35,5 +35,5 @@ private:
   int numGridRows;
 };
 
-}
+
 #endif

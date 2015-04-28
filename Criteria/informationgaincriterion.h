@@ -12,7 +12,7 @@ class InformationGainCriterion : public Criterion
 public:
     InformationGainCriterion(double weight);
     virtual ~InformationGainCriterion();
-    double evaluate( Pose p, import_map::Map &map);
+    double evaluate( Pose p, dummy::Map &map);
 private:
     void normalize(int minSensedX, int arg2);
     int* intersect(int p1x, int p1y, int p2x, int p2y, Pose p);

@@ -381,6 +381,30 @@ graphpose.cpp.s:
 	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/graphpose.cpp.s
 .PHONY : graphpose.cpp.s
 
+main.o: main.cpp.o
+.PHONY : main.o
+
+# target to build an object file
+main.cpp.o:
+	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o
+.PHONY : main.cpp.o
+
+main.i: main.cpp.i
+.PHONY : main.i
+
+# target to preprocess a source file
+main.cpp.i:
+	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.i
+.PHONY : main.cpp.i
+
+main.s: main.cpp.s
+.PHONY : main.s
+
+# target to generate assembly for a file
+main.cpp.s:
+	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.s
+.PHONY : main.cpp.s
+
 map.o: map.cpp.o
 .PHONY : map.o
 
@@ -453,29 +477,29 @@ pose.cpp.s:
 	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/pose.cpp.s
 .PHONY : pose.cpp.s
 
-test/test_mcdmfunction.o: test/test_mcdmfunction.cpp.o
-.PHONY : test/test_mcdmfunction.o
+ray.o: ray.cpp.o
+.PHONY : ray.o
 
 # target to build an object file
-test/test_mcdmfunction.cpp.o:
-	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.o
-.PHONY : test/test_mcdmfunction.cpp.o
+ray.cpp.o:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/ray.cpp.o
+.PHONY : ray.cpp.o
 
-test/test_mcdmfunction.i: test/test_mcdmfunction.cpp.i
-.PHONY : test/test_mcdmfunction.i
+ray.i: ray.cpp.i
+.PHONY : ray.i
 
 # target to preprocess a source file
-test/test_mcdmfunction.cpp.i:
-	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.i
-.PHONY : test/test_mcdmfunction.cpp.i
+ray.cpp.i:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/ray.cpp.i
+.PHONY : ray.cpp.i
 
-test/test_mcdmfunction.s: test/test_mcdmfunction.cpp.s
-.PHONY : test/test_mcdmfunction.s
+ray.s: ray.cpp.s
+.PHONY : ray.s
 
 # target to generate assembly for a file
-test/test_mcdmfunction.cpp.s:
-	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/test/test_mcdmfunction.cpp.s
-.PHONY : test/test_mcdmfunction.cpp.s
+ray.cpp.s:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/ray.cpp.s
+.PHONY : ray.cpp.s
 
 # Help Target
 help:
@@ -518,6 +542,9 @@ help:
 	@echo "... graphpose.o"
 	@echo "... graphpose.i"
 	@echo "... graphpose.s"
+	@echo "... main.o"
+	@echo "... main.i"
+	@echo "... main.s"
 	@echo "... map.o"
 	@echo "... map.i"
 	@echo "... map.s"
@@ -527,9 +554,9 @@ help:
 	@echo "... pose.o"
 	@echo "... pose.i"
 	@echo "... pose.s"
-	@echo "... test/test_mcdmfunction.o"
-	@echo "... test/test_mcdmfunction.i"
-	@echo "... test/test_mcdmfunction.s"
+	@echo "... ray.o"
+	@echo "... ray.i"
+	@echo "... ray.s"
 .PHONY : help
 
 

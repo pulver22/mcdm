@@ -24,7 +24,7 @@ Criterion::Criterion()
 
 }
 
-Criterion:: Criterion(const string &name, double weight, bool highGood):
+Criterion:: Criterion(string name, double weight, bool highGood):
     name(name), weight(weight),highGood(highGood)
 {
 
@@ -98,18 +98,17 @@ double Criterion::getEvaluation(Pose &p) const
     return value;
 }
 
-
-const string& Criterion::getName() const
+string Criterion::getName() 
 {
     return name;
 }
 
-double Criterion::getWeight() const
+double Criterion::getWeight()
 {
     return weight;
 }
 
-void Criterion::setName(const string& name)
+void Criterion::setName( string name)
 {
     this->name = name;
 }

@@ -15,6 +15,7 @@ CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.o: ../Criteria/criterioncomp
 
 CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o: .././map.h
 CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o: .././pose.h
+CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o: .././ray.h
 CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o: ../Criteria/criteriaName.h
 CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o: ../Criteria/criterion.h
 CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o: ../Criteria/informationgaincriterion.cpp
@@ -75,4 +76,9 @@ CMakeFiles/lib.dir/mcdmfunction.cpp.o: ../mcdmfunction.h
 
 CMakeFiles/lib.dir/pose.cpp.o: ../pose.cpp
 CMakeFiles/lib.dir/pose.cpp.o: ../pose.h
+
+CMakeFiles/lib.dir/ray.cpp.o: ../map.h
+CMakeFiles/lib.dir/ray.cpp.o: ../pose.h
+CMakeFiles/lib.dir/ray.cpp.o: ../ray.cpp
+CMakeFiles/lib.dir/ray.cpp.o: ../ray.h
 
