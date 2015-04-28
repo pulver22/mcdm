@@ -43,6 +43,7 @@ protected:
   std::vector<int> map;				//vector containing the original map as binary matrix (0 -> free, 1 -> obstacle)
   void createMap(std::ifstream& infile);
   void createGrid(int resolution);
+  void createNewMap();
   int numRows;
   int numCols;
   std::vector<std::pair<int, int> > edgePoints;

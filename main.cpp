@@ -13,10 +13,11 @@ int main(int argc, char **argv) {
     //ifstream infile;
     //infile.open(argv[1]);
     ifstream infile("/home/pulver/Dropbox/Università/Laurea Magistrale/Thesis/testmap10.pgm");
-    Map map = Map(infile,10);
+    Map map = Map(infile,35);
     cout << map.numGridCols << " : "<<  map.numGridCols << endl;
     // Pose initialPose = map.getRobotPosition();
-    Pose initialPose = Pose(34,40,0,2,30);
+    //x,y,orientation,range,angle
+    Pose initialPose = Pose(54,54,0,10,180);
     Pose target = initialPose;
     Ray ray;
     MCDMFunction function ;
@@ -45,7 +46,7 @@ int main(int argc, char **argv) {
 	*/
 	
 	int newSensedCells = sensedCells + ray.getInformationGain(map2,x,y,orientation,FOV,range);
-	cout << " Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;;
+	cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;;
 	if(newSensedCells == sensedCells){
 	    break;
 	}
@@ -56,8 +57,12 @@ int main(int argc, char **argv) {
 	for(it; it != candidatePosition.end(); it++){
 	    Pose p1 = Pose((*it).first,(*it).second,0,10,180);
 	    Pose p2 = Pose((*it).first,(*it).second,180,10,180);
+	    Pose p3 = Pose((*it).first,(*it).second,90,10,180);
+	    Pose p4 = Pose((*it).first,(*it).second,270,10,180);
 	    frontiers.push_back(p1);
 	    frontiers.push_back(p2);
+	    //frontiers.push_back(p3);
+	    //frontiers.push_back(p4);
 	}
 	
 	

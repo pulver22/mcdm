@@ -192,7 +192,7 @@ EvaluationRecords* MCDMFunction::evaluateFrontiers( std::list< Pose >& frontiers
 	    }
 	    lastCrit = c;
 	}
-	cout <<"X: "<< f.getX() <<"; Y : " <<f.getY()<<", Orientation :"<<f.getOrientation() <<", Evaluation : "<<finalValue << endl;
+	//cout <<"X: "<< f.getX() <<"; Y : " <<f.getY()<<", Orientation :"<<f.getOrientation() <<", Evaluation : "<<finalValue << endl;
 	toRet->putEvaluation(f, finalValue);
     }
 //         }

@@ -7,6 +7,7 @@ Map::Map(std::ifstream& infile, int resolution)
 {
   Map::createMap(infile);
   Map::createGrid(resolution);
+  Map::createNewMap();
 }
 
 Map::Map()
@@ -57,8 +58,8 @@ void Map::createGrid(int resolution)
 {
   //cluster cells into grid
   int clusterSize = (int)((double)(100/resolution));
-  Map::numGridRows = numRows/clusterSize;
-  Map::numGridCols = numCols/clusterSize;
+  Map::numGridRows = (int)numRows/clusterSize;
+  Map::numGridCols = (int)numCols/clusterSize;
   int gridRow = 0, gridCol = 0;
   totalFreeCells = numGridCols * numGridRows;
   //cout << "Total cell: " << totalFreeCells << endl;
@@ -86,6 +87,25 @@ void Map::createGrid(int resolution)
       }
     }
   }
+}
+
+void Map::createNewMap()
+{
+    std::ofstream f("/home/pulver/Desktop/test.pgm");
+    int columns = getNumGridCols();
+    int rows = getNumGridRows();
+    
+    f << "P2\n" << columns << " " << rows << "\n255\n";
+    
+    for(int row = 0; row < rows; ++row)
+    {
+	for(int col = 0; col < columns; ++col)
+	{
+	    if(getGridValue(row,col) == 0) f <<  255 << " ";
+	    else f <<  0 << " ";
+	}
+	f << "\n";
+    }
 }
 
 
