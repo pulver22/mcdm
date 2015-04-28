@@ -3,6 +3,8 @@
 #include "ray.h"
 #include "mcdmfunction.h"
 # define PI           3.14159265358979323846  /* pi */
+#include <unistd.h>
+
 
 
 using namespace std;
@@ -16,6 +18,7 @@ int main(int argc, char **argv) {
     Map map = Map(infile,35);
     cout << map.numGridCols << " : "<<  map.numGridCols << endl;
     // Pose initialPose = map.getRobotPosition();
+    
     //x,y,orientation,range,angle
     Pose initialPose = Pose(54,54,0,10,180);
     Pose target = initialPose;
@@ -24,11 +27,11 @@ int main(int argc, char **argv) {
     int sensedCells = 0;
     long totalFreeCells = map.getTotalFreeCells() ;
     int count = 0;
+    //amount of time the robot should do nothing for scanning the environment ( final value expressed in second)
+    unsigned int microseconds = 5 * 1000 * 1000 ;
     //cout << "total free cells in the main: " << totalFreeCells << endl;
     
     while(sensedCells < 0.9 * totalFreeCells){
-
-
 	int x = target.getX();
 	int y = target.getY();
 	int orientation = target.getOrientation();
@@ -76,6 +79,7 @@ int main(int argc, char **argv) {
 	
 	//ATTENTION:NEED TO BE IMPLEMENTED A THREAD TO STOP EXECUTION TO ALLOW ROBOT TO SCAN FOR GAS
 	//NOTE: not requested for testing purpose
+	usleep(microseconds);
     }
     
     cout << "Map explored" << endl;

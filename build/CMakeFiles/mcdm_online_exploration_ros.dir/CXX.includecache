@@ -59,6 +59,8 @@ ray.h
 /home/pulver/projects/mcdm_online_exploration_ros/ray.h
 mcdmfunction.h
 /home/pulver/projects/mcdm_online_exploration_ros/mcdmfunction.h
+unistd.h
+-
 
 /home/pulver/projects/mcdm_online_exploration_ros/map.h
 fstream
