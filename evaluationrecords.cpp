@@ -15,7 +15,7 @@ EvaluationRecords::~EvaluationRecords()
     //delete evaluations;
 }
 
-void EvaluationRecords::putEvaluation(Pose frontier, double value)
+void EvaluationRecords::putEvaluation(Pose& frontier, double value)
 {
     if(evaluations.empty()){
 	minValue = value;
@@ -33,7 +33,7 @@ void EvaluationRecords::putEvaluation(Pose frontier, double value)
 
 }
 
-double EvaluationRecords::getEvaluation(Pose frontier)
+double EvaluationRecords::getEvaluation(Pose& frontier)
 {
     string s = getEncodedKey(frontier);
     return evaluations[s];
@@ -44,7 +44,7 @@ unordered_map<string, double> EvaluationRecords::getEvaluations()
     return evaluations;
 }
 
-bool EvaluationRecords::contains(Pose frontier)
+bool EvaluationRecords::contains(Pose& frontier)
 {
     string s = getEncodedKey(frontier);
     unordered_map<string,double>::const_iterator got = evaluations.find(s);
@@ -88,7 +88,7 @@ vector<Pose> EvaluationRecords::getFrontiers()
 
 
 
-void EvaluationRecords::removeFrontier(Pose frontier)
+void EvaluationRecords::removeFrontier(Pose& frontier)
 {        
     for(unordered_map<string,double>::iterator it = evaluations.begin(); it != evaluations.end(); it++){
 	string s1 = (*it).first;
@@ -129,7 +129,7 @@ string EvaluationRecords::getEncodedKey(Pose& p)
     return key;
 }
 
-Pose EvaluationRecords::getPoseFromEncoding(string encoding)
+Pose EvaluationRecords::getPoseFromEncoding(string &encoding)
 {
 	
 	stringstream ss;

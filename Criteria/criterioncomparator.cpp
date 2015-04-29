@@ -10,7 +10,7 @@ CriterionComparator::~CriterionComparator()
 
 }
 
-bool CriterionComparator::operator()(const Criterion *c1, const Criterion *c2 )
+bool CriterionComparator::operator()( Criterion *c1,  Criterion *c2 )
 {
     
     double value1 =c1->getEvaluation(p);

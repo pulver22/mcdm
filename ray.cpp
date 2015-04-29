@@ -12,7 +12,7 @@ Ray::Ray()
 }
 
 
-void Ray::findCandidatePositions(dummy::Map *map, int posX, int posY, int orientation, double FOV, int range)
+void Ray::findCandidatePositions(dummy::Map &map, int posX, int posY, int orientation, double FOV, int range)
 {
   
   for(double phi = (PI/2 - FOV/2); phi < (PI/2 + FOV/2); phi += (FOV/64))		//range through the circular sector
@@ -70,7 +70,7 @@ void Ray::findCandidatePositions(dummy::Map *map, int posX, int posY, int orient
       
       //std::cout << mapY << " " << mapX << std::endl;
       
-      if((map->getGridValue((int)mapX,(int)mapY) != 2) || (u + 1 == range && map->getGridValue((int)mapX,(int)mapY) == 2 )) 
+      if((map.getGridValue((int)mapX,(int)mapY) != 2) || (u + 1 == range && map.getGridValue((int)mapX,(int)mapY) == 2 )) 
       {
 	hit = 1;
 	int newposition = 1;
@@ -105,7 +105,7 @@ void Ray::empyCandidatePositions()
 }
 
 
-void Ray::setGrid(const dummy::Map* map)
+void Ray::setGrid(const dummy::Map& map)
 {
   
   while(grid.size() > 0)
@@ -113,17 +113,17 @@ void Ray::setGrid(const dummy::Map* map)
     grid.pop_back();
   }
   
-  Ray::numGridCols = map->getNumGridCols();
-  Ray::numGridRows = map->getNumGridRows();
+  Ray::numGridCols = map.getNumGridCols();
+  Ray::numGridRows = map.getNumGridRows();
   
   
   for (int i = 0; i < numGridCols*numGridRows; ++i)
   {
-    Ray::grid.push_back(map->getGridValue(i));
+    Ray::grid.push_back(map.getGridValue(i));
   }
 }
 
-int Ray::getInformationGain(const dummy::Map* map, int posX, int posY, int orientation, double FOV, int range)
+int Ray::getInformationGain(const dummy::Map& map, int posX, int posY, int orientation, double FOV, int range)
 {
   
   setGrid(map);
@@ -210,7 +210,7 @@ int Ray::getGridValue(int i, int j)
 
 
 
-void Ray::performSensingOperation(dummy::Map *map, int posX, int posY, int orientation, double FOV, int range)
+void Ray::performSensingOperation(Map& map, int posX, int posY, int orientation, double FOV, int range)
 {
   
   for(double phi = (PI/2 - FOV/2); phi < (PI/2 + FOV/2); phi += (FOV/64))		//range through the circular sector
@@ -269,14 +269,14 @@ void Ray::performSensingOperation(dummy::Map *map, int posX, int posY, int orien
       
       //std::cout << phi << " " << u << " " << hit << " " << mapY << " " << mapX << std::endl;
       
-      if(map->getGridValue((int)mapX,(int)mapY) == 1) hit = 1;		//hit set to 1 if an obstacle is found
+      if(map.getGridValue((int)mapX,(int)mapY) == 1) hit = 1;		//hit set to 1 if an obstacle is found
       
       if(decimalY > 0.3 && decimalY < 0.7 && decimalX > 0.3 && decimalX < 0.7)
       {
       
-      if(map->getGridValue((int)mapX,(int)mapY) == 0)			//free cell found
+      if(map.getGridValue((int)mapX,(int)mapY) == 0)			//free cell found
       {
-	map->setGridValue(2, (int)mapX, (int)mapY);
+	map.setGridValue(2, (int)mapX, (int)mapY);
 	//std::cout << mapY << " " << mapX << std::endl;
       }
       }

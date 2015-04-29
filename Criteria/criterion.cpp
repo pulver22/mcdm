@@ -39,14 +39,19 @@ void Criterion::insertEvaluation( Pose &p, double value)
 {
 //    if(evaluation.contains(point))
 //        lprint << "#repeated frontier!!!" << endl;
-    EvaluationRecords record = EvaluationRecords();
-    string pose = record.getEncodedKey(p);
+    
+   // string pose = getEncodedKey(p);
+    EvaluationRecords *record = new EvaluationRecords();
+    string pose = record->getEncodedKey(p);
     evaluation.emplace(pose, value);
     
     if(value >= maxValue)
-        maxValue = value;
+	maxValue = value;
     if(value <= minValue)
         minValue = value;
+    
+    delete record;
+    //pose.clear();
 }
 
 void Criterion::clean()
@@ -92,10 +97,14 @@ void Criterion::normalizeLowGood()
 
 double Criterion::getEvaluation(Pose &p) const
 {
-    EvaluationRecords record = EvaluationRecords();
-    string pose = record.getEncodedKey(p);
+   
+    //string pose = getEncodedKey(p);
+    EvaluationRecords *record = new EvaluationRecords();
+    string pose = record->getEncodedKey(p);
     double value = evaluation.at(pose);
+    delete record;
     return value;
+    
 }
 
 string Criterion::getName() 
@@ -118,6 +127,27 @@ void Criterion::setWeight(double weight)
     this->weight = weight;
 }
 
+string Criterion::getEncodedKey(Pose &p)
+{
+ 
+    
+   
+    string key =  to_string(p.getX()) + "/" + to_string( p.getY()) + "/" + to_string( p.getOrientation()) + "/" + to_string(p.getRange()) +"/" + to_string(p.getFOV());
+    
+    /*
+    string key =  to_string(p.getX());
+    key.append( "/");
+    key.append( to_string( p.getY()));
+    key.append( "/");
+    key.append( to_string(p.getOrientation())) ;
+    key.append( "/");
+    key.append(to_string(p.getRange()));
+    key.append( "/"); 
+    key.append(to_string(p.getFOV()));
+    */
 
+    
+    return key;
+}
 
 

@@ -14,7 +14,7 @@ InformationGainCriterion::~InformationGainCriterion()
 {
 }
 
-double InformationGainCriterion::evaluate(Pose p, Map &map)
+double InformationGainCriterion::evaluate(Pose &p, Map &map)
 {
 
     int px = p.getX();
@@ -178,8 +178,14 @@ double InformationGainCriterion::evaluate(Pose p, Map &map)
     insertEvaluation(p,unExploredMap);
 */
     Ray ray;
-    Map *map2 = &map;
-    double unExploredMap=ray.getInformationGain(map2,px,py,orientation,angle,range);
+    //Map *map2 = &map;
+    double unExploredMap=(double)ray.getInformationGain(map,px,py,orientation,angle,range);
+    /*
+    if (unExploredMap >= 0.5) {
+	Criterion::insertEvaluation(p,unExploredMap);
+    } else {
+	cout<< "No other candidate position that guarantee information gain" << endl;
+    }*/
     Criterion::insertEvaluation(p,unExploredMap);
     return unExploredMap;
 }
@@ -198,6 +204,7 @@ void InformationGainCriterion::normalize (int position, int number)
 
 }
 
+/*
 int* InformationGainCriterion::intersect(int p1x, int p1y, int p2x, int p2y, Pose p)
 {
     float m1, m2, q1, q2;
@@ -225,6 +232,6 @@ int* InformationGainCriterion::intersect(int p1x, int p1y, int p2x, int p2y, Pos
     //return the coordinations of the interesection point
     return (result);
 }
-
+*/
 
 

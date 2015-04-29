@@ -16,7 +16,7 @@ class MCDMFunction
 public:
     MCDMFunction();
     ~MCDMFunction();
-    double evaluateFrontier(Pose p,Map &map);
+    double evaluateFrontier(Pose& p, Map& map);
     EvaluationRecords* evaluateFrontiers(list< Pose >& frontiers, Map &map);
     Pose selectNewPose(EvaluationRecords* evaluationRecords);
     

@@ -34,9 +34,9 @@ class Criterion
 	~Criterion();
 	
 	//Other methods
-	virtual double evaluate( Pose p, Map &map) {};
-	double getEvaluation(Pose & p) const;
-	void insertEvaluation(Pose& p, double value);
+	virtual double evaluate( Pose &p, Map &map) {};
+	double getEvaluation(Pose &p) const;
+	void insertEvaluation(Pose &p, double value);
 	void clean();
 	void normalize();
 	
@@ -48,6 +48,7 @@ class Criterion
     private:
 	void normalizeHighGood();
 	void normalizeLowGood();
+	string getEncodedKey(Pose &p);
   
   protected:
 	string name;

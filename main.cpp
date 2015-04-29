@@ -12,15 +12,22 @@ using namespace dummy;
 
 int main(int argc, char **argv) {
     
-    //ifstream infile;
-    //infile.open(argv[1]);
-    ifstream infile("/home/pulver/Dropbox/Università/Laurea Magistrale/Thesis/testmap10.pgm");
-    Map map = Map(infile,35);
+    ifstream infile;
+    infile.open(argv[1]);
+    int resolution = atoi(argv[2]);
+    //ifstream infile("/home/pulver/Dropbox/Università/Laurea Magistrale/Thesis/testmap10.pgm");
+    Map map = Map(infile,resolution);
     cout << map.numGridCols << " : "<<  map.numGridCols << endl;
     // Pose initialPose = map.getRobotPosition();
     
-    //x,y,orientation,range,angle
-    Pose initialPose = Pose(54,54,0,10,180);
+    // i switched x and y because the map's orientation inside and outside programs are different
+    int initX = atoi(argv[4]);	
+    int initY = atoi(argv[3]);
+    int initOrientation = atoi(argv[5]);
+    double initFov = atoi(argv[7]);
+    int initRange = atoi(argv[6]);
+    //x,y,orientation,range,angle -
+    Pose initialPose = Pose(initX,initY,initOrientation,initRange,initFov);
     Pose target = initialPose;
     Ray ray;
     MCDMFunction function ;
@@ -37,49 +44,62 @@ int main(int argc, char **argv) {
 	int orientation = target.getOrientation();
 	int range = target.getRange();
 	double FOV = target.getFOV();
-	Map *map2 = &map;
-	ray.findCandidatePositions(map2,x,y,orientation,FOV,range);
-	vector<pair<int, int> > candidatePosition = ray.getCandidatePositions();
+	//Map *map2 = &map;
+	ray.findCandidatePositions(map,x,y,orientation,FOV,range);
+	vector<pair<int, int> >candidatePosition = ray.getCandidatePositions();
+	ray.empyCandidatePositions();
 	
-	//print the candidate position 
-	/*
-	for(vector<pair<int,int>>::iterator it=candidatePosition.begin(); it != candidatePosition.end(); it++){
-	    cout << (*it).first << " : " << (*it).second << endl;
+	
+	
+	cout << "-------------------------------------------------" << endl;
+	cout << "Round : " << count<< endl;
+	
+	
+	int newSensedCells = sensedCells + ray.getInformationGain(map,x,y,orientation,FOV,range);
+	cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
+	
+	if(candidatePosition.size() == 0) {
+	    cout << "No other candidate position" << endl;
+	    exit(0);
 	}
-	*/
-	
-	int newSensedCells = sensedCells + ray.getInformationGain(map2,x,y,orientation,FOV,range);
-	cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;;
+	//Can cause the navigation to stop: to fix this problem we should avoid candidate position with infoGain = 0;
+	/*
 	if(newSensedCells == sensedCells){
 	    break;
 	}
+	*/
 	
 	// need to convert from a <int,int pair> to a Pose with also orientation,laser range and angle
 	list<Pose> frontiers;
 	vector<pair<int, int> >::iterator it =candidatePosition.begin();
 	for(it; it != candidatePosition.end(); it++){
-	    Pose p1 = Pose((*it).first,(*it).second,0,10,180);
-	    Pose p2 = Pose((*it).first,(*it).second,180,10,180);
-	    Pose p3 = Pose((*it).first,(*it).second,90,10,180);
-	    Pose p4 = Pose((*it).first,(*it).second,270,10,180);
+	    Pose p1 = Pose((*it).first,(*it).second,0,range,FOV);
+	    Pose p2 = Pose((*it).first,(*it).second,180,range,FOV);
+	    Pose p3 = Pose((*it).first,(*it).second,90,range,FOV);
+	    Pose p4 = Pose((*it).first,(*it).second,270,range,FOV);
 	    frontiers.push_back(p1);
 	    frontiers.push_back(p2);
 	    //frontiers.push_back(p3);
 	    //frontiers.push_back(p4);
 	}
-	
-	
+	cout << "Candidate position: " << candidatePosition.size() << endl;
+	cout <<"Frontiers: "<<  frontiers.size() << endl;
 	EvaluationRecords *record = function.evaluateFrontiers(frontiers,map);
+	//cout << "Record: " << record->size() << endl;
 	cout << "Evaluation Record obtained" << endl;
 	target = function.selectNewPose(record);
-	ray.performSensingOperation(map2,x,y,orientation,FOV,range);
-	cout << "Round : " << count<< endl;
+	ray.performSensingOperation(map,x,y,orientation,FOV,range);
+
+
 	count = count + 1;
 	sensedCells = newSensedCells;
 	
-	//ATTENTION:NEED TO BE IMPLEMENTED A THREAD TO STOP EXECUTION TO ALLOW ROBOT TO SCAN FOR GAS
 	//NOTE: not requested for testing purpose
-	usleep(microseconds);
+	//usleep(microseconds);
+	
+	frontiers.clear();
+	candidatePosition.clear();
+	delete record;
     }
     
     cout << "Map explored" << endl;

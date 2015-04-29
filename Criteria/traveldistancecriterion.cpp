@@ -33,7 +33,7 @@ TravelDistanceCriterion::~TravelDistanceCriterion()
 
 }
 
-double TravelDistanceCriterion::evaluate( Pose p, dummy::Map &map)
+double TravelDistanceCriterion::evaluate( Pose &p, dummy::Map &map)
 {
     Pose robotPosition = map.getRobotPosition();
     double distance = robotPosition.getDistance(p);

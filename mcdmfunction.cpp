@@ -35,20 +35,16 @@ MCDMFunction::MCDMFunction() //:
 	// retrieve the weight of the criterion using the encoded version of the name
 	double weight = matrix->getWeight(matrix->getNameEncoding(name));
 	Criterion *c = createCriterion(name, weight);
-	if(c != NULL)
+	if(c != NULL){
 	    criteria.emplace(name, c);
+	}
     }
 
 }
 
 MCDMFunction::~MCDMFunction()
-{	/*
+{	
     //delete matrix;
-    for (int i= criteria.size()-1; i >=0; i--){
-	criteria.erase(i);
-    }
-    delete criteria;
-    */
 
 }
 
@@ -68,7 +64,7 @@ Criterion * MCDMFunction::createCriterion(string name, double weight)
 
 // For a candidate frontier, calculate its evaluation regarding to considered criteria and put it in the evaluation record (through 
 //the evaluate method provided by Criterion class)
-double MCDMFunction::evaluateFrontier( Pose p,  dummy::Map &map)
+double MCDMFunction::evaluateFrontier( Pose& p,  dummy::Map &map)
 {
     //cout << activeCriteria.size() << endl;
     //Should keep the ordering of the criteria and the weight of each criteria combinations
@@ -191,14 +187,23 @@ EvaluationRecords* MCDMFunction::evaluateFrontiers( std::list< Pose >& frontiers
 		finalValue += tmpValue*weight;
 	    }
 	    lastCrit = c;
+	    //delete c;
 	}
+	
 	//cout <<"X: "<< f.getX() <<"; Y : " <<f.getY()<<", Orientation :"<<f.getOrientation() <<", Evaluation : "<<finalValue << endl;
-	toRet->putEvaluation(f, finalValue);
+	//if(finalValue > 0.1){
+	    toRet->putEvaluation(f, finalValue);
+	//}
+	//delete lastCrit;
     }
 //         }
-    cout << endl;
+    
     
     activeCriteria.clear();
+    /*
+    for(vector<Criterion*>::iterator itActive= activeCriteria.begin();itActive !=activeCriteria.end();itActive++){
+	delete *itActive;
+    }*/
     
     //delete activeCriteria;
     //activeCriteria = NULL;
@@ -207,7 +212,8 @@ EvaluationRecords* MCDMFunction::evaluateFrontiers( std::list< Pose >& frontiers
 }
 
 Pose MCDMFunction::selectNewPose(EvaluationRecords *evaluationRecords)
-{
+{	
+    
     Pose newTarget;
     double value = 0;
     unordered_map<string,double> evaluation = evaluationRecords->getEvaluations();
@@ -220,7 +226,8 @@ Pose MCDMFunction::selectNewPose(EvaluationRecords *evaluationRecords)
 	    }//else continue;
     }
     
-    cout << "New target : " << "x = "<<newTarget.getX() <<", y = "<< newTarget.getY() << ", orientation = " 
+    // i switch x and y to allow debugging graphically looking the image
+    cout << "New target : " << "x = "<<newTarget.getY() <<", y = "<< newTarget.getX() << ", orientation = " 
 	    <<newTarget.getOrientation() << ", Evaluation: "<< value << endl;
     return newTarget;
 }

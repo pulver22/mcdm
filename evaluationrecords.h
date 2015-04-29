@@ -34,13 +34,13 @@ public:
 	* @param frontier the frontier
 	* @param value the utility of the frontier
 	*/
-    void putEvaluation(Pose frontier, double value);
+    void putEvaluation(Pose &frontier, double value);
     /**
 	* Method that return the utility value of the queried frontier
 	* @param frontier the frontier for which we need the evaluation
 	* @return the evaluation of the frontier.
 	*/
-    double getEvaluation(Pose frontier);
+    double getEvaluation(Pose &frontier);
     /**
 	* Method that return all the evaluation stored in this object.
 	* Note that this method does not create a copy of the evaluation so,
@@ -55,7 +55,7 @@ public:
 	* @return <b>true</b> if the frontier is contained into the object; <b>false</b> otherwise.
 	*/
 
-    bool contains(Pose frontier);
+    bool contains(Pose &frontier);
     /**
 	* Method that return the number of evaluated frontiers
 	* @return the number of evaluations
@@ -72,9 +72,9 @@ public:
 	* Method that remove a frontier from the evaluation record.
 	* @param frontier the frontier to remove.
 	*/
-    void removeFrontier(Pose frontier);
+    void removeFrontier(Pose &frontier);
     
-    Pose getPoseFromEncoding(string encoding);
+    Pose getPoseFromEncoding(string &encoding);
 
     void normalize();
     string getEncodedKey(Pose& p);

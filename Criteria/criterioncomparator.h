@@ -12,7 +12,7 @@ class CriterionComparator
 public:
     explicit CriterionComparator(Pose& p);
     virtual ~CriterionComparator();
-    bool operator()(const Criterion* c1, const Criterion* c2 );
+    bool operator()(Criterion* c1, Criterion* c2 );
 
 private:
     Pose p;

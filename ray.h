@@ -14,11 +14,11 @@ public:
   
   Ray();
   //~Ray();
-  void findCandidatePositions(dummy::Map *map, int posX, int posY, int orientation, double FOV, int range);
+  void findCandidatePositions(dummy::Map &map, int posX, int posY, int orientation, double FOV, int range);
   std::vector<std::pair<int, int> > getCandidatePositions();
-  void setGrid(const dummy::Map* map);
-  int getInformationGain(const dummy::Map* map, int posX, int posY, int orientation, double FOV, int range);
-  void performSensingOperation(dummy::Map *map, int posX, int posY, int orientation, double FOV, int range);
+  void setGrid(const dummy::Map &map);
+  int getInformationGain(const dummy::Map &map, int posX, int posY, int orientation, double FOV, int range);
+  void performSensingOperation(dummy::Map &map, int posX, int posY, int orientation, double FOV, int range);
   int getGridValue(int i, int j);
   void empyCandidatePositions();
   

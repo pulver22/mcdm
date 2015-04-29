@@ -48,6 +48,7 @@ protected:
   int numCols;
   std::vector<std::pair<int, int> > edgePoints;
   long totalFreeCells;
+  void decreaseFreeCells();
   
 };
 }

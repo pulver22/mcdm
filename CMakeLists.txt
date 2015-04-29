@@ -16,4 +16,4 @@ install(TARGETS mcdm_online_exploration_ros RUNTIME DESTINATION bin)
 add_subdirectory(test)
 
 #c++11
-list( APPEND CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS} -g -ftest-coverage -fprofile-arcs")
+list( APPEND CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS} -O3 -g  -ftest-coverage -fprofile-arcs")

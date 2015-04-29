@@ -31,7 +31,7 @@ SensingTimeCriterion::~SensingTimeCriterion()
 
 }
 
-double SensingTimeCriterion::SensingTimeCriterion::evaluate(Pose p,dummy::Map &map)
+double SensingTimeCriterion::SensingTimeCriterion::evaluate(Pose &p,dummy::Map &map)
 {
     double sensingTime;
     float phi = p.getFOV();

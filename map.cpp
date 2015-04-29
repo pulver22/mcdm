@@ -29,9 +29,17 @@ void Map::createMap(std::ifstream& infile)
   //if(inputLine.compare("P2") != 0) cerr << "Version error" << endl;
   //else cout << "Version : " << inputLine << endl;
 
-  // Second line : comment
- // getline(infile,inputLine);
- // cout << "Comment : " << inputLine << endl;
+    //Second line : comment
+    char comment_char = infile.get();
+    if(comment_char == '#') {
+	    getline(infile,inputLine);
+    } else {
+	    //cout << "No comment in the header" << endl;
+	    ss << comment_char;
+    }
+    //Following lines not useful anymore
+    //getline(infile,inputLine);
+   //cout << "Comment : " << inputLine << endl;
 
   // Continue with a stringstream
   ss << infile.rdbuf();
@@ -61,7 +69,7 @@ void Map::createGrid(int resolution)
   Map::numGridRows = (int)numRows/clusterSize;
   Map::numGridCols = (int)numCols/clusterSize;
   int gridRow = 0, gridCol = 0;
-  totalFreeCells = numGridCols * numGridRows;
+
   //cout << "Total cell: " << totalFreeCells << endl;
   
   //get the size of the array and initialize to 0
@@ -81,9 +89,11 @@ void Map::createGrid(int resolution)
   {
     for(int col = 0; col < numCols; ++col)
     {
-      if(map[row*numCols + col] == 0) 
+	//if(map[row*numCols + col] == 0) 
+      if(map[row*numCols + col] < 210) 
       {
 	    grid[(int)((float)row/clusterSize)*numGridCols + (int)((float)col/clusterSize)] = 1;
+	    
       }
     }
   }
@@ -92,6 +102,7 @@ void Map::createGrid(int resolution)
 void Map::createNewMap()
 {
     std::ofstream f("/home/pulver/Desktop/test.pgm");
+    std::ofstream txt("/home/pulver/Desktop/freeCell.txt");
     int columns = getNumGridCols();
     int rows = getNumGridRows();
     
@@ -101,159 +112,20 @@ void Map::createNewMap()
     {
 	for(int col = 0; col < columns; ++col)
 	{
-	    if(getGridValue(row,col) == 0) f <<  255 << " ";
-	    else f <<  0 << " ";
+	    //if an obstacle is present put 255 as black
+	    if(getGridValue(row,col) == 0) {
+		f <<  255 << " ";
+	    txt <<  col << ": " << row << endl;
+	    }
+	    //else put 0 as free cell
+	    else {
+		f <<  0 << " ";
+		
+	    }
 	}
 	f << "\n";
     }
 }
-
-
-
-//scans the are around the coordinates passed, starting from the left and going clockwise, then stores the edge points in the edgePoints vector
-
-/*void Map::findFreeEdges(int cX, int cY)
-{
-  int i, j;
-  int range = 10;	//range to scan looking for positions
-  int tempX, tempY;
- 
-  //left edge
-  
-  for(i = cX; i > cX - range; --i)
-  {
-    if(getGridValue(i - 1, cY) != 2)
-    {
-      tempX = i;
-      break;
-    }
-  }
-  for(j = cY; j < cY + (int)(range/2); ++j)
-  {
-    if(getGridValue(tempX, j + 1) != 2)
-    {
-      tempY = j;
-      break;
-    }
-  }
-  
-  addEdgePoint(tempX, tempY);
-  
-  for(j = cY; j > cY - (int)(range/2); --j)
-  {
-    if(getGridValue(tempX, j - 1) != 2)
-    {
-      tempY = j;
-      break;
-    }
-  }
-  
-  addEdgePoint(tempX, tempY);
-    
-  
-  //upper edge
-  
-  for(j = cY; j > cY - range; --j)
-  {
-    if(getGridValue(j - 1, cX) != 2)
-    {
-      tempY = j;
-      break;
-    }
-  }
-  for(i = cX; i > cX - (int)(range/2); --i)
-  {
-    if(getGridValue(i - 1, tempY) != 2)
-    {
-      tempX = i;
-      break;
-    }
-  }
-  
-  addEdgePoint(tempX, tempY);
-  
-  for(i = cX; i < cX + (int)(range/2); ++i)
-  {
-    if(getGridValue(i + 1, tempY) != 2)
-    {
-      tempX = i;
-      break;
-    }
-  }
-  
-  addEdgePoint(tempX, tempY);
-  
-  
-  //right edge
-  
-  for(i = cX; i < cX + range; ++i)
-  {
-    if(getGridValue(i + 1, cY) != 2)
-    {
-      tempX = i;
-      break;
-    }
-  }
-  for(j = cY; j > cY - (int)(range/2); --j)
-  {
-    if(getGridValue(tempX, j - 1) != 2)
-    {
-      tempY = j;
-      break;
-    }
-  }
-  
-  addEdgePoint(tempX, tempY);
-  
-  for(j = cY; j < cY + (int)(range/2); ++j)
-  {
-    if(getGridValue(tempX, j + 1) != 2)
-    {
-      tempY = j;
-      break;
-    }
-  }
-  
-  addEdgePoint(tempX, tempY);
-  
-  
-  //bottom edge
-  
-  for(j = cY; j < cY + range; ++j)
-  {
-    if(getGridValue(j + 1, cX) != 2)
-    {
-      tempY = j;
-      break;
-    }
-  }
-  for(i = cX; i < cX + (int)(range/2); ++i)
-  {
-    if(getGridValue(i + 1, tempY) != 2)
-    {
-      tempX = i;
-      break;
-    }
-  }
-  
-  addEdgePoint(tempX, tempY);
-  
-  for(i = cX; i > cX - (int)(range/2); --i)
-  {
-    if(getGridValue(i - 1, tempY) != 2)
-    {
-      tempX = i;
-      break;
-    }
-  }
-  
-  addEdgePoint(tempX, tempY);
-  
-}
-
-*/
-
-
 
 
 
@@ -341,12 +213,23 @@ Pose Map::getRobotPosition()
     return p;
 }
 
-long int Map::getTotalFreeCells(){
-    for(int i=0; i<grid.size();i++){
-	if(grid[i] == 1) totalFreeCells--;
+long Map::getTotalFreeCells(){
+    int columns = getNumGridCols();
+    int rows = getNumGridRows();
+    totalFreeCells = columns * rows;
+    for(int row = 0; row < rows; ++row)
+    {
+	for(int col = 0; col < columns; ++col)
+	{
+	    //if an obstacle is present put 255 as black
+	    if(getGridValue(row,col) == 1) totalFreeCells--;
+	}
     }
     //cout << "Total free cells: " << totalFreeCells << endl;
     return totalFreeCells;
 }
 
+void Map::decreaseFreeCells(){
+    this->totalFreeCells--;
+}
 }
