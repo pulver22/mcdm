@@ -7,6 +7,7 @@ CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o: ../evaluationrecords.h
 CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o: ../main.cpp
 CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o: ../map.h
 CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o: ../mcdmfunction.h
+CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o: ../newray.h
 CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o: ../pose.h
 CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o: ../ray.h
 

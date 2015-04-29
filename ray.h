@@ -20,7 +20,7 @@ public:
   int getInformationGain(const dummy::Map &map, int posX, int posY, int orientation, double FOV, int range);
   void performSensingOperation(dummy::Map &map, int posX, int posY, int orientation, double FOV, int range);
   int getGridValue(int i, int j);
-  void empyCandidatePositions();
+  void emptyCandidatePositions();
   
 private:
   double mapX, mapY;			//coordinates in the map

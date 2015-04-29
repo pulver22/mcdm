@@ -3,7 +3,7 @@ project(mcdm_online_exploration_ros)
 
 include_directories( . )
 
-add_library(lib pose.cpp pose.h edge.h map.h map.cpp ray.cpp ray.h graphpose.cpp graphpose.h mcdmfunction.cpp mcdmfunction.h 
+add_library(lib pose.cpp pose.h edge.h map.h map.cpp newray.cpp newray.h ray.cpp ray.h graphpose.cpp graphpose.h mcdmfunction.cpp mcdmfunction.h 
 map.cpp map.h evaluationrecords.cpp evaluationrecords.h Criteria/sensingtimecriterion.cpp Criteria/sensingtimecriterion.h
 Criteria/informationgaincriterion.cpp Criteria/informationgaincriterion.h Criteria/mcdmweightreader.cpp Criteria/mcdmweightreader.h Criteria/traveldistancecriterion.cpp Criteria/traveldistancecriterion.h Criteria/weightmatrix.cpp 
 Criteria/weightmatrix.h Criteria/criterioncomparator.h Criteria/criterioncomparator.cpp 

@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-.././map.h
+/home/pulver/projects/mcdm_online_exploration_ros/map.h
 fstream
 -
 sstream
@@ -18,11 +18,25 @@ string
 iostream
 -
 pose.h
-.././pose.h
+/home/pulver/projects/mcdm_online_exploration_ros/pose.h
 
-.././pose.h
-
-/home/pulver/projects/mcdm_online_exploration_ros/map.cpp
-map.h
+/home/pulver/projects/mcdm_online_exploration_ros/newray.cpp
+vector
 -
+math.h
+/home/pulver/projects/mcdm_online_exploration_ros/math.h
+map.h
+/home/pulver/projects/mcdm_online_exploration_ros/map.h
+newray.h
+/home/pulver/projects/mcdm_online_exploration_ros/newray.h
+
+/home/pulver/projects/mcdm_online_exploration_ros/newray.h
+vector
+-
+math.h
+/home/pulver/projects/mcdm_online_exploration_ros/math.h
+map.h
+/home/pulver/projects/mcdm_online_exploration_ros/map.h
+
+/home/pulver/projects/mcdm_online_exploration_ros/pose.h
 

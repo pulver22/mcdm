@@ -453,6 +453,30 @@ mcdmfunction.cpp.s:
 	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/mcdmfunction.cpp.s
 .PHONY : mcdmfunction.cpp.s
 
+newray.o: newray.cpp.o
+.PHONY : newray.o
+
+# target to build an object file
+newray.cpp.o:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/newray.cpp.o
+.PHONY : newray.cpp.o
+
+newray.i: newray.cpp.i
+.PHONY : newray.i
+
+# target to preprocess a source file
+newray.cpp.i:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/newray.cpp.i
+.PHONY : newray.cpp.i
+
+newray.s: newray.cpp.s
+.PHONY : newray.s
+
+# target to generate assembly for a file
+newray.cpp.s:
+	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/newray.cpp.s
+.PHONY : newray.cpp.s
+
 pose.o: pose.cpp.o
 .PHONY : pose.o
 
@@ -551,6 +575,9 @@ help:
 	@echo "... mcdmfunction.o"
 	@echo "... mcdmfunction.i"
 	@echo "... mcdmfunction.s"
+	@echo "... newray.o"
+	@echo "... newray.i"
+	@echo "... newray.s"
 	@echo "... pose.o"
 	@echo "... pose.i"
 	@echo "... pose.s"

@@ -57,6 +57,8 @@ map.h
 /home/pulver/projects/mcdm_online_exploration_ros/map.h
 ray.h
 /home/pulver/projects/mcdm_online_exploration_ros/ray.h
+newray.h
+/home/pulver/projects/mcdm_online_exploration_ros/newray.h
 mcdmfunction.h
 /home/pulver/projects/mcdm_online_exploration_ros/mcdmfunction.h
 unistd.h
@@ -85,6 +87,14 @@ evaluationrecords.h
 /home/pulver/projects/mcdm_online_exploration_ros/evaluationrecords.h
 utility
 -
+
+/home/pulver/projects/mcdm_online_exploration_ros/newray.h
+vector
+-
+math.h
+/home/pulver/projects/mcdm_online_exploration_ros/math.h
+map.h
+/home/pulver/projects/mcdm_online_exploration_ros/map.h
 
 /home/pulver/projects/mcdm_online_exploration_ros/pose.h
 

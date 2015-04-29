@@ -74,6 +74,11 @@ CMakeFiles/lib.dir/mcdmfunction.cpp.o: ../explorationconstants.h
 CMakeFiles/lib.dir/mcdmfunction.cpp.o: ../mcdmfunction.cpp
 CMakeFiles/lib.dir/mcdmfunction.cpp.o: ../mcdmfunction.h
 
+CMakeFiles/lib.dir/newray.cpp.o: ../map.h
+CMakeFiles/lib.dir/newray.cpp.o: ../newray.cpp
+CMakeFiles/lib.dir/newray.cpp.o: ../newray.h
+CMakeFiles/lib.dir/newray.cpp.o: ../pose.h
+
 CMakeFiles/lib.dir/pose.cpp.o: ../pose.cpp
 CMakeFiles/lib.dir/pose.cpp.o: ../pose.h
 

@@ -96,7 +96,7 @@ vector< std::pair<int, int> > Ray::getCandidatePositions()
   return Ray::edgePoints;
 }
 
-void Ray::empyCandidatePositions()
+void Ray::emptyCandidatePositions()
 {
   while(edgePoints.size() > 0)
   {

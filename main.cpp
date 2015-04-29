@@ -1,6 +1,7 @@
 #include <iostream>
 #include "map.h"
 #include "ray.h"
+#include "newray.h"
 #include "mcdmfunction.h"
 # define PI           3.14159265358979323846  /* pi */
 #include <unistd.h>
@@ -29,7 +30,8 @@ int main(int argc, char **argv) {
     //x,y,orientation,range,angle -
     Pose initialPose = Pose(initX,initY,initOrientation,initRange,initFov);
     Pose target = initialPose;
-    Ray ray;
+    NewRay ray;
+    //Ray ray;
     MCDMFunction function ;
     int sensedCells = 0;
     long totalFreeCells = map.getTotalFreeCells() ;
@@ -47,7 +49,7 @@ int main(int argc, char **argv) {
 	//Map *map2 = &map;
 	ray.findCandidatePositions(map,x,y,orientation,FOV,range);
 	vector<pair<int, int> >candidatePosition = ray.getCandidatePositions();
-	ray.empyCandidatePositions();
+	ray.emptyCandidatePositions();
 	
 	
 	
