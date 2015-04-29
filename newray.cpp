@@ -53,6 +53,7 @@ void NewRay::findCandidatePositions(Map &map, int posX, int posY, int orientatio
     add2pi = 1;
     startingPhi = 2*PI + startingPhi;
     endingPhi = 2*PI + endingPhi;
+    
   }
   
   //std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
@@ -75,11 +76,12 @@ void NewRay::findCandidatePositions(Map &map, int posX, int posY, int orientatio
     {
       
       double distance = sqrt((i - posX)*(i - posX) + (j - posY)*(j - posY));
+      //cout << map.getGridValue(i, j) << " : " << distance << " : " <<range << endl;
       
       //if a cell is a candidate one and within range of the robot, generate the ray connecting the robot cell and the free cell
       if(map.getGridValue(i, j) == 2 && distance <= range)
       {
-
+	
 	if(NewRay::isCandidate(map, i, j) == 1)
 	{
 	
@@ -97,7 +99,7 @@ void NewRay::findCandidatePositions(Map &map, int posX, int posY, int orientatio
 	if(add2pi == 1) slope = 2*PI + slope;		//needed in case of FOV spanning from negative to positive angle values
 	
 	//std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
-
+	
 	if(slope >= startingPhi && slope <= endingPhi)	//only cast the ray if it is inside the FOV of the robot
 	{
 	  //raycounter++;
@@ -105,6 +107,7 @@ void NewRay::findCandidatePositions(Map &map, int posX, int posY, int orientatio
 	  
 	  int hit = 0;			//set to 1 when obstacle is hit by ray or when the cell is reached in order to stop the ray
 	  double u = 0;			//current position along the ray
+	  
 	  while(hit == 0)		//scan the map along the ray until an ostacle is found or the considered cell is reached
 	  {
 	    
@@ -120,7 +123,8 @@ void NewRay::findCandidatePositions(Map &map, int posX, int posY, int orientatio
 	      hit = 1;		//hit set to 1 if an obstacle is found
 	      //std::cout << "HIT! cell: " << j << " " << i << " Hit point: " << curY << " " << curX << std::endl;
 	    }
-
+	    
+	    
 	    if((int)curX == i && (int)curY == j)	//if the free cell is reached, save it as edge point and stop the ray.
 	    {
 	      std::pair<int, int> temp = std::make_pair(i, j);

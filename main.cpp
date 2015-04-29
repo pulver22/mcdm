@@ -47,18 +47,24 @@ int main(int argc, char **argv) {
 	int range = target.getRange();
 	double FOV = target.getFOV();
 	//Map *map2 = &map;
+
+	cout << "-------------------------------------------------" << endl;
+	cout << "Round : " << count<< endl;
+	int newSensedCells = sensedCells + ray.getInformationGain(map,x,y,orientation,FOV,range);
+	cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
+	ray.performSensingOperation(map,x,y,orientation,FOV,range);
 	ray.findCandidatePositions(map,x,y,orientation,FOV,range);
 	vector<pair<int, int> >candidatePosition = ray.getCandidatePositions();
 	ray.emptyCandidatePositions();
 	
 	
-	
+	/* for normal ray
 	cout << "-------------------------------------------------" << endl;
 	cout << "Round : " << count<< endl;
-	
-	
+
 	int newSensedCells = sensedCells + ray.getInformationGain(map,x,y,orientation,FOV,range);
 	cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
+	*/
 	
 	if(candidatePosition.size() == 0) {
 	    cout << "No other candidate position" << endl;
@@ -90,7 +96,8 @@ int main(int argc, char **argv) {
 	//cout << "Record: " << record->size() << endl;
 	cout << "Evaluation Record obtained" << endl;
 	target = function.selectNewPose(record);
-	ray.performSensingOperation(map,x,y,orientation,FOV,range);
+	// to use with normal ray
+	//ray.performSensingOperation(map,x,y,orientation,FOV,range);
 
 
 	count = count + 1;
