@@ -18,7 +18,7 @@ public:
     ~MCDMFunction();
     double evaluateFrontier(Pose& p, Map& map);
     EvaluationRecords* evaluateFrontiers(list< Pose >& frontiers, Map &map);
-    Pose selectNewPose(EvaluationRecords* evaluationRecords);
+    pair< Pose, double > selectNewPose(EvaluationRecords* evaluationRecords);
     
 protected:
 

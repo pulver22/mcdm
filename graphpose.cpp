@@ -49,19 +49,17 @@ void GraphPose::addPose(Pose &p,Pose &currentPose)
 	//cout << "inserimento della prima posizione effettuato" << endl;
 	//int size = graph2->size();
 	//cout << size << endl;
+    }else{
+	// add the new pose at the end of the graph
+	string key2 = getEncodedKey(p);
+	Edge fakeEdge2;
+	fakeEdge2.destination =p;
+	fakeEdge2.weight = 0;
+	std::list<Edge> list;
+	list.push_back(fakeEdge2);
+	graph2.emplace(key2,list);
+	//cout << "inserimento di una nuova posizione effettuato" << endl;
     }
-    
-    
-    // add the new pose at the end of the graph
-    string key2 = getEncodedKey(p);
-    Edge fakeEdge2;
-    fakeEdge2.destination =p;
-    fakeEdge2.weight = 0;
-    std::list<Edge> list;
-    list.push_back(fakeEdge2);
-    graph2.emplace(key2,list);
-    //cout << "inserimento di una nuova posizione effettuato" << endl;
-    
     
    
     // add the new position to actual one's neighbors

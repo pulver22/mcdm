@@ -137,7 +137,7 @@ Pose EvaluationRecords::getPoseFromEncoding(string &encoding)
 	ss << s;
 	char delimiter('/');
 	string x,y,orientation,r,phi;
-	
+	//cout << encoding << endl;
 	std::string::size_type pos = encoding.find('/');
 	x = encoding.substr(0,pos);
 	int xValue = atoi(x.c_str());

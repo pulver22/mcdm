@@ -3,7 +3,9 @@
 
 CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o: ../Criteria/criterion.h
 CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o: ../Criteria/weightmatrix.h
+CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o: ../edge.h
 CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o: ../evaluationrecords.h
+CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o: ../graphpose.h
 CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o: ../main.cpp
 CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o: ../map.h
 CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o: ../mcdmfunction.h

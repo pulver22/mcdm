@@ -191,9 +191,9 @@ EvaluationRecords* MCDMFunction::evaluateFrontiers( std::list< Pose >& frontiers
 	}
 	
 	//cout <<"X: "<< f.getX() <<"; Y : " <<f.getY()<<", Orientation :"<<f.getOrientation() <<", Evaluation : "<<finalValue << endl;
-	//if(finalValue > 0.1){
+	if(finalValue > 0.1){
 	    toRet->putEvaluation(f, finalValue);
-	//}
+	}
 	//delete lastCrit;
     }
 //         }
@@ -211,7 +211,7 @@ EvaluationRecords* MCDMFunction::evaluateFrontiers( std::list< Pose >& frontiers
     return toRet;
 }
 
-Pose MCDMFunction::selectNewPose(EvaluationRecords *evaluationRecords)
+pair<Pose,double> MCDMFunction::selectNewPose(EvaluationRecords *evaluationRecords)
 {	
     
     Pose newTarget;
@@ -225,10 +225,11 @@ Pose MCDMFunction::selectNewPose(EvaluationRecords *evaluationRecords)
 		value = (*it).second;
 	    }//else continue;
     }
+    pair<Pose,double> result = make_pair(newTarget,value);
     
     // i switch x and y to allow debugging graphically looking the image
     cout << "New target : " << "x = "<<newTarget.getY() <<", y = "<< newTarget.getX() << ", orientation = " 
 	    <<newTarget.getOrientation() << ", Evaluation: "<< value << endl;
-    return newTarget;
+    return result;
 }
 
