@@ -93,7 +93,7 @@ double MCDMFunction::evaluateFrontier( Pose& p,  dummy::Map &map)
 
 
 // Scan a list of candidate positions,then apply the choquet fuzzy algorithm
-EvaluationRecords* MCDMFunction::evaluateFrontiers( std::list< Pose >& frontiers,  Map& map)
+EvaluationRecords* MCDMFunction::evaluateFrontiers( std::list< Pose >& frontiers,  Map& map,double threshold)
 {         
     //myMutex.lock();
    
@@ -191,7 +191,7 @@ EvaluationRecords* MCDMFunction::evaluateFrontiers( std::list< Pose >& frontiers
 	}
 	
 	//cout <<"X: "<< f.getX() <<"; Y : " <<f.getY()<<", Orientation :"<<f.getOrientation() <<", Evaluation : "<<finalValue << endl;
-	if(finalValue > 0.1){
+	if(finalValue > threshold){
 	    toRet->putEvaluation(f, finalValue);
 	}
 	//delete lastCrit;
