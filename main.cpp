@@ -27,8 +27,8 @@ int main(int argc, char **argv) {
     // Pose initialPose = map.getRobotPosition();
     
     // i switched x and y because the map's orientation inside and outside programs are different
-    int initX = atoi(argv[4]);	
-    int initY = atoi(argv[3]);
+    long  initX = atoi(argv[4]);	
+    long initY = atoi(argv[3]);
     int initOrientation = atoi(argv[5]);
     double initFov = atoi(argv[7]);
     int initRange = atoi(argv[6]);
@@ -43,8 +43,8 @@ int main(int argc, char **argv) {
     vector<pair<string,list<Pose>>> graph2;
     NewRay ray;
     MCDMFunction function ;
-    int sensedCells = 0;
-     int newSensedCells =0;
+    long sensedCells = 0;
+    long newSensedCells =0;
     long totalFreeCells = map.getTotalFreeCells() ;
     int count = 0;
     int countBT;
@@ -53,8 +53,8 @@ int main(int argc, char **argv) {
     //cout << "total free cells in the main: " << totalFreeCells << endl;
     
     while(sensedCells < precision * totalFreeCells ){
-	int x = target.getX();
-	int y = target.getY();
+	long x = target.getX();
+	long y = target.getY();
 	int orientation = target.getOrientation();
 	int range = target.getRange();
 	double FOV = target.getFOV();
@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
 
 	ray.performSensingOperation(map,x,y,orientation,FOV,range);
 	ray.findCandidatePositions(map,x,y,orientation,FOV,range);
-	vector<pair<int, int> >candidatePosition = ray.getCandidatePositions();
+	vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
 	ray.emptyCandidatePositions();
 	
 	
@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
 		
 	    // need to convert from a <int,int pair> to a Pose with also orientation,laser range and angle
 	    list<Pose> frontiers;
-	    vector<pair<int, int> >::iterator it =candidatePosition.begin();
+	    vector<pair<long,long> >::iterator it =candidatePosition.begin();
 	    for(it; it != candidatePosition.end(); it++){
 		Pose p1 = Pose((*it).first,(*it).second,0,range,FOV);
 		Pose p2 = Pose((*it).first,(*it).second,180,range,FOV);

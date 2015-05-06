@@ -8,11 +8,11 @@ class Pose
 {
 public:
   Pose();
-  Pose(int aX, int aY, int orientation, int range, double FOV);
+  Pose(long aX, long aY, int orientation, int range, double FOV);
   virtual ~Pose();
   double getDistance( Pose &pose);   
-  int getX();
-  int getY();
+  long getX();
+  long getY();
   int getOrientation();
   int getRange();
   double getFOV();
@@ -23,7 +23,7 @@ public:
   
   
 protected:
-  int aX, aY;		// x and y coordinates of the cell
+  long aX, aY;		// x and y coordinates of the cell
   int orientation;	// orientation theta of th robot
   int range;		// radius of the sensing operation 
   double FOV;		// central angle of the sensing operation

@@ -138,6 +138,21 @@ test/preinstall:
 .PHONY : test/preinstall
 
 #=============================================================================
+# Directory level rules for directory Maps
+
+# Convenience name for "all" pass in the directory.
+Maps/all:
+.PHONY : Maps/all
+
+# Convenience name for "clean" pass in the directory.
+Maps/clean:
+.PHONY : Maps/clean
+
+# Convenience name for "preinstall" pass in the directory.
+Maps/preinstall:
+.PHONY : Maps/preinstall
+
+#=============================================================================
 # Special targets to cleanup operation of make.
 
 # Special rule to run CMake to check the build system integrity.

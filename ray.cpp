@@ -12,7 +12,7 @@ Ray::Ray()
 }
 
 
-void Ray::findCandidatePositions(dummy::Map &map, int posX, int posY, int orientation, double FOV, int range)
+void Ray::findCandidatePositions(dummy::Map &map, long posX, long posY, int orientation, double FOV, int range)
 {
   
   for(double phi = (PI/2 - FOV/2); phi < (PI/2 + FOV/2); phi += (FOV/64))		//range through the circular sector
@@ -70,13 +70,13 @@ void Ray::findCandidatePositions(dummy::Map &map, int posX, int posY, int orient
       
       //std::cout << mapY << " " << mapX << std::endl;
       
-      if((map.getGridValue((int)mapX,(int)mapY) != 2) || (u + 1 == range && map.getGridValue((int)mapX,(int)mapY) == 2 )) 
+      if((map.getGridValue((long)mapX,(long)mapY) != 2) || (u + 1 == range && map.getGridValue((long)mapX,(long)mapY) == 2 )) 
       {
 	hit = 1;
 	int newposition = 1;
-	std::pair<int, int> temp = std::make_pair<int, int>((int)tempX,(int)tempY);
+	std::pair<long,long> temp = std::make_pair<long, long>((long)tempX,(long)tempY);
 	
-	for(int i = 0; i < Ray::edgePoints.size(); ++i)
+	for(long i = 0; i < Ray::edgePoints.size(); ++i)
 	{
 	  if(Ray::edgePoints.at(i) == temp) newposition = 0;
 	}
@@ -91,7 +91,7 @@ void Ray::findCandidatePositions(dummy::Map &map, int posX, int posY, int orient
   }
 }
 
-vector< std::pair<int, int> > Ray::getCandidatePositions()
+vector< std::pair<long, long> > Ray::getCandidatePositions()
 {
   return Ray::edgePoints;
 }
@@ -123,7 +123,7 @@ void Ray::setGrid(const dummy::Map& map)
   }
 }
 
-int Ray::getInformationGain(const dummy::Map& map, int posX, int posY, int orientation, double FOV, int range)
+int Ray::getInformationGain(const dummy::Map& map, long posX, long posY, int orientation, double FOV, int range)
 {
   
   setGrid(map);
@@ -194,7 +194,7 @@ int Ray::getInformationGain(const dummy::Map& map, int posX, int posY, int orien
 }
   
 
-void Ray::setGridValue(int i, int j, int value)
+void Ray::setGridValue(long i, long j, int value)
 {
   //if(value == 0 || value == 1 || value == 2)
   {
@@ -202,7 +202,7 @@ void Ray::setGridValue(int i, int j, int value)
   }
 }
 
-int Ray::getGridValue(int i, int j)
+int Ray::getGridValue(long i, long j)
 {
   return Ray::grid[i*numGridCols + j];
 }
@@ -210,7 +210,7 @@ int Ray::getGridValue(int i, int j)
 
 
 
-void Ray::performSensingOperation(Map& map, int posX, int posY, int orientation, double FOV, int range)
+void Ray::performSensingOperation(Map& map, long posX, long posY, int orientation, double FOV, int range)
 {
   
   for(double phi = (PI/2 - FOV/2); phi < (PI/2 + FOV/2); phi += (FOV/64))		//range through the circular sector

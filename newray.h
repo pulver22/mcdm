@@ -14,24 +14,24 @@ public:
   
   NewRay();
   //~Ray();
-  void findCandidatePositions(dummy::Map &map, int posX, int posY, int orientation, double FOV, int range);
-  int isCandidate(const dummy::Map &map, int i, int j);
-  std::vector<std::pair<int, int> > getCandidatePositions();
-  double getSensingTime(const dummy::Map &map, int posX, int posY, int orientation, double FOV, int range);
-  void performSensingOperation(dummy::Map &map, int posX, int posY, int orientation, double FOV, int range);
+  void findCandidatePositions(dummy::Map &map, long posX, long posY, int orientation, double FOV, int range);
+  int isCandidate(const dummy::Map &map, long i, long j);
+  std::vector<std::pair<long, long> > getCandidatePositions();
+  double getSensingTime(const dummy::Map &map, long posX, long posY, int orientation, double FOV, int range);
+  void performSensingOperation(dummy::Map &map, long posX, long posY, int orientation, double FOV, int range);
   void emptyCandidatePositions();
-  int getInformationGain(const dummy::Map &map, int posX, int posY, int orientation, double FOV, int range);
-  int convertPoint(int y);
+  int getInformationGain(const dummy::Map &map, long posX, long posY, int orientation, double FOV, int range);
+  long convertPoint(long y);
   
 protected:
   double mapX, mapY;			//coordinates in the map
-  int posX, posY;		//starting position of the robot
+  long posX, posY;		//starting position of the robot
   int orientation;			//orientation of the robot (0, 90, 180, 270 degrees)
   double FOV;
   int range;			//range of the scanner
-  std::vector<std::pair<int, int> > edgePoints;
-  int numGridCols;
-  int numGridRows;
+  std::vector<std::pair<long, long> > edgePoints;
+  long numGridCols;
+  long numGridRows;
 };
 
 

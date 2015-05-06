@@ -2,7 +2,7 @@
 #include <cmath>
 
 
-Pose::Pose(int aX, int aY, int orientation, int range, double FOV)
+Pose::Pose(long aX,long aY, int orientation, int range, double FOV)
 {
   Pose::aX = aX;
   Pose::aY = aY;
@@ -27,12 +27,12 @@ double Pose::getDistance( Pose& pose)
   return std::sqrt((aX - pose.getX())*(aX - pose.getX()) + (aY - pose.getY())*(aY - pose.getY()));
 }
 
-int Pose::getX()
+long Pose::getX()
 {
   return aX;
 }
 
-int Pose::getY()
+long int Pose::getY()
 {
   return aY;
 }
