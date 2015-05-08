@@ -1,7 +1,7 @@
 #include "informationgaincriterion.h"
 #include "criteriaName.h"
 #include <math.h>
-#include "ray.h"
+#include "newray.h"
 using namespace dummy;
 
 InformationGainCriterion::InformationGainCriterion(double weight) :
@@ -17,8 +17,8 @@ InformationGainCriterion::~InformationGainCriterion()
 double InformationGainCriterion::evaluate(Pose &p, Map &map)
 {
 
-    int px = p.getX();
-    int py = p.getY();
+    long px = p.getX();
+    long py = p.getY();
     //float resolution = map.getResolution();
     //Get the orientation
     int orientation = p.getOrientation();
@@ -177,7 +177,7 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
     //insert in the evaluation record the pair <frontier,values>
     insertEvaluation(p,unExploredMap);
 */
-    Ray ray;
+    NewRay ray;
     //Map *map2 = &map;
     double unExploredMap=(double)ray.getInformationGain(map,px,py,orientation,angle,range);
     /*
@@ -190,7 +190,8 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
     return unExploredMap;
 }
 
-void InformationGainCriterion::normalize (int position, int number)
+/*
+void InformationGainCriterion::normalize (long int minSensedX, int arg2)
 {
     if(number == 0){
 	if(position <= 0){
@@ -202,7 +203,7 @@ void InformationGainCriterion::normalize (int position, int number)
 	}
     }
 
-}
+}*/
 
 /*
 int* InformationGainCriterion::intersect(int p1x, int p1y, int p2x, int p2y, Pose p)

@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
     int resolution = atoi(argv[2]);
     //ifstream infile("/home/pulver/Dropbox/Università/Laurea Magistrale/Thesis/testmap10.pgm");
     Map map = Map(infile,resolution);
-    cout << "Map dimension: " << map.numGridCols << " : "<<  map.numGridCols << endl;
+    cout << "Map dimension: " << map.getNumGridCols() << " : "<<  map.getNumGridRows() << endl;
     // Pose initialPose = map.getRobotPosition();
     
     // i switched x and y because the map's orientation inside and outside programs are different
@@ -39,6 +39,7 @@ int main(int argc, char **argv) {
     Pose target = initialPose;
     Pose previous = initialPose;
     GraphPose graph;
+    long numConfiguration =0;
     //testing
     vector<pair<string,list<Pose>>> graph2;
     NewRay ray;
@@ -59,6 +60,8 @@ int main(int argc, char **argv) {
 	int range = target.getRange();
 	double FOV = target.getFOV();
 	string actualPose = graph.getEncodedKey(target);
+	
+	map.setCurrentPose(target);
 	
 	
 	//Map *map2 = &map;
@@ -81,17 +84,24 @@ int main(int argc, char **argv) {
 	    
 	    
 	    countBT = countBT -1;
-	    string targetString = graph2.at(countBT).first;
-	    graph2.pop_back();
-	    EvaluationRecords record;
-	    target = record.getPoseFromEncoding(targetString);
-	    cout << "[BT]No significative position reachable. Come back to previous position" << endl;
-	    cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
-	    count = count + 1;
+	    if (graph2.size() >0){
+		string targetString = graph2.at(countBT).first;
+		graph2.pop_back();
+		EvaluationRecords record;
+		target = record.getPoseFromEncoding(targetString);
+		cout << "[BT]No significative position reachable. Come back to previous position" << endl;
+		cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
+		count = count + 1;
+		cout << "Graph dimension : " << graph2.size() << endl;
+	    } else {
+		cout << "I came back to the original position since i don't have any other candidate position"<< endl;
+		cout << "FINAL: Map not completely explored!" << endl;
+		exit(0);
+	    }
 
 	}else{
 	    
-		
+	    
 	    // need to convert from a <int,int pair> to a Pose with also orientation,laser range and angle
 	    list<Pose> frontiers;
 	    vector<pair<long,long> >::iterator it =candidatePosition.begin();
@@ -122,6 +132,7 @@ int main(int argc, char **argv) {
 		target = result.first;
 		count = count + 1;
 		countBT = graph2.size();
+		numConfiguration++;
 	    }else {
 		if(graph2.size() == 0) break;
 		countBT = countBT -1;
@@ -147,6 +158,7 @@ int main(int argc, char **argv) {
     if (graph2.size() ==0){
 	cout << "I came back to the original position since i don't have any other candidate position"<< endl;
     }else {
+	cout << "Total cell visited :" << numConfiguration <<endl;
 	cout << "FINAL: MAP EXPLORED!" << endl;
     }
 }

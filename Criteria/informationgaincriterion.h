@@ -14,7 +14,7 @@ public:
     virtual ~InformationGainCriterion();
     double evaluate( Pose &p, Map &map);
 private:
-    void normalize(int minSensedX, int arg2);
+    void normalize(long minSensedX, int number);
     int* intersect(int p1x, int p1y, int p2x, int p2y, Pose &p);
 };
 

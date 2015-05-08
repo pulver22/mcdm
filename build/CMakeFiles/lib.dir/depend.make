@@ -14,8 +14,8 @@ CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.o: ../Criteria/criterioncomp
 CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.o: ../Criteria/criterioncomparator.h
 
 CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o: .././map.h
+CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o: .././newray.h
 CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o: .././pose.h
-CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o: .././ray.h
 CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o: ../Criteria/criteriaName.h
 CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o: ../Criteria/criterion.h
 CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o: ../Criteria/informationgaincriterion.cpp

@@ -37,6 +37,7 @@ public:
   long numGridCols;
   Pose getRobotPosition();
   long getTotalFreeCells();
+  void setCurrentPose(Pose &p);
   
   
 protected:
@@ -49,6 +50,7 @@ protected:
   std::vector<std::pair<int, int> > edgePoints;
   long totalFreeCells;
   void decreaseFreeCells();
+  Pose currentPose;
   
 };
 }

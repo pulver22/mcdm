@@ -8,6 +8,7 @@ Map::Map(std::ifstream& infile, int resolution)
   Map::createMap(infile);
   Map::createGrid(resolution);
   Map::createNewMap();
+   //cout << "ciao" << endl;
 }
 
 Map::Map()
@@ -103,7 +104,7 @@ void Map::createMap(std::ifstream& infile)
   for(row = 0; row < numRows; ++row)
     for (col = 0; col < numCols; ++col) ss >> Map::map[row*numCols + col];
  
-  infile.close();
+  //infile.close();
   }
 }
 
@@ -111,48 +112,57 @@ void Map::createMap(std::ifstream& infile)
 void Map::createGrid(int resolution)
 {
   //cluster cells into grid
-  long clusterSize = (long)((100/resolution));
+  float clusterSize = (float)((100.0/resolution));
   Map::numGridRows = (long)numRows/clusterSize;
   Map::numGridCols = (long)numCols/clusterSize;
   long gridRow = 0, gridCol = 0;
+  //cout << numGridCols << " : "<< numGridRows << endl;
+  
 
   //cout << "Total cell: " << totalFreeCells << endl;
   
   //get the size of the array and initialize to 0
   
-  Map::grid.reserve(numGridRows*numGridCols);
+    Map::grid.reserve(numGridRows*numGridCols);
   
-  for (gridRow = 0; gridRow < numGridRows; ++gridRow)
-  {
-    for (gridCol = 0; gridCol < numGridCols; ++gridCol)
+    for (gridRow = 0; gridRow < numGridRows; ++gridRow)
     {
-      grid[gridRow*numGridCols + gridCol] = 0;
+	    for (gridCol = 0; gridCol < numGridCols; ++gridCol)
+	    {
+	    grid[gridRow*numGridCols + gridCol] = 0;
+	    }
     }
-  }
   
   //set 1 in the grid cells corrisponding to obstacles
-  for(long row = 0; row < numRows; ++row)
-  {
-    for(long col = 0; col < numCols; ++col)
+    for(long row = 0; row < numRows; ++row)
     {
-	//if(map[row*numCols + col] == 0) 
-      if(map[row*numCols + col] < 250) 
-      {
-	    grid[(long)(row/clusterSize)*numGridCols + (long)(col/clusterSize)] = 1;
-	    
-      }
+	    for(long col = 0; col < numCols; ++col)
+	    {
+		//if(map[row*numCols + col] == 0) 
+		if(map[row*numCols + col] < 250) 
+		{
+			grid[(long)(row/clusterSize)*numGridCols + (long)(col/clusterSize)] = 1;
+			
+		}
+	    }
     }
-  }
+    
 }
 
 void Map::createNewMap()
 {
-    std::ofstream f("/home/pulver/Desktop/test.pgm");
-    std::ofstream txt("/home/pulver/Desktop/freeCell.txt");
-    long columns = getNumGridCols();
-    long rows = getNumGridRows();
+    //cout << "ciao" << endl;
+    std::ofstream imgNew("/home/pulver/Desktop/test.pgm", ios::out);
     
-    f << "P2\n" << columns << " " << rows << "\n255\n";
+    //imgNew << "h"<<endl;
+    
+   // std::ofstream txt("/home/pulver/Desktop/freeCell.txt");
+    long columns = numGridCols;
+    long rows = numGridRows;
+    
+    
+    
+    imgNew << "P2\n" << columns << " " << rows << "\n255\n";
     
     for(long row = 0; row < rows; ++row)
     {
@@ -160,17 +170,20 @@ void Map::createNewMap()
 	{
 	    //if an obstacle is present put 255 as black
 	    if(getGridValue(row,col) == 0) {
-		f <<  255 << " ";
-	    txt <<  col << ": " << row << endl;
+		imgNew<<  255 << " ";
+		//txt <<  col << ": " << row << endl;
 	    }
 	    //else put 0 as free cell
 	    else {
-		f <<  0 << " ";
+		imgNew <<  0 << " ";
 		
 	    }
 	}
-	f << "\n";
+	imgNew << "\n";
     }
+    
+    imgNew.close();
+    //txt.close();
 }
 
 
@@ -247,18 +260,14 @@ int dummy::Map::getGridValue(long i) const
 
 Pose Map::getRobotPosition()
 {
- 
-    long x,y;
-    int orientation,range;
-    double FOV;
-    x = rand() % 100;
-    y = rand() % 100;
-    orientation = 0;
-    range = rand() % 30;
-    FOV = 45;
-    Pose p = Pose(x,y,orientation,range,FOV);
-    return p;
+    return currentPose;
 }
+
+void Map::setCurrentPose(Pose& p)
+{
+    currentPose = p;
+}
+
 
 long Map::getTotalFreeCells(){
     long columns = getNumGridCols();

@@ -15,8 +15,8 @@ CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.o
  /home/pulver/projects/mcdm_online_exploration_ros/Criteria/criterioncomparator.h
 CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o
  .././map.h
+ .././newray.h
  .././pose.h
- .././ray.h
  /home/pulver/projects/mcdm_online_exploration_ros/Criteria/criteriaName.h
  /home/pulver/projects/mcdm_online_exploration_ros/Criteria/criterion.h
  /home/pulver/projects/mcdm_online_exploration_ros/Criteria/informationgaincriterion.cpp
