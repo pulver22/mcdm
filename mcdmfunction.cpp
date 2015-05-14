@@ -11,6 +11,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <algorithm>
+#include "newray.h"
 
 
 using namespace std;
@@ -66,16 +67,8 @@ Criterion * MCDMFunction::createCriterion(string name, double weight)
 //the evaluate method provided by Criterion class)
 double MCDMFunction::evaluateFrontier( Pose& p,  dummy::Map &map)
 {
-    //cout << activeCriteria.size() << endl;
-    //Should keep the ordering of the criteria and the weight of each criteria combinations
-   /*for (vector<Criterion *>::iterator it = activeCriteria.begin(); it != activeCriteria.end(); it++){
-	Criterion *c = *it;
-	string name = c->getName();
-	double weight = c->getWeight();
-	cout << name <<" " << weight <<  endl;
-	c->evaluate(p,map);
-	cout << "Alive in evaluateFrontier" << endl;
-   }*/
+    //NewRay ray;
+    //ray.calculateInfoGainSensingTime(map,p.getX(),p.getY(),p.getOrientation(),p.getFOV(),p.getRange());
    
       for (int i =0; i < activeCriteria.size(); i++){
 	Criterion *c = activeCriteria.at(i);
@@ -232,4 +225,24 @@ pair<Pose,double> MCDMFunction::selectNewPose(EvaluationRecords *evaluationRecor
 	    <<newTarget.getOrientation() << ", Evaluation: "<< value << endl;
     return result;
 }
+
+string MCDMFunction::getEncodedKey(Pose& p, int value)
+{
+    string key;
+    //value = 0 : encode everything
+    //value = 1 : encode x,y,orientation, take first 
+    //value = 2 : encode x,y,orientation, take multiple time
+    if(value == 0){
+	key =  to_string(p.getX()) + "/" + to_string( p.getY()) + "/" + to_string( (int)p.getOrientation()) + "/"  + to_string(p.getRange()) + "/" + to_string((int)p.getFOV());
+    }else if(value == 1){
+	key = to_string(p.getX()) + "/" + to_string( p.getY()) + "/" + to_string( (int)p.getOrientation()) + "/" + "1";
+    } else if (value ==2){
+	key = to_string(p.getX()) + "/" + to_string( p.getY()) + "/" + to_string( (int)p.getOrientation()) + "/" + "0";
+    }
+    return key;
+}
+
+
+
+
 

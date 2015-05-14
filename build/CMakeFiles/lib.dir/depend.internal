@@ -28,6 +28,7 @@ CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.o
  /home/pulver/projects/mcdm_online_exploration_ros/Criteria/weightmatrix.h
 CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.o
  .././map.h
+ .././newray.h
  .././pose.h
  /home/pulver/projects/mcdm_online_exploration_ros/Criteria/criteriaName.h
  /home/pulver/projects/mcdm_online_exploration_ros/Criteria/criterion.h
@@ -74,6 +75,7 @@ CMakeFiles/lib.dir/mcdmfunction.cpp.o
  /home/pulver/projects/mcdm_online_exploration_ros/explorationconstants.h
  /home/pulver/projects/mcdm_online_exploration_ros/mcdmfunction.cpp
  /home/pulver/projects/mcdm_online_exploration_ros/mcdmfunction.h
+ /home/pulver/projects/mcdm_online_exploration_ros/newray.h
 CMakeFiles/lib.dir/newray.cpp.o
  /home/pulver/projects/mcdm_online_exploration_ros/map.h
  /home/pulver/projects/mcdm_online_exploration_ros/newray.cpp

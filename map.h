@@ -7,6 +7,7 @@
 #include <string>
 #include <iostream>
 #include "pose.h"
+#include <unordered_map>
 
 using namespace std;
 namespace dummy{
@@ -38,7 +39,8 @@ public:
   Pose getRobotPosition();
   long getTotalFreeCells();
   void setCurrentPose(Pose &p);
-  
+  void drawVisitedCells(unordered_map<string,int> &visitedCells,int resolution);
+  void printVisitedCells(vector<string> &history);
   
 protected:
   std::vector<long> map;				//vector containing the original map as binary matrix (0 -> free, 1 -> obstacle)

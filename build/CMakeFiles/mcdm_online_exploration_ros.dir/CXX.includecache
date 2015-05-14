@@ -16,6 +16,14 @@ pose.h
 map.h
 /home/pulver/projects/mcdm_online_exploration_ros/Criteria/map.h
 
+/home/pulver/projects/mcdm_online_exploration_ros/Criteria/traveldistancecriterion.h
+criterion.h
+/home/pulver/projects/mcdm_online_exploration_ros/Criteria/criterion.h
+pose.h
+/home/pulver/projects/mcdm_online_exploration_ros/Criteria/pose.h
+map.h
+/home/pulver/projects/mcdm_online_exploration_ros/Criteria/map.h
+
 /home/pulver/projects/mcdm_online_exploration_ros/Criteria/weightmatrix.h
 functional
 -
@@ -83,6 +91,8 @@ mcdmfunction.h
 /home/pulver/projects/mcdm_online_exploration_ros/mcdmfunction.h
 graphpose.h
 /home/pulver/projects/mcdm_online_exploration_ros/graphpose.h
+Criteria/traveldistancecriterion.h
+/home/pulver/projects/mcdm_online_exploration_ros/Criteria/traveldistancecriterion.h
 unistd.h
 -
 
@@ -99,6 +109,8 @@ iostream
 -
 pose.h
 /home/pulver/projects/mcdm_online_exploration_ros/pose.h
+unordered_map
+-
 
 /home/pulver/projects/mcdm_online_exploration_ros/mcdmfunction.h
 Criteria/criterion.h

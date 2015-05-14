@@ -10,9 +10,9 @@ WeightMatrix* MCDMWeightReader::getMatrix()
     WeightMatrix *matrix = NULL;
     matrix = new WeightMatrix(3);
     //int numCriteria = 3;
-    matrix->insertSingleCriterion(INFORMATION_GAIN,0.5,true);
-    matrix->insertSingleCriterion(TRAVEL_DISTANCE,0.4, true);
-    matrix->insertSingleCriterion(SENSING_TIME,0.1, true);
+    matrix->insertSingleCriterion(INFORMATION_GAIN,0.9,true);
+    matrix->insertSingleCriterion(TRAVEL_DISTANCE,0.05, true);
+    matrix->insertSingleCriterion(SENSING_TIME,0.05, true);
     string str1(INFORMATION_GAIN);
     string str2(TRAVEL_DISTANCE);
     string str3(SENSING_TIME);

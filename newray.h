@@ -22,6 +22,7 @@ public:
   void emptyCandidatePositions();
   int getInformationGain(const dummy::Map &map, long posX, long posY, int orientation, double FOV, int range);
   long convertPoint(long y);
+  void calculateInfoGainSensingTime (const dummy::Map &map, long posX, long posY, int orientation, double FOV, int range);
   
 protected:
   double mapX, mapY;			//coordinates in the map
@@ -32,6 +33,8 @@ protected:
   std::vector<std::pair<long, long> > edgePoints;
   long numGridCols;
   long numGridRows;
+  long informationGain;
+  double sensingTime;
 };
 
 

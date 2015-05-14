@@ -27,6 +27,7 @@ CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.o: ../Criteria/mcdmweightreader
 CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.o: ../Criteria/weightmatrix.h
 
 CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.o: .././map.h
+CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.o: .././newray.h
 CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.o: .././pose.h
 CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.o: ../Criteria/criteriaName.h
 CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.o: ../Criteria/criterion.h
@@ -73,6 +74,7 @@ CMakeFiles/lib.dir/mcdmfunction.cpp.o: ../evaluationrecords.h
 CMakeFiles/lib.dir/mcdmfunction.cpp.o: ../explorationconstants.h
 CMakeFiles/lib.dir/mcdmfunction.cpp.o: ../mcdmfunction.cpp
 CMakeFiles/lib.dir/mcdmfunction.cpp.o: ../mcdmfunction.h
+CMakeFiles/lib.dir/mcdmfunction.cpp.o: ../newray.h
 
 CMakeFiles/lib.dir/newray.cpp.o: ../map.h
 CMakeFiles/lib.dir/newray.cpp.o: ../newray.cpp

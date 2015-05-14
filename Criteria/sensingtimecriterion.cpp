@@ -17,6 +17,7 @@
 
 #include "sensingtimecriterion.h"
 #include "criteriaName.h"
+#include "newray.h"
 
 
 SensingTimeCriterion::SensingTimeCriterion(double weight):
@@ -33,7 +34,9 @@ SensingTimeCriterion::~SensingTimeCriterion()
 
 double SensingTimeCriterion::SensingTimeCriterion::evaluate(Pose &p,dummy::Map &map)
 {
+    NewRay ray;
     double sensingTime;
+    
     float phi = p.getFOV();
     if (phi <= 30){
 	sensingTime = 0.2;
@@ -46,6 +49,7 @@ double SensingTimeCriterion::SensingTimeCriterion::evaluate(Pose &p,dummy::Map &
     }else {
 	sensingTime = 1;
     }
+    //sensingTime = ray.getSensingTime(map,p.getX(),p.getY(),p.getOrientation(),p.getFOV(),p.getRange());
     Criterion::insertEvaluation(p,sensingTime);
     return sensingTime;
 }

@@ -5,6 +5,7 @@
 #include "newray.h"
 #include "mcdmfunction.h"
 #include "graphpose.h"
+#include "Criteria/traveldistancecriterion.h"
 # define PI           3.14159265358979323846  /* pi */
 #include <unistd.h>
 
@@ -15,7 +16,7 @@ using namespace dummy;
 
 int main(int argc, char **argv) {
     
-    // Input : ./mcdm_online_exploration_ros ~/Desktop/map_4.pgm 80 730 880 0 20 180  0.9 0.14
+    // Input : ./mcdm_online_exploration_ros ./../Maps/map_RiccardoFreiburg_1m2.pgm 100 75 5 0 15 180 0.95 0.12
     // resolution x y orientation range centralAngle precision threshold
 
     ifstream infile;
@@ -30,7 +31,8 @@ int main(int argc, char **argv) {
     long  initX = atoi(argv[4]);	
     long initY = atoi(argv[3]);
     int initOrientation = atoi(argv[5]);
-    double initFov = atoi(argv[7]);
+    double initFov = atoi(argv[7] );
+    initFov = initFov * PI /180;
     int initRange = atoi(argv[6]);
     double precision = atof(argv[8]);
     double threshold = atof(argv[9]);
@@ -38,17 +40,20 @@ int main(int argc, char **argv) {
     Pose initialPose = Pose(initX,initY,initOrientation,initRange,initFov);
     Pose target = initialPose;
     Pose previous = initialPose;
-    GraphPose graph;
     long numConfiguration =0;
     //testing
     vector<pair<string,list<Pose>>> graph2;
     NewRay ray;
-    MCDMFunction function ;
+    MCDMFunction function;
     long sensedCells = 0;
     long newSensedCells =0;
     long totalFreeCells = map.getTotalFreeCells() ;
     int count = 0;
     int countBT;
+    double travelledDistance = 0;
+    unordered_map<string,int> visitedCell;
+    vector<string>history;
+    history.push_back(function.getEncodedKey(target,1));
     //amount of time the robot should do nothing for scanning the environment ( final value expressed in second)
     unsigned int microseconds = 5 * 1000 * 1000 ;
     //cout << "total free cells in the main: " << totalFreeCells << endl;
@@ -59,14 +64,18 @@ int main(int argc, char **argv) {
 	int orientation = target.getOrientation();
 	int range = target.getRange();
 	double FOV = target.getFOV();
-	string actualPose = graph.getEncodedKey(target);
-	
+	string actualPose = function.getEncodedKey(target,0);
 	map.setCurrentPose(target);
+	travelledDistance = travelledDistance + target.getDistance(previous);
+	string encoding = to_string(target.getX()) + to_string(target.getY());
+	visitedCell.emplace(encoding,0);
+	
+	
 	
 	
 	//Map *map2 = &map;
 	
-	cout << "-------------------------------------------------" << endl;
+	cout << "-----------------------------------------------------------------"<<endl;
 	cout << "Round : " << count<< endl;
 	newSensedCells = sensedCells + ray.getInformationGain(map,x,y,orientation,FOV,range);
 	cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
@@ -89,13 +98,17 @@ int main(int argc, char **argv) {
 		graph2.pop_back();
 		EvaluationRecords record;
 		target = record.getPoseFromEncoding(targetString);
+		history.push_back(function.getEncodedKey(target,2));
 		cout << "[BT]No significative position reachable. Come back to previous position" << endl;
 		cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
 		count = count + 1;
 		cout << "Graph dimension : " << graph2.size() << endl;
 	    } else {
+		cout << "-----------------------------------------------------------------"<<endl;
 		cout << "I came back to the original position since i don't have any other candidate position"<< endl;
+		cout << "Total cell visited :" << numConfiguration <<endl;
 		cout << "FINAL: Map not completely explored!" << endl;
+		cout << "-----------------------------------------------------------------"<<endl;
 		exit(0);
 	    }
 
@@ -106,15 +119,14 @@ int main(int argc, char **argv) {
 	    list<Pose> frontiers;
 	    vector<pair<long,long> >::iterator it =candidatePosition.begin();
 	    for(it; it != candidatePosition.end(); it++){
-		Pose p1 = Pose((*it).first,(*it).second,0,range,FOV);
+		Pose p1 = Pose((*it).first,(*it).second,0 ,range,FOV);
 		Pose p2 = Pose((*it).first,(*it).second,180,range,FOV);
 		Pose p3 = Pose((*it).first,(*it).second,90,range,FOV);
 		Pose p4 = Pose((*it).first,(*it).second,270,range,FOV);
 		frontiers.push_back(p1);
 		frontiers.push_back(p2);
-
-		//frontiers.push_back(p3);
-		//frontiers.push_back(p4);
+		frontiers.push_back(p3);
+		frontiers.push_back(p4);
 	    }
 	    
 	    cout << "Graph dimension : " << graph2.size() << endl;
@@ -133,6 +145,7 @@ int main(int argc, char **argv) {
 		count = count + 1;
 		countBT = graph2.size();
 		numConfiguration++;
+		history.push_back(function.getEncodedKey(target,1));
 	    }else {
 		if(graph2.size() == 0) break;
 		countBT = countBT -1;
@@ -140,6 +153,7 @@ int main(int argc, char **argv) {
 		target = record->getPoseFromEncoding(targetString);
 		graph2.pop_back();
 		cout << "No significative position reachable. Come back to previous position" << endl;
+		history.push_back(function.getEncodedKey(target,2));
 		cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
 		count = count + 1;
 	    }
@@ -155,10 +169,18 @@ int main(int argc, char **argv) {
 	}
     }
     
+    map.drawVisitedCells(visitedCell,resolution);
+    map.printVisitedCells(history);
     if (graph2.size() ==0){
+	cout << "-----------------------------------------------------------------"<<endl;
 	cout << "I came back to the original position since i don't have any other candidate position"<< endl;
-    }else {
 	cout << "Total cell visited :" << numConfiguration <<endl;
+	cout << "-----------------------------------------------------------------"<<endl;
+    }else {
+	cout << "-----------------------------------------------------------------"<<endl;
+	cout << "Total cell visited :" << numConfiguration <<endl;
+	cout << "Total travelled distance (cells): " << travelledDistance << endl;
 	cout << "FINAL: MAP EXPLORED!" << endl;
+	cout << "-----------------------------------------------------------------"<<endl;
     }
 }
