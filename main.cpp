@@ -38,6 +38,10 @@ int main(int argc, char **argv) {
     double threshold = atof(argv[9]);
     //x,y,orientation,range,angle -
     Pose initialPose = Pose(initX,initY,initOrientation,initRange,initFov);
+    Pose p1 = Pose(initX,initY,0,initRange,initFov);
+    Pose p2 = Pose(initX,initY,90,initRange,initFov);
+    Pose p3 = Pose(initX,initY,180,initRange,initFov);
+    Pose p4 = Pose(initX,initY,270,initRange,initFov);
     Pose target = initialPose;
     Pose previous = initialPose;
     long numConfiguration =0;
@@ -56,6 +60,7 @@ int main(int argc, char **argv) {
     history.push_back(function.getEncodedKey(target,1));
     //amount of time the robot should do nothing for scanning the environment ( final value expressed in second)
     unsigned int microseconds = 5 * 1000 * 1000 ;
+    list<Pose> possibleDestinations;
     //cout << "total free cells in the main: " << totalFreeCells << endl;
     
     while(sensedCells < precision * totalFreeCells ){
@@ -94,6 +99,22 @@ int main(int argc, char **argv) {
 	    
 	    countBT = countBT -1;
 	    if (graph2.size() >0){
+		
+		/*
+		 //NEW METHOD
+		cout << "[BT]No significative position reachable. Come back to the best previous position:" << endl;
+		EvaluationRecords *record = function.evaluateFrontiers(possibleDestinations,map,threshold);
+		std::pair<Pose,double> result = function.selectNewPose(record);
+		target = result.first;
+		history.push_back(function.getEncodedKey(target,2));
+		graph2.pop_back();
+		//cout << "[BT]No significative position reachable. Come back to the best previous position:" << endl;
+		//cout << " x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
+		count = count + 1;
+		cout << "Graph dimension : " << graph2.size() << endl;
+		*/
+		
+		// OLD METHOD
 		string targetString = graph2.at(countBT).first;
 		graph2.pop_back();
 		EvaluationRecords record;
@@ -103,6 +124,7 @@ int main(int argc, char **argv) {
 		cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
 		count = count + 1;
 		cout << "Graph dimension : " << graph2.size() << endl;
+		
 	    } else {
 		cout << "-----------------------------------------------------------------"<<endl;
 		cout << "I came back to the original position since i don't have any other candidate position"<< endl;
@@ -127,6 +149,10 @@ int main(int argc, char **argv) {
 		frontiers.push_back(p2);
 		frontiers.push_back(p3);
 		frontiers.push_back(p4);
+		possibleDestinations.push_back(p1);
+		possibleDestinations.push_back(p2);
+		possibleDestinations.push_back(p3);
+		possibleDestinations.push_back(p4);
 	    }
 	    
 	    cout << "Graph dimension : " << graph2.size() << endl;
@@ -146,16 +172,33 @@ int main(int argc, char **argv) {
 		countBT = graph2.size();
 		numConfiguration++;
 		history.push_back(function.getEncodedKey(target,1));
+		
+		cout << record->size() << endl;
 	    }else {
-		if(graph2.size() == 0) break;
-		countBT = countBT -1;
-		string targetString = graph2.at(countBT).first;
-		target = record->getPoseFromEncoding(targetString);
-		graph2.pop_back();
-		cout << "No significative position reachable. Come back to previous position" << endl;
-		history.push_back(function.getEncodedKey(target,2));
-		cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
-		count = count + 1;
+		    if(graph2.size() == 0) break;
+		    
+		    /*
+		     // NEW METHOD
+		     EvaluationRecords *record = function.evaluateFrontiers(possibleDestinations,map,threshold);
+		    cout << "[BT]No significative position reachable. Come back to the best previous position:" << endl;
+		    std::pair<Pose,double> result = function.selectNewPose(record);
+		    target = result.first;
+		    history.push_back(function.getEncodedKey(target,2));
+		    graph2.pop_back();
+		    //cout << "x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
+		    count = count + 1;
+		    cout << "Graph dimension : " << graph2.size() << endl;
+		    */
+		    
+		    //OLD METHOD
+		    countBT = countBT -1;
+		    string targetString = graph2.at(countBT).first;
+		    target = record->getPoseFromEncoding(targetString);
+		    graph2.pop_back();
+		    cout << "No significative position reachable. Come back to previous position" << endl;
+		    history.push_back(function.getEncodedKey(target,2));
+		    cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
+		    count = count + 1;
 	    }
     
 	    sensedCells = newSensedCells;
