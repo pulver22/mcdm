@@ -67,24 +67,14 @@ int main(int argc, char **argv) {
     //unsigned int microseconds = 5 * 1000 * 1000 ;
     //list<Pose> possibleDestinations;
     vector<Pose> possibleDestinations;
+    possibleDestinations.push_back(initialPose);
     list<Pose> tabuList;
     bool noCandidatePosition = false;
     std::pair<Pose,double> result ;
-    /*
-    	    cout << possibleDestinations.size() << endl;
-				 for(std::list<Pose>::iterator it = possibleDestinations.begin(); it != possibleDestinations.end();it++ ){
-				    
-				    cout << "bb out " << __LINE__<< " "<< function.getEncodedKey(*it,0) << endl;
-				}	*/
+    
 
     while(sensedCells < precision * totalFreeCells ){
-	   /* cout<<"--------------------------\n";
-    	    cout << possibleDestinations.size() << endl;
-				 for(std::list<Pose>::iterator it = possibleDestinations.begin(); it != possibleDestinations.end();it++ ){
-				    
-				    cout << "bb in " << __LINE__<< " "<< function.getEncodedKey(*it,0) << endl;
-				}	
-	    */
+	   
 	long x = target.getX();
 	long y = target.getY();
 	int orientation = target.getOrientation();
@@ -118,8 +108,6 @@ int main(int argc, char **argv) {
 	    cout << "No candidate position from here. Come back to the best previous position:" << endl;
 	    previous = target;
 	    
-	    //remove the actual pose from the possible ones
-	    //cleanPossibleDestination(possibleDestinations,previous);
 	    
 	    EvaluationRecords *record2 = function.evaluateFrontiersVec(possibleDestinations,map,threshold);
 	    if (record2->size() != 0){
@@ -216,7 +204,7 @@ int main(int argc, char **argv) {
 			    target = result.first;
 			    cout << __LINE__<< " "<< function.getEncodedKey(target,0) << endl;
 			    if(contains(tabuList,target) == false){
-				cout << "trovata nuova posizione" << endl;
+				cout << "Found new position" << endl;
 				tabuList.push_back(target);
 				found = true;
 				
