@@ -17,9 +17,10 @@ public:
     MCDMFunction();
     ~MCDMFunction();
     double evaluateFrontier(Pose& p, Map& map);
-    EvaluationRecords* evaluateFrontiers(list< Pose >& frontiers, Map &map,double threshold);
+    EvaluationRecords* evaluateFrontiers(const list< Pose >& frontiers, Map& map, double threshold);
     pair< Pose, double > selectNewPose(EvaluationRecords* evaluationRecords);
     string getEncodedKey(Pose& p, int value);
+    EvaluationRecords* evaluateFrontiersVec(const std::vector< Pose >& frontiers,  Map& map,double threshold);
     
 protected:
 

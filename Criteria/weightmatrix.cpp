@@ -142,6 +142,7 @@ double WeightMatrix::getWeight(const string& encoding)
     //mutex.lock();
     // like a charm!
     double toRet = (weights->at(card-1))->at(encoding);
+    //cout << toRet <<endl;
     //mutex.unlock();
     return toRet;
 }

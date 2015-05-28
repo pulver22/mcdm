@@ -76,10 +76,12 @@ unordered_map
 list
 -
 
-/home/pulver/projects/mcdm_online_exploration_ros/main.cpp
+/home/pulver/projects/mcdm_online_exploration_ros/main_new.cpp
 iostream
 -
 iterator
+-
+algorithm
 -
 map.h
 /home/pulver/projects/mcdm_online_exploration_ros/map.h

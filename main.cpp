@@ -60,8 +60,8 @@ int main(int argc, char **argv) {
     history.push_back(function.getEncodedKey(target,1));
     //amount of time the robot should do nothing for scanning the environment ( final value expressed in second)
     unsigned int microseconds = 5 * 1000 * 1000 ;
-    list<Pose> possibleDestinations;
     //cout << "total free cells in the main: " << totalFreeCells << endl;
+    list<Pose> unexploredFrontiers;
     
     while(sensedCells < precision * totalFreeCells ){
 	long x = target.getX();
@@ -100,20 +100,6 @@ int main(int argc, char **argv) {
 	    countBT = countBT -1;
 	    if (graph2.size() >0){
 		
-		/*
-		 //NEW METHOD
-		cout << "[BT]No significative position reachable. Come back to the best previous position:" << endl;
-		EvaluationRecords *record = function.evaluateFrontiers(possibleDestinations,map,threshold);
-		std::pair<Pose,double> result = function.selectNewPose(record);
-		target = result.first;
-		history.push_back(function.getEncodedKey(target,2));
-		graph2.pop_back();
-		//cout << "[BT]No significative position reachable. Come back to the best previous position:" << endl;
-		//cout << " x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
-		count = count + 1;
-		cout << "Graph dimension : " << graph2.size() << endl;
-		*/
-		
 		// OLD METHOD
 		string targetString = graph2.at(countBT).first;
 		graph2.pop_back();
@@ -149,11 +135,9 @@ int main(int argc, char **argv) {
 		frontiers.push_back(p2);
 		frontiers.push_back(p3);
 		frontiers.push_back(p4);
-		possibleDestinations.push_back(p1);
-		possibleDestinations.push_back(p2);
-		possibleDestinations.push_back(p3);
-		possibleDestinations.push_back(p4);
 	    }
+	    
+	    unexploredFrontiers = frontiers;
 	    
 	    cout << "Graph dimension : " << graph2.size() << endl;
 	    cout << "Candidate position: " << candidatePosition.size() << endl;
@@ -161,44 +145,60 @@ int main(int argc, char **argv) {
 	    EvaluationRecords *record = function.evaluateFrontiers(frontiers,map,threshold);
 	    //cout << "Record: " << record->size() << endl;
 	    cout << "Evaluation Record obtained" << endl;
-	    previous = target;
+	    
 	    
 	    if(record->size() != 0){
+		//set the previous pose equal to the actual one(actually represented by target)
+		previous = target;
 		std::pair<string,list<Pose>> pair = make_pair(actualPose,frontiers);
 		graph2.push_back(pair);
 		std::pair<Pose,double> result = function.selectNewPose(record);
 		target = result.first;
-		count = count + 1;
-		countBT = graph2.size();
-		numConfiguration++;
-		history.push_back(function.getEncodedKey(target,1));
-		
-		cout << record->size() << endl;
-	    }else {
-		    if(graph2.size() == 0) break;
-		    
-		    /*
-		     // NEW METHOD
-		     EvaluationRecords *record = function.evaluateFrontiers(possibleDestinations,map,threshold);
-		    cout << "[BT]No significative position reachable. Come back to the best previous position:" << endl;
-		    std::pair<Pose,double> result = function.selectNewPose(record);
-		    target = result.first;
-		    history.push_back(function.getEncodedKey(target,2));
-		    graph2.pop_back();
-		    //cout << "x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
+		if (!target.isEqual(previous)){
 		    count = count + 1;
+		    countBT = graph2.size();
+		    numConfiguration++;
+		    history.push_back(function.getEncodedKey(target,1));
 		    cout << "Graph dimension : " << graph2.size() << endl;
-		    */
+		    cout << record->size() << endl;
+		}else{
+		    cout << "[BT]Cell already explored!Come back to previous position";
+		    countBT = countBT -2;
+		    string targetString = graph2.at(countBT).first;
+		    target = record->getPoseFromEncoding(targetString);
+		    graph2.pop_back();
+		    history.push_back(function.getEncodedKey(target,2));
+		    cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
+		    count = count + 1;
+		}
+	    }else {  
 		    
 		    //OLD METHOD
+		    
+		    if(graph2.size() == 0) break;
+		    
 		    countBT = countBT -1;
 		    string targetString = graph2.at(countBT).first;
 		    target = record->getPoseFromEncoding(targetString);
 		    graph2.pop_back();
-		    cout << "No significative position reachable. Come back to previous position" << endl;
-		    history.push_back(function.getEncodedKey(target,2));
-		    cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
-		    count = count + 1;
+		    if(!target.isEqual(previous)){
+			previous = target;
+			cout << "[BT]No significative position reachable. Come back to previous position" << endl;
+			history.push_back(function.getEncodedKey(target,2));
+			cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
+			count = count + 1;
+		    }else {
+			countBT = countBT -1;
+			string targetString = graph2.at(countBT).first;
+			target = record->getPoseFromEncoding(targetString);
+			graph2.pop_back();
+			previous = target;
+			cout << "[BT]No significative position reachable. Come back to previous position" << endl;
+			history.push_back(function.getEncodedKey(target,2));
+			cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
+			count = count + 1;
+		    }
+		    
 	    }
     
 	    sensedCells = newSensedCells;
@@ -214,6 +214,9 @@ int main(int argc, char **argv) {
     
     map.drawVisitedCells(visitedCell,resolution);
     map.printVisitedCells(history);
+  
+   
+    //OLD METHOD
     if (graph2.size() ==0){
 	cout << "-----------------------------------------------------------------"<<endl;
 	cout << "I came back to the original position since i don't have any other candidate position"<< endl;
@@ -226,4 +229,5 @@ int main(int argc, char **argv) {
 	cout << "FINAL: MAP EXPLORED!" << endl;
 	cout << "-----------------------------------------------------------------"<<endl;
     }
+    
 }

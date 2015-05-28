@@ -164,7 +164,7 @@ Pose EvaluationRecords::getPoseFromEncoding(string &encoding)
 	//cout << newString << endl;
 	newPos = newString.find('/');
 	phi = newString.substr(0,newPos);
-	double phiValue = atoi(phi.c_str());
+	double phiValue = atof(phi.c_str());
 	//cout << phi << endl;
 	Pose p(xValue,yValue,orientationValue,rValue,phiValue);
 	return p;

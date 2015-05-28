@@ -4,7 +4,7 @@ SET(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_CXX
-  "/home/pulver/projects/mcdm_online_exploration_ros/main.cpp" "/home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o"
+  "/home/pulver/projects/mcdm_online_exploration_ros/main_new.cpp" "/home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles/mcdm_online_exploration_ros.dir/main_new.cpp.o"
   )
 SET(CMAKE_CXX_COMPILER_ID "GNU")
 
