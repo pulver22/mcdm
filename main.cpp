@@ -180,7 +180,7 @@ int main(int argc, char **argv) {
 		    string targetString = graph2.at(graph2.size()-1).first;
 		    graph2.pop_back();
 		    target = record->getPoseFromEncoding(targetString);
-		    //graph2.pop_back();
+		    
 		    if(!target.isEqual(previous)){
 			previous = target;
 			cout << "[BT]No significative position reachable. Come back to previous position" << endl;
