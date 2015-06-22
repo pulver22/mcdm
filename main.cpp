@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <iterator>
 #include "map.h"
@@ -160,7 +161,7 @@ int main(int argc, char **argv) {
 		    numConfiguration++;
 		    history.push_back(function.getEncodedKey(target,1));
 		    cout << "Graph dimension : " << graph2.size() << endl;
-		    cout << record->size() << endl;
+		    //cout << record->size() << endl;
 		}else{
 		    cout << "[BT]Cell already explored!Come back to previous position";
 		    countBT = countBT -2;
@@ -172,15 +173,14 @@ int main(int argc, char **argv) {
 		    count = count + 1;
 		}
 	    }else {  
-		    
 		    //OLD METHOD
 		    
-		    if(graph2.size() == 0) break;
+		    if(graph2.size() == 0 ) break;
 		    
-		    countBT = countBT -1;
-		    string targetString = graph2.at(countBT).first;
-		    target = record->getPoseFromEncoding(targetString);
+		    string targetString = graph2.at(graph2.size()-1).first;
 		    graph2.pop_back();
+		    target = record->getPoseFromEncoding(targetString);
+		    //graph2.pop_back();
 		    if(!target.isEqual(previous)){
 			previous = target;
 			cout << "[BT]No significative position reachable. Come back to previous position" << endl;
@@ -188,12 +188,16 @@ int main(int argc, char **argv) {
 			cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
 			count = count + 1;
 		    }else {
-			countBT = countBT -1;
-			string targetString = graph2.at(countBT).first;
-			target = record->getPoseFromEncoding(targetString);
+			
+			if(graph2.size() == 0 ) {
+			    cout << "No other possibilities to do backtracking on previous positions" << endl;
+			    break;
+			}
+			string targetString = graph2.at(graph2.size()-1).first;
 			graph2.pop_back();
+			target = record->getPoseFromEncoding(targetString);
 			previous = target;
-			cout << "[BT]No significative position reachable. Come back to previous position" << endl;
+			cout << "[BT]No significative position reachable from the previous position. Come back to another previous one" << endl;
 			history.push_back(function.getEncodedKey(target,2));
 			cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
 			count = count + 1;

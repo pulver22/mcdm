@@ -381,29 +381,29 @@ graphpose.cpp.s:
 	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/graphpose.cpp.s
 .PHONY : graphpose.cpp.s
 
-main_new.o: main_new.cpp.o
-.PHONY : main_new.o
+main.o: main.cpp.o
+.PHONY : main.o
 
 # target to build an object file
-main_new.cpp.o:
-	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/main_new.cpp.o
-.PHONY : main_new.cpp.o
+main.cpp.o:
+	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o
+.PHONY : main.cpp.o
 
-main_new.i: main_new.cpp.i
-.PHONY : main_new.i
+main.i: main.cpp.i
+.PHONY : main.i
 
 # target to preprocess a source file
-main_new.cpp.i:
-	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/main_new.cpp.i
-.PHONY : main_new.cpp.i
+main.cpp.i:
+	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.i
+.PHONY : main.cpp.i
 
-main_new.s: main_new.cpp.s
-.PHONY : main_new.s
+main.s: main.cpp.s
+.PHONY : main.s
 
 # target to generate assembly for a file
-main_new.cpp.s:
-	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/main_new.cpp.s
-.PHONY : main_new.cpp.s
+main.cpp.s:
+	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.s
+.PHONY : main.cpp.s
 
 map.o: map.cpp.o
 .PHONY : map.o
@@ -566,9 +566,9 @@ help:
 	@echo "... graphpose.o"
 	@echo "... graphpose.i"
 	@echo "... graphpose.s"
-	@echo "... main_new.o"
-	@echo "... main_new.i"
-	@echo "... main_new.s"
+	@echo "... main.o"
+	@echo "... main.i"
+	@echo "... main.s"
 	@echo "... map.o"
 	@echo "... map.i"
 	@echo "... map.s"
