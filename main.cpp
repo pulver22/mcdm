@@ -54,7 +54,6 @@ int main(int argc, char **argv) {
     long newSensedCells =0;
     long totalFreeCells = map.getTotalFreeCells() ;
     int count = 0;
-    int countBT;
     double travelledDistance = 0;
     unordered_map<string,int> visitedCell;
     vector<string>history;
@@ -78,9 +77,6 @@ int main(int argc, char **argv) {
 	
 	
 	
-	
-	//Map *map2 = &map;
-	
 	cout << "-----------------------------------------------------------------"<<endl;
 	cout << "Round : " << count<< endl;
 	newSensedCells = sensedCells + ray.getInformationGain(map,x,y,orientation,FOV,range);
@@ -91,6 +87,38 @@ int main(int argc, char **argv) {
 	vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
 	ray.emptyCandidatePositions();
 	
+	/*
+	//NOTE: PRINT THE MAP NEAR THE ROBOT-------------
+	int curX = previous.getX();
+	int curY = previous.getY();
+	int minX = curX - 30;
+	if(minX < 0) minX = 0;
+	int maxX = curX + 30;
+	if(maxX > map.getNumGridRows()-1) maxX= map.getNumGridRows()-1;
+	int minY = curY - 30;
+	if(minY < 0) minY = 0;
+	int maxY = curY + 30;
+	if(maxY > map.getNumGridCols()-1) maxY = map.getNumGridCols()-1;
+	//print portion of the map
+	    for(int i = minX; i < maxX; ++i)
+	    {
+		for(int j = minY; j < maxY; ++j)
+		{
+		   /* if(i == curX && j == curY)
+		    {
+			//std::cout << "X ";
+		    }
+		    else if (i == target.getX() && j == target.getY())
+		    {
+			std::cout << "Y ";
+		    }
+		    else std::cout << map.getGridValue(i, j) << " ";
+		}
+		std::cout << std::endl;
+	    }
+	    std::cout << std::endl;
+	//---------------------------------------
+	*/
 	
 	if(candidatePosition.size() == 0) {
 	    
@@ -98,12 +126,13 @@ int main(int argc, char **argv) {
 	    cout << "----- BACKTRACKING -----" << endl;
 	    
 	    
-	    countBT = countBT -1;
+	    
 	    if (graph2.size() >0){
 		
 		// OLD METHOD
-		string targetString = graph2.at(countBT).first;
+		string targetString = graph2.at(graph2.size()-1).first;
 		graph2.pop_back();
+		
 		EvaluationRecords record;
 		target = record.getPoseFromEncoding(targetString);
 		history.push_back(function.getEncodedKey(target,2));
@@ -120,7 +149,7 @@ int main(int argc, char **argv) {
 		cout << "-----------------------------------------------------------------"<<endl;
 		exit(0);
 	    }
-
+	   
 	}else{
 	    
 	    
@@ -157,20 +186,20 @@ int main(int argc, char **argv) {
 		target = result.first;
 		if (!target.isEqual(previous)){
 		    count = count + 1;
-		    countBT = graph2.size();
 		    numConfiguration++;
 		    history.push_back(function.getEncodedKey(target,1));
 		    cout << "Graph dimension : " << graph2.size() << endl;
 		    //cout << record->size() << endl;
 		}else{
 		    cout << "[BT]Cell already explored!Come back to previous position";
-		    countBT = countBT -2;
-		    string targetString = graph2.at(countBT).first;
+		    
+		    string targetString = graph2.at(graph2.size()-2).first;
 		    target = record->getPoseFromEncoding(targetString);
 		    graph2.pop_back();
 		    history.push_back(function.getEncodedKey(target,2));
 		    cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
 		    count = count + 1;
+		    cout << "Graph dimension : " << graph2.size() << endl;
 		}
 	    }else {  
 		    //OLD METHOD
@@ -187,10 +216,12 @@ int main(int argc, char **argv) {
 			history.push_back(function.getEncodedKey(target,2));
 			cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
 			count = count + 1;
+			cout << "Graph dimension : " << graph2.size() << endl;
+			
 		    }else {
 			
 			if(graph2.size() == 0 ) {
-			    cout << "No other possibilities to do backtracking on previous positions" << endl;
+			    cout << "[BT]No other possibilities to do backtracking on previous positions" << endl;
 			    break;
 			}
 			string targetString = graph2.at(graph2.size()-1).first;
@@ -201,11 +232,12 @@ int main(int argc, char **argv) {
 			history.push_back(function.getEncodedKey(target,2));
 			cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
 			count = count + 1;
+			cout << "Graph dimension : " << graph2.size() << endl;
 		    }
 		    
 	    }
     
-	    sensedCells = newSensedCells;
+	    
 	    
 	    //NOTE: not requested for testing purpose
 	    //usleep(microseconds);
@@ -214,6 +246,8 @@ int main(int argc, char **argv) {
 	    candidatePosition.clear();
 	    delete record;
 	}
+	
+	sensedCells = newSensedCells;
     }
     
     map.drawVisitedCells(visitedCell,resolution);
@@ -221,17 +255,19 @@ int main(int argc, char **argv) {
   
    
     //OLD METHOD
-    if (graph2.size() ==0){
-	cout << "-----------------------------------------------------------------"<<endl;
-	cout << "I came back to the original position since i don't have any other candidate position"<< endl;
-	cout << "Total cell visited :" << numConfiguration <<endl;
-	cout << "-----------------------------------------------------------------"<<endl;
-    }else {
+    
+    if (graph2.size() != 0 && sensedCells >= precision * totalFreeCells ){
 	cout << "-----------------------------------------------------------------"<<endl;
 	cout << "Total cell visited :" << numConfiguration <<endl;
 	cout << "Total travelled distance (cells): " << travelledDistance << endl;
 	cout << "FINAL: MAP EXPLORED!" << endl;
 	cout << "-----------------------------------------------------------------"<<endl;
+    }else{
+	cout << "-----------------------------------------------------------------"<<endl;
+	cout << "I came back to the original position since i don't have any other candidate position"<< endl;
+	cout << "Total cell visited :" << numConfiguration <<endl;
+	cout << "-----------------------------------------------------------------"<<endl;
+	
     }
     
 }
