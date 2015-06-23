@@ -111,7 +111,7 @@ int main(int argc, char **argv) {
 		cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
 		count = count + 1;
 		cout << "Graph dimension : " << graph2.size() << endl;
-		
+		sensedCells = newSensedCells;
 	    } else {
 		cout << "-----------------------------------------------------------------"<<endl;
 		cout << "I came back to the original position since i don't have any other candidate position"<< endl;
