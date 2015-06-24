@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
 	    
 	    
 	    
-	    if (graph2.size() >0){
+	    if (graph2.size() >1){
 		
 		// OLD METHOD
 		string targetString = graph2.at(graph2.size()-1).first;
