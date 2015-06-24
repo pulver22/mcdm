@@ -87,38 +87,6 @@ int main(int argc, char **argv) {
 	vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
 	ray.emptyCandidatePositions();
 	
-	/*
-	//NOTE: PRINT THE MAP NEAR THE ROBOT-------------
-	int curX = previous.getX();
-	int curY = previous.getY();
-	int minX = curX - 30;
-	if(minX < 0) minX = 0;
-	int maxX = curX + 30;
-	if(maxX > map.getNumGridRows()-1) maxX= map.getNumGridRows()-1;
-	int minY = curY - 30;
-	if(minY < 0) minY = 0;
-	int maxY = curY + 30;
-	if(maxY > map.getNumGridCols()-1) maxY = map.getNumGridCols()-1;
-	//print portion of the map
-	    for(int i = minX; i < maxX; ++i)
-	    {
-		for(int j = minY; j < maxY; ++j)
-		{
-		   /* if(i == curX && j == curY)
-		    {
-			//std::cout << "X ";
-		    }
-		    else if (i == target.getX() && j == target.getY())
-		    {
-			std::cout << "Y ";
-		    }
-		    else std::cout << map.getGridValue(i, j) << " ";
-		}
-		std::cout << std::endl;
-	    }
-	    std::cout << std::endl;
-	//---------------------------------------
-	*/
 	
 	if(candidatePosition.size() == 0) {
 	    
@@ -150,6 +118,7 @@ int main(int argc, char **argv) {
 		exit(0);
 	    }
 	   
+	    sensedCells = newSensedCells;
 	}else{
 	    
 	    
@@ -241,13 +210,13 @@ int main(int argc, char **argv) {
 	    
 	    //NOTE: not requested for testing purpose
 	    //usleep(microseconds);
-	    
+	    sensedCells = newSensedCells;
 	    frontiers.clear();
 	    candidatePosition.clear();
 	    delete record;
 	}
 	
-	sensedCells = newSensedCells;
+	
     }
     
     map.drawVisitedCells(visitedCell,resolution);
