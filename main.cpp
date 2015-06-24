@@ -23,10 +23,8 @@ int main(int argc, char **argv) {
     ifstream infile;
     infile.open(argv[1]);
     int resolution = atoi(argv[2]);
-    //ifstream infile("/home/pulver/Dropbox/Università/Laurea Magistrale/Thesis/testmap10.pgm");
     Map map = Map(infile,resolution);
     cout << "Map dimension: " << map.getNumGridCols() << " : "<<  map.getNumGridRows() << endl;
-    // Pose initialPose = map.getRobotPosition();
     
     // i switched x and y because the map's orientation inside and outside programs are different
     long  initX = atoi(argv[4]);	
@@ -37,7 +35,7 @@ int main(int argc, char **argv) {
     int initRange = atoi(argv[6]);
     double precision = atof(argv[8]);
     double threshold = atof(argv[9]);
-    //x,y,orientation,range,angle -
+    //x,y,orientation,range,FOV
     Pose initialPose = Pose(initX,initY,initOrientation,initRange,initFov);
     Pose p1 = Pose(initX,initY,0,initRange,initFov);
     Pose p2 = Pose(initX,initY,90,initRange,initFov);
@@ -46,7 +44,6 @@ int main(int argc, char **argv) {
     Pose target = initialPose;
     Pose previous = initialPose;
     long numConfiguration =0;
-    //testing
     vector<pair<string,list<Pose>>> graph2;
     NewRay ray;
     MCDMFunction function;
@@ -60,7 +57,6 @@ int main(int argc, char **argv) {
     history.push_back(function.getEncodedKey(target,1));
     //amount of time the robot should do nothing for scanning the environment ( final value expressed in second)
     unsigned int microseconds = 5 * 1000 * 1000 ;
-    //cout << "total free cells in the main: " << totalFreeCells << endl;
     list<Pose> unexploredFrontiers;
     
     while(sensedCells < precision * totalFreeCells ){
@@ -95,11 +91,23 @@ int main(int argc, char **argv) {
 	    
 	    
 	    
-	    if (graph2.size() >1){
+	    if (graph2.size() > 0){
 		
-		// OLD METHOD
+		/*
+		int dimGraph2 = graph2.size();
+		cout << "Graph dimension: " << dimGraph2 << endl;
+		for(int i = 0; i < dimGraph2; i++){
+		    cout << graph2[i].first << endl;
+		}*/
+		//get the last position in the graph and then remove it
 		string targetString = graph2.at(graph2.size()-1).first;
 		graph2.pop_back();
+		/*
+		dimGraph2 = graph2.size();
+		cout << "Graph dimension: " << dimGraph2 << endl;
+		for(int i = 0; i < dimGraph2; i++){
+		    cout << graph2[i].first << endl;
+		}*/
 		
 		EvaluationRecords record;
 		target = record.getPoseFromEncoding(targetString);
@@ -153,13 +161,13 @@ int main(int argc, char **argv) {
 		graph2.push_back(pair);
 		std::pair<Pose,double> result = function.selectNewPose(record);
 		target = result.first;
-		if (!target.isEqual(previous)){
+		//if (!target.isEqual(previous)){
 		    count = count + 1;
 		    numConfiguration++;
 		    history.push_back(function.getEncodedKey(target,1));
 		    cout << "Graph dimension : " << graph2.size() << endl;
 		    //cout << record->size() << endl;
-		}else{
+		/*}else{
 		    cout << "[BT]Cell already explored!Come back to previous position";
 		    
 		    string targetString = graph2.at(graph2.size()-2).first;
@@ -169,16 +177,31 @@ int main(int argc, char **argv) {
 		    cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
 		    count = count + 1;
 		    cout << "Graph dimension : " << graph2.size() << endl;
-		}
+		}*/
 	    }else {  
-		    //OLD METHOD
+		    
 		    
 		    if(graph2.size() == 0 ) break;
+		    /*
+		    int dimGraph2 = graph2.size();
+		    cout << "Graph dimension: " << dimGraph2 << endl;
+		    for(int i = 0; i < dimGraph2; i++){
+			cout << graph2[i].first << endl;
+		    }*/
 		    
 		    string targetString = graph2.at(graph2.size()-1).first;
 		    graph2.pop_back();
+		    /*
+		    dimGraph2 = graph2.size();
+		    cout << "Graph dimension: " << dimGraph2 << endl;
+		    for(int i = 0; i < dimGraph2; i++){
+			cout << graph2[i].first << endl;
+		    }*/
 		    target = record->getPoseFromEncoding(targetString);
 		    
+		    
+		    
+		    /*
 		    if(!target.isEqual(previous)){
 			previous = target;
 			cout << "[BT]No significative position reachable. Come back to previous position" << endl;
@@ -203,7 +226,12 @@ int main(int argc, char **argv) {
 			count = count + 1;
 			cout << "Graph dimension : " << graph2.size() << endl;
 		    }
+		    */
 		    
+		    cout << "[BT]No significative position reachable. Come back to previous position" << endl;
+		    history.push_back(function.getEncodedKey(target,2));
+		    cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
+		    count = count + 1;
 	    }
     
 	    
@@ -225,7 +253,7 @@ int main(int argc, char **argv) {
    
     //OLD METHOD
     
-    if (graph2.size() != 0 && sensedCells >= precision * totalFreeCells ){
+    if (sensedCells >= precision * totalFreeCells ){
 	cout << "-----------------------------------------------------------------"<<endl;
 	cout << "Total cell visited :" << numConfiguration <<endl;
 	cout << "Total travelled distance (cells): " << travelledDistance << endl;
