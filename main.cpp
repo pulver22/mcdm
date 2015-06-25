@@ -1,4 +1,4 @@
-
+#include <algorithm>
 #include <iostream>
 #include <iterator>
 #include "map.h"
@@ -12,6 +12,9 @@
 
 using namespace std;
 using namespace dummy;
+bool contains(std::list< Pose >& list, Pose& p);
+void cleanPossibleDestination2(std::list< Pose > &possibleDestinations, Pose& p);
+
 
 int main(int argc, char **argv) {
     
@@ -56,6 +59,9 @@ int main(int argc, char **argv) {
     //amount of time the robot should do nothing for scanning the environment ( final value expressed in second)
     unsigned int microseconds = 5 * 1000 * 1000 ;
     list<Pose> unexploredFrontiers;
+    list<Pose> tabuList;
+    bool noCandidatePosition = false;
+    std::pair<Pose,double> result ;
     
     while(sensedCells < precision * totalFreeCells ){
 	long x = target.getX();
@@ -87,10 +93,7 @@ int main(int argc, char **argv) {
 	    cout << "No other candidate position" << endl;
 	    cout << "----- BACKTRACKING -----" << endl;
 	    
-	    
-	    
 	    if (graph2.size() > 0){
-		
 		/*
 		int dimGraph2 = graph2.size();
 		cout << "Graph dimension: " << dimGraph2 << endl;
@@ -116,6 +119,8 @@ int main(int argc, char **argv) {
 		cout << "Graph dimension : " << graph2.size() << endl;
 		
 	    } else {
+		
+
 		cout << "-----------------------------------------------------------------"<<endl;
 		cout << "I came back to the original position since i don't have any other candidate position"<< endl;
 		cout << "Total cell visited :" << numConfiguration <<endl;
@@ -125,6 +130,7 @@ int main(int argc, char **argv) {
 	    }
 	   
 	    sensedCells = newSensedCells;
+	    
 	}else{
 	    
 	    
@@ -153,32 +159,38 @@ int main(int argc, char **argv) {
 	    
 	    
 	    if(record->size() != 0){
+		
+		//NOTE: TAKE THIS BRANCH IF THERE ARE CANDIDATE POSITION
+		
 		//set the previous pose equal to the actual one(actually represented by target)
 		previous = target;
-		std::pair<string,list<Pose>> pair = make_pair(actualPose,frontiers);
-		graph2.push_back(pair);
 		std::pair<Pose,double> result = function.selectNewPose(record);
 		target = result.first;
-		//if (!target.isEqual(previous)){
+		if (contains(tabuList,target) == false){
 		    count = count + 1;
 		    numConfiguration++;
 		    history.push_back(function.getEncodedKey(target,1));
 		    cout << "Graph dimension : " << graph2.size() << endl;
-		    //cout << record->size() << endl;
-		/*}else{
-		    cout << "[BT]Cell already explored!Come back to previous position";
+		    tabuList.push_back(target);
+		    std::pair<string,list<Pose>> pair = make_pair(actualPose,frontiers);
+		    graph2.push_back(pair);
 		    
-		    string targetString = graph2.at(graph2.size()-2).first;
-		    target = record->getPoseFromEncoding(targetString);
+		    //cout << record->size() << endl;
+		}else{
+		    cout << "[BT - Tabulist]There are visible cells but the selected one is already explored!Come back to previous position in the graph"<< endl;
+		    cleanPossibleDestination2(graph2.at(graph2.size()-1).second,target);
+		    string targetString = graph2.at(graph2.size()-1).first;
 		    graph2.pop_back();
+		    target = record->getPoseFromEncoding(targetString);
 		    history.push_back(function.getEncodedKey(target,2));
 		    cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
 		    count = count + 1;
 		    cout << "Graph dimension : " << graph2.size() << endl;
-		}*/
+		}
 	    }else {  
 		    
-		    
+		    //NOTE: TAKE THIS BRANCH IF THERE ARE NO CANDIDATE POSITIONS
+		
 		    if(graph2.size() == 0 ) break;
 		    /*
 		    int dimGraph2 = graph2.size();
@@ -187,6 +199,7 @@ int main(int argc, char **argv) {
 			cout << graph2[i].first << endl;
 		    }*/
 		    
+		    //select as new target the previous one in the graph structure
 		    string targetString = graph2.at(graph2.size()-1).first;
 		    graph2.pop_back();
 		    /*
@@ -199,10 +212,10 @@ int main(int argc, char **argv) {
 		    
 		    
 		    
-		    /*
+		    
 		    if(!target.isEqual(previous)){
 			previous = target;
-			cout << "[BT]No significative position reachable. Come back to previous position" << endl;
+			cout << "[BT]There are no visible cells so come back to previous position in the graph structure" << endl;
 			history.push_back(function.getEncodedKey(target,2));
 			cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
 			count = count + 1;
@@ -216,20 +229,22 @@ int main(int argc, char **argv) {
 			}
 			string targetString = graph2.at(graph2.size()-1).first;
 			graph2.pop_back();
+			
 			target = record->getPoseFromEncoding(targetString);
 			previous = target;
-			cout << "[BT]No significative position reachable from the previous position. Come back to another previous one" << endl;
+			cout << "[BT]There are no visible cells so come back to previous position" << endl;
+			cout << "[BT]Cell already explored!Come back to previous position"<< endl;
 			history.push_back(function.getEncodedKey(target,2));
 			cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
 			count = count + 1;
 			cout << "Graph dimension : " << graph2.size() << endl;
 		    }
-		    */
 		    
+		    /*
 		    cout << "[BT]No significative position reachable. Come back to previous position" << endl;
 		    history.push_back(function.getEncodedKey(target,2));
 		    cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
-		    count = count + 1;
+		    count = count + 1;*/
 	    }
     
 	    
@@ -264,5 +279,36 @@ int main(int argc, char **argv) {
 	cout << "-----------------------------------------------------------------"<<endl;
 	
     }
+    
+}
+
+bool contains(std::list<Pose>& list, Pose& p){
+    bool result = false;
+    MCDMFunction function;
+   
+    std::list<Pose>::iterator findIter = std::find(list.begin(), list.end(), p);
+    if (findIter != list.end()){
+	//cout << "Found it: "<< function.getEncodedKey(p,0) <<endl;
+	result = true;
+    }
+
+    return result;
+}
+
+void cleanPossibleDestination2(std::list< Pose >& possibleDestinations, Pose& p){
+    MCDMFunction function;
+    //cout<<"I remove "<< function.getEncodedKey(p,0) << endl;
+    //cout << possibleDestinations->size() << endl;
+    
+    
+    
+    
+    std::list<Pose>::iterator findIter = std::find(possibleDestinations.begin(), possibleDestinations.end(), p);
+    if (findIter != possibleDestinations.end()){
+	//cout << function.getEncodedKey(*findIter,0) << endl;
+	possibleDestinations.erase(findIter);
+    } else cout<< "not found" << endl;
+    
+   
     
 }
