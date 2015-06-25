@@ -45,16 +45,9 @@ CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.o: ../Criteria/criteriaName.h
 CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.o: ../Criteria/weightmatrix.cpp
 CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.o: ../Criteria/weightmatrix.h
 
-CMakeFiles/lib.dir/evaluationrecords.cpp.o: ../edge.h
 CMakeFiles/lib.dir/evaluationrecords.cpp.o: ../evaluationrecords.cpp
 CMakeFiles/lib.dir/evaluationrecords.cpp.o: ../evaluationrecords.h
-CMakeFiles/lib.dir/evaluationrecords.cpp.o: ../graphpose.h
 CMakeFiles/lib.dir/evaluationrecords.cpp.o: ../pose.h
-
-CMakeFiles/lib.dir/graphpose.cpp.o: ../edge.h
-CMakeFiles/lib.dir/graphpose.cpp.o: ../graphpose.cpp
-CMakeFiles/lib.dir/graphpose.cpp.o: ../graphpose.h
-CMakeFiles/lib.dir/graphpose.cpp.o: ../pose.h
 
 CMakeFiles/lib.dir/map.cpp.o: .././map.h
 CMakeFiles/lib.dir/map.cpp.o: .././pose.h
@@ -83,9 +76,4 @@ CMakeFiles/lib.dir/newray.cpp.o: ../pose.h
 
 CMakeFiles/lib.dir/pose.cpp.o: ../pose.cpp
 CMakeFiles/lib.dir/pose.cpp.o: ../pose.h
-
-CMakeFiles/lib.dir/ray.cpp.o: ../map.h
-CMakeFiles/lib.dir/ray.cpp.o: ../pose.h
-CMakeFiles/lib.dir/ray.cpp.o: ../ray.cpp
-CMakeFiles/lib.dir/ray.cpp.o: ../ray.h
 

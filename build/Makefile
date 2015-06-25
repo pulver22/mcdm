@@ -153,17 +153,17 @@ lib/fast:
 .PHONY : lib/fast
 
 #=============================================================================
-# Target rules for targets named mcdm_online_exploration_ros
+# Target rules for targets named mcdm_online_exploration
 
 # Build rule for target.
-mcdm_online_exploration_ros: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 mcdm_online_exploration_ros
-.PHONY : mcdm_online_exploration_ros
+mcdm_online_exploration: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 mcdm_online_exploration
+.PHONY : mcdm_online_exploration
 
 # fast build rule for target.
-mcdm_online_exploration_ros/fast:
-	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/build
-.PHONY : mcdm_online_exploration_ros/fast
+mcdm_online_exploration/fast:
+	$(MAKE) -f CMakeFiles/mcdm_online_exploration.dir/build.make CMakeFiles/mcdm_online_exploration.dir/build
+.PHONY : mcdm_online_exploration/fast
 
 Criteria/criterion.o: Criteria/criterion.cpp.o
 .PHONY : Criteria/criterion.o
@@ -357,36 +357,12 @@ evaluationrecords.cpp.s:
 	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/evaluationrecords.cpp.s
 .PHONY : evaluationrecords.cpp.s
 
-graphpose.o: graphpose.cpp.o
-.PHONY : graphpose.o
-
-# target to build an object file
-graphpose.cpp.o:
-	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/graphpose.cpp.o
-.PHONY : graphpose.cpp.o
-
-graphpose.i: graphpose.cpp.i
-.PHONY : graphpose.i
-
-# target to preprocess a source file
-graphpose.cpp.i:
-	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/graphpose.cpp.i
-.PHONY : graphpose.cpp.i
-
-graphpose.s: graphpose.cpp.s
-.PHONY : graphpose.s
-
-# target to generate assembly for a file
-graphpose.cpp.s:
-	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/graphpose.cpp.s
-.PHONY : graphpose.cpp.s
-
 main.o: main.cpp.o
 .PHONY : main.o
 
 # target to build an object file
 main.cpp.o:
-	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o
+	$(MAKE) -f CMakeFiles/mcdm_online_exploration.dir/build.make CMakeFiles/mcdm_online_exploration.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -394,7 +370,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.i
+	$(MAKE) -f CMakeFiles/mcdm_online_exploration.dir/build.make CMakeFiles/mcdm_online_exploration.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -402,7 +378,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	$(MAKE) -f CMakeFiles/mcdm_online_exploration_ros.dir/build.make CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.s
+	$(MAKE) -f CMakeFiles/mcdm_online_exploration.dir/build.make CMakeFiles/mcdm_online_exploration.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 map.o: map.cpp.o
@@ -501,30 +477,6 @@ pose.cpp.s:
 	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/pose.cpp.s
 .PHONY : pose.cpp.s
 
-ray.o: ray.cpp.o
-.PHONY : ray.o
-
-# target to build an object file
-ray.cpp.o:
-	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/ray.cpp.o
-.PHONY : ray.cpp.o
-
-ray.i: ray.cpp.i
-.PHONY : ray.i
-
-# target to preprocess a source file
-ray.cpp.i:
-	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/ray.cpp.i
-.PHONY : ray.cpp.i
-
-ray.s: ray.cpp.s
-.PHONY : ray.s
-
-# target to generate assembly for a file
-ray.cpp.s:
-	$(MAKE) -f CMakeFiles/lib.dir/build.make CMakeFiles/lib.dir/ray.cpp.s
-.PHONY : ray.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -537,7 +489,7 @@ help:
 	@echo "... install/strip"
 	@echo "... lib"
 	@echo "... list_install_components"
-	@echo "... mcdm_online_exploration_ros"
+	@echo "... mcdm_online_exploration"
 	@echo "... rebuild_cache"
 	@echo "... Criteria/criterion.o"
 	@echo "... Criteria/criterion.i"
@@ -563,9 +515,6 @@ help:
 	@echo "... evaluationrecords.o"
 	@echo "... evaluationrecords.i"
 	@echo "... evaluationrecords.s"
-	@echo "... graphpose.o"
-	@echo "... graphpose.i"
-	@echo "... graphpose.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
@@ -581,9 +530,6 @@ help:
 	@echo "... pose.o"
 	@echo "... pose.i"
 	@echo "... pose.s"
-	@echo "... ray.o"
-	@echo "... ray.i"
-	@echo "... ray.s"
 .PHONY : help
 
 
