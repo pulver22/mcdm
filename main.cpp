@@ -60,108 +60,259 @@ int main(int argc, char **argv) {
     unsigned int microseconds = 5 * 1000 * 1000 ;
     list<Pose> unexploredFrontiers;
     list<Pose> tabuList;
-    bool noCandidatePosition = false;
-    std::pair<Pose,double> result ;
+    list<Pose> nearCandidates;
+    bool btMode = false;
+
     
     while(sensedCells < precision * totalFreeCells ){
-	long x = target.getX();
-	long y = target.getY();
-	int orientation = target.getOrientation();
-	int range = target.getRange();
-	double FOV = target.getFOV();
-	string actualPose = function.getEncodedKey(target,0);
-	map.setCurrentPose(target);
-	travelledDistance = travelledDistance + target.getDistance(previous);
-	string encoding = to_string(target.getX()) + to_string(target.getY());
-	visitedCell.emplace(encoding,0);
-	
-	
-	
-	cout << "-----------------------------------------------------------------"<<endl;
-	cout << "Round : " << count<< endl;
-	newSensedCells = sensedCells + ray.getInformationGain(map,x,y,orientation,FOV,range);
-	cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
+	if(btMode == false){
+	    long x = target.getX();
+	    long y = target.getY();
+	    int orientation = target.getOrientation();
+	    int range = target.getRange();
+	    double FOV = target.getFOV();
+	    string actualPose = function.getEncodedKey(target,0);
+	    map.setCurrentPose(target);
+	    travelledDistance = travelledDistance + target.getDistance(previous);
+	    string encoding = to_string(target.getX()) + to_string(target.getY());
+	    visitedCell.emplace(encoding,0);
+	    
+	    
+	    
+	    cout << "-----------------------------------------------------------------"<<endl;
+	    cout << "Round : " << count<< endl;
+	    newSensedCells = sensedCells + ray.getInformationGain(map,x,y,orientation,FOV,range);
+	    cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
 
-	ray.performSensingOperation(map,x,y,orientation,FOV,range);
-	ray.findCandidatePositions(map,x,y,orientation,FOV,range);
-	vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
-	ray.emptyCandidatePositions();
-	
-	
-	if(candidatePosition.size() == 0) {
+	    ray.performSensingOperation(map,x,y,orientation,FOV,range);
+	    ray.findCandidatePositions(map,x,y,orientation,FOV,range);
+	    vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
+	    ray.emptyCandidatePositions();
 	    
-	    cout << "No other candidate position" << endl;
-	    cout << "----- BACKTRACKING -----" << endl;
 	    
-	    if (graph2.size() > 0){
-		/*
-		int dimGraph2 = graph2.size();
-		cout << "Graph dimension: " << dimGraph2 << endl;
-		for(int i = 0; i < dimGraph2; i++){
-		    cout << graph2[i].first << endl;
-		}*/
-		//get the last position in the graph and then remove it
-		string targetString = graph2.at(graph2.size()-1).first;
-		graph2.pop_back();
-		/*
-		dimGraph2 = graph2.size();
-		cout << "Graph dimension: " << dimGraph2 << endl;
-		for(int i = 0; i < dimGraph2; i++){
-		    cout << graph2[i].first << endl;
-		}*/
+	    if(candidatePosition.size() == 0) {
 		
-		EvaluationRecords record;
-		target = record.getPoseFromEncoding(targetString);
-		history.push_back(function.getEncodedKey(target,2));
-		cout << "[BT]No significative position reachable. Come back to previous position" << endl;
-		cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
-		count = count + 1;
+		cout << "No other candidate position" << endl;
+		cout << "----- BACKTRACKING -----" << endl;
+		
+		if (graph2.size() > 1){
+		    /*
+		    int dimGraph2 = graph2.size();
+		    cout << "Graph dimension: " << dimGraph2 << endl;
+		    for(int i = 0; i < dimGraph2; i++){
+			cout << graph2[i].first << endl;
+		    }*/
+		    //get the last position in the graph and then remove it
+		    
+		    string targetString = graph2.at(graph2.size()-1).first;
+		    graph2.pop_back();
+		    
+		    /*
+		    dimGraph2 = graph2.size();
+		    cout << "Graph dimension: " << dimGraph2 << endl;
+		    for(int i = 0; i < dimGraph2; i++){
+			cout << graph2[i].first << endl;
+		    }*/
+		    
+		    EvaluationRecords record;
+		    target = record.getPoseFromEncoding(targetString);
+		    history.push_back(function.getEncodedKey(target,2));
+		    cout << "[BT]No significative position reachable. Come back to previous position" << endl;
+		    cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
+		    count = count + 1;
+		    cout << "Graph dimension : " << graph2.size() << endl;
+		    
+		} else {
+		    
+
+		    cout << "-----------------------------------------------------------------"<<endl;
+		    cout << "I came back to the original position since i don't have any other candidate position"<< endl;
+		    cout << "Total cell visited :" << numConfiguration <<endl;
+		    cout << "FINAL: Map not completely explored!" << endl;
+		    cout << "-----------------------------------------------------------------"<<endl;
+		    exit(0);
+		}
+	    
+		sensedCells = newSensedCells;
+		
+	    }else{
+		
+		
+		// need to convert from a <int,int pair> to a Pose with also orientation,laser range and angle
+		list<Pose> frontiers;
+		vector<pair<long,long> >::iterator it =candidatePosition.begin();
+		for(it; it != candidatePosition.end(); it++){
+		    Pose p1 = Pose((*it).first,(*it).second,0 ,range,FOV);
+		    Pose p2 = Pose((*it).first,(*it).second,180,range,FOV);
+		    Pose p3 = Pose((*it).first,(*it).second,90,range,FOV);
+		    Pose p4 = Pose((*it).first,(*it).second,270,range,FOV);
+		    frontiers.push_back(p1);
+		    frontiers.push_back(p2);
+		    frontiers.push_back(p3);
+		    frontiers.push_back(p4);
+		}
+		
+		unexploredFrontiers = frontiers;
+		
 		cout << "Graph dimension : " << graph2.size() << endl;
+		cout << "Candidate position: " << candidatePosition.size() << endl;
+		cout <<"Frontiers: "<<  frontiers.size() << endl;
+		EvaluationRecords *record = function.evaluateFrontiers(frontiers,map,threshold);
+		//cout << "Record: " << record->size() << endl;
+		cout << "Evaluation Record obtained" << endl;
+		nearCandidates = record->getFrontiers();
 		
-	    } else {
+		if(record->size() != 0){
+		    
+		    //NOTE: TAKE THIS BRANCH IF THERE ARE CANDIDATE POSITION
+		    
+		    //set the previous pose equal to the actual one(actually represented by target)
+		    previous = target;
+		    std::pair<Pose,double> result = function.selectNewPose(record);
+		    target = result.first;
+		    if (contains(tabuList,target) == false){
+			count = count + 1;
+			numConfiguration++;
+			history.push_back(function.getEncodedKey(target,1));
+			cout << "Graph dimension : " << graph2.size() << endl;
+			tabuList.push_back(target);
+			std::pair<string,list<Pose>> pair = make_pair(actualPose,nearCandidates);
+			graph2.push_back(pair);
+			//cout <<"Record size : "<< record->size() << endl;
+		    }else{
+			//cout << "Dimension of nearCandidate list : " << graph2.at(graph2.size()-1).second.size() << endl;
+			if(graph2.at(graph2.size()-1).second.size() != 0){
+			    cout << "[BT1 - Tabulist]There are visible cells but the selected one is already explored!Come back to second best position from the previous position"<< endl;
+			    //cleanPossibleDestination2(graph2.at(graph2.size()-1).second,target);
+			    cleanPossibleDestination2(nearCandidates,target);
+			    record = function.evaluateFrontiers(nearCandidates,map,threshold);
+			    if(record->size() != 0){
+				std::pair<Pose,double> result = function.selectNewPose(record);
+				target = result.first;
+				//string targetString = graph2.at(graph2.size()-1).first;
+				//graph2.pop_back();
+				//target = record->getPoseFromEncoding(targetString);
+				history.push_back(function.getEncodedKey(target,2));
+				cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
+				count = count + 1;
+				cout << "Graph dimension : " << graph2.size() << endl;
+				btMode = true;
+			    }else{
+				if(graph2.size() == 0 ) break;
+				string targetString = graph2.at(graph2.size()-1).first;
+				graph2.pop_back();
+				target = record->getPoseFromEncoding(targetString);
+			    }
+			}else{
+			    graph2.pop_back();
+			    string targetString = graph2.at(graph2.size()-1).first;
+			    target = record->getPoseFromEncoding(targetString);
+			    history.push_back(function.getEncodedKey(target,2));
+			    cout << "[BT2 - Tabulist]There are visible cells but the selected one is already explored!Come back to two position ago"<< endl;
+			    cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
+			    count = count + 1;
+			    cout << "Graph dimension : " << graph2.size() << endl;
+			}
+			
+		    }
+		}else {  
+			
+			//NOTE: TAKE THIS BRANCH IF THERE ARE NO CANDIDATE POSITIONS
+		    
+			if(graph2.size() == 0 ) break;
+			/*
+			int dimGraph2 = graph2.size();
+			cout << "Graph dimension: " << dimGraph2 << endl;
+			for(int i = 0; i < dimGraph2; i++){
+			    cout << graph2[i].first << endl;
+			}*/
+			
+			//select as new target the previous one in the graph structure
+			string targetString = graph2.at(graph2.size()-1).first;
+			graph2.pop_back();
+			/*
+			dimGraph2 = graph2.size();
+			cout << "Graph dimension: " << dimGraph2 << endl;
+			for(int i = 0; i < dimGraph2; i++){
+			    cout << graph2[i].first << endl;
+			}*/
+			target = record->getPoseFromEncoding(targetString);
+			
+			
+			
+			
+			if(!target.isEqual(previous)){
+			    previous = target;
+			    cout << "[BT3]There are no visible cells so come back to previous position in the graph structure" << endl;
+			    history.push_back(function.getEncodedKey(target,2));
+			    cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
+			    count = count + 1;
+			    cout << "Graph dimension : " << graph2.size() << endl;
+			    
+			}else {
+			    
+			    if(graph2.size() == 0 ) {
+				cout << "[BT4]No other possibilities to do backtracking on previous positions" << endl;
+				break;
+			    }
+			    string targetString = graph2.at(graph2.size()-1).first;
+			    graph2.pop_back();
+			    
+			    target = record->getPoseFromEncoding(targetString);
+			    previous = target;
+			    cout << "[BT5]There are no visible cells so come back to previous position" << endl;
+			    cout << "[BT5]Cell already explored!Come back to previous position"<< endl;
+			    history.push_back(function.getEncodedKey(target,2));
+			    cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
+			    count = count + 1;
+			    cout << "Graph dimension : " << graph2.size() << endl;
+			}
+			
+			/*
+			cout << "[BT]No significative position reachable. Come back to previous position" << endl;
+			history.push_back(function.getEncodedKey(target,2));
+			cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
+			count = count + 1;*/
+		}
+	
 		
-
-		cout << "-----------------------------------------------------------------"<<endl;
-		cout << "I came back to the original position since i don't have any other candidate position"<< endl;
-		cout << "Total cell visited :" << numConfiguration <<endl;
-		cout << "FINAL: Map not completely explored!" << endl;
-		cout << "-----------------------------------------------------------------"<<endl;
-		exit(0);
+		
+		//NOTE: not requested for testing purpose
+		//usleep(microseconds);
+		sensedCells = newSensedCells;
+		frontiers.clear();
+		candidatePosition.clear();
+		delete record;
 	    }
-	   
-	    sensedCells = newSensedCells;
 	    
 	}else{
 	    
+	    //NOTE: BT MODE
+	    long x = target.getX();
+	    long y = target.getY();
+	    int orientation = target.getOrientation();
+	    int range = target.getRange();
+	    double FOV = target.getFOV();
+	    string actualPose = function.getEncodedKey(target,0);
+	    map.setCurrentPose(target);
+	    travelledDistance = travelledDistance + target.getDistance(previous);
+	    string encoding = to_string(target.getX()) + to_string(target.getY());
+	    visitedCell.emplace(encoding,0);
 	    
-	    // need to convert from a <int,int pair> to a Pose with also orientation,laser range and angle
-	    list<Pose> frontiers;
-	    vector<pair<long,long> >::iterator it =candidatePosition.begin();
-	    for(it; it != candidatePosition.end(); it++){
-		Pose p1 = Pose((*it).first,(*it).second,0 ,range,FOV);
-		Pose p2 = Pose((*it).first,(*it).second,180,range,FOV);
-		Pose p3 = Pose((*it).first,(*it).second,90,range,FOV);
-		Pose p4 = Pose((*it).first,(*it).second,270,range,FOV);
-		frontiers.push_back(p1);
-		frontiers.push_back(p2);
-		frontiers.push_back(p3);
-		frontiers.push_back(p4);
-	    }
 	    
-	    unexploredFrontiers = frontiers;
 	    
-	    cout << "Graph dimension : " << graph2.size() << endl;
-	    cout << "Candidate position: " << candidatePosition.size() << endl;
-	    cout <<"Frontiers: "<<  frontiers.size() << endl;
-	    EvaluationRecords *record = function.evaluateFrontiers(frontiers,map,threshold);
+	    cout << "-----------------------------------------------------------------"<<endl;
+	    cout << "|||| BT MODE ||||"<< endl;
+	    cout << "Round : " << count<< endl;
+	    newSensedCells = sensedCells + ray.getInformationGain(map,x,y,orientation,FOV,range);
+	    cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
+
+	    EvaluationRecords *record = function.evaluateFrontiers(nearCandidates,map,threshold);
 	    //cout << "Record: " << record->size() << endl;
 	    cout << "Evaluation Record obtained" << endl;
-	    
-	    
 	    if(record->size() != 0){
 		
 		//NOTE: TAKE THIS BRANCH IF THERE ARE CANDIDATE POSITION
-		
 		//set the previous pose equal to the actual one(actually represented by target)
 		previous = target;
 		std::pair<Pose,double> result = function.selectNewPose(record);
@@ -172,92 +323,44 @@ int main(int argc, char **argv) {
 		    history.push_back(function.getEncodedKey(target,1));
 		    cout << "Graph dimension : " << graph2.size() << endl;
 		    tabuList.push_back(target);
-		    std::pair<string,list<Pose>> pair = make_pair(actualPose,frontiers);
-		    graph2.push_back(pair);
-		    
-		    //cout << record->size() << endl;
+		    std::pair<string,list<Pose>> pair = make_pair(actualPose,nearCandidates);
+		    //graph2.push_back(pair);
+		    btMode = false;
+		    //cout <<"Record size : "<< record->size() << endl;
 		}else{
-		    cout << "[BT - Tabulist]There are visible cells but the selected one is already explored!Come back to previous position in the graph"<< endl;
-		    cleanPossibleDestination2(graph2.at(graph2.size()-1).second,target);
-		    string targetString = graph2.at(graph2.size()-1).first;
-		    graph2.pop_back();
-		    target = record->getPoseFromEncoding(targetString);
-		    history.push_back(function.getEncodedKey(target,2));
-		    cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
-		    count = count + 1;
-		    cout << "Graph dimension : " << graph2.size() << endl;
-		}
-	    }else {  
-		    
-		    //NOTE: TAKE THIS BRANCH IF THERE ARE NO CANDIDATE POSITIONS
-		
-		    if(graph2.size() == 0 ) break;
-		    /*
-		    int dimGraph2 = graph2.size();
-		    cout << "Graph dimension: " << dimGraph2 << endl;
-		    for(int i = 0; i < dimGraph2; i++){
-			cout << graph2[i].first << endl;
-		    }*/
-		    
-		    //select as new target the previous one in the graph structure
-		    string targetString = graph2.at(graph2.size()-1).first;
-		    graph2.pop_back();
-		    /*
-		    dimGraph2 = graph2.size();
-		    cout << "Graph dimension: " << dimGraph2 << endl;
-		    for(int i = 0; i < dimGraph2; i++){
-			cout << graph2[i].first << endl;
-		    }*/
-		    target = record->getPoseFromEncoding(targetString);
-		    
-		    
-		    
-		    
-		    if(!target.isEqual(previous)){
-			previous = target;
-			cout << "[BT]There are no visible cells so come back to previous position in the graph structure" << endl;
-			history.push_back(function.getEncodedKey(target,2));
-			cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
+		    if(nearCandidates.size() != 0){
+			cout << "[BT-MODE1]Already visited" << endl;
 			count = count + 1;
-			cout << "Graph dimension : " << graph2.size() << endl;
-			
-		    }else {
-			
-			if(graph2.size() == 0 ) {
-			    cout << "[BT]No other possibilities to do backtracking on previous positions" << endl;
-			    break;
-			}
+			cleanPossibleDestination2(nearCandidates,target);
+			EvaluationRecords *record = function.evaluateFrontiers(nearCandidates,map,threshold);
+			previous = target;
+			std::pair<Pose,double> result = function.selectNewPose(record);
+			target = result.first;
+		    }else{
 			string targetString = graph2.at(graph2.size()-1).first;
 			graph2.pop_back();
-			
 			target = record->getPoseFromEncoding(targetString);
 			previous = target;
-			cout << "[BT]There are no visible cells so come back to previous position" << endl;
-			cout << "[BT]Cell already explored!Come back to previous position"<< endl;
 			history.push_back(function.getEncodedKey(target,2));
 			cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
 			count = count + 1;
-			cout << "Graph dimension : " << graph2.size() << endl;
+			btMode = false;
+			cout << "[BT-MODE2] Go back to previous positions in the graph" << endl;
 		    }
-		    
-		    /*
-		    cout << "[BT]No significative position reachable. Come back to previous position" << endl;
-		    history.push_back(function.getEncodedKey(target,2));
-		    cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
-		    count = count + 1;*/
+		}
+	    }else{
+		string targetString = graph2.at(graph2.size()-1).first;
+		graph2.pop_back();
+		target = record->getPoseFromEncoding(targetString);
+		previous = target;
+		history.push_back(function.getEncodedKey(target,2));
+		cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
+		count = count + 1;
+		btMode = false;
+		cout << "[BT-MODE3] Go back to previous positions in the graph" << endl;
 	    }
-    
-	    
-	    
-	    //NOTE: not requested for testing purpose
-	    //usleep(microseconds);
-	    sensedCells = newSensedCells;
-	    frontiers.clear();
-	    candidatePosition.clear();
 	    delete record;
 	}
-	
-	
     }
     
     map.drawVisitedCells(visitedCell,resolution);

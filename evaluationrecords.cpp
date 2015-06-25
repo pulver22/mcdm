@@ -3,6 +3,7 @@
 #include <sstream>
 #include <iostream>
 
+
 using namespace std;
 EvaluationRecords::EvaluationRecords()
 //:    evaluations(new unordered_map<Pose, double>())
@@ -59,7 +60,7 @@ int EvaluationRecords::size()
 
 
 
-vector<Pose> EvaluationRecords::getFrontiers() 
+std::list<Pose> EvaluationRecords::getFrontiers() 
 {
     
     vector<string> list;
@@ -70,7 +71,7 @@ vector<Pose> EvaluationRecords::getFrontiers()
 	
     } 
     
-    vector<Pose> toRet ;
+    std::list<Pose> toRet ;
 
     for(vector<string>::iterator it = list.begin(); it != list.end(); it++){
 	// create a pose object for every string string in the list
