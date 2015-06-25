@@ -1,1 +1,0 @@
-/usr/bin/c++   -std=c++0x  -O3 -g  -ftest-coverage -fprofile-arcs -g    CMakeFiles/mcdm_online_exploration_ros.dir/main.cpp.o  -o mcdm_online_exploration_ros -rdynamic liblib.a -lboost_unit_test_framework 

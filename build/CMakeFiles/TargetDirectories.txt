@@ -1,2 +1,0 @@
-/home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles/lib.dir
-/home/pulver/projects/mcdm_online_exploration_ros/build/CMakeFiles/mcdm_online_exploration.dir
