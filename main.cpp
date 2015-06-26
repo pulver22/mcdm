@@ -96,23 +96,13 @@ int main(int argc, char **argv) {
 		cout << "----- BACKTRACKING -----" << endl;
 		
 		if (graph2.size() > 1){
-		    /*
-		    int dimGraph2 = graph2.size();
-		    cout << "Graph dimension: " << dimGraph2 << endl;
-		    for(int i = 0; i < dimGraph2; i++){
-			cout << graph2[i].first << endl;
-		    }*/
+		    
 		    //get the last position in the graph and then remove it
 		    
 		    string targetString = graph2.at(graph2.size()-1).first;
 		    graph2.pop_back();
 		    
-		    /*
-		    dimGraph2 = graph2.size();
-		    cout << "Graph dimension: " << dimGraph2 << endl;
-		    for(int i = 0; i < dimGraph2; i++){
-			cout << graph2[i].first << endl;
-		    }*/
+		  
 		    
 		    EvaluationRecords record;
 		    target = record.getPoseFromEncoding(targetString);
@@ -174,26 +164,22 @@ int main(int argc, char **argv) {
 			count = count + 1;
 			numConfiguration++;
 			history.push_back(function.getEncodedKey(target,1));
-			cout << "Graph dimension : " << graph2.size() << endl;
 			tabuList.push_back(target);
+			cleanPossibleDestination2(nearCandidates,target);
 			std::pair<string,list<Pose>> pair = make_pair(actualPose,nearCandidates);
 			graph2.push_back(pair);
-			//cout <<"Record size : "<< record->size() << endl;
+			cout << "Graph dimension : " << graph2.size() << endl;
 		    }else{
-			//cout << "Dimension of nearCandidate list : " << graph2.at(graph2.size()-1).second.size() << endl;
 			if(graph2.at(graph2.size()-1).second.size() != 0){
 			    cout << "[BT1 - Tabulist]There are visible cells but the selected one is already explored!Come back to second best position from the previous position"<< endl;
-			    //cleanPossibleDestination2(graph2.at(graph2.size()-1).second,target);
 			    cleanPossibleDestination2(nearCandidates,target);
 			    record = function.evaluateFrontiers(nearCandidates,map,threshold);
 			    if(record->size() != 0){
 				std::pair<Pose,double> result = function.selectNewPose(record);
 				target = result.first;
-				//string targetString = graph2.at(graph2.size()-1).first;
-				//graph2.pop_back();
-				//target = record->getPoseFromEncoding(targetString);
+				tabuList.push_back(target);
+				
 				history.push_back(function.getEncodedKey(target,2));
-				cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
 				count = count + 1;
 				cout << "Graph dimension : " << graph2.size() << endl;
 				btMode = true;
@@ -220,22 +206,12 @@ int main(int argc, char **argv) {
 			//NOTE: TAKE THIS BRANCH IF THERE ARE NO CANDIDATE POSITIONS
 		    
 			if(graph2.size() == 0 ) break;
-			/*
-			int dimGraph2 = graph2.size();
-			cout << "Graph dimension: " << dimGraph2 << endl;
-			for(int i = 0; i < dimGraph2; i++){
-			    cout << graph2[i].first << endl;
-			}*/
+			
 			
 			//select as new target the previous one in the graph structure
 			string targetString = graph2.at(graph2.size()-1).first;
 			graph2.pop_back();
-			/*
-			dimGraph2 = graph2.size();
-			cout << "Graph dimension: " << dimGraph2 << endl;
-			for(int i = 0; i < dimGraph2; i++){
-			    cout << graph2[i].first << endl;
-			}*/
+			
 			target = record->getPoseFromEncoding(targetString);
 			
 			
@@ -267,12 +243,7 @@ int main(int argc, char **argv) {
 			    count = count + 1;
 			    cout << "Graph dimension : " << graph2.size() << endl;
 			}
-			
-			/*
-			cout << "[BT]No significative position reachable. Come back to previous position" << endl;
-			history.push_back(function.getEncodedKey(target,2));
-			cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
-			count = count + 1;*/
+		
 		}
 	
 		
@@ -308,35 +279,39 @@ int main(int argc, char **argv) {
 	    cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
 
 	    EvaluationRecords *record = function.evaluateFrontiers(nearCandidates,map,threshold);
-	    //cout << "Record: " << record->size() << endl;
 	    cout << "Evaluation Record obtained" << endl;
+	    cout << "nearCandidates dimensions before choosing : " << nearCandidates.size() << endl;
 	    if(record->size() != 0){
 		
 		//NOTE: TAKE THIS BRANCH IF THERE ARE CANDIDATE POSITION
 		//set the previous pose equal to the actual one(actually represented by target)
 		previous = target;
+		cleanPossibleDestination2(nearCandidates,target);
 		std::pair<Pose,double> result = function.selectNewPose(record);
 		target = result.first;
 		if (contains(tabuList,target) == false){
 		    count = count + 1;
 		    numConfiguration++;
 		    history.push_back(function.getEncodedKey(target,1));
-		    cout << "Graph dimension : " << graph2.size() << endl;
+		    //cout << "Graph dimension : " << graph2.size() << endl;
 		    tabuList.push_back(target);
+		    cleanPossibleDestination2(nearCandidates,target);
 		    std::pair<string,list<Pose>> pair = make_pair(actualPose,nearCandidates);
-		    //graph2.push_back(pair);
 		    btMode = false;
-		    //cout <<"Record size : "<< record->size() << endl;
+		    cout << "[BT-MODE4] Go back to previous positions in the graph" << endl;
 		}else{
 		    if(nearCandidates.size() != 0){
 			cout << "[BT-MODE1]Already visited" << endl;
 			count = count + 1;
-			cleanPossibleDestination2(nearCandidates,target);
 			EvaluationRecords *record = function.evaluateFrontiers(nearCandidates,map,threshold);
 			previous = target;
 			std::pair<Pose,double> result = function.selectNewPose(record);
 			target = result.first;
+			tabuList.push_back(target);
+			cout << "nearCandidates dimensions after choosing : " << nearCandidates.size() << endl;
+
 		    }else{
+			cout << "[BT-MODE2] Go back to previous positions in the graph" << endl;
 			string targetString = graph2.at(graph2.size()-1).first;
 			graph2.pop_back();
 			target = record->getPoseFromEncoding(targetString);
@@ -345,7 +320,7 @@ int main(int argc, char **argv) {
 			cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
 			count = count + 1;
 			btMode = false;
-			cout << "[BT-MODE2] Go back to previous positions in the graph" << endl;
+			
 		    }
 		}
 	    }else{
