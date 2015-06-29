@@ -170,6 +170,7 @@ int main(int argc, char **argv) {
 			graph2.push_back(pair);
 			cout << "Graph dimension : " << graph2.size() << endl;
 		    }else{
+			if(graph2.size() == 0 ) break;file:///home/pulver/projects/mcdm_online_exploration_ros/Criteria/mcdmweightreader.cppfile:///home/pulver/projects/mcdm_online_exploration_ros/mcdmfunction.cpp
 			if(graph2.at(graph2.size()-1).second.size() != 0){
 			    cout << "[BT1 - Tabulist]There are visible cells but the selected one is already explored!Come back to second best position from the previous position"<< endl;
 			    cleanPossibleDestination2(nearCandidates,target);

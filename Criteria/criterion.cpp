@@ -64,10 +64,10 @@ void Criterion::clean()
 
 void Criterion::normalize()
 {
-   // if(highGood)
-        normalizeHighGood();
-   // else
-    //    normalizeLowGood();
+    if(highGood)
+	normalizeHighGood();
+    else
+	normalizeLowGood();
 }
 
 void Criterion::normalizeHighGood()
