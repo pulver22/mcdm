@@ -19,7 +19,7 @@ public:
   int isCandidate(const dummy::Map &map, long i, long j);
   std::vector<std::pair<long, long> > getCandidatePositions();
   std::pair<double, double> getSensingTime(const dummy::Map &map, long posX, long posY, int orientation, double FOV, int range);
-  void performSensingOperation(dummy::Map &map, long posX, long posY, int orientation, double FOV, int range);
+  void performSensingOperation(dummy::Map &map, long posX, long posY, int orientation, double FOV, int range, double firstAngle, double lastAngle);
   void emptyCandidatePositions();
   int getInformationGain(const dummy::Map &map, long posX, long posY, int orientation, double FOV, int range);
   long convertPoint(long y);

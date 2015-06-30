@@ -283,14 +283,14 @@ std::pair<double,double> NewRay::getSensingTime(const Map &map, long posX,long p
 
 
 //perform the sensing operation by setting the value of the free cell scanned to 2
-void NewRay::performSensingOperation(dummy::Map &map, long posX, long posY, int orientation, double FOV, int range)
+void NewRay::performSensingOperation(dummy::Map &map, long posX, long posY, int orientation, double FOV, int range, double firstAngle, double lastAngle)
 {
     
   NewRay::numGridRows = map.getNumGridRows();
   
   //set the correct FOV orientation
-  double startingPhi = orientation*PI/180 - FOV/2;	
-  double endingPhi = orientation*PI/180 + FOV/2;
+  double startingPhi = firstAngle; //orientation*PI/180 - FOV/2;	
+  double endingPhi = lastAngle; //orientation*PI/180 + FOV/2;
   int add2pi = 0;
   
   if(startingPhi <= 0) 
@@ -300,7 +300,10 @@ void NewRay::performSensingOperation(dummy::Map &map, long posX, long posY, int 
     endingPhi = 2*PI + endingPhi;
   }
   
+  if(endingPhi > 6.28) add2pi = 1;
+  
   //std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
+  //std::cout << "firstAngle: " << firstAngle << " lastAngle: " << lastAngle << std::endl;
     
   //select the portion of map to be scanned
   long minI = posX - range;
