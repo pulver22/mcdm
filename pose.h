@@ -1,7 +1,7 @@
 #ifndef POSE_H
 #define POSE_H
 
-
+#include <utility>
 
 
 class Pose 
@@ -20,6 +20,8 @@ public:
   int getInformationGain();
   void setInformationGain(int value);
   bool operator==(const Pose &p);
+  void setScanAngles(std::pair<double,double> angles);
+  std::pair<double, double> getScanAngles();
   
   
 protected:
@@ -28,6 +30,7 @@ protected:
   int range;		// radius of the sensing operation 
   double FOV;		// central angle of the sensing operation
   int informationGain;
+  std::pair<double,double> scanAngles;
   
   
 };

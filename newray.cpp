@@ -156,7 +156,7 @@ void NewRay::emptyCandidatePositions()
 //calculate the sensing time of a possible scanning operation, returns the minimum FOV required to scan all the free cells from the considered pose
 //ATTENTION: the FOV is always centered in the orientation of the robot
 //ATTENTION: in order to optimize the computing time, this method should be fused with the information gain one
-double NewRay::getSensingTime(const Map &map, long posX,long posY, int orientation, double FOV, int range)
+std::pair<double,double> NewRay::getSensingTime(const Map &map, long posX,long posY, int orientation, double FOV, int range)
 {
     
   NewRay::numGridRows = map.getNumGridRows();
@@ -262,6 +262,7 @@ double NewRay::getSensingTime(const Map &map, long posX,long posY, int orientati
   }
   double value;		//FOV to return
   
+  /*
   if(phiFound == 0) return -1;		//return -1 if no free cells can be scanned
   else 					//return the correct FOV (ALWAYS CENTERED ON THE ORIENTATION)
   { 
@@ -272,8 +273,12 @@ double NewRay::getSensingTime(const Map &map, long posX,long posY, int orientati
   //std::cout << "startingPhi " << startingPhi << " endingPhi " << endingPhi << " minPhi " << minPhi << " maxPhi " << maxPhi << std::endl;
   
   return value;
-  
+  */
    // return sensingTime;
+   std::pair<double, double> angles;
+   angles.first = minPhi;
+   angles.second = maxPhi;
+   return angles;
 }
 
 
