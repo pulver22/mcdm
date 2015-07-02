@@ -18,6 +18,7 @@
 #include "traveldistancecriterion.h"
 #include "criteriaName.h"
 #include <iostream>
+#include "PathFinding/astar.h"
 
 
 
@@ -35,10 +36,14 @@ TravelDistanceCriterion::~TravelDistanceCriterion()
 
 double TravelDistanceCriterion::evaluate( Pose &p, dummy::Map &map)
 {
+    //cout << "travel " << endl;
+    Astar astar;
     Pose robotPosition = map.getRobotPosition();
-    double distance = robotPosition.getDistance(p);
+    //double distance = robotPosition.getDistance(p);
+    double distance = astar.lenghtPath(robotPosition.getX(),robotPosition.getY(),p.getX(),p.getY(),map);
+    //cout << "alive after calling a*" << endl;
     Criterion::insertEvaluation(p, distance);
-    //cout << "alive in td" << endl;
+    
     return distance;
 }
 

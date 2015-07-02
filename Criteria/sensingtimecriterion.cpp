@@ -59,7 +59,7 @@ double SensingTimeCriterion::SensingTimeCriterion::evaluate(Pose &p,dummy::Map &
     p.setScanAngles(ray.getSensingTime(map,p.getX(),p.getY(),p.getOrientation(),p.getFOV(),p.getRange()));
     double minPhi = p.getScanAngles().first;
     double maxPhi = p.getScanAngles().second;
-    
+   
     //std::cout << "minPhi " << p.getScanAngles().first << " maxPhi " << p.getScanAngles().second << std::endl;
     
     

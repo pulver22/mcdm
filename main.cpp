@@ -86,6 +86,7 @@ int main(int argc, char **argv) {
 	    target.setScanAngles(ray.getSensingTime(map,x,y,orientation,FOV,range));
 	    cout << "MinPhi: " << target.getScanAngles().first << " MaxPhi: " << target.getScanAngles().second << endl;
 	    ray.performSensingOperation(map,x,y,orientation,FOV,range, target.getScanAngles().first, target.getScanAngles().second);
+
 	    ray.findCandidatePositions(map,x,y,orientation,FOV,range);
 	    vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
 	    ray.emptyCandidatePositions();

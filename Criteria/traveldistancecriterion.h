@@ -21,6 +21,7 @@
 #include "criterion.h"
 #include "pose.h"
 #include "map.h"
+#include "PathFinding/astar.h"
 //using namespace import_map;
 class TravelDistanceCriterion :  public Criterion
 {

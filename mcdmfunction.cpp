@@ -181,6 +181,7 @@ EvaluationRecords* MCDMFunction::evaluateFrontiers(const std::list< Pose >& fron
 	    }
 
 	    if(finalValue > threshold){
+		//cout <<"Angles: "<< f.getScanAngles().first <<","<< f.getScanAngles().second<< endl;
 		toRet->putEvaluation(f, finalValue);
 	    }
 	
@@ -221,7 +222,8 @@ string MCDMFunction::getEncodedKey(Pose& p, int value)
     //value = 1 : encode x,y,orientation, take first 
     //value = 2 : encode x,y,orientation, take multiple time
     if(value == 0){
-	key =  to_string(p.getX()) + "/" + to_string( p.getY()) + "/" + to_string( p.getOrientation()) + "/"  + to_string(p.getRange()) + "/" + to_string(p.getFOV());
+	key =  to_string(p.getX()) + "/" + to_string( p.getY()) + "/" + to_string( p.getOrientation()) + "/"  + to_string(p.getRange()) 
+	+ "/" + to_string(p.getFOV()) + to_string(p.getScanAngles().first) + "/" + to_string(p.getScanAngles().second);
     }else if(value == 1){
 	key = to_string(p.getX()) + "/" + to_string( p.getY()) + "/" + to_string( p.getOrientation()) + "/" + "1";
     } else if (value ==2){

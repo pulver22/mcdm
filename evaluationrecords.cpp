@@ -136,7 +136,7 @@ Pose EvaluationRecords::getPoseFromEncoding(string &encoding)
 	string s ;
 	ss << s;
 	char delimiter('/');
-	string x,y,orientation,r,phi;
+	string x,y,orientation,r,phi,teta1,teta2;
 	//cout << encoding << endl;
 	std::string::size_type pos = encoding.find('/');
 	x = encoding.substr(0,pos);
@@ -166,7 +166,16 @@ Pose EvaluationRecords::getPoseFromEncoding(string &encoding)
 	phi = newString.substr(0,newPos);
 	double phiValue = atof(phi.c_str());
 	//cout << phi << endl;
+	newPos = newString.find('/');
+	teta1= newString.substr(0,newPos);
+	double teta1Value = atof(teta1.c_str());
+	newPos = newString.find('/');
+	teta2= newString.substr(0,newPos);
+	double teta2Value = atof(teta2.c_str());
+	std::pair<double,double> pair(teta1Value,teta2Value);
+	
 	Pose p(xValue,yValue,orientationValue,rValue,phiValue);
+	p.setScanAngles(pair);
 	return p;
 }
 
