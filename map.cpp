@@ -233,6 +233,7 @@ int Map::getGridValue(long i,long j) const
   return grid[i*numGridCols + j];
 }
 
+
 int Map::getMapValue(long i, long j)
 {
   return map[i*numCols + j];

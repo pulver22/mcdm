@@ -53,6 +53,7 @@ protected:
   long totalFreeCells;
   void decreaseFreeCells();
   Pose currentPose;
+
   
 };
 }

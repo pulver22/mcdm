@@ -27,13 +27,14 @@ private:
     // if dir==8
     int dx[8]={1, 1, 0, -1, -1, -1, 0, 1};
     int dy[8]={0, 1, 1, 1, 0, -1, -1, -1};
-    string pathFind( const int& xStart, const int& yStart, const int& xFinish, const int& yFinish, Map& originalMap );
     
 
 public: 
     Astar();
     virtual ~Astar();
-    int lenghtPath(int xA, int yA, int xB, int yB, Map originalMap );
+    double lenghtPath(string path );
+    string pathFind( const int& xStart, const int& yStart, const int& xFinish, const int& yFinish, Map& originalMap );
+    int getNumberOfTurning(string path);
    
 };
 #endif

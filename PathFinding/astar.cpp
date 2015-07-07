@@ -167,15 +167,37 @@ string Astar::pathFind( const int & xStart, const int & yStart, const int & xFin
     return ""; // no route found
 }
 
-int Astar::lenghtPath(int xA, int yA, int xB, int yB, Map originalMap)
+double Astar::lenghtPath(string path)
 {
 
+    double lenght = 0.0;    
+    //calculate the distance expressed in cells
+    for(char& c : path) {
+	if(c =='0' || c=='2' || c=='4' || c=='6'){
+	    lenght = lenght + 1;
+	}else lenght = lenght + sqrt(2);
+    }
     
-    string route=pathFind(xA, yA, xB, yB, originalMap);
-    if(route=="") cout<<"An empty route generated!"<<endl;
-   
-    
-    return route.size();
+    return lenght;
 }
 
-
+int Astar::getNumberOfTurning(string path){
+    int numberOfTurning = 0;  
+    //calculate the number of turning during the path
+    
+    if(path.size()==0){
+	return 0;
+    }else{
+	for(int i=0; i< path.size()-1; i++){
+	    if(path.at(i+1) == path.at(i) +1 || path.at(i+1) == path.at(i) -1 ){
+		numberOfTurning =+ 1;    
+	    }else if(path.at(i+1) == path.at(i) +2 || path.at(i+1) == path.at(i) -2 ){
+		numberOfTurning =+ 2;
+	    }else if(path.at(i+1) == path.at(i) +3 || path.at(i+1) == path.at(i) -3 ){
+		numberOfTurning =+ 3;
+	    }
+	}
+    
+	return numberOfTurning;
+    }
+}

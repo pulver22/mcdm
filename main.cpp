@@ -53,6 +53,7 @@ int main(int argc, char **argv) {
     long totalFreeCells = map.getTotalFreeCells() ;
     int count = 0;
     double travelledDistance = 0;
+    int numOfTurning = 0;
     unordered_map<string,int> visitedCell;
     vector<string>history;
     history.push_back(function.getEncodedKey(target,1));
@@ -62,6 +63,7 @@ int main(int argc, char **argv) {
     list<Pose> tabuList;
     list<Pose> nearCandidates;
     bool btMode = false;
+    Astar astar;
 
     
     while(sensedCells < precision * totalFreeCells ){
@@ -73,7 +75,9 @@ int main(int argc, char **argv) {
 	    double FOV = target.getFOV();
 	    string actualPose = function.getEncodedKey(target,0);
 	    map.setCurrentPose(target);
-	    travelledDistance = travelledDistance + target.getDistance(previous);
+	    string path = astar.pathFind(target.getX(),target.getY(),previous.getX(),previous.getY(),map);
+	    travelledDistance = travelledDistance + astar.lenghtPath(path);
+	    numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
 	    string encoding = to_string(target.getX()) + to_string(target.getY());
 	    visitedCell.emplace(encoding,0);
 	    
@@ -351,6 +355,7 @@ int main(int argc, char **argv) {
 	cout << "-----------------------------------------------------------------"<<endl;
 	cout << "Total cell visited :" << numConfiguration <<endl;
 	cout << "Total travelled distance (cells): " << travelledDistance << endl;
+	cout << "Total number of turning: " << numOfTurning << endl;
 	cout << "FINAL: MAP EXPLORED!" << endl;
 	cout << "-----------------------------------------------------------------"<<endl;
     }else{
