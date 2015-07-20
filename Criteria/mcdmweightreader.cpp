@@ -11,7 +11,7 @@ WeightMatrix* MCDMWeightReader::getMatrix()
     matrix = new WeightMatrix(3);
     //int numCriteria = 3;
     matrix->insertSingleCriterion(INFORMATION_GAIN,0.6,true);
-    matrix->insertSingleCriterion(TRAVEL_DISTANCE,0.1, true);
+    matrix->insertSingleCriterion(TRAVEL_DISTANCE,0.1,true);
     matrix->insertSingleCriterion(SENSING_TIME,0.3,true);
     string str1(INFORMATION_GAIN);
     string str2(TRAVEL_DISTANCE);

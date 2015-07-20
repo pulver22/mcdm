@@ -14,6 +14,8 @@ using namespace std;
 using namespace dummy;
 bool contains(std::list< Pose >& list, Pose& p);
 void cleanPossibleDestination2(std::list< Pose > &possibleDestinations, Pose& p);
+void pushInitialPositions(Map map, int x, int y, int orientation, int variation, int range, int FOV, double threshold, 
+			  string actualPose, vector< pair< string, list< Pose > > > *graph2 );
 
 
 int main(int argc, char **argv) {
@@ -40,6 +42,7 @@ int main(int argc, char **argv) {
     double precision = atof(argv[8]);
     double threshold = atof(argv[9]);
     //x,y,orientation,range,FOV
+
     Pose initialPose = Pose(initX,initY,initOrientation,initRange,initFov);
     Pose p1 = Pose(initX,initY,0,initRange,initFov);
     Pose p2 = Pose(initX,initY,90,initRange,initFov);
@@ -70,7 +73,6 @@ int main(int argc, char **argv) {
     double totalAngle = 0;
     Astar astar;
 
-    
     while(sensedCells < precision * totalFreeCells ){
 	if(btMode == false){
 	    long x = target.getX();
@@ -80,9 +82,13 @@ int main(int argc, char **argv) {
 	    double FOV = target.getFOV();
 	    string actualPose = function.getEncodedKey(target,0);
 	    map.setCurrentPose(target);
+
+	    //NOTE; calculate path and turnings between actual position and goal
 	    string path = astar.pathFind(target.getX(),target.getY(),previous.getX(),previous.getY(),map);
 	    travelledDistance = travelledDistance + astar.lenghtPath(path);
 	    numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
+	    //-------------------------------------------------------------------
+	   
 	    string encoding = to_string(target.getX()) + to_string(target.getY());
 	    visitedCell.emplace(encoding,0);
 	    
@@ -90,7 +96,6 @@ int main(int argc, char **argv) {
 	    
 	    cout << "-----------------------------------------------------------------"<<endl;
 	    cout << "Round : " << count<< endl;
-	    //newSensedCells = sensedCells + ray.getInformationGain(map,x,y,orientation,FOV,range);
 	    cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
 	    target.setScanAngles(ray.getSensingTime(map,x,y,orientation,FOV,range));
 	    cout << "MinPhi: " << target.getScanAngles().first << " MaxPhi: " << target.getScanAngles().second << endl;
@@ -100,15 +105,15 @@ int main(int argc, char **argv) {
 	    ray.findCandidatePositions(map,x,y,orientation,FOV,range);
 	    vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
 	    ray.emptyCandidatePositions();
-	    
-	    /*
-	    if(candidatePosition.size() == 0)
-	    {
-	      ray.findCandidatePositions2(map, x, y, orientation, FOV, range);
-	      candidatePosition = ray.getCandidatePositions();
-	      ray.emptyCandidatePositions();
+
+	    if(count == 0){
+		//insert the initial position with different orientation in the graph
+		cout <<"ALIVE"<< endl;
+		pushInitialPositions(map, x, y,orientation, 90, range,FOV, threshold, actualPose, &graph2 );
+		pushInitialPositions(map, x, y,orientation, 180, range,FOV, threshold, actualPose, &graph2 );
+		pushInitialPositions(map, x, y,orientation, 270, range,FOV, threshold, actualPose, &graph2 );
 	    }
-	    */
+
 	    
 	    if(candidatePosition.size() == 0) {
 		
@@ -121,9 +126,6 @@ int main(int argc, char **argv) {
 		    
 		    string targetString = graph2.at(graph2.size()-1).first;
 		    graph2.pop_back();
-		    
-		  
-		    
 		    EvaluationRecords record;
 		    target = record.getPoseFromEncoding(targetString);
 		    history.push_back(function.getEncodedKey(target,2));
@@ -404,16 +406,36 @@ void cleanPossibleDestination2(std::list< Pose >& possibleDestinations, Pose& p)
     MCDMFunction function;
     //cout<<"I remove "<< function.getEncodedKey(p,0) << endl;
     //cout << possibleDestinations->size() << endl;
-    
-    
-    
-    
     std::list<Pose>::iterator findIter = std::find(possibleDestinations.begin(), possibleDestinations.end(), p);
     if (findIter != possibleDestinations.end()){
 	//cout << function.getEncodedKey(*findIter,0) << endl;
 	possibleDestinations.erase(findIter);
     } else cout<< "not found" << endl;
     
-   
-    
+}
+
+
+void pushInitialPositions(Map map, int x, int y, int orientation, int variation, int range, int FOV, double threshold, string actualPose, vector< pair< string, list< Pose > > >* graph2 )
+{
+    NewRay ray;
+    MCDMFunction function;
+    ray.findCandidatePositions(map,x,y,(orientation + variation)%360,FOV,range);
+    vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
+    ray.emptyCandidatePositions();
+    list<Pose> frontiers;
+    vector<pair<long,long> >::iterator it =candidatePosition.begin();
+    for(it; it != candidatePosition.end(); it++){
+	Pose p1 = Pose((*it).first,(*it).second,0 ,range,FOV);
+	Pose p2 = Pose((*it).first,(*it).second,180,range,FOV);
+	Pose p3 = Pose((*it).first,(*it).second,90,range,FOV);
+	Pose p4 = Pose((*it).first,(*it).second,270,range,FOV);
+	frontiers.push_back(p1);
+	frontiers.push_back(p2);
+	frontiers.push_back(p3);
+	frontiers.push_back(p4);
+    }
+    EvaluationRecords *record = function.evaluateFrontiers(frontiers,map,threshold);
+    list<Pose>nearCandidates = record->getFrontiers();
+    std::pair<string,list<Pose>> pair = make_pair(actualPose,nearCandidates);
+    graph2->push_back(pair);
 }

@@ -11,8 +11,8 @@ Map::Map(std::ifstream& infile, double resolution, double imgresolution)
   Map::createGrid(resolution);
   Map::createPathPlanningGrid(imgresolution);
   Map::createNewMap();
-   //cout << "ciao" << endl;
 }
+   
 
 Map::Map()
 {
@@ -25,6 +25,7 @@ Map::Map()
 // create a monodimensional vector containing the map 
 void Map::createMap(std::ifstream& infile)
 {
+
   long row = 0, col = 0;
   std::stringstream ss;
   std::string inputLine = "";
@@ -68,7 +69,7 @@ void Map::createMap(std::ifstream& infile)
     getline(infile,inputLine);
     
     size = numCols * numRows;
-   
+
     
     long* data = new long[size];
     for(long* ptr = data; ptr < data+size; ptr++) {
@@ -130,6 +131,7 @@ void Map::createMap(std::ifstream& infile)
  
   //infile.close();
   }
+  
 }
 }
 
@@ -390,14 +392,13 @@ void Map::setCurrentPose(Pose& p)
 
 
 long Map::getTotalFreeCells(){
-    long columns = getNumGridCols();
-    long rows = getNumGridRows();
-    totalFreeCells = columns * rows;
-    for(long row = 0; row < rows; ++row)
+ 
+    totalFreeCells = numGridCols * numGridRows;
+    for(long row = 0; row < numGridRows; ++row)
     {
-	for(long col = 0; col < columns; ++col)
+	for(long col = 0; col < numGridCols; ++col)
 	{
-	    //if an obstacle is present put 255 as black
+	    //if an obstacle is present decrement the number of free cells
 	    if(getGridValue(row,col) == 1) totalFreeCells--;
 	}
     }
