@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
     // i switched x and y because the map's orientation inside and outside programs are different
     long initX = (int)(atoi(argv[4])*imgresolution);	
     long initY = (int)(atoi(argv[3])*imgresolution);
-    std::cout << "initX: " << initX << " initY: " << initY << std::endl;
+    //std::cout << "initX: " << initX << " initY: " << initY << std::endl;
     int initOrientation = atoi(argv[5]);
     double initFov = atoi(argv[7] );
     initFov = initFov * PI /180;
@@ -108,7 +108,6 @@ int main(int argc, char **argv) {
 
 	    if(count == 0){
 		//insert the initial position with different orientation in the graph
-		cout <<"ALIVE"<< endl;
 		pushInitialPositions(map, x, y,orientation, 90, range,FOV, threshold, actualPose, &graph2 );
 		pushInitialPositions(map, x, y,orientation, 180, range,FOV, threshold, actualPose, &graph2 );
 		pushInitialPositions(map, x, y,orientation, 270, range,FOV, threshold, actualPose, &graph2 );
@@ -365,12 +364,11 @@ int main(int argc, char **argv) {
     map.drawVisitedCells(visitedCell,resolution);
     map.printVisitedCells(history);
   
-   
-    //OLD METHOD
-    
+    cout << "-----------------------------------------------------------------"<<endl;
+    cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
+
     if (sensedCells >= precision * totalFreeCells ){
-	cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
-	cout << "-----------------------------------------------------------------"<<endl;
+	
 	cout << "Total cell visited :" << numConfiguration <<endl;
 	cout << "Total travelled distance (cells): " << travelledDistance << endl;
 	cout << "Total number of turning: " << numOfTurning << endl;
@@ -380,7 +378,6 @@ int main(int argc, char **argv) {
 	
 	
     }else{
-	cout << "-----------------------------------------------------------------"<<endl;
 	cout << "I came back to the original position since i don't have any other candidate position"<< endl;
 	cout << "Total cell visited :" << numConfiguration <<endl;
 	cout << "-----------------------------------------------------------------"<<endl;

@@ -26,75 +26,74 @@ Map::Map()
 void Map::createMap(std::ifstream& infile)
 {
 
-  long row = 0, col = 0;
-  std::stringstream ss;
-  std::string inputLine = "";
+    long row = 0, col = 0;
+    std::stringstream ss;
+    std::string inputLine = "";
 
-  // First line : version
-  getline(infile,inputLine);
-  if(inputLine.compare("GRID") == 0){
-    {
-      int temp;
-  infile >> Map::numRows >> Map::numCols;
-  std::cout << "numrows " << numRows << " numcols " << numCols << std::endl;
-  Map::map.reserve(numRows*numCols);
-  std::cout << map.size() << std::endl;
- 
-   for(int i = 0; i < numRows*numCols; ++i)
-  {
+    // First line : version
+    getline(infile,inputLine);
+    if(inputLine.compare("GRID") == 0){
+    
+    int temp;
+    infile >> Map::numRows >> Map::numCols;
+    //std::cout << "numrows " << numRows << " numcols " << numCols << std::endl;
+    Map::map.reserve(numRows*numCols);
+    std::cout << map.size() << std::endl;
+    
+    for(int i = 0; i < numRows*numCols; ++i){
       infile >> temp;
       map.push_back(temp*255);
-  }
-}
-  }else{
-    if(inputLine.compare("P2") != 0) {
+    }
+
+    }else{
+	if(inputLine.compare("P2") != 0) {
       
-    long rows, cols, size, greylevels;
+	long rows, cols, size, greylevels;
     
-     //Second line : comment
-    char comment_char = infile.get();
-    if(comment_char == '#') {
+	//Second line : comment
+	char comment_char = infile.get();
+	if(comment_char == '#') {
 	    getline(infile,inputLine);
-    } else {
+	} else {
 	    //cout << "No comment in the header" << endl;
 	    ss << comment_char;
-    }
+	}
 
-    // Continue with a stringstream
-    ss << infile.rdbuf();
-    // Third line : size
-    ss >> numCols >> numRows >> greylevels;
-    // cout << numCols << " columns and " << numRows << " rows" << endl;
-    
-    getline(infile,inputLine);
-    
-    size = numCols * numRows;
-
-    
-    long* data = new long[size];
-    for(long* ptr = data; ptr < data+size; ptr++) {
-        // read in binary char
-	unsigned char t_ch = ss.get();
-        // convert to integer
-        long t_data = static_cast<long>(t_ch);
-        // if passes add value to data array
-        *ptr = t_data;
-    }
-    // close the stream
-    infile.close();
-    
-    Map::map.reserve(numRows*numCols);
-
-    // Following lines : data
-
-    for(long* ptr = data, i = 0; ptr < data+size; ptr++, i++) {
+	// Continue with a stringstream
+	ss << infile.rdbuf();
+	// Third line : size
+	ss >> numCols >> numRows >> greylevels;
+	// cout << numCols << " columns and " << numRows << " rows" << endl;
 	
-	map[i] = *ptr ;
-	//cout << map[i];
-    }
-   delete data;
-    
-  }else{
+	getline(infile,inputLine);
+	
+	size = numCols * numRows;
+
+	
+	long* data = new long[size];
+	for(long* ptr = data; ptr < data+size; ptr++) {
+	    // read in binary char
+	    unsigned char t_ch = ss.get();
+	    // convert to integer
+	    long t_data = static_cast<long>(t_ch);
+	    // if passes add value to data array
+	    *ptr = t_data;
+	}
+	// close the stream
+	infile.close();
+	
+	Map::map.reserve(numRows*numCols);
+
+	// Following lines : data
+
+	for(long* ptr = data, i = 0; ptr < data+size; ptr++, i++) {
+	    
+	    map[i] = *ptr ;
+	    //cout << map[i];
+	}
+    delete data;
+	
+    }else{
 
 
     //Second line : comment
@@ -144,7 +143,7 @@ void Map::createGrid(double resolution)
   float clusterSize = (float)1/resolution;
   Map::numGridRows = (long)numRows/clusterSize;
   Map::numGridCols = (long)numCols/clusterSize;
-  cout <<" numGridRows: " << numGridRows <<", numGridCols: "<< numGridCols << endl;
+ // cout <<" numGridRows: " << numGridRows <<", numGridCols: "<< numGridCols << endl;
   
    for(int i = 0; i < numGridCols*numGridRows; ++i)
   {
@@ -172,11 +171,11 @@ void Map::createGrid(double resolution)
 void Map::createNewMap()
 {
     //cout << "ciao" << endl;
-    std::ofstream imgNew("/home/otter/Desktop/test.pgm", ios::out);
+    std::ofstream imgNew("/home/pulver/Desktop/test.pgm", ios::out);
     
     //imgNew << "h"<<endl;
     
-    std::ofstream txt("/home/otter/Desktop/freeCell.txt");
+    std::ofstream txt("/home/pulver/Desktop/freeCell.txt");
     long columns = numGridCols;
     long rows = numGridRows;
     
@@ -208,7 +207,7 @@ void Map::createPathPlanningGrid(double resolution)
 {
   //cluster cells into grid
   float clusterSize = (float)((1/resolution));
-  std::cout << "imgResolution: " << resolution << " clusterSize: " << clusterSize << std::endl;
+  //std::cout << "imgResolution: " << resolution << " clusterSize: " << clusterSize << std::endl;
   Map::numPathPlanningGridRows = (int)(numRows/clusterSize);
   Map::numPathPlanningGridCols = (int)(numCols/clusterSize);
   cout <<" numPathPlanningGridRows: " << numPathPlanningGridRows <<", numPathPlanningGridCols: "<< numPathPlanningGridCols << endl;
@@ -412,7 +411,7 @@ void Map::decreaseFreeCells(){
 
 void Map::drawVisitedCells(unordered_map<string,int>& visitedCells,int resolution)
 {
-    std::ofstream resultMap("/home/otter/Desktop/result.pgm", ios::out);
+    std::ofstream resultMap("/home/pulver/Desktop/result.pgm", ios::out);
     long columns = numGridCols;
     long rows = numGridRows;
     
@@ -442,7 +441,7 @@ void Map::drawVisitedCells(unordered_map<string,int>& visitedCells,int resolutio
 
 void Map::printVisitedCells(vector< string >& history)
 {
-    std::ofstream txt("/home/otter/Desktop/finalResult.txt");
+    std::ofstream txt("/home/pulver/Desktop/finalResult.txt");
     for (int i =0 ; i < history.size(); i++){
 	string encoding = history.at(i);
 	string s ;
