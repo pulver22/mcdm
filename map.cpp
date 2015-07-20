@@ -5,10 +5,11 @@ using namespace std;
 
 namespace dummy{
   
-Map::Map(std::ifstream& infile, int resolution)
+Map::Map(std::ifstream& infile, double resolution, double imgresolution)
 {
   Map::createMap(infile);
   Map::createGrid(resolution);
+  Map::createPathPlanningGrid(imgresolution);
   Map::createNewMap();
    //cout << "ciao" << endl;
 }
@@ -17,6 +18,7 @@ Map::Map()
 {
   
 }
+
 
 
 
@@ -29,7 +31,22 @@ void Map::createMap(std::ifstream& infile)
 
   // First line : version
   getline(infile,inputLine);
-  if(inputLine.compare("P2") != 0) {
+  if(inputLine.compare("GRID") == 0){
+    {
+      int temp;
+  infile >> Map::numRows >> Map::numCols;
+  std::cout << "numrows " << numRows << " numcols " << numCols << std::endl;
+  Map::map.reserve(numRows*numCols);
+  std::cout << map.size() << std::endl;
+ 
+   for(int i = 0; i < numRows*numCols; ++i)
+  {
+      infile >> temp;
+      map.push_back(temp*255);
+  }
+}
+  }else{
+    if(inputLine.compare("P2") != 0) {
       
     long rows, cols, size, greylevels;
     
@@ -48,8 +65,10 @@ void Map::createMap(std::ifstream& infile)
     ss >> numCols >> numRows >> greylevels;
     // cout << numCols << " columns and " << numRows << " rows" << endl;
     
+    getline(infile,inputLine);
+    
     size = numCols * numRows;
-
+   
     
     long* data = new long[size];
     for(long* ptr = data; ptr < data+size; ptr++) {
@@ -96,7 +115,10 @@ void Map::createMap(std::ifstream& infile)
  // cout << numCols << " columns and " << numRows << " rows" << endl;
   
  //max value of color
- getline(infile,inputLine);
+ //getline(infile,inputLine);
+  
+  int max;
+  ss >> max;
  
  
  //std::vector<int> array(numRows*numCols);
@@ -109,32 +131,18 @@ void Map::createMap(std::ifstream& infile)
   //infile.close();
   }
 }
+}
+
+
 
 // get the map as a monodimension vector with 0 and 1
-void Map::createGrid(int resolution)
+void Map::createGrid(double resolution)
 {
   //cluster cells into grid
-  float clusterSize = (float)((100.0/resolution));
+  float clusterSize = (float)1/resolution;
   Map::numGridRows = (long)numRows/clusterSize;
   Map::numGridCols = (long)numCols/clusterSize;
-  long gridRow = 0, gridCol = 0;
-  //cout << numGridCols << " : "<< numGridRows << endl;
-  
-
-  //cout << "Total cell: " << totalFreeCells << endl;
-  
-  //get the size of the array and initialize to 0
-  
-  /*
-    Map::grid.reserve(numGridRows*numGridCols);
-  
-    for (gridRow = 0; gridRow < numGridRows; ++gridRow)
-    {
-	    for (gridCol = 0; gridCol < numGridCols; ++gridCol)
-	    {
-	    grid[gridRow*numGridCols + gridCol] = 0;
-	    }
-    }*/
+  cout <<" numGridRows: " << numGridRows <<", numGridCols: "<< numGridCols << endl;
   
    for(int i = 0; i < numGridCols*numGridRows; ++i)
   {
@@ -146,25 +154,27 @@ void Map::createGrid(int resolution)
     {
 	    for(long col = 0; col < numCols; ++col)
 	    {
-		//if(map[row*numCols + col] == 0) 
-		if(map[row*numCols + col] < 250) 
+ 
+		if(map[row*numCols + col] < 250)
 		{
 			grid[(long)(row/clusterSize)*numGridCols + (long)(col/clusterSize)] = 1;
-			
+			//NOTE: i don't remember when it should be used
+			//map[(long)(row/clusterSize)*numGridCols + (long)(col/clusterSize)] = 1;
 		}
 	    }
     }
+    
     
 }
 
 void Map::createNewMap()
 {
     //cout << "ciao" << endl;
-    std::ofstream imgNew("/home/pulver/Desktop/test.pgm", ios::out);
+    std::ofstream imgNew("/home/otter/Desktop/test.pgm", ios::out);
     
     //imgNew << "h"<<endl;
     
-    std::ofstream txt("/home/pulver/Desktop/freeCell.txt");
+    std::ofstream txt("/home/otter/Desktop/freeCell.txt");
     long columns = numGridCols;
     long rows = numGridRows;
     
@@ -192,7 +202,111 @@ void Map::createNewMap()
     txt.close();
 }
 
+void Map::createPathPlanningGrid(double resolution)
+{
+  //cluster cells into grid
+  float clusterSize = (float)((1/resolution));
+  std::cout << "imgResolution: " << resolution << " clusterSize: " << clusterSize << std::endl;
+  Map::numPathPlanningGridRows = (int)(numRows/clusterSize);
+  Map::numPathPlanningGridCols = (int)(numCols/clusterSize);
+  cout <<" numPathPlanningGridRows: " << numPathPlanningGridRows <<", numPathPlanningGridCols: "<< numPathPlanningGridCols << endl;
+  
+   for(int i = 0; i < numPathPlanningGridCols*numPathPlanningGridRows; ++i)
+  {
+    pathPlanningGrid.push_back(0);
+  }
+  
+  //set 1 in the grid cells corrisponding to obstacles
+    for(long row = 0; row < numRows; ++row)
+    {
+	    for(long col = 0; col < numCols; ++col)
+	    {
+ 
+		if(map[row*numCols + col] < 250) 
+		{
+			pathPlanningGrid[(long)(row/clusterSize)*numPathPlanningGridCols + (long)(col/clusterSize)] = 1;
+			//NOTE: i don't remember when it should be used
+			//map[(long)(row/clusterSize)*numGridCols + (long)(col/clusterSize)] = 1;
+		}
+	    }
+    }
+    Map::gridToPathGridScale = (int)(numGridRows / numPathPlanningGridRows);
+    
+    
+}
 
+
+void Map::updatePathPlanningGrid(int posX, int posY, int rangeInMeters)
+{
+  
+  //int ppX = (int)(posX/gridToPathGridScale);
+  //int ppY = (int)(posY/gridToPathGridScale);
+  int minX = posX - rangeInMeters;
+  int maxX = posX + rangeInMeters;
+  if(minX < 0) minX = 0;
+  if(maxX > numPathPlanningGridRows - 1) maxX = numPathPlanningGridRows - 1;
+  int minY = posY - rangeInMeters;
+  int maxY = posY + rangeInMeters;
+  if(minY < 0) minY = 0;
+  if(maxY > numPathPlanningGridCols - 1) maxY = numPathPlanningGridCols - 1;
+  
+  for(int row = minX; row <= maxX; ++row)
+  {
+    for(int col = minY; col <= maxY; ++col)
+    {
+      int countScanned = 0;
+      int setToOne = 0;
+      for(int gridRow = row*gridToPathGridScale; gridRow < row*gridToPathGridScale + gridToPathGridScale; ++gridRow)
+      {
+	for(int gridCol = col*gridToPathGridScale; gridCol < col*gridToPathGridScale + gridToPathGridScale; ++gridCol)
+	{
+	  //std::cout << "X: " << row << " Y: " << col << " gridX: " << gridRow << " gridY: " << gridCol << std::endl;
+	  if(getGridValue(gridRow, gridCol) == 1)
+	  {
+	    setToOne = 1;
+	  }
+	  
+	  if(getGridValue(gridRow, gridCol) == 2)
+	  {
+	    countScanned++;
+	  }
+	}
+      }
+      if(countScanned == gridToPathGridScale*gridToPathGridScale)
+      {
+	setPathPlanningGridValue(2, row, col);
+      }
+       if(setToOne == 1) setPathPlanningGridValue(1, row, col);
+    }
+  }
+
+  
+}
+
+int Map::getPathPlanningGridValue(long i,long j) const
+{
+  return pathPlanningGrid[i*numPathPlanningGridCols + j];
+}
+
+void Map::setPathPlanningGridValue(int value, int i, int j)
+{
+  pathPlanningGrid[i*numPathPlanningGridCols + j] = value;
+}
+
+int Map::getPathPlanningNumCols() const
+{
+  return numPathPlanningGridCols;
+}
+
+int Map::getPathPlanningNumRows() const
+{
+  return numPathPlanningGridRows;
+}
+
+int Map::getGridToPathGridScale() const
+{
+ return gridToPathGridScale; 
+}
 
 // values: 0 -> unscanned free cell, 1 -> obstacle cell, 2 -> scanned free cell
 void Map::setGridValue(int value, long i, long j)
@@ -232,7 +346,6 @@ int Map::getGridValue(long i,long j) const
 {
   return grid[i*numGridCols + j];
 }
-
 
 int Map::getMapValue(long i, long j)
 {
@@ -298,7 +411,7 @@ void Map::decreaseFreeCells(){
 
 void Map::drawVisitedCells(unordered_map<string,int>& visitedCells,int resolution)
 {
-    std::ofstream resultMap("/home/pulver/Desktop/result.pgm", ios::out);
+    std::ofstream resultMap("/home/otter/Desktop/result.pgm", ios::out);
     long columns = numGridCols;
     long rows = numGridRows;
     
@@ -328,7 +441,7 @@ void Map::drawVisitedCells(unordered_map<string,int>& visitedCells,int resolutio
 
 void Map::printVisitedCells(vector< string >& history)
 {
-    std::ofstream txt("/home/pulver/Desktop/finalResult.txt");
+    std::ofstream txt("/home/otter/Desktop/finalResult.txt");
     for (int i =0 ; i < history.size(); i++){
 	string encoding = history.at(i);
 	string s ;

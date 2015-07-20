@@ -23,13 +23,16 @@ int main(int argc, char **argv) {
 
     ifstream infile;
     infile.open(argv[1]);
-    int resolution = atoi(argv[2]);
-    Map map = Map(infile,resolution);
+    double resolution = atof(argv[2]);
+    double imgresolution = atof(argv[10]);
+    Map map = Map(infile,resolution, imgresolution);
     cout << "Map dimension: " << map.getNumGridCols() << " : "<<  map.getNumGridRows() << endl;
+    int gridToPathGridScale = map.getGridToPathGridScale();
     
     // i switched x and y because the map's orientation inside and outside programs are different
-    long  initX = atoi(argv[4]);	
-    long initY = atoi(argv[3]);
+    long initX = (int)(atoi(argv[4])*imgresolution);	
+    long initY = (int)(atoi(argv[3])*imgresolution);
+    std::cout << "initX: " << initX << " initY: " << initY << std::endl;
     int initOrientation = atoi(argv[5]);
     double initFov = atoi(argv[7] );
     initFov = initFov * PI /180;
@@ -47,6 +50,7 @@ int main(int argc, char **argv) {
     long numConfiguration =0;
     vector<pair<string,list<Pose>>> graph2;
     NewRay ray;
+    ray.setGridToPathGridScale(gridToPathGridScale);
     MCDMFunction function;
     long sensedCells = 0;
     long newSensedCells =0;
@@ -63,6 +67,7 @@ int main(int argc, char **argv) {
     list<Pose> tabuList;
     list<Pose> nearCandidates;
     bool btMode = false;
+    double totalAngle = 0;
     Astar astar;
 
     
@@ -85,16 +90,25 @@ int main(int argc, char **argv) {
 	    
 	    cout << "-----------------------------------------------------------------"<<endl;
 	    cout << "Round : " << count<< endl;
-	    newSensedCells = sensedCells + ray.getInformationGain(map,x,y,orientation,FOV,range);
+	    //newSensedCells = sensedCells + ray.getInformationGain(map,x,y,orientation,FOV,range);
 	    cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
 	    target.setScanAngles(ray.getSensingTime(map,x,y,orientation,FOV,range));
 	    cout << "MinPhi: " << target.getScanAngles().first << " MaxPhi: " << target.getScanAngles().second << endl;
-	    ray.performSensingOperation(map,x,y,orientation,FOV,range, target.getScanAngles().first, target.getScanAngles().second);
-
+	    newSensedCells = sensedCells + ray.performSensingOperation(map,x,y,orientation,FOV,range, target.getScanAngles().first, target.getScanAngles().second);
+	    totalAngle += target.getScanAngles().second - target.getScanAngles().first;
+	    map.updatePathPlanningGrid(x, y, range);
 	    ray.findCandidatePositions(map,x,y,orientation,FOV,range);
 	    vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
 	    ray.emptyCandidatePositions();
 	    
+	    /*
+	    if(candidatePosition.size() == 0)
+	    {
+	      ray.findCandidatePositions2(map, x, y, orientation, FOV, range);
+	      candidatePosition = ray.getCandidatePositions();
+	      ray.emptyCandidatePositions();
+	    }
+	    */
 	    
 	    if(candidatePosition.size() == 0) {
 		
@@ -343,6 +357,7 @@ int main(int argc, char **argv) {
 	    }
 	    delete record;
 	}
+	
     }
     
     map.drawVisitedCells(visitedCell,resolution);
@@ -352,19 +367,23 @@ int main(int argc, char **argv) {
     //OLD METHOD
     
     if (sensedCells >= precision * totalFreeCells ){
+	cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
 	cout << "-----------------------------------------------------------------"<<endl;
 	cout << "Total cell visited :" << numConfiguration <<endl;
 	cout << "Total travelled distance (cells): " << travelledDistance << endl;
 	cout << "Total number of turning: " << numOfTurning << endl;
+	cout << "Sum of scan angles (radians): " << totalAngle << endl;
 	cout << "FINAL: MAP EXPLORED!" << endl;
 	cout << "-----------------------------------------------------------------"<<endl;
+	
+	
     }else{
 	cout << "-----------------------------------------------------------------"<<endl;
 	cout << "I came back to the original position since i don't have any other candidate position"<< endl;
 	cout << "Total cell visited :" << numConfiguration <<endl;
 	cout << "-----------------------------------------------------------------"<<endl;
-	
     }
+    
     
 }
 
