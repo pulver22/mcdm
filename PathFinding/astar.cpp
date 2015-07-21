@@ -32,8 +32,8 @@ string Astar::pathFind( const int & xStart, const int & yStart, const int & xFin
 		    Map& originalMap )
 {
     
-    const int m = originalMap.getNumGridCols();
-    const int n = originalMap.getNumGridRows();
+    const int m = originalMap.getPathPlanningNumCols();
+    const int n = originalMap.getPathPlanningNumRows();
  
     
     int map[n][m];
@@ -44,7 +44,7 @@ string Astar::pathFind( const int & xStart, const int & yStart, const int & xFin
     for(int y=0;y<m;y++)
     {
         for(int x=0;x<n;x++){ 
-	    map[x][y]= originalMap.getGridValue(x,y);
+	    map[x][y]= originalMap.getPathPlanningGridValue(x,y);
 	}
     }
 
