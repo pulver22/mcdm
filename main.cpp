@@ -82,9 +82,10 @@ int main(int argc, char **argv) {
 	    double FOV = target.getFOV();
 	    string actualPose = function.getEncodedKey(target,0);
 	    map.setCurrentPose(target);
-
+	    
 	    //NOTE; calculate path and turnings between actual position and goal
 	    string path = astar.pathFind(target.getX(),target.getY(),previous.getX(),previous.getY(),map);
+	    
 	    travelledDistance = travelledDistance + astar.lenghtPath(path);
 	    numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
 	    //-------------------------------------------------------------------
@@ -137,6 +138,7 @@ int main(int argc, char **argv) {
 		    
 
 		    cout << "-----------------------------------------------------------------"<<endl;
+		    cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
 		    cout << "I came back to the original position since i don't have any other candidate position"<< endl;
 		    cout << "Total cell visited :" << numConfiguration <<endl;
 		    cout << "FINAL: Map not completely explored!" << endl;
@@ -364,11 +366,10 @@ int main(int argc, char **argv) {
     map.drawVisitedCells(visitedCell,resolution);
     map.printVisitedCells(history);
   
-    cout << "-----------------------------------------------------------------"<<endl;
-    cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
-
+    
     if (sensedCells >= precision * totalFreeCells ){
-	
+	cout << "-----------------------------------------------------------------"<<endl;
+	cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
 	cout << "Total cell visited :" << numConfiguration <<endl;
 	cout << "Total travelled distance (cells): " << travelledDistance << endl;
 	cout << "Total number of turning: " << numOfTurning << endl;
@@ -378,6 +379,8 @@ int main(int argc, char **argv) {
 	
 	
     }else{
+	cout << "-----------------------------------------------------------------"<<endl;
+	cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
 	cout << "I came back to the original position since i don't have any other candidate position"<< endl;
 	cout << "Total cell visited :" << numConfiguration <<endl;
 	cout << "-----------------------------------------------------------------"<<endl;

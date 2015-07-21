@@ -31,8 +31,11 @@ bool operator<(const Node & a,const Node & b){
 string Astar::pathFind( const int & xStart, const int & yStart, const int & xFinish, const int & yFinish,
 		    Map& originalMap )
 {
+    
     const int m = originalMap.getNumGridCols();
     const int n = originalMap.getNumGridRows();
+ 
+    
     int map[n][m];
     int closed_nodes_map[n][m]; // map of closed (tried-out) nodes
     int open_nodes_map[n][m]; // map of open (not-yet-tried) nodes
@@ -40,8 +43,12 @@ string Astar::pathFind( const int & xStart, const int & yStart, const int & xFin
     // create map
     for(int y=0;y<m;y++)
     {
-        for(int x=0;x<m;x++) map[x][y]= originalMap.getGridValue(x,y);
+        for(int x=0;x<n;x++){ 
+	    map[x][y]= originalMap.getGridValue(x,y);
+	}
     }
+
+    
     //cout << "alive in pathfind"<< endl;
     static priority_queue<Node> pq[2]; // list of open (not-yet-tried) nodes
     static int pqi; // pq index
@@ -51,6 +58,7 @@ string Astar::pathFind( const int & xStart, const int & yStart, const int & xFin
     static char c;
     pqi=0;
 
+    
     // reset the node maps
     for(y=0;y<m;y++)
     {
@@ -61,28 +69,35 @@ string Astar::pathFind( const int & xStart, const int & yStart, const int & xFin
         }
     }
 
+    
     // create the start node and push into list of open nodes
     n0=new Node(xStart, yStart, 0, 0);
+    //cout << n0->getxPos() << ":" << n0->getyPos() << endl;
     n0->updatePriority(xFinish, yFinish);
     pq[pqi].push(*n0);
     open_nodes_map[xStart][yStart]=n0->getPriority(); // mark it on the open nodes map
     delete n0;
-
+    //cout << n0->getxPos() << ":" << n0->getyPos() << endl;
     // A* search
     while(!pq[pqi].empty())
     {
         // get the current node w/ the highest priority
         // from the list of open nodes
+	//cout << pq[pqi].top().getxPos() << endl;
+	//cout << pq[pqi].top().getyPos() << endl;
         n0=new Node( pq[pqi].top().getxPos(), pq[pqi].top().getyPos(),
                      pq[pqi].top().getLevel(), pq[pqi].top().getPriority());
 
-        x=n0->getxPos(); y=n0->getyPos();
-
+        x=n0->getxPos(); 
+	y=n0->getyPos();
+	
         pq[pqi].pop(); // remove the node from the open list
         open_nodes_map[x][y]=0;
         // mark it on the closed nodes map
+	//cout << "alive" << endl;
+	//cout << closed_nodes_map[x][y] << endl;
         closed_nodes_map[x][y]=1;
-
+	//   cout << "alive" << endl;
         // quit searching when the goal state is reached
         //if((*n0).estimate(xFinish, yFinish) == 0)
         if(x==xFinish && y==yFinish)

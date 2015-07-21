@@ -7,6 +7,7 @@ namespace dummy{
   
 Map::Map(std::ifstream& infile, double resolution, double imgresolution)
 {
+    
   Map::createMap(infile);
   Map::createGrid(resolution);
   Map::createPathPlanningGrid(imgresolution);
@@ -210,7 +211,7 @@ void Map::createPathPlanningGrid(double resolution)
   //std::cout << "imgResolution: " << resolution << " clusterSize: " << clusterSize << std::endl;
   Map::numPathPlanningGridRows = (int)(numRows/clusterSize);
   Map::numPathPlanningGridCols = (int)(numCols/clusterSize);
-  cout <<" numPathPlanningGridRows: " << numPathPlanningGridRows <<", numPathPlanningGridCols: "<< numPathPlanningGridCols << endl;
+  //cout <<" numPathPlanningGridRows: " << numPathPlanningGridRows <<", numPathPlanningGridCols: "<< numPathPlanningGridCols << endl;
   
    for(int i = 0; i < numPathPlanningGridCols*numPathPlanningGridRows; ++i)
   {
