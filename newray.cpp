@@ -37,6 +37,35 @@ int NewRay::isCandidate(const Map &map, long i,long  j)
   
 }
 
+int NewRay::isCandidate2(const Map &map, long i, long j)
+{
+  int candidate = 0;
+  long r = i;
+  long s = j;
+  long minR = r - 1, maxR = r + 1, minS = s -1, maxS = s + 1;
+  if(minR < 0) minR = 0;
+  if(minS < 0) minS = 0;
+  if(maxR > map.getPathPlanningNumRows()) maxR = map.getPathPlanningNumRows();
+  if(maxS > map.getPathPlanningNumCols()) maxS = map.getPathPlanningNumCols();
+  
+  
+  for(r = minR; r <= maxR; ++r)
+  {
+    for(s = minS; s <= maxS; ++s)
+    {
+      for(int rg = r*gridToPathGridScale; rg < r*gridToPathGridScale + gridToPathGridScale; ++rg)
+      {
+	for(int sg = s*gridToPathGridScale; sg < s*gridToPathGridScale + gridToPathGridScale; ++sg)
+	{
+	  if (map.getGridValue(rg, sg) == 0) candidate = 1;
+	}
+      }
+    }
+  }
+  return candidate;
+  
+}
+
 
 //finds the candidate positions: cells already scanned in range of the robot which are adjacent to at least one free cell
 void NewRay::findCandidatePositions(Map &map, long posX, long posY, int orientation, double FOV, int range)
@@ -165,7 +194,7 @@ void NewRay::findCandidatePositions2(Map &map, long posX, long posY, int orienta
     endingPhi = 2*PI + endingPhi;
     
   }
-  if(endingPhi > 2*PI) add2pi = 1;
+  if(endingPhi > 2*PI) add2pi = 1;  
   
   //std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
     
@@ -193,8 +222,8 @@ void NewRay::findCandidatePositions2(Map &map, long posX, long posY, int orienta
       if(map.getPathPlanningGridValue(i, j) == 2 && distance <= range)
       {
 	
-	//if(NewRay::isCandidate(map, i, j) == 1)
-	//{
+	if(NewRay::isCandidate2(map, i, j) == 1)
+	{
 	
 	double curX = posX;		//starting position of the ray
 	double curY = posY;
@@ -246,7 +275,7 @@ void NewRay::findCandidatePositions2(Map &map, long posX, long posY, int orienta
 	    u += 0.2;		//move forward along the ray
 	  }
 	}
-	//}
+	}
       }
     }
   }
