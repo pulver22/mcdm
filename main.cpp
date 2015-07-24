@@ -156,13 +156,22 @@ int main(int argc, char **argv) {
 		vector<pair<long,long> >::iterator it =candidatePosition.begin();
 		for(it; it != candidatePosition.end(); it++){
 		    Pose p1 = Pose((*it).first,(*it).second,0 ,range,FOV);
-		    Pose p2 = Pose((*it).first,(*it).second,180,range,FOV);
+		    Pose p2 = Pose((*it).first,(*it).second,45,range,FOV);
 		    Pose p3 = Pose((*it).first,(*it).second,90,range,FOV);
-		    Pose p4 = Pose((*it).first,(*it).second,270,range,FOV);
+		    Pose p4 = Pose((*it).first,(*it).second,135,range,FOV);
+		    Pose p5 = Pose((*it).first,(*it).second,180,range,FOV);
+		    Pose p6 = Pose((*it).first,(*it).second,225,range,FOV);
+		    Pose p7 = Pose((*it).first,(*it).second,270,range,FOV);
+		    Pose p8 = Pose((*it).first,(*it).second,315,range,FOV);
 		    frontiers.push_back(p1);
 		    frontiers.push_back(p2);
 		    frontiers.push_back(p3);
 		    frontiers.push_back(p4);
+		    frontiers.push_back(p5);
+		    frontiers.push_back(p6);
+		    frontiers.push_back(p7);
+		    frontiers.push_back(p8);
+		    
 		}
 		
 		unexploredFrontiers = frontiers;
