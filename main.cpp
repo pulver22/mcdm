@@ -16,9 +16,10 @@ using namespace std;
 using namespace dummy;
 bool contains(std::list< Pose >& list, Pose& p);
 void cleanPossibleDestination2(std::list< Pose > &possibleDestinations, Pose& p);
-void pushInitialPositions(Map map, int x, int y, int orientation, int variation, int range, int FOV, double threshold, 
+void pushInitialPositions(Map map, int x, int y, int orientation,  int range, int FOV, double threshold, 
 			  string actualPose, vector< pair< string, list< Pose > > > *graph2 );
 double calculateScanTime(double scanAngle);
+Pose createFromInitialPose(int x, int y, int orientation, int variation, int range, int FOV);
 
 
 int main(int argc, char **argv) {
@@ -47,10 +48,9 @@ int main(int argc, char **argv) {
     //x,y,orientation,range,FOV
 
     Pose initialPose = Pose(initX,initY,initOrientation,initRange,initFov);
-    Pose p1 = Pose(initX,initY,0,initRange,initFov);
-    Pose p2 = Pose(initX,initY,90,initRange,initFov);
-    Pose p3 = Pose(initX,initY,180,initRange,initFov);
-    Pose p4 = Pose(initX,initY,270,initRange,initFov);
+    Pose invertedInitial = createFromInitialPose(initX,initY,initOrientation,180,initRange,initFov);
+    Pose eastInitial = createFromInitialPose(initX,initY,initOrientation,90,initRange,initFov);
+    Pose westInitial = createFromInitialPose(initX,initY,initOrientation,270,initRange,initFov);
     Pose target = initialPose;
     Pose previous = initialPose;
     long numConfiguration =0;
@@ -112,14 +112,31 @@ int main(int argc, char **argv) {
 	    ray.findCandidatePositions(map,x,y,orientation,FOV,range);
 	    vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
 	    ray.emptyCandidatePositions();
-
+	    
+	    //--------------------------------------------------
+	    /* Push in the graph the initial position with different orientations
+	     */
+	    
 	    if(count == 0){
-		//insert the initial position with different orientation in the graph
-		pushInitialPositions(map, x, y,orientation, 90, range,FOV, threshold, actualPose, &graph2 );
-		pushInitialPositions(map, x, y,orientation, 180, range,FOV, threshold, actualPose, &graph2 );
-		pushInitialPositions(map, x, y,orientation, 270, range,FOV, threshold, actualPose, &graph2 );
+		string invertedPose = function.getEncodedKey(invertedInitial,0);
+		string eastPose = function.getEncodedKey(eastInitial,0);
+		string westPose = function.getEncodedKey(westInitial,0);
+		list<Pose> empty ;
+		std::pair<string,list<Pose>> pair1 = make_pair(invertedPose,empty);
+		std::pair<string,list<Pose>> pair2 = make_pair(eastPose,empty);
+		std::pair<string,list<Pose>> pair3 = make_pair(westPose,empty);
+		graph2.push_back(pair1);
+		graph2.push_back(pair2);
+		graph2.push_back(pair3);
 	    }
-
+	    
+	    if(count != 0 && (target.isEqual(invertedInitial) || target.isEqual(eastInitial) || target.isEqual(westInitial))){
+		graph2.pop_back();
+		actualPose = function.getEncodedKey(target,0);
+		pushInitialPositions(map, x, y,orientation, range,FOV, threshold, actualPose, &graph2 );
+	    }
+	    //------------------------------------------------------
+	    
 	    if(candidatePosition.size() == 0)
 	    {
 		ray.findCandidatePositions2(map,x,y,orientation,FOV,range);
@@ -147,11 +164,21 @@ int main(int argc, char **argv) {
 		    //cout << "Graph dimension : " << graph2.size() << endl;
 		    
 		} else {
+		    
+		    if(imgresolution == 1.0){
+			travelledDistance = travelledDistance/2;
+		    }
 		    cout << "-----------------------------------------------------------------"<<endl;
 		    cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
 		    cout << "I came back to the original position since i don't have any other candidate position"<< endl;
 		    cout << "Total cell visited :" << numConfiguration <<endl;
-		    cout << "FINAL: Map not completely explored!" << endl;
+		    cout << "Total travelled distance (cells): " << travelledDistance << endl;
+		    cout << "Total exploration time: " << travelledDistance / 0.5 << endl;
+		    cout << "Total number of turning: " << numOfTurning << endl;
+		    cout << "Sum of scan angles (radians): " << totalAngle << endl;
+		    cout << "Total time for scanning: " << totalScanTime << endl;
+		    cout << "Total time for exploration: " << travelledDistance/0.5 + totalScanTime << "s, " << (travelledDistance/0.5 + totalScanTime )/60 << " m" << endl;
+		    cout << "FINAL: MAP NOT EXPLORED! :(" << endl;
 		    cout << "-----------------------------------------------------------------"<<endl;
 		    exit(0);
 		}
@@ -174,13 +201,13 @@ int main(int argc, char **argv) {
 		    Pose p7 = Pose((*it).first,(*it).second,270,range,FOV);
 		    Pose p8 = Pose((*it).first,(*it).second,315,range,FOV);
 		    frontiers.push_back(p1);
-		    //frontiers.push_back(p2);
+		    frontiers.push_back(p2);
 		    frontiers.push_back(p3);
-		    //frontiers.push_back(p4);
+		    frontiers.push_back(p4);
 		    frontiers.push_back(p5);
-		    //frontiers.push_back(p6);
+		    frontiers.push_back(p6);
 		    frontiers.push_back(p7);
-		    //frontiers.push_back(p8);
+		    frontiers.push_back(p8);
 		    
 		}
 		
@@ -385,6 +412,9 @@ int main(int argc, char **argv) {
     map.drawVisitedCells(visitedCell,resolution);
     map.printVisitedCells(history);
   
+    if(imgresolution == 1.0){
+	travelledDistance = travelledDistance/2;
+    }
     
     if (sensedCells >= precision * totalFreeCells ){
 	cout << "-----------------------------------------------------------------"<<endl;
@@ -448,11 +478,11 @@ void cleanPossibleDestination2(std::list< Pose >& possibleDestinations, Pose& p)
 }
 
 
-void pushInitialPositions(Map map, int x, int y, int orientation, int variation, int range, int FOV, double threshold, string actualPose, vector< pair< string, list< Pose > > >* graph2 )
+void pushInitialPositions(Map map, int x, int y, int orientation, int range, int FOV, double threshold, string actualPose, vector< pair< string, list< Pose > > >* graph2 )
 {
     NewRay ray;
     MCDMFunction function;
-    ray.findCandidatePositions(map,x,y,(orientation + variation)%360,FOV,range);
+    ray.findCandidatePositions(map,x,y,orientation ,FOV,range);
     vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
     ray.emptyCandidatePositions();
     list<Pose> frontiers;
@@ -476,4 +506,9 @@ void pushInitialPositions(Map map, int x, int y, int orientation, int variation,
 double calculateScanTime(double scanAngle)
 {
   return(-7.2847174296449998e-006*scanAngle*scanAngle*scanAngle + 2.2131847908245512e-003*scanAngle*scanAngle + 1.5987873410233613e-001*scanAngle + 10);
+}
+
+Pose createFromInitialPose(int x, int y, int orientation, int variation, int range, int FOV){
+    Pose tmp = Pose(x,y,(orientation + variation)%360,FOV,range);
+    return tmp;
 }
