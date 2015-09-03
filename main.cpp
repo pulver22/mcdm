@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
     Pose westInitial = createFromInitialPose(initX,initY,initOrientation,270,initRange,initFov);
     Pose target = initialPose;
     Pose previous = initialPose;
-    long numConfiguration =0;
+    long numConfiguration = 1;
     vector<pair<string,list<Pose>>> graph2;
     NewRay ray;
     ray.setGridToPathGridScale(gridToPathGridScale);
@@ -131,6 +131,7 @@ int main(int argc, char **argv) {
 	    }
 	    
 	    if(count != 0 && (target.isEqual(invertedInitial) || target.isEqual(eastInitial) || target.isEqual(westInitial))){
+		if(graph2.size() == 0 ) break;
 		graph2.pop_back();
 		actualPose = function.getEncodedKey(target,0);
 		pushInitialPositions(map, x, y,orientation, range,FOV, threshold, actualPose, &graph2 );
@@ -187,7 +188,7 @@ int main(int argc, char **argv) {
 		
 	    }else{
 		
-		cout << newSensedCells << endl;
+		//cout << newSensedCells << endl;
 		// need to convert from a <int,int pair> to a Pose with also orientation,laser range and angle
 		list<Pose> frontiers;
 		vector<pair<long,long> >::iterator it =candidatePosition.begin();
@@ -208,7 +209,7 @@ int main(int argc, char **argv) {
 		    frontiers.push_back(p6);
 		    frontiers.push_back(p7);
 		    frontiers.push_back(p8);
-		    
+		   
 		}
 		
 		unexploredFrontiers = frontiers;
@@ -239,7 +240,7 @@ int main(int argc, char **argv) {
 			graph2.push_back(pair);
 			//cout << "Graph dimension : " << graph2.size() << endl;
 		    }else{
-			if(graph2.size() == 0 ) break;file:///home/pulver/projects/mcdm_online_exploration_ros/Criteria/mcdmweightreader.cppfile:///home/pulver/projects/mcdm_online_exploration_ros/mcdmfunction.cpp
+			if(graph2.size() == 0 ) break;
 			if(graph2.at(graph2.size()-1).second.size() != 0){
 			    //cout << "[BT1 - Tabulist]There are visible cells but the selected one is already explored!Come back to second best position from the previous position"<< endl;
 			    cleanPossibleDestination2(nearCandidates,target);
