@@ -99,11 +99,11 @@ int main(int argc, char **argv) {
 	    
 	    
 	    
-	    //cout << "-----------------------------------------------------------------"<<endl;
-	    //cout << "Round : " << count<< endl;
-	   // cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
+	    cout << "-----------------------------------------------------------------"<<endl;
+	    cout << "Round : " << count<< endl;
+	    cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
 	    target.setScanAngles(ray.getSensingTime(map,x,y,orientation,FOV,range));
-	    //cout << "MinPhi: " << target.getScanAngles().first << " MaxPhi: " << target.getScanAngles().second << endl;
+	    cout << "MinPhi: " << target.getScanAngles().first << " MaxPhi: " << target.getScanAngles().second << endl;
 	    newSensedCells = sensedCells + ray.performSensingOperation(map,x,y,orientation,FOV,range, target.getScanAngles().first, target.getScanAngles().second);
 	    double scanAngle = target.getScanAngles().second - target.getScanAngles().first;
 	    totalAngle += scanAngle;
@@ -147,8 +147,8 @@ int main(int argc, char **argv) {
 	    
 	    if(candidatePosition.size() == 0) {
 		
-		//cout << "No other candidate position" << endl;
-		//cout << "----- BACKTRACKING -----" << endl;
+		cout << "No other candidate position" << endl;
+		cout << "----- BACKTRACKING -----" << endl;
 		
 		if (graph2.size() > 1){
 		    
@@ -159,10 +159,10 @@ int main(int argc, char **argv) {
 		    EvaluationRecords record;
 		    target = record.getPoseFromEncoding(targetString);
 		    history.push_back(function.getEncodedKey(target,2));
-		    //cout << "[BT]No significative position reachable. Come back to previous position" << endl;
-		    //cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
+		    cout << "[BT]No significative position reachable. Come back to previous position" << endl;
+		    cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
 		    count = count + 1;
-		    //cout << "Graph dimension : " << graph2.size() << endl;
+		    cout << "Graph dimension : " << graph2.size() << endl;
 		    
 		} else {
 		    
@@ -202,24 +202,24 @@ int main(int argc, char **argv) {
 		    Pose p7 = Pose((*it).first,(*it).second,270,range,FOV);
 		    Pose p8 = Pose((*it).first,(*it).second,315,range,FOV);
 		    frontiers.push_back(p1);
-		    frontiers.push_back(p2);
+		    //frontiers.push_back(p2);
 		    frontiers.push_back(p3);
-		    frontiers.push_back(p4);
+		    //frontiers.push_back(p4);
 		    frontiers.push_back(p5);
-		    frontiers.push_back(p6);
+		    //frontiers.push_back(p6);
 		    frontiers.push_back(p7);
-		    frontiers.push_back(p8);
+		    //frontiers.push_back(p8);
 		   
 		}
 		
 		unexploredFrontiers = frontiers;
 		
-		//cout << "Graph dimension : " << graph2.size() << endl;
-		//cout << "Candidate position: " << candidatePosition.size() << endl;
-		//cout <<"Frontiers: "<<  frontiers.size() << endl;
+		cout << "Graph dimension : " << graph2.size() << endl;
+		cout << "Candidate position: " << candidatePosition.size() << endl;
+		cout <<"Frontiers: "<<  frontiers.size() << endl;
 		EvaluationRecords *record = function.evaluateFrontiers(frontiers,map,threshold);
-		//cout << "Record: " << record->size() << endl;
-		//cout << "Evaluation Record obtained" << endl;
+		cout << "Record: " << record->size() << endl;
+		cout << "Evaluation Record obtained" << endl;
 		nearCandidates = record->getFrontiers();
 		
 		if(record->size() != 0){
@@ -238,22 +238,23 @@ int main(int argc, char **argv) {
 			cleanPossibleDestination2(nearCandidates,target);
 			std::pair<string,list<Pose>> pair = make_pair(actualPose,nearCandidates);
 			graph2.push_back(pair);
-			//cout << "Graph dimension : " << graph2.size() << endl;
+			cout << "Graph dimension : " << graph2.size() << endl;
 		    }else{
 			if(graph2.size() == 0 ) break;
 			if(graph2.at(graph2.size()-1).second.size() != 0){
-			    //cout << "[BT1 - Tabulist]There are visible cells but the selected one is already explored!Come back to second best position from the previous position"<< endl;
+			    cout << "[BT1 - Tabulist]There are visible cells but the selected one is already explored!Come back to second best position from the previous position"<< endl;
 			    cleanPossibleDestination2(nearCandidates,target);
 			    record = function.evaluateFrontiers(nearCandidates,map,threshold);
 			    if(record->size() != 0){
 				std::pair<Pose,double> result = function.selectNewPose(record);
 				target = result.first;
 				tabuList.push_back(target);
-				
 				history.push_back(function.getEncodedKey(target,2));
 				count = count + 1;
-				//cout << "Graph dimension : " << graph2.size() << endl;
+				numConfiguration++;
+				cout << "Graph dimension : " << graph2.size() << endl;
 				btMode = true;
+				
 			    }else{
 				if(graph2.size() == 0 ) break;
 				string targetString = graph2.at(graph2.size()-1).first;
@@ -261,14 +262,15 @@ int main(int argc, char **argv) {
 				target = record->getPoseFromEncoding(targetString);
 			    }
 			}else{
+			    
 			    graph2.pop_back();
 			    string targetString = graph2.at(graph2.size()-1).first;
 			    target = record->getPoseFromEncoding(targetString);
 			    history.push_back(function.getEncodedKey(target,2));
-			    //cout << "[BT2 - Tabulist]There are visible cells but the selected one is already explored!Come back to two position ago"<< endl;
-			    //cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
+			    cout << "[BT2 - Tabulist]There are visible cells but the selected one is already explored!Come back to two position ago"<< endl;
+			    cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
 			    count = count + 1;
-			    //cout << "Graph dimension : " << graph2.size() << endl;
+			    cout << "Graph dimension : " << graph2.size() << endl;
 			}
 			
 		    }
@@ -290,11 +292,11 @@ int main(int argc, char **argv) {
 			
 			if(!target.isEqual(previous)){
 			    previous = target;
-			    //cout << "[BT3]There are no visible cells so come back to previous position in the graph structure" << endl;
+			    cout << "[BT3]There are no visible cells so come back to previous position in the graph structure" << endl;
 			    history.push_back(function.getEncodedKey(target,2));
-			    //cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
+			    cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
 			    count = count + 1;
-			    //cout << "Graph dimension : " << graph2.size() << endl;
+			    cout << "Graph dimension : " << graph2.size() << endl;
 			    
 			}else {
 			    
@@ -307,12 +309,12 @@ int main(int argc, char **argv) {
 			    
 			    target = record->getPoseFromEncoding(targetString);
 			    previous = target;
-			    //cout << "[BT5]There are no visible cells so come back to previous position" << endl;
-			    //cout << "[BT5]Cell already explored!Come back to previous position"<< endl;
+			    cout << "[BT5]There are no visible cells so come back to previous position" << endl;
+			    cout << "[BT5]Cell already explored!Come back to previous position"<< endl;
 			    history.push_back(function.getEncodedKey(target,2));
-			    //cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
+			    cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
 			    count = count + 1;
-			    //cout << "Graph dimension : " << graph2.size() << endl;
+			    cout << "Graph dimension : " << graph2.size() << endl;
 			}
 		
 		}
@@ -337,27 +339,41 @@ int main(int argc, char **argv) {
 	    double FOV = target.getFOV();
 	    string actualPose = function.getEncodedKey(target,0);
 	    map.setCurrentPose(target);
-	    travelledDistance = travelledDistance + target.getDistance(previous);
+	     //NOTE; calculate path and turnings between actual position and goal
+	    string path = astar.pathFind(target.getX(),target.getY(),previous.getX(),previous.getY(),map);
+	    travelledDistance = travelledDistance + astar.lenghtPath(path);
+	    numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
+	    //----------------------------------------------------------------- 
 	    string encoding = to_string(target.getX()) + to_string(target.getY());
 	    visitedCell.emplace(encoding,0);
-	    
-	    
-	    
+	    previous = target;
+	   
 	    cout << "-----------------------------------------------------------------"<<endl;
 	    cout << "|||| BT MODE ||||"<< endl;
 	    cout << "Round : " << count<< endl;
-	    newSensedCells = sensedCells + ray.getInformationGain(map,x,y,orientation,FOV,range);
 	    cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
-
+	    newSensedCells = sensedCells + ray.performSensingOperation(map,x,y,orientation,FOV,range, target.getScanAngles().first, target.getScanAngles().second);
+	    target.setScanAngles(ray.getSensingTime(map,x,y,orientation,FOV,range));
+	    cout << "MinPhi: " << target.getScanAngles().first << " MaxPhi: " << target.getScanAngles().second << endl;
+	    
+	    double scanAngle = target.getScanAngles().second - target.getScanAngles().first;
+	    totalAngle += scanAngle;
+	    totalScanTime += calculateScanTime(scanAngle*180/PI);
+	    map.updatePathPlanningGrid(x, y, range);
+	    //ray.findCandidatePositions(map,x,y,orientation,FOV,range);
+	    //vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
+	    //ray.emptyCandidatePositions();
+	    
+	    cleanPossibleDestination2(nearCandidates,target);
+	    cout << "nearCandidates dimensions before choosing : " << nearCandidates.size() << endl;                                                                                       
 	    EvaluationRecords *record = function.evaluateFrontiers(nearCandidates,map,threshold);
-	    cout << "Evaluation Record obtained" << endl;
-	    cout << "nearCandidates dimensions before choosing : " << nearCandidates.size() << endl;
+	    cout << "Evaluation Record obtained with dimension :" << record->size() << endl;
+	    
 	    if(record->size() != 0){
 		
 		//NOTE: TAKE THIS BRANCH IF THERE ARE CANDIDATE POSITION
 		//set the previous pose equal to the actual one(actually represented by target)
-		previous = target;
-		cleanPossibleDestination2(nearCandidates,target);
+		
 		std::pair<Pose,double> result = function.selectNewPose(record);
 		target = result.first;
 		if (contains(tabuList,target) == false){
@@ -369,15 +385,17 @@ int main(int argc, char **argv) {
 		    cleanPossibleDestination2(nearCandidates,target);
 		    std::pair<string,list<Pose>> pair = make_pair(actualPose,nearCandidates);
 		    btMode = false;
+		    nearCandidates.clear();
 		    cout << "[BT-MODE4] Go back to previous positions in the graph" << endl;
 		}else{
 		    if(nearCandidates.size() != 0){
 			cout << "[BT-MODE1]Already visited" << endl;
 			count = count + 1;
+			cleanPossibleDestination2(nearCandidates,target);
 			EvaluationRecords *record = function.evaluateFrontiers(nearCandidates,map,threshold);
-			previous = target;
 			std::pair<Pose,double> result = function.selectNewPose(record);
 			target = result.first;
+			numConfiguration++;
 			tabuList.push_back(target);
 			cout << "nearCandidates dimensions after choosing : " << nearCandidates.size() << endl;
 
@@ -386,19 +404,20 @@ int main(int argc, char **argv) {
 			string targetString = graph2.at(graph2.size()-1).first;
 			graph2.pop_back();
 			target = record->getPoseFromEncoding(targetString);
-			previous = target;
+			tabuList.push_back(target);
+			count++;
+			numConfiguration++;
 			history.push_back(function.getEncodedKey(target,2));
 			cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
-			count = count + 1;
 			btMode = false;
-			
+			nearCandidates.clear();
 		    }
 		}
 	    }else{
 		string targetString = graph2.at(graph2.size()-1).first;
 		graph2.pop_back();
 		target = record->getPoseFromEncoding(targetString);
-		previous = target;
+		tabuList.push_back(target);
 		history.push_back(function.getEncodedKey(target,2));
 		cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
 		count = count + 1;
@@ -406,6 +425,8 @@ int main(int argc, char **argv) {
 		cout << "[BT-MODE3] Go back to previous positions in the graph" << endl;
 	    }
 	    delete record;
+	    sensedCells = newSensedCells;
+		
 	}
 	
     }
