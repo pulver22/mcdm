@@ -43,7 +43,10 @@ void Map::createMap(std::ifstream& infile)
     
     for(int i = 0; i < numRows*numCols; ++i){
       infile >> temp;
-      map.push_back(temp*255);
+      if(temp == 1)
+	map.push_back(0);
+      if(temp == 0)
+	map.push_back(255);
     }
 
     }else{
