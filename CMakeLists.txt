@@ -14,7 +14,7 @@ Criteria/informationgaincriterion.cpp Criteria/informationgaincriterion.h Criter
 Criteria/weightmatrix.h Criteria/criterioncomparator.h Criteria/criterioncomparator.cpp 
 Criteria/criterion.h Criteria/criterion.cpp  )
 
-add_executable(mcdm_online_exploration main.cpp) 
+add_executable(mcdm_online_exploration main_new.cpp) 
 target_link_libraries(mcdm_online_exploration lib  -lboost_unit_test_framework)
 
 install(TARGETS mcdm_online_exploration RUNTIME DESTINATION bin)
