@@ -175,11 +175,11 @@ void Map::createGrid(double resolution)
 void Map::createNewMap()
 {
     //cout << "ciao" << endl;
-    std::ofstream imgNew("/home/pulver/Desktop/test.pgm", ios::out);
+    std::ofstream imgNew("/home/pulver/Desktop/MCDM_Results/test.pgm", ios::out);
     
     //imgNew << "h"<<endl;
     
-    std::ofstream txt("/home/pulver/Desktop/freeCell.txt");
+    std::ofstream txt("/home/pulver/Desktop/MCDM_Results/freeCell.txt");
     long columns = numGridCols;
     long rows = numGridRows;
     
@@ -415,7 +415,7 @@ void Map::decreaseFreeCells(){
 
 void Map::drawVisitedCells(unordered_map<string,int>& visitedCells,int resolution)
 {
-    std::ofstream resultMap("/home/pulver/Desktop/result.pgm", ios::out);
+    std::ofstream resultMap("/home/pulver/Desktop/MCDM_Results/result.pgm", ios::out);
     long columns = numGridCols;
     long rows = numGridRows;
     
@@ -445,7 +445,7 @@ void Map::drawVisitedCells(unordered_map<string,int>& visitedCells,int resolutio
 
 void Map::printVisitedCells(vector< string >& history)
 {
-    std::ofstream txt("/home/pulver/Desktop/finalResult.txt");
+    std::ofstream txt("/home/pulver/Desktop/MCDM_Results/finalResult.txt");
     for (int i =0 ; i < history.size(); i++){
 	string encoding = history.at(i);
 	string s ;
