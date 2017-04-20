@@ -15,8 +15,8 @@ find_package(Boost REQUIRED)
 add_library(lib pose.cpp PathFinding/astar.cpp PathFinding/node.cpp map.cpp newray.cpp mcdmfunction.cpp
 map.cpp evaluationrecords.cpp Criteria/sensingtimecriterion.cpp Criteria/informationgaincriterion.cpp Criteria/mcdmweightreader.cpp Criteria/traveldistancecriterion.cpp Criteria/weightmatrix.cpp Criteria/criterioncomparator.cpp Criteria/criterion.cpp  )
 
-#Find all the libraries and link them to the executable (for qtcreator)
-FILE(GLOB_RECURSE HEADER_FILES include *.h)
+#Find all the files link them to the executable (for qtcreator)
+FILE(GLOB_RECURSE HEADER_FILES include *.h *.cpp)
 add_executable(mcdm_online_exploration main_new.cpp  ${HEADER_FILES})
 
 target_link_libraries(mcdm_online_exploration lib  -lboost_unit_test_framework)
