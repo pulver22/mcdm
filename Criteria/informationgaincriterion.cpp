@@ -1,5 +1,5 @@
-#include "informationgaincriterion.h"
-#include "criteriaName.h"
+#include "Criteria/informationgaincriterion.h"
+#include "Criteria/criteriaName.h"
 #include <math.h>
 #include "newray.h"
 using namespace dummy;

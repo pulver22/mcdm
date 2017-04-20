@@ -1,7 +1,7 @@
-#include "weightmatrix.h"
+#include "Criteria/weightmatrix.h"
 #include <iostream>
 #include <sstream>
-#include "criteriaName.h"
+#include "Criteria/criteriaName.h"
 
 using namespace std;
 /* mapping contains the criterion's name and his encoding

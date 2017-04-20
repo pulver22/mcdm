@@ -15,8 +15,8 @@
  * 
  */
 
-#include "sensingtimecriterion.h"
-#include "criteriaName.h"
+#include "Criteria/sensingtimecriterion.h"
+#include "Criteria/criteriaName.h"
 #include "newray.h"
 # define PI           3.14159265358979323846  /* pi */
 #include <iostream>

@@ -15,7 +15,7 @@
  * 
  */
 
-#include "criterion.h"
+#include "Criteria/criterion.h"
 #include "evaluationrecords.h"
 
 

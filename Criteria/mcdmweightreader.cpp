@@ -1,7 +1,7 @@
-#include "mcdmweightreader.h"
+#include "Criteria/mcdmweightreader.h"
 #include <list>
 #include <string.h>
-#include "criteriaName.h"
+#include "Criteria/criteriaName.h"
 
 using namespace std;
 

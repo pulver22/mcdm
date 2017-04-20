@@ -1,4 +1,4 @@
-#include "node.h"
+#include "PathFinding/node.h"
 #include <math.h>
 #include <iostream>
 #include <iomanip>

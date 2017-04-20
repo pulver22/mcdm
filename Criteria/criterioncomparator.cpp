@@ -1,4 +1,4 @@
-#include "criterioncomparator.h"
+#include "Criteria/criterioncomparator.h"
 
 
 CriterionComparator::CriterionComparator(Pose &p) :

@@ -15,8 +15,8 @@
  * 
  */
 
-#include "traveldistancecriterion.h"
-#include "criteriaName.h"
+#include "Criteria/traveldistancecriterion.h"
+#include "Criteria/criteriaName.h"
 #include <iostream>
 #include "PathFinding/astar.h"
 
