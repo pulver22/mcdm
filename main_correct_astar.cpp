@@ -246,13 +246,13 @@ int main ( int argc, char **argv )
                   Pose p7 = Pose ( ( *it ).first, ( *it ).second,270,range,FOV );
                   Pose p8 = Pose ( ( *it ).first, ( *it ).second,315,range,FOV );
                   frontiers.push_back ( p1 );
-                  //frontiers.push_back(p2);
+                  frontiers.push_back(p2);
                   frontiers.push_back ( p3 );
-                  //frontiers.push_back(p4);
+                  frontiers.push_back(p4);
                   frontiers.push_back ( p5 );
-                  //frontiers.push_back(p6);
+                  frontiers.push_back(p6);
                   frontiers.push_back ( p7 );
-                  //frontiers.push_back(p8);
+                  frontiers.push_back(p8);
 
                 }
 

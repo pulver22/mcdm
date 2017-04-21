@@ -19,4 +19,11 @@
 #Map_2_3 (cor_02m)
 ./mcdm_online_exploration /home/pulver/Dropbox/Università/Laurea\ Magistrale/Thesis/Images/map_2_3.pgm 1 14 16 180 15 180 1 0.01 1
 
-./../Images/cor_map_05_00_new1.pgm 1 99 99 180 15 180 1 0 1
+
+#Final Tests for paper
+./mcdm_online_exploration ./../Images/cor_map_05_00_new1.pgm 1 99 99 180 15 180 1 0 1
+
+./mcdm_online_exploration ./../Images/map4_friburg.pgm 1 75 5 180 15 180 1 0 1
+
+./mcdm_online_exploration ./../Images/cor_test.pgm 1 99 99 180 10 180 1 0 1
+
