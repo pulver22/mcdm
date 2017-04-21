@@ -63,8 +63,8 @@ double SensingTimeCriterion::SensingTimeCriterion::evaluate(Pose &p,dummy::Map &
     //std::cout << "minPhi " << p.getScanAngles().first << " maxPhi " << p.getScanAngles().second << std::endl;
     
     
-    if(minPhi - startingPhi <= endingPhi - maxPhi) angle = (endingPhi - startingPhi - 2*(minPhi - startingPhi));
-	else angle = (endingPhi - startingPhi - 2*(endingPhi - maxPhi));
+    //if(minPhi - startingPhi <= endingPhi - maxPhi) angle = (endingPhi - startingPhi - 2*(minPhi - startingPhi));
+  //else angle = (endingPhi - startingPhi - 2*(endingPhi - maxPhi));
 	
 	/*
 	angle = (angle*180)/PI;
@@ -82,6 +82,13 @@ double SensingTimeCriterion::SensingTimeCriterion::evaluate(Pose &p,dummy::Map &
     }
     
     */
+
+    //New mofidication to have angle in [0, 3.14]
+    angle = maxPhi - minPhi;
+    double degreeAngle = angle*180/PI;
+    double expected_time = -7.2847174296449998e-006*degreeAngle*degreeAngle*degreeAngle + 2.2131847908245512e-003*degreeAngle*degreeAngle + 1.5987873410233613e-001*degreeAngle + 10;
+    //cout << "x: " << p.getY() << " y: " << p.getX() << " orientation: " << p.getOrientation() << " angle: " << angle << endl;
+
     Criterion::insertEvaluation(p,angle);
     return angle;
 }

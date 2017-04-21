@@ -1,0 +1,22 @@
+#frieburg_final
+./mcdm_online_exploration /home/pulver/Dropbox/Università/Laurea\ Magistrale/Thesis/Images/map4_friburg.pgm 1 75 5 180 15 180 1 0.01 1
+
+#frieburg_1m2
+./mcdm_online_exploration /home/pulver/Dropbox/Università/Laurea\ Magistrale/Thesis/Images/map_RiccardoFreiburg_1m2.pgm 1 75 5 180 30 180 1 0 1
+
+#frieburg_05m
+./mcdm_online_exploration /home/pulver/Dropbox/Università/Laurea\ Magistrale/Thesis/Images/map_RiccardoFreiburg_05m.pgm 1 120 15 180 30 180 1 0 0.5
+
+#cor_05m
+./mcdm_online_exploration /home/pulver/Desktop/husky_maps/cor_map_05_00.pgm 1 60 138 180 75 180 1 0.01 1
+
+#cor_1m
+./mcdm_online_exploration /home/pulver/Dropbox/Università/Laurea\ Magistrale/Thesis/Images/cor_1m.pgm 1 47 50 180 15 180 1 0.01 1
+
+#Map_2_2 (cor_02m)
+./mcdm_online_exploration /home/pulver/Dropbox/Università/Laurea\ Magistrale/Thesis/Images/map_2.pgm 0.5 136 168 180 15 180 1 0.01 0.5
+
+#Map_2_3 (cor_02m)
+./mcdm_online_exploration /home/pulver/Dropbox/Università/Laurea\ Magistrale/Thesis/Images/map_2_3.pgm 1 14 16 180 15 180 1 0.01 1
+
+./../Images/cor_map_05_00_new1.pgm 1 99 99 180 15 180 1 0 1
