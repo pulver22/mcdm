@@ -1,0 +1,4 @@
+[Project]
+Name=mcdm_online_exploration_ros
+Manager=KDevCMakeManager
+VersionControl=kdevgit

@@ -226,10 +226,6 @@ int main ( int argc, char **argv )
             numOfTurning = numOfTurning + astar.getNumberOfTurning ( path );
             //cout << astar.lenghtPath ( path ) << endl;
           }
-
-          history_counter++;
-
-
           cout << "History counter: " << history_counter << endl;
           cout << "Travelled distance calculated from the history: " << travelledDistance << endl;
 
@@ -357,6 +353,7 @@ int main ( int argc, char **argv )
                 std::pair<Pose,double> result = function.selectNewPose ( record );
                 target = result.first;
                 tabuList.push_back ( target );
+                history.push_back ( function.getEncodedKey ( target,1 ) );
                 cout << function.getEncodedKey ( target,1 ) << endl;
                 string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
                 travelledDistance = travelledDistance + astar.lenghtPath(path);
@@ -366,7 +363,7 @@ int main ( int argc, char **argv )
 
                 totalAngle += scanAngle;
 
-                history.push_back ( function.getEncodedKey ( target,2 ) );
+
                 count = count + 1;
                 // 				numConfiguration++;
                 // 				cout << "AAAAA" << endl;
@@ -547,6 +544,7 @@ int main ( int argc, char **argv )
             target = result.first;
             // 			numConfiguration++;
             tabuList.push_back ( target );
+            // history.push_back ( function.getEncodedKey ( target,1 ) );  // added recently but it was not here
             cout<< function.getEncodedKey ( target,1 ) << endl;
             string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
             cout << "BT :"<<astar.lenghtPath ( path ) << endl;
@@ -567,6 +565,7 @@ int main ( int argc, char **argv )
             graph2.pop_back();
             target = record->getPoseFromEncoding ( targetString );
             tabuList.push_back ( target );
+            history.push_back ( function.getEncodedKey ( target,2 ) );
             //cout<< function.getEncodedKey ( target,1 ) << endl;
             string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
             cout <<"BT: "<< astar.lenghtPath ( path ) << endl;
@@ -578,7 +577,7 @@ int main ( int argc, char **argv )
 
             count++;
             // 			numConfiguration++;
-            history.push_back ( function.getEncodedKey ( target,2 ) );
+
             // 			cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
             btMode = false;
             nearCandidates.clear();
@@ -591,17 +590,16 @@ int main ( int argc, char **argv )
         graph2.pop_back();
         target = record->getPoseFromEncoding ( targetString );
         tabuList.push_back ( target );
-
+        history.push_back ( function.getEncodedKey ( target,2 ) );
         string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
         cout <<"BT:"<< astar.lenghtPath ( path ) << endl;
         //cout<< function.getEncodedKey ( target,1 ) << endl;
         travelledDistance = travelledDistance + astar.lenghtPath(path);
         numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
         numConfiguration++;
-
         totalAngle += scanAngle;
 
-        history.push_back ( function.getEncodedKey ( target,2 ) );
+
         // 		cout << "New target: x = " << target.getY() << ",y = " << target.getX() <<", orientation = " << target.getOrientation() << endl;
         count = count + 1;
         btMode = false;
@@ -611,7 +609,6 @@ int main ( int argc, char **argv )
       // 	    sensedCells = newSensedCells;
 
     }
-
   }
   while ( sensedCells < precision * totalFreeCells );
   map.drawVisitedCells ( visitedCell,resolution );
@@ -641,16 +638,13 @@ int main ( int argc, char **argv )
 
   for ( p1_history; p1_history!= prev ( tmp_history.end(),1 ); p1_history++ )
   {
-    cout << function.getEncodedKey(*p1_history,1) << endl; // print cell in the tabulist
+    //cout << function.getEncodedKey(*p1_history,1) << endl; // print cell in the tabulist
     list<Pose>::iterator p2_history = next ( p1_history,1 );
     string path = astar.pathFind ( ( *p2_history ).getX(), ( *p2_history ).getY(), ( *p1_history ).getX(), ( *p1_history ).getY(),map );
     travelledDistance = travelledDistance + astar.lenghtPath ( path );
     numOfTurning = numOfTurning + astar.getNumberOfTurning ( path );
     //cout << astar.lenghtPath ( path ) << endl;
   }
-
-  history_counter++;
-
 
   cout << "History counter: " << history_counter << endl;
   cout << "Travelled distance calculated from the history: " << travelledDistance << endl;
@@ -661,15 +655,16 @@ int main ( int argc, char **argv )
   list<Pose>::iterator it = tabuList.begin();
   for ( it; it!= prev ( tabuList.end(),1 ); it++ )
   {
-    cout << function.getEncodedKey(*it,1) << endl; // print cell in the tabulist
+    //cout << function.getEncodedKey(*it,1) << endl; // print cell in the tabulist
     std::list<Pose>::iterator it2 = next ( it,1 );
     string path = astar.pathFind ( ( *it2 ).getX(), ( *it2 ).getY(), ( *it ).getX(), ( *it ).getY(),map );
     travelledDistance = travelledDistance + astar.lenghtPath ( path );
     numOfTurning = numOfTurning + astar.getNumberOfTurning ( path );
     //cout << astar.lenghtPath ( path ) << endl;
   }
-  cout << function.getEncodedKey(*prev(tabuList.end()),1) << endl;  // pribt last item of tabulist
+  //cout << function.getEncodedKey(*prev(tabuList.end()),1) << endl;  // pribt last item of tabulist
   numConfiguration = tabuList.size();
+  cout << "Tabulist counter: "<< numConfiguration << endl;
   cout << "Travelled distance calculated from the tabulist: " << travelledDistance << endl;
 
   if ( imgresolution == 1.0 )
