@@ -6,5 +6,5 @@ CXX_FLAGS = -std=c++0x  -O3 -g  -ftest-coverage -fprofile-arcs
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/pulver/projects/mcdm_online_exploration/include 
+CXX_INCLUDES = -I/home/pulver/mcdm_online_exploration/include 
 

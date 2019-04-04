@@ -8,63 +8,63 @@
       <Option virtualFolders="CMake Files\;" />
       <Build>
       <Target title="all">
-         <Option working_dir="/home/pulver/projects/mcdm_online_exploration/build" />
+         <Option working_dir="/home/pulver/mcdm_online_exploration/build" />
          <Option type="4" />
          <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 all" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
+            <Build command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 all" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
          </MakeCommands>
       </Target>
       <Target title="install">
-         <Option working_dir="/home/pulver/projects/mcdm_online_exploration/build" />
+         <Option working_dir="/home/pulver/mcdm_online_exploration/build" />
          <Option type="4" />
          <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 install" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
+            <Build command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 install" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
          </MakeCommands>
       </Target>
       <Target title="list_install_components">
-         <Option working_dir="/home/pulver/projects/mcdm_online_exploration/build" />
+         <Option working_dir="/home/pulver/mcdm_online_exploration/build" />
          <Option type="4" />
          <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 list_install_components" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
+            <Build command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 list_install_components" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
          </MakeCommands>
       </Target>
       <Target title="rebuild_cache">
-         <Option working_dir="/home/pulver/projects/mcdm_online_exploration/build" />
+         <Option working_dir="/home/pulver/mcdm_online_exploration/build" />
          <Option type="4" />
          <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 rebuild_cache" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
+            <Build command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 rebuild_cache" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
          </MakeCommands>
       </Target>
       <Target title="edit_cache">
-         <Option working_dir="/home/pulver/projects/mcdm_online_exploration/build" />
+         <Option working_dir="/home/pulver/mcdm_online_exploration/build" />
          <Option type="4" />
          <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 edit_cache" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
+            <Build command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 edit_cache" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
          </MakeCommands>
       </Target>
       <Target title="lib">
-         <Option output="/home/pulver/projects/mcdm_online_exploration/build/liblib.a" prefix_auto="0" extension_auto="0" />
-         <Option working_dir="/home/pulver/projects/mcdm_online_exploration/build" />
+         <Option output="/home/pulver/mcdm_online_exploration/build/liblib.a" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/pulver/mcdm_online_exploration/build" />
          <Option object_output="./" />
          <Option type="2" />
          <Option compiler="gcc" />
          <Compiler>
-            <Add directory="/home/pulver/projects/mcdm_online_exploration/include" />
+            <Add directory="/home/pulver/mcdm_online_exploration/include" />
             <Add directory="/usr/include" />
             <Add directory="/usr/include/c++/5" />
             <Add directory="/usr/include/c++/5/backward" />
@@ -75,20 +75,20 @@
             <Add directory="/usr/local/include" />
          </Compiler>
          <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 lib" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
+            <Build command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 lib" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
          </MakeCommands>
       </Target>
       <Target title="lib/fast">
-         <Option output="/home/pulver/projects/mcdm_online_exploration/build/liblib.a" prefix_auto="0" extension_auto="0" />
-         <Option working_dir="/home/pulver/projects/mcdm_online_exploration/build" />
+         <Option output="/home/pulver/mcdm_online_exploration/build/liblib.a" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/pulver/mcdm_online_exploration/build" />
          <Option object_output="./" />
          <Option type="2" />
          <Option compiler="gcc" />
          <Compiler>
-            <Add directory="/home/pulver/projects/mcdm_online_exploration/include" />
+            <Add directory="/home/pulver/mcdm_online_exploration/include" />
             <Add directory="/usr/include" />
             <Add directory="/usr/include/c++/5" />
             <Add directory="/usr/include/c++/5/backward" />
@@ -99,20 +99,20 @@
             <Add directory="/usr/local/include" />
          </Compiler>
          <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 lib/fast" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
+            <Build command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 lib/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
          </MakeCommands>
       </Target>
       <Target title="mcdm_online_exploration">
-         <Option output="/home/pulver/projects/mcdm_online_exploration/build/mcdm_online_exploration" prefix_auto="0" extension_auto="0" />
-         <Option working_dir="/home/pulver/projects/mcdm_online_exploration/build" />
+         <Option output="/home/pulver/mcdm_online_exploration/build/mcdm_online_exploration" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/pulver/mcdm_online_exploration/build" />
          <Option object_output="./" />
          <Option type="1" />
          <Option compiler="gcc" />
          <Compiler>
-            <Add directory="/home/pulver/projects/mcdm_online_exploration/include" />
+            <Add directory="/home/pulver/mcdm_online_exploration/include" />
             <Add directory="/usr/include" />
             <Add directory="/usr/include/c++/5" />
             <Add directory="/usr/include/c++/5/backward" />
@@ -123,20 +123,20 @@
             <Add directory="/usr/local/include" />
          </Compiler>
          <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 mcdm_online_exploration" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
+            <Build command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 mcdm_online_exploration" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
          </MakeCommands>
       </Target>
       <Target title="mcdm_online_exploration/fast">
-         <Option output="/home/pulver/projects/mcdm_online_exploration/build/mcdm_online_exploration" prefix_auto="0" extension_auto="0" />
-         <Option working_dir="/home/pulver/projects/mcdm_online_exploration/build" />
+         <Option output="/home/pulver/mcdm_online_exploration/build/mcdm_online_exploration" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/pulver/mcdm_online_exploration/build" />
          <Option object_output="./" />
          <Option type="1" />
          <Option compiler="gcc" />
          <Compiler>
-            <Add directory="/home/pulver/projects/mcdm_online_exploration/include" />
+            <Add directory="/home/pulver/mcdm_online_exploration/include" />
             <Add directory="/usr/include" />
             <Add directory="/usr/include/c++/5" />
             <Add directory="/usr/include/c++/5/backward" />
@@ -147,1387 +147,388 @@
             <Add directory="/usr/local/include" />
          </Compiler>
          <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 mcdm_online_exploration/fast" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
+            <Build command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 mcdm_online_exploration/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
          </MakeCommands>
       </Target>
       <Target title="dummy_mcdm_online_exploration">
-         <Option working_dir="/home/pulver/projects/mcdm_online_exploration/build" />
+         <Option working_dir="/home/pulver/mcdm_online_exploration/build" />
          <Option type="4" />
          <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 dummy_mcdm_online_exploration" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
+            <Build command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 dummy_mcdm_online_exploration" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
          </MakeCommands>
       </Target>
       <Target title="install/local">
-         <Option working_dir="/home/pulver/projects/mcdm_online_exploration/build" />
+         <Option working_dir="/home/pulver/mcdm_online_exploration/build" />
          <Option type="4" />
          <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 install/local" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
+            <Build command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 install/local" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
          </MakeCommands>
       </Target>
       <Target title="install/strip">
-         <Option working_dir="/home/pulver/projects/mcdm_online_exploration/build" />
+         <Option working_dir="/home/pulver/mcdm_online_exploration/build" />
          <Option type="4" />
          <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 install/strip" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/pulver/projects/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
+            <Build command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 install/strip" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/pulver/mcdm_online_exploration/build/Makefile&quot;  VERBOSE=1 clean" />
          </MakeCommands>
       </Target>
       </Build>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/COMMIT_EDITMSG">
+      <Unit filename="/home/pulver/mcdm_online_exploration/.git/HEAD">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/HEAD">
+      <Unit filename="/home/pulver/mcdm_online_exploration/.git/config">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/config">
+      <Unit filename="/home/pulver/mcdm_online_exploration/.git/description">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/description">
+      <Unit filename="/home/pulver/mcdm_online_exploration/.git/hooks/applypatch-msg.sample">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/hooks/applypatch-msg.sample">
+      <Unit filename="/home/pulver/mcdm_online_exploration/.git/hooks/commit-msg.sample">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/hooks/commit-msg.sample">
+      <Unit filename="/home/pulver/mcdm_online_exploration/.git/hooks/post-update.sample">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/hooks/post-update.sample">
+      <Unit filename="/home/pulver/mcdm_online_exploration/.git/hooks/pre-applypatch.sample">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/hooks/pre-applypatch.sample">
+      <Unit filename="/home/pulver/mcdm_online_exploration/.git/hooks/pre-commit.sample">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/hooks/pre-commit.sample">
+      <Unit filename="/home/pulver/mcdm_online_exploration/.git/hooks/pre-push.sample">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/hooks/pre-push.sample">
+      <Unit filename="/home/pulver/mcdm_online_exploration/.git/hooks/pre-rebase.sample">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/hooks/pre-rebase.sample">
+      <Unit filename="/home/pulver/mcdm_online_exploration/.git/hooks/prepare-commit-msg.sample">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/hooks/prepare-commit-msg.sample">
+      <Unit filename="/home/pulver/mcdm_online_exploration/.git/hooks/update.sample">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/hooks/update.sample">
+      <Unit filename="/home/pulver/mcdm_online_exploration/.git/index">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/index">
+      <Unit filename="/home/pulver/mcdm_online_exploration/.git/info/exclude">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/info/exclude">
+      <Unit filename="/home/pulver/mcdm_online_exploration/.git/logs/HEAD">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/logs/HEAD">
+      <Unit filename="/home/pulver/mcdm_online_exploration/.git/logs/refs/heads/master">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/logs/refs/heads/master">
+      <Unit filename="/home/pulver/mcdm_online_exploration/.git/logs/refs/remotes/origin/HEAD">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/logs/refs/remotes/origin/HEAD">
+      <Unit filename="/home/pulver/mcdm_online_exploration/.git/objects/pack/pack-08a7e22807d67878c9f1d325c661188938e1e36e.idx">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/logs/refs/remotes/origin/master">
+      <Unit filename="/home/pulver/mcdm_online_exploration/.git/objects/pack/pack-08a7e22807d67878c9f1d325c661188938e1e36e.pack">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/03/7ca61f3ec582891424506b539440f0764edfee">
+      <Unit filename="/home/pulver/mcdm_online_exploration/.git/packed-refs">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/04/d5e51f97e2f867396dccad00574b06d2f94b7a">
+      <Unit filename="/home/pulver/mcdm_online_exploration/.git/refs/heads/master">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/05/3fa724dbb3f30523e103fc5968960c99497195">
+      <Unit filename="/home/pulver/mcdm_online_exploration/.git/refs/remotes/origin/HEAD">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/07/37fca393edd317102c54301abca37c3f834df7">
+      <Unit filename="/home/pulver/mcdm_online_exploration/.kdev4/mcdm_online_exploration_ros.kdev4">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/08/3d9e7fc017edc1ac72e19a348050fd5013a38f">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/08/459ac8889bfb18fb58ba3786f2b710e33d913c">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/0a/4f6d0fae5245ea44ae766825281866b6046294">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/0a/f90bb1f6c746f7c60706dc586f0371b18bd879">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/0c/cbb7c7bd2fcffee580ed97ffdbc6adf3591af4">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/0e/425a7dc9e38e3252049a49ccddd3ce2ebf270b">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/0e/8b64e4fa5d8c2c1770d335cbe9684312dabe68">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/0e/bdd6954f8d20d24c3125cc5287798a1549722a">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/0e/e20a2bd17ad79c7c7bf950fcbf7948dcbc3d03">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/0e/f5840e54b5ae19e1b9411dc2bf79c8aad4006d">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/10/2936601c8735bd2861ed0944d908ff472d7c69">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/11/02c15d7a929c716c16c2f29e8b948aa6960b07">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/11/4ad2597870a6d4563e587eea5a8b13eef04b3d">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/12/32bf6283a80ef0a45f1b6e62148077f05594be">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/12/a6b5947508579d649dccbf399b0755c0ce5169">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/12/f23753c8ed3bbcc45518c13d738b574de5ebbc">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/14/3216aea9481d2036bc9e04b87bea9cfd54d63e">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/14/86d3028c5620e8d26da8b74d582345b38d663f">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/14/9cdc325855f0de6b475b106a84d75d4652bdb7">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/15/329e0577de16dfcb67ffccef27496c04ee225a">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/17/abdcf12311d974d4153941cf92a1e441375cd8">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/19/fab2149bf120962a1699d74b7373348dc4c117">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/1a/5ac10870c2f2d2cb51b72a2cfdd6610293375d">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/1b/75685438c903b367be9c49262fcbc17beaf71b">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/1c/1d101442e379aba0af394ed5893fa52863dcde">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/1c/fa75d7d5cddc5800dfd00956a8a0dc116525c2">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/1d/443d544822656080b4608780e6d9ca74d732b3">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/1e/2e6a64a8bfee125b2a67966105e8f926f22886">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/20/1a586e141c83ec20be2e53d89be60ec9aa55a5">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/20/2740238fb8666a39e15089052aeb52c8cdb1e0">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/20/6c89eba0b842bcb2638de10f23d2db8ec88a57">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/20/aa5fe8a2604fd153276b458c580dcb06d22e0a">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/21/aa42cdc48126cb5f09f540bd04f49cddfcf5b3">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/22/0bb5eca9dd239cc6820e4cbffaf705002a8fe0">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/23/6fd348d4e5a9774e6ddec7eae8d84527100a3d">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/27/50b5022ca97c39435f5f284ecfa1fb2acaf948">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/29/4de62f3827e5de4d8254d378a0df92bbd6e336">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/2a/08ef7c0699e93cefb02f998415b5b9394f6cda">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/2a/7623b81fdc75e44d4622be7cbd80e4305ee41f">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/2b/95db222c7f6c5e7347c3a30c32f551cfe72e81">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/2d/752e2c842dc7f3bd1040153438161124232c38">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/2d/b962c13fdd1576bfc510de98e2970284ed28a6">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/2e/2e01811adefaed2541cca58f38230853863227">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/2e/f6bdbc802cc521531556c02e60d03779104b83">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/33/fd98228602b40fb038d7ae84e5af76a526c1cf">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/36/717ee767fc534a6e811316e18a21ac2c9edaee">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/36/b32ecbc9b37368bb674d014e8c41f4086203a7">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/36/cc3f20a07d11cabd259015cd641831b0679e06">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/37/7ecd9ac7f5b255c84c8a60609016c65f7d53e7">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/38/2cea53e54cce508209c846bb75a240fe3d38ec">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/38/4abb10ecdd66daa8b6c7f4eaa2a81f1ec14b79">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/3b/0b4adce52c7ece2f1bb1bf21cc73fae3238fc2">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/3b/3d9dd5078d25e11bd35e2f740ac72d1720dedc">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/3d/0bf1f1aad9333e922362f599fe1ad5dddb0421">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/3d/4360b7df947d9a6436552952f3cf5095fd886b">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/3e/1ccf3308436239db7ae8ef6c867a3424d70b96">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/3e/8332d9687df0ddafb857e9ca0d2e106963b83f">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/3e/a3ce840e97d48b2335702315a7ba70b9e0e2f5">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/3f/4a5fdff14c6576574c3342e48be1e52b7a9db2">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/3f/cb32e65d66b056d34563fa534614b36ecf281a">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/40/ae60e3a9e9a1807d979c62f068957d6e7d8498">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/43/570d21dcaeb9ef4dedf4d2e0cfff4394fe3e02">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/44/585e3ebea6fa6a3b556aadcc5140342a43965b">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/45/e7ea2066891d7d0ddba3c3c1b1bb9a99ec7695">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/45/f9916c52b5ae0e261874f583181bb0a030f646">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/46/21ea11fe8a723f14fa1b08c22642c363354936">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/46/7ad56c21df528c7af6f45d45b4954cef4fd8ca">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/48/2a8872589ebb590740b199285be817eb9f3aa8">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/48/9ad2930b08ec500f0af80af4e25d0b7e22a64d">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/4b/b108da16d92b79c2517f3726b36bc057922ee0">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/4c/21bfd4270d86ec8e77e4c61e2565792edf1f3b">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/4c/5b3641afc2613da6573f1e5b55094363efbb23">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/4d/bc2d1486af509fb6b9db5a7ee95c3a6d44bb91">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/4e/5e66cd70433c0f6bfda1a094adf8f147a3ec4b">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/4f/441455c3b15598ba5f630d69faefe8bc7f493b">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/4f/577956575bdca461561e1e40c1d996694b6cdf">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/50/8c7f398514c94a7f5a9eb1fe31d075377846cf">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/53/79f570968893caaa0dde309ad44b3c3a1088b1">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/57/0a15e994e4f10ca4a05b4451ea350fb942337f">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/57/1098d2c2c89f38927537dec6a43407e7b1fb31">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/5a/2c5975f6c0e82960d9e943cc4596fe9c667107">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/5a/e4e55a5cb1e930f7f3b4b4bd4f3815653f873a">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/5b/324c22cffc9eff96969880e506f7fa9bb2de43">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/5b/f29bdb8f44ea4acd60b18f095536c10499d1c6">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/5c/93950aef18bbaeb1d1f4306f470ef56305a3df">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/5c/d40634567839f49b6c0ac1f48a5c33570e5f5f">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/5e/bd7c3e3095d520bb6d8ee1fe4c33c31038d408">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/5e/ffc1f7bbcce94b0a88faaf7a8d3856d5727284">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/5f/780e193480fb39722bd6610507b3397be30f7d">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/61/ed467f7bb4ed5ff274a5a691858801519b5c89">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/65/90dded2342f3eebd9b81505327e84a488580e6">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/66/f9a55b4b11da09acc19336d8bd741c3a58dec1">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/67/61bc162d873f0ec9a4c4662a416eac73bf8f84">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/67/65b43cee6ce00ad372ab1cb16b582b45fb829a">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/69/8b1a0b93a25ad3026cc910dfff9c19472e2d9c">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/6c/1e6da15a8b0eae39803d2e3eac0de4d62d15a8">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/6c/dd892fc2036bd51a5c37a25a92b00bf6f4e9e7">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/6c/ede0046d48499cdef4df70ae4a293d60139560">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/6c/f4f42ed486d1202fac671aa27953209a038b8e">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/6f/35d9d44f27cdf49ffffc1822c5f62bfa7db79d">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/70/30579635854d11a07962a7ce203c794df1fb8d">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/70/d51629d787ded5b512f9105ab00c748018b59d">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/73/5bc5e584d7e5c70928dfe672ffa71888f2172a">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/74/49df2873e83f1efb96bd97ad3edf8a89fedd03">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/76/e5abf9fb5ed012e494ad5902ee7d0c36376f8d">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/7a/2177bc589cbbe9e0cdd97d12b42084b0d0db25">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/7c/2da36c936bcce1b87416ded1a05b65f75cfd8f">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/7c/5e8a630e771174f99d6d9f63cedb43cc925a12">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/7e/66c8fe6b95b84af7fa018eb5eea8997e639b74">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/7e/90ed4fe8c31135933ae137f8b407dbc3780de2">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/80/66dae982fd57b9ffd1d9bc486a51c965b39e47">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/80/ca8adfb9bf6d47b2f56f0e3e7556af737dba42">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/83/06dcc63bb6ac78f0a907c4ef440522b74beabd">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/83/32cf475017efaa5e47bb5769c5320302e7db82">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/85/c9f18a370995767037e107ed0a02c609285bbe">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/87/6deaf23c4003b1e0a36c845bad8b6779bd28c3">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/88/5b46d0efdd0e69c650ff9c75bcfee4d0356312">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/8b/782c66f279f134e295f8b3ab42943f2188bb98">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/8e/d4fe58dca3ef0b182469ff35273e38cff388c3">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/90/3f18106227fae12980cf74cb1b6d43f407c731">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/90/666e0aedf980818df84babda903756391a947a">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/92/7723d464572f1d891aa97687e019f34ce2b1ca">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/92/e8477f1c2b180ac91e63664a82c5f0e7f32d1f">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/94/6a7111c4c98b2f0bf034f8912b6b962175c7ae">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/94/83f15d399651e83946cf8ea63ecbd226025ecb">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/96/4c51289efd09adc916e726356e8a96c88ed68c">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/96/873d529b0b07cf6b0c3f3cf1a09cbfaa663fa7">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/98/d9bcb75a685dfbfd60f611c309410152935b3d">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/9a/732145e7fb9c55077c3f90a671b1d04301d34c">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/9a/889617d94892691b6da89aa286bba80a2d9035">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/9a/8ff44eb3b4ce896e426af03c50f6669f94046b">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/9d/5fc76f069e0f5049288eec8c41754d0973b470">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/9e/389a98932b8e387624fa8b13d3c2671ff9f0e5">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/a0/695a9e4b8f429f07ec827904d3dc26eaffcf08">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/a0/fe44e74c71a8061fa3989a827364d29ecaa44d">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/a4/0e234799eabfe3065ede643959b56c7c658bf2">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/a4/d1baedffbe39942464afa3d4a0f2e114045f46">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/a6/09531c1faa60e573814619dbf1267a2f3c1024">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/a7/ee25654075c674009fa6f69873b4fcd2bc349d">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/aa/c846b73ffac45a073c59fbf8ef952e30b1ccbf">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/ab/3c8e36d1eed65848f48a97a334d104737f5b97">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/ad/32513dbb2e3b0e068c783c069f97556488c146">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/ae/2b0cac25e76fbef456bb4629801bfb1ae9c8f4">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/af/479cb880adef4760d53ce22f2525b4d6a7b16c">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/b0/2b525ff3198263a5158b8e27be36e7d58ffd18">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/b1/bcc208caf8595ad941b32d4108b79eab9b3966">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/b2/8f41f495daa46f52fe8658699d3c6dcdcdd733">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/b3/eabc0e10e5a783bfced50800c74262443ca7d3">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/b4/fe9fa74995c3938b024c33dd021295c4871b1e">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/b6/1f573414cb9498a1f9f371c11a49e089be4925">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/b7/ceccf4b8b2a7102fd2d40017dcf04cf7c24fa4">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/b8/02b84b2d787f256af48feb66969c9965527f73">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/b8/1d1cc0043e574e92ad75f595466bf9d73c7e6d">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/b8/c6dd21ac9de938f89df64043115409d9f36ad6">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/b9/3418c6ed69feaf1b5c2feb9592bbdb5a5f042c">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/b9/caff71e899f65626b048e3bc12275df8f8e08f">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/bc/9d2bdb00548b9e97438b44071c6146274095e2">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/bc/fa5f27482e43179039edc0c27b31b25f4582d5">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/c0/4d7b46ab591d74ae558bfec731a69891ddffe8">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/c0/540b996850459fe44df7351227d480193aa54a">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/c0/686f4a4c5aa583f0248d78b34bd5562441c795">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/c0/d36409c6d37d1deb46af43bee8d57f6299f034">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/c1/8933a86f01016397fccb8d9000ec8f84b50d85">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/c2/3b63faf1aefdb983d96c39438c38c872cd75f6">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/c3/09c82e80359451f2e53cb04c8b48bacc7fab97">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/c3/3c0e85ecf29b1a96a622e4bb7f6ad492424e67">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/c3/63ab08c784b87080744d69864c7c827c4a8256">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/c4/38bb096cdcb6b3a1f3a692a28babb68d732cc4">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/c5/4cfad40c6e1b73e1fcf24b920eb9f7253caa62">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/c5/89e890028a60983f583f4174237b539ffa7c87">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/c5/df5ec0665496720f608a8db84b0e15c9e932bc">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/c6/3ad2e9e0f5863a21a98b313a9b194c8f46b3a3">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/c6/ed5809e3b5944a536fba08c1bde41fa4d72e51">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/c8/0235fbd355848e90e82bf05fdf94d1921a154e">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/c8/4e338742505e9716eb0bdc6ee1826df206ce58">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/c8/7e38ce71c2e7e153c853a6984be5ef0fbce49c">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/c8/acd52b0aceb994df65d92801bbcf20ba581542">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/c8/ec635593509ac58a7287f33ce6de394fbfb33d">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/c9/7efe82c2446e7837f0e60ca2f411cb00494f6f">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/c9/91915e590f2781f0386132c656d76e2be13bd1">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/c9/b66ef231dc7d46801cd0dfc255075945512d56">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/ce/93858b8bdac59c343d5d63bcfb054801d6614c">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/d0/73727c77d53280bacfac93fe5583df50b9758e">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/d1/2e1e6f902a25f3cc1aa3534d56a19d11cffe13">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/d2/48b6f887e4ab53af8611f54beee950276179ce">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/d3/1202973fd41ddb3dfe004460fbe6bca486f9c6">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/d3/3214b14b45c3473d9fd182a1889ec45b06264d">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/d3/57ea2a44be1c3f577dfcdb58a5992a35a9ae5a">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/d5/6a82e133adf38b3f7c1215754c536fa2a4495d">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/d6/08c73c71700d26644931ea5590990c20809cc9">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/d6/3871a96a914da36472bb73210564bee624b8f6">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/d7/bb80dad3571e9b0d3e3402c12782b40fecc721">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/d7/d1be2766f1c3c6a07eb5e96cb9c025648e2fa8">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/d8/8aa95ef7be100af02605e105ce0e4e1cbda6d7">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/d9/4f3e5b7fe3a3be9aa1d274cd5aed59ce8e718d">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/da/127f8e06f51d21426efe24ebfc948dbfbb7220">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/da/3f2c970e0981361e19a5da8a2f7530277719f9">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/db/0fe1a2a377b19aeaf95655b375d09eef977161">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/db/b3b305ed56320f02481e7b5c8bac258194bb98">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/dc/fe28f4507bc4533ee94f01d3ab0af0e6ebefcf">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/dd/7567d92c7a8c599eb90fd1ad1c6601afcfd6c3">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/dd/f2a7d8dddadd9f03bd2cf71975142000f82b6c">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/de/2c3d87d6f2c8acefa9c357471de56de628d7df">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/df/0d7b9e48b566b46e3792ed59148add426ed10c">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/e0/735ea49fd811f07743f011421498a3c8511f2b">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/e0/b870affeee171ff67c6bc849c05bf83518e5d1">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/e1/c4f8ab50a40dca05bf5f2c6316cd3ec652cfcd">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/e2/0be5d024862bbfa05fe0bd3bbe2d6d37f62843">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/e2/80eb5c3239eea1531d74c2b1cc1132ec0491b3">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/e3/51ee751a2972ff20ee83e9aeb2797fb2e7d310">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/e3/e4e8d6bc19a6e1bc9a268eace267941364b4cb">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/e4/4a98ce9ee979ed836eeda711a02f107817a6da">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/e5/c58d11803976e94c9db0308236976db1ce1ce0">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/e6/d853637c6f7637dd8672b59612a9263a4d0244">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/e7/17f5a570d6bc47c3f028476347787567b19251">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/e7/408c1f19ddcf4fe1e7790c023cdaec88ba6380">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/e7/71981d40563e5ec774ed04539c18f55d7de957">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/e7/b25c26b35160a9ecd98747e1f44b2c99e510b7">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/e8/2955d15c6f92ff1879ad4c8bec86c9ae49259f">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/e8/2eef927bf1fe03e6b5ee0e7e3933352c97809c">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/e9/1ed5c59111518481b1cb3f60ecce84f2808711">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/ea/a65a886bba8a3c4134eaa1c483c61c18df248f">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/ea/a8c124f57c8712eb5223435221f995da01ef1b">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/ea/b3af58be77caf13d56a7d9a42dd95923ac500e">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/ec/0250bb93ab583517cb5bdc38ec2cf12198e472">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/ed/0de711ace90475932bf8b2704b59020265ceb6">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/ed/bc36eb0f8eecc87c5d957ac7e3454a42726632">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/ee/dce49cc04848da2f9176f4b1cefa1f55636bff">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/ef/23a74b60b569985ff8eed99e30531302dbb079">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/ef/7e284be03261e3d9c805177bec7db3af9f0f7d">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/ef/dbe73cafe5d2e4b1c11170048f8f5625b35009">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/f3/fa9e5e1c85c4da8cbdd04ec497acafecc961d5">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/f4/8b9404a974fc54816a1f561cf20bee8144b842">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/f5/ac3e554ec4c0cd595f8d1aff8b64595e2b26a8">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/f8/26b541675cc93e5a13320573ce1b47b5063c50">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/fa/04a74a5ffd22e0e0f391ed39968e5f2078634f">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/fa/406403bf1df5c3585fbd95ade63c52706e28c9">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/fa/857f7059d39ee9a6d51a8af7291bbd3e4c4916">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/fb/69fc315170a9a03a8d18c8de0d2edb81e374ed">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/fb/6b7a6774f2eb79d82e0400ad02cb68df55ff67">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/fb/72cd4054b747e332458acd090370de45dfc02f">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/fb/d5b0151576f5e50bdeee2b65cc3c59b761c4b6">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/fc/29fbb7249accf95001e651194c088c30844e5e">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/fe/f2dd269010676965823c652a4fa56dbf5c9bc5">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/ff/2427c807f6b894a74633876d6d4008691d39d7">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/ff/d2b1dd05d9223197c0d49335e451a5404f5c13">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/pack/pack-ac1b3fb2a20459f30b7bb050bd231b99701a4ee6.idx">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/objects/pack/pack-ac1b3fb2a20459f30b7bb050bd231b99701a4ee6.pack">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/packed-refs">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/refs/heads/master">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/refs/remotes/origin/HEAD">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.git/refs/remotes/origin/master">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/.kdev4/mcdm_online_exploration_ros.kdev4">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Criteria/criterion.cpp">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Criteria/criterion.cpp">
          <Option target="lib"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Criteria/criterioncomparator.cpp">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Criteria/criterioncomparator.cpp">
          <Option target="lib"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Criteria/informationgaincriterion.cpp">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Criteria/informationgaincriterion.cpp">
          <Option target="lib"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Criteria/mcdmweightreader.cpp">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Criteria/mcdmweightreader.cpp">
          <Option target="lib"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Criteria/sensingtimecriterion.cpp">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Criteria/sensingtimecriterion.cpp">
          <Option target="lib"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Criteria/traveldistancecriterion.cpp">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Criteria/traveldistancecriterion.cpp">
          <Option target="lib"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Criteria/weightmatrix.cpp">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Criteria/weightmatrix.cpp">
          <Option target="lib"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/cor_1m.pgm">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/cor_1m.pgm">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/cor_map_05_00.pgm">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/cor_map_05_00.pgm">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/cor_map_05_00_new.pgm">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/cor_map_05_00_new.pgm">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/cor_map_05_00_new1.pgm">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/cor_map_05_00_new1.pgm">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/cor_map_05_00_old.pgm">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/cor_map_05_00_old.pgm">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/cor_test.jpg">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/cor_test.jpg">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/cor_test.pgm">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/cor_test.pgm">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/cor_test_2.jpg">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/cor_test_2.jpg">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/cor_test_2.pgm">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/cor_test_2.pgm">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/corridor_asif_setting_graph.jpg">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/corridor_asif_setting_graph.jpg">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/costMap.png">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/costMap.png">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/frieburg_scan.jpg">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/frieburg_scan.jpg">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/frieburg_scan_graph.jpg">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/frieburg_scan_graph.jpg">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/map4_friburg.pgm">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/map4_friburg.pgm">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/map4_friburg.pgm~">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/map4_friburg.pgm~">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/map4_friburg.png">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/map4_friburg.png">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/map4_friburg.txt">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/map4_friburg.txt">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/map_2_3.pgm">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/map_2_3.pgm">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/map_RiccardoFreiburg_05m.pgm">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/map_RiccardoFreiburg_05m.pgm">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/map_RiccardoFreiburg_1m.pgm">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/map_RiccardoFreiburg_1m.pgm">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/map_RiccardoFreiburg_1m2.pgm">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/map_RiccardoFreiburg_1m2.pgm">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/map_RiccardoFreiburg_1m2.yaml">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/map_RiccardoFreiburg_1m2.yaml">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/map_asif_new.pgm~">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/map_asif_new.pgm~">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/map_asif_new2.pgm">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/map_asif_new2.pgm">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/map_ps_small.pgm">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/map_ps_small.pgm">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/my_map.yaml">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/my_map.yaml">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/pippo.pgm">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/pippo.pgm">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/test_bmp.pgm">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/test_bmp.pgm">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Images/unreachable.jpg">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Images/unreachable.jpg">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/PathFinding/astar.cpp">
+      <Unit filename="/home/pulver/mcdm_online_exploration/PathFinding/astar.cpp">
          <Option target="lib"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/PathFinding/node.cpp">
+      <Unit filename="/home/pulver/mcdm_online_exploration/PathFinding/node.cpp">
          <Option target="lib"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Results/Comparison-for-astar (1).txt">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Results/Comparison-for-astar (1).txt">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Results/comparison_mains.txt">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Results/comparison_mains.txt">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/Results/input.txt">
+      <Unit filename="/home/pulver/mcdm_online_exploration/Results/input.txt">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeCache.txt">
+      <Unit filename="/home/pulver/mcdm_online_exploration/build/CMakeFiles/3.5.1/CMakeCCompiler.cmake">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/3.5.1/CMakeCCompiler.cmake">
+      <Unit filename="/home/pulver/mcdm_online_exploration/build/CMakeFiles/3.5.1/CMakeCXXCompiler.cmake">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/3.5.1/CMakeCXXCompiler.cmake">
+      <Unit filename="/home/pulver/mcdm_online_exploration/build/CMakeFiles/3.5.1/CMakeDetermineCompilerABI_C.bin">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/3.5.1/CMakeDetermineCompilerABI_C.bin">
+      <Unit filename="/home/pulver/mcdm_online_exploration/build/CMakeFiles/3.5.1/CMakeDetermineCompilerABI_CXX.bin">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/3.5.1/CMakeDetermineCompilerABI_CXX.bin">
+      <Unit filename="/home/pulver/mcdm_online_exploration/build/CMakeFiles/3.5.1/CMakeSystem.cmake">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/3.5.1/CMakeSystem.cmake">
+      <Unit filename="/home/pulver/mcdm_online_exploration/build/CMakeFiles/3.5.1/CompilerIdC/CMakeCCompilerId.c">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/3.5.1/CompilerIdC/CMakeCCompilerId.c">
+      <Unit filename="/home/pulver/mcdm_online_exploration/build/CMakeFiles/3.5.1/CompilerIdC/a.out">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/3.5.1/CompilerIdC/a.out">
+      <Unit filename="/home/pulver/mcdm_online_exploration/build/CMakeFiles/3.5.1/CompilerIdCXX/CMakeCXXCompilerId.cpp">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/3.5.1/CompilerIdCXX/CMakeCXXCompilerId.cpp">
+      <Unit filename="/home/pulver/mcdm_online_exploration/build/CMakeFiles/3.5.1/CompilerIdCXX/a.out">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/3.5.1/CompilerIdCXX/a.out">
+      <Unit filename="/home/pulver/mcdm_online_exploration/build/CMakeFiles/CMakeOutput.log">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/CMakeDirectoryInformation.cmake">
+      <Unit filename="/home/pulver/mcdm_online_exploration/build/CMakeFiles/feature_tests.bin">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/CMakeOutput.log">
+      <Unit filename="/home/pulver/mcdm_online_exploration/build/CMakeFiles/feature_tests.c">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/Makefile.cmake">
+      <Unit filename="/home/pulver/mcdm_online_exploration/build/CMakeFiles/feature_tests.cxx">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/Makefile2">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/TargetDirectories.txt">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/cmake.check_cache">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/dummy_mcdm_online_exploration.dir/DependInfo.cmake">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/dummy_mcdm_online_exploration.dir/build.make">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/dummy_mcdm_online_exploration.dir/cmake_clean.cmake">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/dummy_mcdm_online_exploration.dir/progress.make">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/feature_tests.bin">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/feature_tests.c">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/feature_tests.cxx">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/CXX.includecache">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/Criteria/criterion.cpp.gcda">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/Criteria/criterion.cpp.gcno">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/Criteria/criterion.cpp.o">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.gcda">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.gcno">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.o">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.gcda">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.gcno">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.gcda">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.gcno">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.o">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.gcda">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.gcno">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.o">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.gcda">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.gcno">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.o">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.gcda">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.gcno">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.o">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/DependInfo.cmake">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/PathFinding/astar.cpp.gcda">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/PathFinding/astar.cpp.gcno">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/PathFinding/astar.cpp.o">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/PathFinding/node.cpp.gcda">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/PathFinding/node.cpp.gcno">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/PathFinding/node.cpp.o">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/build.make">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/cmake_clean.cmake">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/cmake_clean_target.cmake">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/depend.internal">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/depend.make">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/evaluationrecords.cpp.gcda">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/evaluationrecords.cpp.gcno">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/evaluationrecords.cpp.o">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/flags.make">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/link.txt">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/map.cpp.gcda">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/map.cpp.gcno">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/map.cpp.o">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/mcdmfunction.cpp.gcda">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/mcdmfunction.cpp.gcno">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/mcdmfunction.cpp.o">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/newray.cpp.gcda">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/newray.cpp.gcno">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/newray.cpp.o">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/pose.cpp.gcda">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/pose.cpp.gcno">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/pose.cpp.o">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/progress.make">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/mcdm_online_exploration.dir/CXX.includecache">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/mcdm_online_exploration.dir/DependInfo.cmake">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/mcdm_online_exploration.dir/build.make">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/mcdm_online_exploration.dir/cmake_clean.cmake">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/mcdm_online_exploration.dir/depend.internal">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/mcdm_online_exploration.dir/depend.make">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/mcdm_online_exploration.dir/flags.make">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/mcdm_online_exploration.dir/link.txt">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/mcdm_online_exploration.dir/main_correct_astar.cpp.gcda">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/mcdm_online_exploration.dir/main_correct_astar.cpp.gcno">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/mcdm_online_exploration.dir/main_correct_astar.cpp.o">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/mcdm_online_exploration.dir/progress.make">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/progress.marks">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/Makefile">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/cmake_install.cmake">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/liblib.a">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/mcdm_online_exploration">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/build/mcdm_online_exploration.cbp">
-         <Option target="dummy_mcdm_online_exploration"/>
-      </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/evaluationrecords.cpp">
+      <Unit filename="/home/pulver/mcdm_online_exploration/evaluationrecords.cpp">
          <Option target="lib"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/include/Criteria/criteriaName.h">
+      <Unit filename="/home/pulver/mcdm_online_exploration/include/Criteria/criteriaName.h">
          <Option target="mcdm_online_exploration"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/include/Criteria/criterion.h">
+      <Unit filename="/home/pulver/mcdm_online_exploration/include/Criteria/criterion.h">
          <Option target="mcdm_online_exploration"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/include/Criteria/criterioncomparator.h">
+      <Unit filename="/home/pulver/mcdm_online_exploration/include/Criteria/criterioncomparator.h">
          <Option target="mcdm_online_exploration"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/include/Criteria/informationgaincriterion.h">
+      <Unit filename="/home/pulver/mcdm_online_exploration/include/Criteria/informationgaincriterion.h">
          <Option target="mcdm_online_exploration"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/include/Criteria/mcdmweightreader.h">
+      <Unit filename="/home/pulver/mcdm_online_exploration/include/Criteria/mcdmweightreader.h">
          <Option target="mcdm_online_exploration"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/include/Criteria/sensingtimecriterion.h">
+      <Unit filename="/home/pulver/mcdm_online_exploration/include/Criteria/sensingtimecriterion.h">
          <Option target="mcdm_online_exploration"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/include/Criteria/traveldistancecriterion.h">
+      <Unit filename="/home/pulver/mcdm_online_exploration/include/Criteria/traveldistancecriterion.h">
          <Option target="mcdm_online_exploration"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/include/Criteria/weightmatrix.h">
+      <Unit filename="/home/pulver/mcdm_online_exploration/include/Criteria/weightmatrix.h">
          <Option target="mcdm_online_exploration"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/include/PathFinding/astar.h">
+      <Unit filename="/home/pulver/mcdm_online_exploration/include/PathFinding/astar.h">
          <Option target="mcdm_online_exploration"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/include/PathFinding/node.h">
+      <Unit filename="/home/pulver/mcdm_online_exploration/include/PathFinding/node.h">
          <Option target="mcdm_online_exploration"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/include/edge.h">
+      <Unit filename="/home/pulver/mcdm_online_exploration/include/edge.h">
          <Option target="mcdm_online_exploration"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/include/evaluationrecords.h">
+      <Unit filename="/home/pulver/mcdm_online_exploration/include/evaluationrecords.h">
          <Option target="mcdm_online_exploration"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/include/explorationconstants.h">
+      <Unit filename="/home/pulver/mcdm_online_exploration/include/explorationconstants.h">
          <Option target="mcdm_online_exploration"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/include/map.h">
+      <Unit filename="/home/pulver/mcdm_online_exploration/include/map.h">
          <Option target="mcdm_online_exploration"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/include/mcdmfunction.h">
+      <Unit filename="/home/pulver/mcdm_online_exploration/include/mcdmfunction.h">
          <Option target="mcdm_online_exploration"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/include/newray.h">
+      <Unit filename="/home/pulver/mcdm_online_exploration/include/newray.h">
          <Option target="mcdm_online_exploration"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/include/pose.h">
+      <Unit filename="/home/pulver/mcdm_online_exploration/include/pose.h">
          <Option target="mcdm_online_exploration"/>
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/main_correct_astar.cpp">
+      <Unit filename="/home/pulver/mcdm_online_exploration/main_correct_astar.cpp">
          <Option target="mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/map.cpp">
+      <Unit filename="/home/pulver/mcdm_online_exploration/map.cpp">
          <Option target="lib"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/mcdmfunction.cpp">
+      <Unit filename="/home/pulver/mcdm_online_exploration/mcdmfunction.cpp">
          <Option target="lib"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/newray.cpp">
+      <Unit filename="/home/pulver/mcdm_online_exploration/newray.cpp">
          <Option target="lib"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/pose.cpp">
+      <Unit filename="/home/pulver/mcdm_online_exploration/pose.cpp">
          <Option target="lib"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/test/CMakeLists.txt">
+      <Unit filename="/home/pulver/mcdm_online_exploration/test/CMakeLists.txt">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/test/test_criterioncomparator.cpp">
+      <Unit filename="/home/pulver/mcdm_online_exploration/test/test_criterioncomparator.cpp">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/test/test_evaluationrecords.cpp">
+      <Unit filename="/home/pulver/mcdm_online_exploration/test/test_evaluationrecords.cpp">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/test/test_mcdmfunction.cpp">
+      <Unit filename="/home/pulver/mcdm_online_exploration/test/test_mcdmfunction.cpp">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/test/test_pose.cpp">
+      <Unit filename="/home/pulver/mcdm_online_exploration/test/test_pose.cpp">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/test/test_weightmatrix.cpp">
+      <Unit filename="/home/pulver/mcdm_online_exploration/test/test_weightmatrix.cpp">
          <Option target="dummy_mcdm_online_exploration"/>
       </Unit>
-      <Unit filename="/home/pulver/projects/mcdm_online_exploration/CMakeLists.txt">
+      <Unit filename="/home/pulver/mcdm_online_exploration/CMakeLists.txt">
           <Option virtualFolder="CMake Files\" />
       </Unit>
    </Project>

@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/pulver/projects/mcdm_online_exploration
+CMAKE_SOURCE_DIR = /home/pulver/mcdm_online_exploration
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/pulver/projects/mcdm_online_exploration/build
+CMAKE_BINARY_DIR = /home/pulver/mcdm_online_exploration/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/lib.dir/depend.make
@@ -59,16 +59,16 @@ include CMakeFiles/lib.dir/flags.make
 
 CMakeFiles/lib.dir/pose.cpp.o: CMakeFiles/lib.dir/flags.make
 CMakeFiles/lib.dir/pose.cpp.o: ../pose.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/lib.dir/pose.cpp.o"
-	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/pose.cpp.o -c /home/pulver/projects/mcdm_online_exploration/pose.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/lib.dir/pose.cpp.o"
+	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/pose.cpp.o -c /home/pulver/mcdm_online_exploration/pose.cpp
 
 CMakeFiles/lib.dir/pose.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/lib.dir/pose.cpp.i"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/projects/mcdm_online_exploration/pose.cpp > CMakeFiles/lib.dir/pose.cpp.i
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/mcdm_online_exploration/pose.cpp > CMakeFiles/lib.dir/pose.cpp.i
 
 CMakeFiles/lib.dir/pose.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/lib.dir/pose.cpp.s"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/projects/mcdm_online_exploration/pose.cpp -o CMakeFiles/lib.dir/pose.cpp.s
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/mcdm_online_exploration/pose.cpp -o CMakeFiles/lib.dir/pose.cpp.s
 
 CMakeFiles/lib.dir/pose.cpp.o.requires:
 
@@ -83,16 +83,16 @@ CMakeFiles/lib.dir/pose.cpp.o.provides.build: CMakeFiles/lib.dir/pose.cpp.o
 
 CMakeFiles/lib.dir/PathFinding/astar.cpp.o: CMakeFiles/lib.dir/flags.make
 CMakeFiles/lib.dir/PathFinding/astar.cpp.o: ../PathFinding/astar.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/lib.dir/PathFinding/astar.cpp.o"
-	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/PathFinding/astar.cpp.o -c /home/pulver/projects/mcdm_online_exploration/PathFinding/astar.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/lib.dir/PathFinding/astar.cpp.o"
+	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/PathFinding/astar.cpp.o -c /home/pulver/mcdm_online_exploration/PathFinding/astar.cpp
 
 CMakeFiles/lib.dir/PathFinding/astar.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/lib.dir/PathFinding/astar.cpp.i"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/projects/mcdm_online_exploration/PathFinding/astar.cpp > CMakeFiles/lib.dir/PathFinding/astar.cpp.i
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/mcdm_online_exploration/PathFinding/astar.cpp > CMakeFiles/lib.dir/PathFinding/astar.cpp.i
 
 CMakeFiles/lib.dir/PathFinding/astar.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/lib.dir/PathFinding/astar.cpp.s"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/projects/mcdm_online_exploration/PathFinding/astar.cpp -o CMakeFiles/lib.dir/PathFinding/astar.cpp.s
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/mcdm_online_exploration/PathFinding/astar.cpp -o CMakeFiles/lib.dir/PathFinding/astar.cpp.s
 
 CMakeFiles/lib.dir/PathFinding/astar.cpp.o.requires:
 
@@ -107,16 +107,16 @@ CMakeFiles/lib.dir/PathFinding/astar.cpp.o.provides.build: CMakeFiles/lib.dir/Pa
 
 CMakeFiles/lib.dir/PathFinding/node.cpp.o: CMakeFiles/lib.dir/flags.make
 CMakeFiles/lib.dir/PathFinding/node.cpp.o: ../PathFinding/node.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/lib.dir/PathFinding/node.cpp.o"
-	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/PathFinding/node.cpp.o -c /home/pulver/projects/mcdm_online_exploration/PathFinding/node.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/lib.dir/PathFinding/node.cpp.o"
+	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/PathFinding/node.cpp.o -c /home/pulver/mcdm_online_exploration/PathFinding/node.cpp
 
 CMakeFiles/lib.dir/PathFinding/node.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/lib.dir/PathFinding/node.cpp.i"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/projects/mcdm_online_exploration/PathFinding/node.cpp > CMakeFiles/lib.dir/PathFinding/node.cpp.i
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/mcdm_online_exploration/PathFinding/node.cpp > CMakeFiles/lib.dir/PathFinding/node.cpp.i
 
 CMakeFiles/lib.dir/PathFinding/node.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/lib.dir/PathFinding/node.cpp.s"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/projects/mcdm_online_exploration/PathFinding/node.cpp -o CMakeFiles/lib.dir/PathFinding/node.cpp.s
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/mcdm_online_exploration/PathFinding/node.cpp -o CMakeFiles/lib.dir/PathFinding/node.cpp.s
 
 CMakeFiles/lib.dir/PathFinding/node.cpp.o.requires:
 
@@ -131,16 +131,16 @@ CMakeFiles/lib.dir/PathFinding/node.cpp.o.provides.build: CMakeFiles/lib.dir/Pat
 
 CMakeFiles/lib.dir/map.cpp.o: CMakeFiles/lib.dir/flags.make
 CMakeFiles/lib.dir/map.cpp.o: ../map.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/lib.dir/map.cpp.o"
-	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/map.cpp.o -c /home/pulver/projects/mcdm_online_exploration/map.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/lib.dir/map.cpp.o"
+	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/map.cpp.o -c /home/pulver/mcdm_online_exploration/map.cpp
 
 CMakeFiles/lib.dir/map.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/lib.dir/map.cpp.i"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/projects/mcdm_online_exploration/map.cpp > CMakeFiles/lib.dir/map.cpp.i
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/mcdm_online_exploration/map.cpp > CMakeFiles/lib.dir/map.cpp.i
 
 CMakeFiles/lib.dir/map.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/lib.dir/map.cpp.s"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/projects/mcdm_online_exploration/map.cpp -o CMakeFiles/lib.dir/map.cpp.s
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/mcdm_online_exploration/map.cpp -o CMakeFiles/lib.dir/map.cpp.s
 
 CMakeFiles/lib.dir/map.cpp.o.requires:
 
@@ -155,16 +155,16 @@ CMakeFiles/lib.dir/map.cpp.o.provides.build: CMakeFiles/lib.dir/map.cpp.o
 
 CMakeFiles/lib.dir/newray.cpp.o: CMakeFiles/lib.dir/flags.make
 CMakeFiles/lib.dir/newray.cpp.o: ../newray.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/lib.dir/newray.cpp.o"
-	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/newray.cpp.o -c /home/pulver/projects/mcdm_online_exploration/newray.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/lib.dir/newray.cpp.o"
+	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/newray.cpp.o -c /home/pulver/mcdm_online_exploration/newray.cpp
 
 CMakeFiles/lib.dir/newray.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/lib.dir/newray.cpp.i"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/projects/mcdm_online_exploration/newray.cpp > CMakeFiles/lib.dir/newray.cpp.i
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/mcdm_online_exploration/newray.cpp > CMakeFiles/lib.dir/newray.cpp.i
 
 CMakeFiles/lib.dir/newray.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/lib.dir/newray.cpp.s"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/projects/mcdm_online_exploration/newray.cpp -o CMakeFiles/lib.dir/newray.cpp.s
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/mcdm_online_exploration/newray.cpp -o CMakeFiles/lib.dir/newray.cpp.s
 
 CMakeFiles/lib.dir/newray.cpp.o.requires:
 
@@ -179,16 +179,16 @@ CMakeFiles/lib.dir/newray.cpp.o.provides.build: CMakeFiles/lib.dir/newray.cpp.o
 
 CMakeFiles/lib.dir/mcdmfunction.cpp.o: CMakeFiles/lib.dir/flags.make
 CMakeFiles/lib.dir/mcdmfunction.cpp.o: ../mcdmfunction.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/lib.dir/mcdmfunction.cpp.o"
-	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/mcdmfunction.cpp.o -c /home/pulver/projects/mcdm_online_exploration/mcdmfunction.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/lib.dir/mcdmfunction.cpp.o"
+	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/mcdmfunction.cpp.o -c /home/pulver/mcdm_online_exploration/mcdmfunction.cpp
 
 CMakeFiles/lib.dir/mcdmfunction.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/lib.dir/mcdmfunction.cpp.i"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/projects/mcdm_online_exploration/mcdmfunction.cpp > CMakeFiles/lib.dir/mcdmfunction.cpp.i
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/mcdm_online_exploration/mcdmfunction.cpp > CMakeFiles/lib.dir/mcdmfunction.cpp.i
 
 CMakeFiles/lib.dir/mcdmfunction.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/lib.dir/mcdmfunction.cpp.s"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/projects/mcdm_online_exploration/mcdmfunction.cpp -o CMakeFiles/lib.dir/mcdmfunction.cpp.s
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/mcdm_online_exploration/mcdmfunction.cpp -o CMakeFiles/lib.dir/mcdmfunction.cpp.s
 
 CMakeFiles/lib.dir/mcdmfunction.cpp.o.requires:
 
@@ -203,16 +203,16 @@ CMakeFiles/lib.dir/mcdmfunction.cpp.o.provides.build: CMakeFiles/lib.dir/mcdmfun
 
 CMakeFiles/lib.dir/evaluationrecords.cpp.o: CMakeFiles/lib.dir/flags.make
 CMakeFiles/lib.dir/evaluationrecords.cpp.o: ../evaluationrecords.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/lib.dir/evaluationrecords.cpp.o"
-	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/evaluationrecords.cpp.o -c /home/pulver/projects/mcdm_online_exploration/evaluationrecords.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/lib.dir/evaluationrecords.cpp.o"
+	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/evaluationrecords.cpp.o -c /home/pulver/mcdm_online_exploration/evaluationrecords.cpp
 
 CMakeFiles/lib.dir/evaluationrecords.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/lib.dir/evaluationrecords.cpp.i"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/projects/mcdm_online_exploration/evaluationrecords.cpp > CMakeFiles/lib.dir/evaluationrecords.cpp.i
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/mcdm_online_exploration/evaluationrecords.cpp > CMakeFiles/lib.dir/evaluationrecords.cpp.i
 
 CMakeFiles/lib.dir/evaluationrecords.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/lib.dir/evaluationrecords.cpp.s"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/projects/mcdm_online_exploration/evaluationrecords.cpp -o CMakeFiles/lib.dir/evaluationrecords.cpp.s
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/mcdm_online_exploration/evaluationrecords.cpp -o CMakeFiles/lib.dir/evaluationrecords.cpp.s
 
 CMakeFiles/lib.dir/evaluationrecords.cpp.o.requires:
 
@@ -227,16 +227,16 @@ CMakeFiles/lib.dir/evaluationrecords.cpp.o.provides.build: CMakeFiles/lib.dir/ev
 
 CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.o: CMakeFiles/lib.dir/flags.make
 CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.o: ../Criteria/sensingtimecriterion.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.o"
-	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.o -c /home/pulver/projects/mcdm_online_exploration/Criteria/sensingtimecriterion.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.o"
+	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.o -c /home/pulver/mcdm_online_exploration/Criteria/sensingtimecriterion.cpp
 
 CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.i"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/projects/mcdm_online_exploration/Criteria/sensingtimecriterion.cpp > CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.i
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/mcdm_online_exploration/Criteria/sensingtimecriterion.cpp > CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.i
 
 CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.s"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/projects/mcdm_online_exploration/Criteria/sensingtimecriterion.cpp -o CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.s
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/mcdm_online_exploration/Criteria/sensingtimecriterion.cpp -o CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.s
 
 CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.o.requires:
 
@@ -251,16 +251,16 @@ CMakeFiles/lib.dir/Criteria/sensingtimecriterion.cpp.o.provides.build: CMakeFile
 
 CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o: CMakeFiles/lib.dir/flags.make
 CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o: ../Criteria/informationgaincriterion.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o"
-	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o -c /home/pulver/projects/mcdm_online_exploration/Criteria/informationgaincriterion.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o"
+	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o -c /home/pulver/mcdm_online_exploration/Criteria/informationgaincriterion.cpp
 
 CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.i"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/projects/mcdm_online_exploration/Criteria/informationgaincriterion.cpp > CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.i
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/mcdm_online_exploration/Criteria/informationgaincriterion.cpp > CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.i
 
 CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.s"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/projects/mcdm_online_exploration/Criteria/informationgaincriterion.cpp -o CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.s
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/mcdm_online_exploration/Criteria/informationgaincriterion.cpp -o CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.s
 
 CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o.requires:
 
@@ -275,16 +275,16 @@ CMakeFiles/lib.dir/Criteria/informationgaincriterion.cpp.o.provides.build: CMake
 
 CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.o: CMakeFiles/lib.dir/flags.make
 CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.o: ../Criteria/mcdmweightreader.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.o"
-	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.o -c /home/pulver/projects/mcdm_online_exploration/Criteria/mcdmweightreader.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.o"
+	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.o -c /home/pulver/mcdm_online_exploration/Criteria/mcdmweightreader.cpp
 
 CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.i"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/projects/mcdm_online_exploration/Criteria/mcdmweightreader.cpp > CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.i
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/mcdm_online_exploration/Criteria/mcdmweightreader.cpp > CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.i
 
 CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.s"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/projects/mcdm_online_exploration/Criteria/mcdmweightreader.cpp -o CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.s
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/mcdm_online_exploration/Criteria/mcdmweightreader.cpp -o CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.s
 
 CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.o.requires:
 
@@ -299,16 +299,16 @@ CMakeFiles/lib.dir/Criteria/mcdmweightreader.cpp.o.provides.build: CMakeFiles/li
 
 CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.o: CMakeFiles/lib.dir/flags.make
 CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.o: ../Criteria/traveldistancecriterion.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.o"
-	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.o -c /home/pulver/projects/mcdm_online_exploration/Criteria/traveldistancecriterion.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.o"
+	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.o -c /home/pulver/mcdm_online_exploration/Criteria/traveldistancecriterion.cpp
 
 CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.i"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/projects/mcdm_online_exploration/Criteria/traveldistancecriterion.cpp > CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.i
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/mcdm_online_exploration/Criteria/traveldistancecriterion.cpp > CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.i
 
 CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.s"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/projects/mcdm_online_exploration/Criteria/traveldistancecriterion.cpp -o CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.s
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/mcdm_online_exploration/Criteria/traveldistancecriterion.cpp -o CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.s
 
 CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.o.requires:
 
@@ -323,16 +323,16 @@ CMakeFiles/lib.dir/Criteria/traveldistancecriterion.cpp.o.provides.build: CMakeF
 
 CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.o: CMakeFiles/lib.dir/flags.make
 CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.o: ../Criteria/weightmatrix.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.o"
-	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.o -c /home/pulver/projects/mcdm_online_exploration/Criteria/weightmatrix.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.o"
+	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.o -c /home/pulver/mcdm_online_exploration/Criteria/weightmatrix.cpp
 
 CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.i"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/projects/mcdm_online_exploration/Criteria/weightmatrix.cpp > CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.i
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/mcdm_online_exploration/Criteria/weightmatrix.cpp > CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.i
 
 CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.s"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/projects/mcdm_online_exploration/Criteria/weightmatrix.cpp -o CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.s
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/mcdm_online_exploration/Criteria/weightmatrix.cpp -o CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.s
 
 CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.o.requires:
 
@@ -347,16 +347,16 @@ CMakeFiles/lib.dir/Criteria/weightmatrix.cpp.o.provides.build: CMakeFiles/lib.di
 
 CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.o: CMakeFiles/lib.dir/flags.make
 CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.o: ../Criteria/criterioncomparator.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.o"
-	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.o -c /home/pulver/projects/mcdm_online_exploration/Criteria/criterioncomparator.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.o"
+	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.o -c /home/pulver/mcdm_online_exploration/Criteria/criterioncomparator.cpp
 
 CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.i"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/projects/mcdm_online_exploration/Criteria/criterioncomparator.cpp > CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.i
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/mcdm_online_exploration/Criteria/criterioncomparator.cpp > CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.i
 
 CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.s"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/projects/mcdm_online_exploration/Criteria/criterioncomparator.cpp -o CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.s
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/mcdm_online_exploration/Criteria/criterioncomparator.cpp -o CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.s
 
 CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.o.requires:
 
@@ -371,16 +371,16 @@ CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.o.provides.build: CMakeFiles
 
 CMakeFiles/lib.dir/Criteria/criterion.cpp.o: CMakeFiles/lib.dir/flags.make
 CMakeFiles/lib.dir/Criteria/criterion.cpp.o: ../Criteria/criterion.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/lib.dir/Criteria/criterion.cpp.o"
-	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/Criteria/criterion.cpp.o -c /home/pulver/projects/mcdm_online_exploration/Criteria/criterion.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pulver/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/lib.dir/Criteria/criterion.cpp.o"
+	/usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lib.dir/Criteria/criterion.cpp.o -c /home/pulver/mcdm_online_exploration/Criteria/criterion.cpp
 
 CMakeFiles/lib.dir/Criteria/criterion.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/lib.dir/Criteria/criterion.cpp.i"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/projects/mcdm_online_exploration/Criteria/criterion.cpp > CMakeFiles/lib.dir/Criteria/criterion.cpp.i
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pulver/mcdm_online_exploration/Criteria/criterion.cpp > CMakeFiles/lib.dir/Criteria/criterion.cpp.i
 
 CMakeFiles/lib.dir/Criteria/criterion.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/lib.dir/Criteria/criterion.cpp.s"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/projects/mcdm_online_exploration/Criteria/criterion.cpp -o CMakeFiles/lib.dir/Criteria/criterion.cpp.s
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pulver/mcdm_online_exploration/Criteria/criterion.cpp -o CMakeFiles/lib.dir/Criteria/criterion.cpp.s
 
 CMakeFiles/lib.dir/Criteria/criterion.cpp.o.requires:
 
@@ -429,7 +429,7 @@ liblib.a: CMakeFiles/lib.dir/Criteria/criterioncomparator.cpp.o
 liblib.a: CMakeFiles/lib.dir/Criteria/criterion.cpp.o
 liblib.a: CMakeFiles/lib.dir/build.make
 liblib.a: CMakeFiles/lib.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Linking CXX static library liblib.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/pulver/mcdm_online_exploration/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Linking CXX static library liblib.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/lib.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/lib.dir/link.txt --verbose=$(VERBOSE)
 
@@ -460,6 +460,6 @@ CMakeFiles/lib.dir/clean:
 .PHONY : CMakeFiles/lib.dir/clean
 
 CMakeFiles/lib.dir/depend:
-	cd /home/pulver/projects/mcdm_online_exploration/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/pulver/projects/mcdm_online_exploration /home/pulver/projects/mcdm_online_exploration /home/pulver/projects/mcdm_online_exploration/build /home/pulver/projects/mcdm_online_exploration/build /home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/pulver/mcdm_online_exploration/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/pulver/mcdm_online_exploration /home/pulver/mcdm_online_exploration /home/pulver/mcdm_online_exploration/build /home/pulver/mcdm_online_exploration/build /home/pulver/mcdm_online_exploration/build/CMakeFiles/lib.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/lib.dir/depend
 

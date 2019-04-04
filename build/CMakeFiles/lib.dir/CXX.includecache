@@ -174,75 +174,75 @@ utility
 utility
 -
 
-/home/pulver/projects/mcdm_online_exploration/Criteria/criterion.cpp
+/home/pulver/mcdm_online_exploration/Criteria/criterion.cpp
 Criteria/criterion.h
-/home/pulver/projects/mcdm_online_exploration/Criteria/Criteria/criterion.h
+/home/pulver/mcdm_online_exploration/Criteria/Criteria/criterion.h
 evaluationrecords.h
-/home/pulver/projects/mcdm_online_exploration/Criteria/evaluationrecords.h
+/home/pulver/mcdm_online_exploration/Criteria/evaluationrecords.h
 
-/home/pulver/projects/mcdm_online_exploration/Criteria/criterioncomparator.cpp
+/home/pulver/mcdm_online_exploration/Criteria/criterioncomparator.cpp
 Criteria/criterioncomparator.h
-/home/pulver/projects/mcdm_online_exploration/Criteria/Criteria/criterioncomparator.h
+/home/pulver/mcdm_online_exploration/Criteria/Criteria/criterioncomparator.h
 
-/home/pulver/projects/mcdm_online_exploration/Criteria/informationgaincriterion.cpp
+/home/pulver/mcdm_online_exploration/Criteria/informationgaincriterion.cpp
 Criteria/informationgaincriterion.h
-/home/pulver/projects/mcdm_online_exploration/Criteria/Criteria/informationgaincriterion.h
+/home/pulver/mcdm_online_exploration/Criteria/Criteria/informationgaincriterion.h
 Criteria/criteriaName.h
-/home/pulver/projects/mcdm_online_exploration/Criteria/Criteria/criteriaName.h
+/home/pulver/mcdm_online_exploration/Criteria/Criteria/criteriaName.h
 math.h
 -
 newray.h
-/home/pulver/projects/mcdm_online_exploration/Criteria/newray.h
+/home/pulver/mcdm_online_exploration/Criteria/newray.h
 
-/home/pulver/projects/mcdm_online_exploration/Criteria/mcdmweightreader.cpp
+/home/pulver/mcdm_online_exploration/Criteria/mcdmweightreader.cpp
 Criteria/mcdmweightreader.h
-/home/pulver/projects/mcdm_online_exploration/Criteria/Criteria/mcdmweightreader.h
+/home/pulver/mcdm_online_exploration/Criteria/Criteria/mcdmweightreader.h
 list
 -
 string.h
 -
 Criteria/criteriaName.h
-/home/pulver/projects/mcdm_online_exploration/Criteria/Criteria/criteriaName.h
+/home/pulver/mcdm_online_exploration/Criteria/Criteria/criteriaName.h
 
-/home/pulver/projects/mcdm_online_exploration/Criteria/sensingtimecriterion.cpp
+/home/pulver/mcdm_online_exploration/Criteria/sensingtimecriterion.cpp
 Criteria/sensingtimecriterion.h
-/home/pulver/projects/mcdm_online_exploration/Criteria/Criteria/sensingtimecriterion.h
+/home/pulver/mcdm_online_exploration/Criteria/Criteria/sensingtimecriterion.h
 Criteria/criteriaName.h
-/home/pulver/projects/mcdm_online_exploration/Criteria/Criteria/criteriaName.h
+/home/pulver/mcdm_online_exploration/Criteria/Criteria/criteriaName.h
 newray.h
-/home/pulver/projects/mcdm_online_exploration/Criteria/newray.h
+/home/pulver/mcdm_online_exploration/Criteria/newray.h
 iostream
 -
 
-/home/pulver/projects/mcdm_online_exploration/Criteria/traveldistancecriterion.cpp
+/home/pulver/mcdm_online_exploration/Criteria/traveldistancecriterion.cpp
 Criteria/traveldistancecriterion.h
-/home/pulver/projects/mcdm_online_exploration/Criteria/Criteria/traveldistancecriterion.h
+/home/pulver/mcdm_online_exploration/Criteria/Criteria/traveldistancecriterion.h
 Criteria/criteriaName.h
-/home/pulver/projects/mcdm_online_exploration/Criteria/Criteria/criteriaName.h
+/home/pulver/mcdm_online_exploration/Criteria/Criteria/criteriaName.h
 iostream
 -
 PathFinding/astar.h
-/home/pulver/projects/mcdm_online_exploration/Criteria/PathFinding/astar.h
+/home/pulver/mcdm_online_exploration/Criteria/PathFinding/astar.h
 
-/home/pulver/projects/mcdm_online_exploration/Criteria/weightmatrix.cpp
+/home/pulver/mcdm_online_exploration/Criteria/weightmatrix.cpp
 Criteria/weightmatrix.h
-/home/pulver/projects/mcdm_online_exploration/Criteria/Criteria/weightmatrix.h
+/home/pulver/mcdm_online_exploration/Criteria/Criteria/weightmatrix.h
 iostream
 -
 sstream
 -
 Criteria/criteriaName.h
-/home/pulver/projects/mcdm_online_exploration/Criteria/Criteria/criteriaName.h
+/home/pulver/mcdm_online_exploration/Criteria/Criteria/criteriaName.h
 
-/home/pulver/projects/mcdm_online_exploration/PathFinding/astar.cpp
+/home/pulver/mcdm_online_exploration/PathFinding/astar.cpp
 PathFinding/astar.h
-/home/pulver/projects/mcdm_online_exploration/PathFinding/PathFinding/astar.h
+/home/pulver/mcdm_online_exploration/PathFinding/PathFinding/astar.h
 PathFinding/node.h
-/home/pulver/projects/mcdm_online_exploration/PathFinding/PathFinding/node.h
+/home/pulver/mcdm_online_exploration/PathFinding/PathFinding/node.h
 
-/home/pulver/projects/mcdm_online_exploration/PathFinding/node.cpp
+/home/pulver/mcdm_online_exploration/PathFinding/node.cpp
 PathFinding/node.h
-/home/pulver/projects/mcdm_online_exploration/PathFinding/PathFinding/node.h
+/home/pulver/mcdm_online_exploration/PathFinding/PathFinding/node.h
 math.h
 -
 iostream
@@ -262,9 +262,9 @@ cstdlib
 stdio.h
 -
 
-/home/pulver/projects/mcdm_online_exploration/evaluationrecords.cpp
+/home/pulver/mcdm_online_exploration/evaluationrecords.cpp
 evaluationrecords.h
-/home/pulver/projects/mcdm_online_exploration/evaluationrecords.h
+/home/pulver/mcdm_online_exploration/evaluationrecords.h
 functional
 -
 sstream
@@ -272,7 +272,7 @@ sstream
 iostream
 -
 
-/home/pulver/projects/mcdm_online_exploration/map.cpp
+/home/pulver/mcdm_online_exploration/map.cpp
 map.h
 -
 fstream
@@ -280,25 +280,25 @@ fstream
 iostream
 -
 
-/home/pulver/projects/mcdm_online_exploration/mcdmfunction.cpp
+/home/pulver/mcdm_online_exploration/mcdmfunction.cpp
 mcdmfunction.h
-/home/pulver/projects/mcdm_online_exploration/mcdmfunction.h
+/home/pulver/mcdm_online_exploration/mcdmfunction.h
 explorationconstants.h
-/home/pulver/projects/mcdm_online_exploration/explorationconstants.h
+/home/pulver/mcdm_online_exploration/explorationconstants.h
 Criteria/criterion.h
-/home/pulver/projects/mcdm_online_exploration/Criteria/criterion.h
+/home/pulver/mcdm_online_exploration/Criteria/criterion.h
 Criteria/criteriaName.h
-/home/pulver/projects/mcdm_online_exploration/Criteria/criteriaName.h
+/home/pulver/mcdm_online_exploration/Criteria/criteriaName.h
 Criteria/traveldistancecriterion.h
-/home/pulver/projects/mcdm_online_exploration/Criteria/traveldistancecriterion.h
+/home/pulver/mcdm_online_exploration/Criteria/traveldistancecriterion.h
 Criteria/informationgaincriterion.h
-/home/pulver/projects/mcdm_online_exploration/Criteria/informationgaincriterion.h
+/home/pulver/mcdm_online_exploration/Criteria/informationgaincriterion.h
 Criteria/sensingtimecriterion.h
-/home/pulver/projects/mcdm_online_exploration/Criteria/sensingtimecriterion.h
+/home/pulver/mcdm_online_exploration/Criteria/sensingtimecriterion.h
 Criteria/mcdmweightreader.h
-/home/pulver/projects/mcdm_online_exploration/Criteria/mcdmweightreader.h
+/home/pulver/mcdm_online_exploration/Criteria/mcdmweightreader.h
 Criteria/criterioncomparator.h
-/home/pulver/projects/mcdm_online_exploration/Criteria/criterioncomparator.h
+/home/pulver/mcdm_online_exploration/Criteria/criterioncomparator.h
 string
 -
 iostream
@@ -308,21 +308,21 @@ stdlib.h
 algorithm
 -
 newray.h
-/home/pulver/projects/mcdm_online_exploration/newray.h
+/home/pulver/mcdm_online_exploration/newray.h
 
-/home/pulver/projects/mcdm_online_exploration/newray.cpp
+/home/pulver/mcdm_online_exploration/newray.cpp
 vector
 -
 math.h
-/home/pulver/projects/mcdm_online_exploration/math.h
+/home/pulver/mcdm_online_exploration/math.h
 map.h
-/home/pulver/projects/mcdm_online_exploration/map.h
+/home/pulver/mcdm_online_exploration/map.h
 newray.h
-/home/pulver/projects/mcdm_online_exploration/newray.h
+/home/pulver/mcdm_online_exploration/newray.h
 
-/home/pulver/projects/mcdm_online_exploration/pose.cpp
+/home/pulver/mcdm_online_exploration/pose.cpp
 pose.h
-/home/pulver/projects/mcdm_online_exploration/pose.h
+/home/pulver/mcdm_online_exploration/pose.h
 cmath
 -
 iostream

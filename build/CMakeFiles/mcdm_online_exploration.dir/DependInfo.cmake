@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/pulver/projects/mcdm_online_exploration/main_correct_astar.cpp" "/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/mcdm_online_exploration.dir/main_correct_astar.cpp.o"
+  "/home/pulver/mcdm_online_exploration/main_correct_astar.cpp" "/home/pulver/mcdm_online_exploration/build/CMakeFiles/mcdm_online_exploration.dir/main_correct_astar.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -15,7 +15,7 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/lib.dir/DependInfo.cmake"
+  "/home/pulver/mcdm_online_exploration/build/CMakeFiles/lib.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

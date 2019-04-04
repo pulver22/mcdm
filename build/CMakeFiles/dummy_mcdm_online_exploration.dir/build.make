@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/pulver/projects/mcdm_online_exploration
+CMAKE_SOURCE_DIR = /home/pulver/mcdm_online_exploration
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/pulver/projects/mcdm_online_exploration/build
+CMAKE_BINARY_DIR = /home/pulver/mcdm_online_exploration/build
 
 # Utility rule file for dummy_mcdm_online_exploration.
 
@@ -67,6 +67,6 @@ CMakeFiles/dummy_mcdm_online_exploration.dir/clean:
 .PHONY : CMakeFiles/dummy_mcdm_online_exploration.dir/clean
 
 CMakeFiles/dummy_mcdm_online_exploration.dir/depend:
-	cd /home/pulver/projects/mcdm_online_exploration/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/pulver/projects/mcdm_online_exploration /home/pulver/projects/mcdm_online_exploration /home/pulver/projects/mcdm_online_exploration/build /home/pulver/projects/mcdm_online_exploration/build /home/pulver/projects/mcdm_online_exploration/build/CMakeFiles/dummy_mcdm_online_exploration.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/pulver/mcdm_online_exploration/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/pulver/mcdm_online_exploration /home/pulver/mcdm_online_exploration /home/pulver/mcdm_online_exploration/build /home/pulver/mcdm_online_exploration/build /home/pulver/mcdm_online_exploration/build/CMakeFiles/dummy_mcdm_online_exploration.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/dummy_mcdm_online_exploration.dir/depend
 

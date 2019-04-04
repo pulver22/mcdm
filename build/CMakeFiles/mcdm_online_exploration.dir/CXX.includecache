@@ -142,7 +142,7 @@ utility
 utility
 -
 
-/home/pulver/projects/mcdm_online_exploration/main_correct_astar.cpp
+/home/pulver/mcdm_online_exploration/main_correct_astar.cpp
 algorithm
 -
 iostream
@@ -150,13 +150,13 @@ iostream
 iterator
 -
 map.h
-/home/pulver/projects/mcdm_online_exploration/map.h
+/home/pulver/mcdm_online_exploration/map.h
 newray.h
-/home/pulver/projects/mcdm_online_exploration/newray.h
+/home/pulver/mcdm_online_exploration/newray.h
 mcdmfunction.h
-/home/pulver/projects/mcdm_online_exploration/mcdmfunction.h
+/home/pulver/mcdm_online_exploration/mcdmfunction.h
 Criteria/traveldistancecriterion.h
-/home/pulver/projects/mcdm_online_exploration/Criteria/traveldistancecriterion.h
+/home/pulver/mcdm_online_exploration/Criteria/traveldistancecriterion.h
 unistd.h
 -
 time.h
