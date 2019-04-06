@@ -10,8 +10,7 @@ find_package(Boost REQUIRED)
 # ${Boost_INCLUDE_DIRS}
 # ${Boost_LIBRARIES}
 
-add_library(lib pose.cpp PathFinding/astar.cpp PathFinding/node.cpp map.cpp newray.cpp mcdmfunction.cpp
-map.cpp evaluationrecords.cpp Criteria/sensingtimecriterion.cpp Criteria/informationgaincriterion.cpp Criteria/mcdmweightreader.cpp Criteria/traveldistancecriterion.cpp Criteria/weightmatrix.cpp Criteria/criterioncomparator.cpp Criteria/criterion.cpp  )
+add_library(lib pose.cpp PathFinding/astar.cpp PathFinding/node.cpp map.cpp newray.cpp mcdmfunction.cpp evaluationrecords.cpp Criteria/sensingtimecriterion.cpp Criteria/informationgaincriterion.cpp Criteria/mcdmweightreader.cpp Criteria/traveldistancecriterion.cpp Criteria/weightmatrix.cpp Criteria/criterioncomparator.cpp Criteria/criterion.cpp  )
 
 #Find all the files link them to the executable (for qtcreator)
 FILE(GLOB_RECURSE HEADER_FILES include *.h)

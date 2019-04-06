@@ -36,20 +36,26 @@ public:
   std::vector<vector<long> > getMap2D();
   std::vector<long> grid;			//vector containing the map as grid of cells sized 1 square metre
   std::vector<int> pathPlanningGrid;
+  std::vector<int> RFIDGrid;
   long numGridRows;
   long numGridCols;
+  int gridToPathGridScale;
   Pose getRobotPosition();
   long getTotalFreeCells();
   void setCurrentPose(Pose &p);
   void drawVisitedCells(unordered_map<string,int> &visitedCells,int resolution);
+  void drawRFIDScan();
   void printVisitedCells(vector<string> &history);
   int getPathPlanningGridValue(long i,long j) const;
+  int getRFIDGridValue(long i,long j) const;
   void setPathPlanningGridValue(int value, int i, int j);
+  void setRFIDGridValue(float power, int i, int j);
   int getPathPlanningNumCols() const;
   int getPathPlanningNumRows() const;
   int getGridToPathGridScale() const;
-  int gridToPathGridScale;
   void updatePathPlanningGrid(int x, int y, int rangeInMeters);
+  void updateRFIDGrid(double power, double phase, int antennaX, int antennaY);
+  std::pair<int, int> getRelativeTagCoord(int absTagX, int absTagY, int antennaX, int antennaY);
   
 	//nav_msgs::OccupancyGrid toROSMsg();
 protected:
@@ -57,6 +63,7 @@ protected:
   void createMap(std::ifstream& infile);
   void createGrid(double resolution);
   void createPathPlanningGrid(double resolution);
+//  void createRFIDGrid(double resolution);
   void createNewMap();
   int numPathPlanningGridRows;
   int numPathPlanningGridCols;

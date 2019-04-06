@@ -5,6 +5,7 @@
 #include "newray.h"
 #include "mcdmfunction.h"
 #include "Criteria/traveldistancecriterion.h"
+#include "radio_models/propagationModel.cpp"
 # define PI           3.14159265358979323846  /* pi */
 #include <unistd.h>
 #include <time.h>
@@ -80,6 +81,22 @@ int main ( int argc, char **argv )
   double totalScanTime = 0;
   bool act = true;
 
+  // RFID
+  double absTagX =  std::stod(argv[11]); // m.
+  double absTagY = std::stod(argv[12]); // m.
+  double freq = std::stod(argv[13])*1e6; // Hertzs
+  double txtPower= std::stod(argv[14])-30.0; // dBs
+  std::pair<int, int> relTagCoord;
+
+  int rfidScan = 0;
+  // RFID scan from the starting pose
+  relTagCoord = map.getRelativeTagCoord(absTagX, absTagY, target.getX(), target.getY());
+  double rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
+  double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
+  map.updateRFIDGrid(rxPower, phase, target.getX(), target.getY());
+  rfidScan ++;
+
+
 
   do
   {
@@ -120,6 +137,10 @@ int main ( int argc, char **argv )
       ray.findCandidatePositions ( map,x,y,orientation,FOV,range );
       vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
       ray.emptyCandidatePositions();
+
+
+
+
       //cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells << endl;
       //--------------------------------------------------
       /* Push in the graph the initial position with different orientations
@@ -335,8 +356,13 @@ int main ( int argc, char **argv )
             //cout << astar.lenghtPath ( path ) << endl;
             numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
             numConfiguration++;
-
             totalAngle += scanAngle;
+
+            relTagCoord = map.getRelativeTagCoord(absTagX, absTagY, target.getX(), target.getY());
+            double rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
+            double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
+            map.updateRFIDGrid(rxPower, phase, target.getX(), target.getY());
+            rfidScan ++;
 
             //cout << "Graph dimension : " << graph2.size() << endl;
           }
@@ -360,8 +386,13 @@ int main ( int argc, char **argv )
                 //cout << astar.lenghtPath ( path ) << endl;
                 numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
                 numConfiguration++;
-
                 totalAngle += scanAngle;
+
+                relTagCoord = map.getRelativeTagCoord(absTagX, absTagY, target.getX(), target.getY());
+                double rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
+                double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
+                map.updateRFIDGrid(rxPower, phase, target.getX(), target.getY());
+                rfidScan ++;
 
 
                 count = count + 1;
@@ -497,6 +528,8 @@ int main ( int argc, char **argv )
       //vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
       //ray.emptyCandidatePositions();
 
+
+
       cleanPossibleDestination2 ( nearCandidates,target );
       // 	    cout << "nearCandidates dimensions before choosing : " << nearCandidates.size() << endl;
       EvaluationRecords *record = function.evaluateFrontiers ( nearCandidates,map,threshold );
@@ -523,8 +556,13 @@ int main ( int argc, char **argv )
           cout << "BTL "<<astar.lenghtPath ( path ) << endl;
           numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
           numConfiguration++;
-
           totalAngle += scanAngle;
+
+          relTagCoord = map.getRelativeTagCoord(absTagX, absTagY, target.getX(), target.getY());
+          double rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
+          double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
+          map.updateRFIDGrid(rxPower, phase, target.getX(), target.getY());
+          rfidScan ++;
 
           cleanPossibleDestination2 ( nearCandidates,target );
           std::pair<string,list<Pose>> pair = make_pair ( actualPose,nearCandidates );
@@ -552,8 +590,13 @@ int main ( int argc, char **argv )
             travelledDistance = travelledDistance + astar.lenghtPath(path);
             numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
             numConfiguration++;
-
             totalAngle += scanAngle;
+
+            relTagCoord = map.getRelativeTagCoord(absTagX, absTagY, target.getX(), target.getY());
+            double rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
+            double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
+            map.updateRFIDGrid(rxPower, phase, target.getX(), target.getY());
+            rfidScan ++;
 
             // 			cout << "nearCandidates dimensions after choosing : " << nearCandidates.size() << endl;
 
@@ -613,6 +656,7 @@ int main ( int argc, char **argv )
   while ( sensedCells < precision * totalFreeCells );
   map.drawVisitedCells ( visitedCell,resolution );
   map.printVisitedCells ( history );
+  map.drawRFIDScan();
 
   cout << "Num configuration: " << numConfiguration << endl;
   cout << "Travelled distance calculated during the algorithm: " << travelledDistance << endl;
@@ -687,6 +731,7 @@ int main ( int argc, char **argv )
     cout << "Total time for scanning: " << totalScanTime << endl;
     cout << "Total time for exploration: " << travelledDistance/0.5 + totalScanTime << "s, " << ( travelledDistance/0.5 + totalScanTime ) /60 << " m" << endl;
     cout << "FINAL: MAP EXPLORED!" << endl;
+    cout << "RFID scans performed: " << rfidScan << endl;
     cout << "-----------------------------------------------------------------"<<endl;
 
 
