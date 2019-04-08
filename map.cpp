@@ -282,12 +282,13 @@ void Map::updatePathPlanningGrid(int posX, int posY, int rangeInMeters, double p
       {
         for(int gridCol = col*gridToPathGridScale; gridCol < col*gridToPathGridScale + gridToPathGridScale; ++gridCol)
         {
-          //std::cout << "X: " << row << " Y: " << col << " gridX: " << gridRow << " gridY: " << gridCol << std::endl;
+          // if the cell contains an obstacle
           if(getGridValue(gridRow, gridCol) == 1)
           {
             setToOne = 1;
           }
 
+          // if the cell is free and scanned
           if(getGridValue(gridRow, gridCol) == 2)
           {
             countScanned++;
