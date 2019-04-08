@@ -123,23 +123,26 @@ void getSphericCoords(double x, double y, double& r, double& phi){
 double received_power_friis(double tag_x, double tag_y, double freq, double txtPower) {
     double phi;
     double r;
+    double rxPower = txtPower;
+   
+    // todo: use a threshold instead of exact
+    if !(tag_x==tag_y==0.0){
+        getSphericCoords(tag_x,tag_y, r, phi);
 
-    getSphericCoords(tag_x,tag_y, r, phi);
-
-    /*
-     SIMPLIFICATION!!! TAG is OMNIDIRECTIONAL
-     (a.k.a. don't have tag radiation pattern and
-     Here they say it's ok https://www.hindawi.com/journals/ijap/2013/194145/tab4/
-    */
-    double antL =  TAG_LOSSES + antennaPlaneLoss(phi);
+        /*
+         SIMPLIFICATION!!! TAG is OMNIDIRECTIONAL
+         (a.k.a. don't have tag radiation pattern and
+         Here they say it's ok https://www.hindawi.com/journals/ijap/2013/194145/tab4/
+        */
+        double antL =  TAG_LOSSES + antennaPlaneLoss(phi);
 
 
-    // propagation losses
-    double propL = LOSS_CONSTANT - (20 * log10  (r * freq)) ;
+        // propagation losses
+        double propL = LOSS_CONSTANT - (20 * log10  (r * freq)) ;
 
-    // signal goes from antenna to tag and comes back again, so we double the losses
-    double rxPower = txtPower + 2*antL + 2*propL ;
-
+        // signal goes from antenna to tag and comes back again, so we double the losses
+        rxPower +=  2*antL + 2*propL ;
+    }
     return rxPower;
 }
 
