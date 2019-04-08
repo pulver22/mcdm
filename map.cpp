@@ -8,17 +8,18 @@ namespace dummy{
 /**
  * @brief Map::Map constructor
  * @param infile: the path used for reading the map
+ * @param fileURI: map file absolute path and filename
  * @param resolution: the resolution of the map
  * @param imgresolution: the resolution for building the planningGrid
  */
-Map::Map(std::ifstream& infile, double resolution, double imgresolution)
+Map::Map(std::ifstream& infile, std::string fileURI, double resolution, double imgresolution)
 {
 
   Map::createMap(infile);
   Map::createGrid(resolution);
   Map::createPathPlanningGrid(imgresolution);
   Map::createNewMap();
-  //  Map::createRFIDGrid(imgresolution);
+  Map::createRFIDGrid(fileURI,resolution,imgresolution);
 }
 
 /**
@@ -26,10 +27,71 @@ Map::Map(std::ifstream& infile, double resolution, double imgresolution)
  */
 Map::Map()
 {
-  
+
 }
 
+void Map::createRFIDGrid(std::string fileURI, double mapResolution, double rfidMapResolution){
 
+  // load map file into a gridmap ..............................................
+
+  // constants
+  //2D position of the grid map in the grid map frame [m].
+  // 0,0 puts the grid centered around 0,0
+  double orig_x=0;
+  double orig_y=0;
+
+  //! global frame id (for maps)
+  std::string global_frame="world";
+
+  rosEncoding = "mono8";
+
+  // grid size in pixels
+  double num_rows;
+  double num_cols;
+
+  // cell value ranges
+  double  minValue;
+  double  maxValue;
+
+  // load an image from cv
+  cv::Mat imageCV = cv::imread(fileURI, CV_LOAD_IMAGE_UNCHANGED );
+  num_rows = imageCV.rows;
+  num_cols = imageCV.cols;
+
+  cv::minMaxLoc(imageCV, &minValue, &maxValue);
+
+  if (debug){
+    std::cout<< "Image size [" << num_rows <<", " << num_cols <<"]\n";
+    std::cout<< "Min, max values [" << minValue <<", " << maxValue <<"]\n";
+    std::cout<< "Channels [" <<imageCV.channels() <<"]\n";
+    std::cout<<"Encoding  [" << type2str(imageCV.type())<<"]\n";
+  }
+
+  // create empty grid map
+  grid_map::GridMap tempMap(vector<string>({std::string(layer_name)}));
+  tempMap.setGeometry(Length(num_rows, num_cols), mapResolution, Position(orig_x, orig_y));
+  tempMap.setFrameId(global_frame);
+  tempMap.clearAll();
+
+  // Convert cv image to grid map.
+  sensor_msgs::ImagePtr imageROS = cv_bridge::CvImage(std_msgs::Header(), rosEncoding, imageCV).toImageMsg();
+  GridMapRosConverter::addLayerFromImage(*imageROS, layer_name, tempMap);
+
+  // binarize: mark obstacles
+  // If the value in the map is below 250, set it to 1 to represent a free
+  for (grid_map::GridMapIterator iterator(tempMap); !iterator.isPastEnd(); ++iterator) {
+    if (map_.at(layerName, *iterator)<250){
+           map_.at(layerName, *iterator)=1;
+    } else {
+           map_.at(layerName, *iterator)=0;
+    }
+  }
+
+  // change gridmap resolution from mapResolution to rfidMapResolution
+  GridMapCvProcessing::changeResolution(tempMap, RFIDGridmap_, rfidMapResolution);
+
+
+}
 
 
 /**
@@ -41,7 +103,7 @@ void Map::createMap(std::ifstream& infile)
   long row = 0, col = 0;
   std::stringstream ss;
   std::string inputLine = "";
-  
+
   // First line : version
   getline(infile,inputLine);
   if(inputLine.compare("GRID") == 0)
@@ -59,7 +121,7 @@ void Map::createMap(std::ifstream& infile)
       if(temp == 0)
         map.push_back(255);
     }
-    
+
   }
   else
   {
@@ -156,12 +218,12 @@ void Map::createGrid(double resolution)
   Map::numGridRows = static_cast<long>(numRows/clusterSize);
   Map::numGridCols = static_cast<long>(numCols/clusterSize);
   // cout <<" numGridRows: " << numGridRows <<", numGridCols: "<< numGridCols << endl;
-  
+
   for(int i = 0; i < numGridCols*numGridRows; ++i)
   {
     grid.push_back(0);
   }
-  
+
   //set 1 in the grid cells corrisponding to obstacles
   for(long row = 0; row < numRows; ++row)
   {
@@ -229,13 +291,14 @@ void Map::createPathPlanningGrid(double resolution)
   Map::numPathPlanningGridRows = static_cast<int>(numRows/clusterSize);
   Map::numPathPlanningGridCols = static_cast<int>(numCols/clusterSize);
   cout <<"numPathPlanningGridRows: " << numPathPlanningGridRows <<", numPathPlanningGridCols: "<< numPathPlanningGridCols << endl;
-  
+
   for(int i = 0; i < numPathPlanningGridCols*numPathPlanningGridRows; ++i)
   {
     pathPlanningGrid.push_back(0);
-    RFIDGrid.push_back(0);
+    // mfc: not needed
+    //RFIDGrid.push_back(0);
   }
-  
+
   //set 1 in the grid cells corrisponding to obstacles
   for(long row = 0; row < numRows; ++row)
   {
@@ -245,7 +308,8 @@ void Map::createPathPlanningGrid(double resolution)
       if(map[row*numCols + col] < 250)
       {
         pathPlanningGrid[static_cast<long>((row/clusterSize)*numPathPlanningGridCols) + static_cast<long>(col/clusterSize)] = 1;
-        RFIDGrid[static_cast<long>((row/clusterSize)*numPathPlanningGridCols) + static_cast<long>(col/clusterSize)] = 1;
+        // mfc: not needed
+        //RFIDGrid[static_cast<long>((row/clusterSize)*numPathPlanningGridCols) + static_cast<long>(col/clusterSize)] = 1;
         //NOTE: i don't remember when it should be used
         //map[(long)(row/clusterSize)*numGridCols + (long)(col/clusterSize)] = 1;
       }
@@ -260,7 +324,7 @@ void Map::createPathPlanningGrid(double resolution)
 
 void Map::updatePathPlanningGrid(int posX, int posY, int rangeInMeters, double power)
 {
-  
+
   //int ppX = (int)(posX/gridToPathGridScale);
   //int ppY = (int)(posY/gridToPathGridScale);
   int minX = posX - rangeInMeters;
@@ -271,7 +335,7 @@ void Map::updatePathPlanningGrid(int posX, int posY, int rangeInMeters, double p
   int maxY = posY + rangeInMeters;
   if(minY < 0) minY = 0;
   if(maxY > numPathPlanningGridCols - 1) maxY = numPathPlanningGridCols - 1;
-  
+
   for(int row = minX; row <= maxX; ++row)
   {
     for(int col = minY; col <= maxY; ++col)
@@ -297,46 +361,45 @@ void Map::updatePathPlanningGrid(int posX, int posY, int rangeInMeters, double p
       if(countScanned == gridToPathGridScale*gridToPathGridScale)
       {
         setPathPlanningGridValue(2, row, col);
-        setRFIDGridValue(power, row, col);
+        //setRFIDGridValue(power, row, col);
       }
       if(setToOne == 1) setPathPlanningGridValue(1, row, col);
     }
   }
-  
-  
+
 }
 
-/**
- * @brief Map::updateRFIDGrid Update the cells in the RFID grid using the sensed power values
- * @param  power: the sensed power received by the antenna
- * @param phase: the sensed phase received by the antenna
- * @param antennaX: position-X of the antenna in the grid
- * @param antennaY: position-Y of the antenna in the grid
- * @return  nothing
- */
-void Map::updateRFIDGrid(double power, double phase, int antennaX, int antennaY)
+
+void Map::updateRFIDGridEllipse(double likelihood, double antennaX, double antennaY, double antennaHeading, double minX, double maxX)
 {
-  int radius = 5;  // TODO: radius must depend on phase
-  int minX = antennaX - radius;
-  int maxX = antennaX + radius;
-  if(minX < 0) minX = 0;
-  if(maxX > numPathPlanningGridRows - 1) maxX = numPathPlanningGridRows - 1;
-  int minY = antennaY - radius;
-  int maxY = antennaY + radius;
-  if(minY < 0) minY = 0;
-  if(maxY > numPathPlanningGridCols - 1) maxY = numPathPlanningGridCols - 1;
 
-  if(power < 0) power = 0;  // Threshold the power for plotting purposes
+  //1.-  Get elipsoid iterator.
+  // Antenna is at one of the focus of the ellipse with center at antennaX, antennaY, tilted antennaHeading .
+  // http://www.softschools.com/math/calculus/finding_the_foci_of_an_ellipse/
+  // if a is mayor axis and b is minor axis
+  // a-c= minX
+  // 2a-c= maxX
+  // a = maxX - minX
+  // c  = maxX - 2*minX
+  // b  = sqrt(a^2-c^2)
 
-  // TODO: The updated are should have a circle shape, for now we use a square for simplicity
-  for(int row = minX; row <= maxX; row++)
-  {
-    for(int col = minY; col <= maxY; col++)
-    {
-      //      setRFIDGridValue(power, row, col);
-      setRFIDGridValue(power, row, col); // NOTE: for debug purposes
-    }
+  double a =  maxX - minX;
+  double c =  maxX - 2*minX;
+  double b = sqrt((a^2.0)-(b^2.0));
+  double xc = antennaX+ (c*cos(antennaHeading));
+  double yc = antennaY+ (c*sin(antennaHeading));
+
+  Position center(xc, yc); // meters
+  Length length(a, b);
+
+  for (grid_map::EllipseIterator iterator(RFIDGridmap_, center, length, antennaHeading); !iterator.isPastEnd(); ++iterator)  {
+        if (!isnan( RFIDGridmap_.at(layer_name, *iterator)  )){
+          RFIDGridmap_.at(layer_name, *iterator)+=likelihood;
+        } else {
+          RFIDGridmap_.at(layer_name, *iterator)=likelihood;
+        }
   }
+
 }
 
 /**
@@ -712,4 +775,35 @@ std::pair<int, int> Map::findTag()
   }
   return tag;
 }
+
+
+/**
+ * Returns opencv image type given the int descriptor
+ * @param  type image type (integer)
+ * @return      image type (string)
+ */
+string type2str(int type) {
+  string r;
+
+  uchar depth = type & CV_MAT_DEPTH_MASK;
+  uchar chans = 1 + (type >> CV_CN_SHIFT);
+
+  switch ( depth ) {
+    case CV_8U:  r = "8U"; break;
+    case CV_8S:  r = "8S"; break;
+    case CV_16U: r = "16U"; break;
+    case CV_16S: r = "16S"; break;
+    case CV_32S: r = "32S"; break;
+    case CV_32F: r = "32F"; break;
+    case CV_64F: r = "64F"; break;
+    default:     r = "User"; break;
+  }
+
+  r += "C";
+  r += (chans+'0');
+
+  return r;
+}
+
+
 }

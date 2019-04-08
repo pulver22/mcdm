@@ -16,7 +16,7 @@ class Map
 {
 
 public:
-  
+
   Map(std::ifstream& infile, double resolution, double imgresolution);	//constructor, takes in binary map file .pgm
 	//Map(nav_msgs::OccupancyGrid ros_msg);
  // ~Map();					//destructor
@@ -36,7 +36,20 @@ public:
   std::vector<vector<long> > getMap2D();
   std::vector<long> grid;			//vector containing the map as grid of cells sized 1 square metre
   std::vector<int> pathPlanningGrid;
-  std::vector<int> RFIDGrid;
+
+  // show debug info
+  bool debug=True;
+
+  //std::vector<int> RFIDGrid;
+  // new gridmap format
+  grid_map::GridMap  RFIDGridmap_;
+  // map layer name
+  std::string layer_name="layer_name";
+  //! saved ROS gridmap image format
+  std::string rosEncoding;
+  void updateRFIDGridEllipse(double likelihood, double antennaX, double antennaY, double antennaHeading, double minX, double maxX);
+
+
   long numGridRows;
   long numGridCols;
   int gridToPathGridScale;
@@ -73,7 +86,7 @@ protected:
   long totalFreeCells;
   void decreaseFreeCells();
   Pose currentPose;
-  
+
 };
 }
 
