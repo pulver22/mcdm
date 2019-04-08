@@ -28,6 +28,7 @@ public:
   long convertPointPP(long y);
   void calculateInfoGainSensingTime (const dummy::Map &map, long posX, long posY, int orientation, double FOV, int range);
   int setGridToPathGridScale(int value);
+  void performRFIDSensingOperation(dummy::Map &map, long posX, long posY, int orientation, double FOV, int range, double power, double firstAngle, double lastAngle);
   
 protected:
   double mapX, mapY;			//coordinates in the map

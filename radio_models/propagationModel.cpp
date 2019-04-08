@@ -15,6 +15,9 @@ const double PHASE_CONSTANT = 4.192e-8;
 // gain list entries start at -165 degrees to 180 in steps of 15.
 const double antennaLossesList [24] = {  -25.2, -25, -20.2, -17.6, -15.6, -14, -11.2, -7.8, -5.2, -2.4, -0.6, 0, -0.6, -2.4, -5.2, -8.8, -12.2, -16.4, -19.2, -20.8, -24.4, -28.2, -24, -22.6};
 
+// Minimum sensitivy
+const double MIN_SENSITIVITY = -115.0;
+
 
 
 //  ..................................................................
@@ -89,7 +92,6 @@ double received_power_friis(double tag_x, double tag_y, double freq, double txtP
 
     // signal goes from antenna to tag and comes back again, so we double the losses
     double rxPower = txtPower + 2*antL + 2*propL ;
-
     return rxPower;
 }
 
