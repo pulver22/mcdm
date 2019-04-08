@@ -70,28 +70,33 @@ void getSphericCoords(double x, double y, double& r, double& phi){
  * @param  txtPower    Transmitted power (dBs)
  * @return             Received power (dBs)
  */
-double received_power_friis(double tag_x, double tag_y, double freq, double txtPower) {
-    double phi;
-    double r;
+ double received_power_friis(double tag_x, double tag_y, double freq, double txtPower) {
+     double phi;
+     double r;
+     double rxPower = txtPower;
 
-    getSphericCoords(tag_x,tag_y, r, phi);
-
-    /*
-     SIMPLIFICATION!!! TAG is OMNIDIRECTIONAL
-     (a.k.a. don't have tag radiation pattern and
-     Here they say it's ok https://www.hindawi.com/journals/ijap/2013/194145/tab4/
-    */
-    double antL =  TAG_LOSSES + antennaPlaneLoss(phi);
+     getSphericCoords(tag_x,tag_y, r, phi);
+     cout<<"eh? "<<r<<"\n";
+     // todo: use a threshold instead of exact
+     if (r>0.0){
 
 
-    // propagation losses
-    double propL = LOSS_CONSTANT - (20 * log10  (r * freq)) ;
+         /*
+          SIMPLIFICATION!!! TAG is OMNIDIRECTIONAL
+          (a.k.a. don't have tag radiation pattern and
+          Here they say it's ok https://www.hindawi.com/journals/ijap/2013/194145/tab4/
+         */
+         double antL =  TAG_LOSSES + antennaPlaneLoss(phi);
 
-    // signal goes from antenna to tag and comes back again, so we double the losses
-    double rxPower = txtPower + 2*antL + 2*propL ;
 
-    return rxPower;
-}
+         // propagation losses
+         double propL = LOSS_CONSTANT - (20 * log10  (r * freq)) ;
+
+         // signal goes from antenna to tag and comes back again, so we double the losses
+         rxPower +=  2*antL + 2*propL ;
+     }
+     return rxPower;
+ }
 
 double phaseDifference(double tag_x, double tag_y, double freq) {
   double phi;
