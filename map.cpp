@@ -370,7 +370,7 @@ void Map::setPathPlanningGridValue(int value, int i, int j)
 void Map::setRFIDGridValue(float power, int i, int j)
 {
   //  cout << "-----" << endl;
-  if( power < 0) power = 0;
+//  if( power < 0) power = 0;
 //    cout << RFIDGrid[i * numPathPlanningGridCols + j] << endl;
   RFIDGrid[i * numPathPlanningGridCols + j] += power;
 //    cout << RFIDGrid[i * numPathPlanningGridCols + j] << endl;
@@ -684,12 +684,32 @@ void Map::printVisitedCells(vector< string >& history)
  */
 std::pair<int, int> Map::getRelativeTagCoord(int absTagX, int absTagY, int antennaX, int antennaY)
 {
-  cout << "TAG = [" << absTagX << "," << absTagY <<"] -- ANTENNA = [" << antennaX << "," << antennaY << "]" << endl;
+//  cout << "TAG = [" << absTagX << "," << absTagY <<"] -- ANTENNA = [" << antennaX << "," << antennaY << "]" << endl;
   std::pair<int, int> relTagCoord;
   relTagCoord.first = std::abs(absTagX - antennaX);
   relTagCoord.second = std::abs(absTagY - antennaY);
-  cout << "RELTAG = [" << relTagCoord.first << "," << relTagCoord.second << "]" << endl;
+//  cout << "RELTAG = [" << relTagCoord.first << "," << relTagCoord.second << "]" << endl;
   return relTagCoord;
 }
 
+
+std::pair<int, int> Map::findTag()
+{
+  std::pair<int,int> tag(0,0);
+  double powerRead = 0;
+  for(int row=0; row < numPathPlanningGridRows; row++)
+  {
+    for(int col=0; col < numPathPlanningGridCols; col++)
+    {
+      if(getRFIDGridValue(row, col) > powerRead)
+      {
+        powerRead = getRFIDGridValue(row, col);
+//        cout << "Value read: " << powerRead << endl;
+        tag.first = row;
+        tag.second = col;
+      }
+    }
+  }
+  return tag;
+}
 }

@@ -88,8 +88,8 @@ int main ( int argc, char **argv )
 //  relTagCoord = map.getRelativeTagCoord(absTagX, absTagY, target.getX(), target.getY());
 //  double rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
 //  double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
-////  map.updateRFIDGrid(rxPower - MIN_SENSITIVITY, phase, target.getX(), target.getY());
-////  ray.performRFIDSensingOperation( map, target.getX(),target.getY(), target.getOrientation() , target.getFOV(), target.getRange(), rxPower - MIN_SENSITIVITY, target.getScanAngles().first, target.getScanAngles().second );
+////  map.updateRFIDGrid(rxPower - SENSITIVITY, phase, target.getX(), target.getY());
+////  ray.performRFIDSensingOperation( map, target.getX(),target.getY(), target.getOrientation() , target.getFOV(), target.getRange(), rxPower - SENSITIVITY, target.getScanAngles().first, target.getScanAngles().second );
 //  rfidScan ++;
 
   do
@@ -129,16 +129,16 @@ int main ( int argc, char **argv )
       totalScanTime += calculateScanTime ( scanAngle*180/PI );
       relTagCoord = map.getRelativeTagCoord(absTagX, absTagY, target.getX(), target.getY());
       double rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
-      cout << "rxPower: " << rxPower << endl;
+//      cout << "rxPower: " << rxPower << endl;
       // debug ..................................
-       double phi;
-       double r;
-      getSphericCoords(relTagCoord.first,relTagCoord.second, r, phi);
-      cout << "Spheric coords are: (" << r << " m. ," << phi << " rad. ) \n";
+//      double phi;
+//      double r;
+//      getSphericCoords(relTagCoord.first,relTagCoord.second, r, phi);
+//      cout << "Spheric coords are: (" << r << " m. ," << phi << " rad. ) \n";
 
       double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
       rfidScan ++;
-      map.updatePathPlanningGrid ( x, y, range, rxPower - MIN_SENSITIVITY);
+      map.updatePathPlanningGrid ( x, y, range, rxPower - SENSITIVITY);
       ray.findCandidatePositions ( map,x,y,orientation,FOV,range );
       vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
       ray.emptyCandidatePositions();
@@ -367,8 +367,8 @@ int main ( int argc, char **argv )
 //            double rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
 //            double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
 //            rfidScan ++;
-//            map.updateRFIDGrid(rxPower - MIN_SENSITIVITY, phase, target.getX(), target.getY());
-//            ray.performRFIDSensingOperation( map, target.getX(),target.getY(), target.getOrientation() , target.getFOV(), target.getRange(), rxPower - MIN_SENSITIVITY, target.getScanAngles().first, target.getScanAngles().second );
+//            map.updateRFIDGrid(rxPower - SENSITIVITY, phase, target.getX(), target.getY());
+//            ray.performRFIDSensingOperation( map, target.getX(),target.getY(), target.getOrientation() , target.getFOV(), target.getRange(), rxPower - SENSITIVITY, target.getScanAngles().first, target.getScanAngles().second );
 
 
             //cout << "Graph dimension : " << graph2.size() << endl;
@@ -398,8 +398,8 @@ int main ( int argc, char **argv )
 //                relTagCoord = map.getRelativeTagCoord(absTagX, absTagY, target.getX(), target.getY());
 //                double rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
 //                double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
-////                map.updateRFIDGrid(rxPower - MIN_SENSITIVITY, phase, target.getX(), target.getY());
-////                ray.performRFIDSensingOperation( map, target.getX(),target.getY(), target.getOrientation() , target.getFOV(), target.getRange(), rxPower - MIN_SENSITIVITY, target.getScanAngles().first, target.getScanAngles().second );
+////                map.updateRFIDGrid(rxPower - SENSITIVITY, phase, target.getX(), target.getY());
+////                ray.performRFIDSensingOperation( map, target.getX(),target.getY(), target.getOrientation() , target.getFOV(), target.getRange(), rxPower - SENSITIVITY, target.getScanAngles().first, target.getScanAngles().second );
 //                rfidScan ++;
 
 
@@ -535,7 +535,7 @@ int main ( int argc, char **argv )
       double rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
       double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
       rfidScan ++;
-      map.updatePathPlanningGrid ( x, y, range, rxPower - MIN_SENSITIVITY );
+      map.updatePathPlanningGrid ( x, y, range, rxPower - SENSITIVITY );
       //ray.findCandidatePositions(map,x,y,orientation,FOV,range);
       //vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
       //ray.emptyCandidatePositions();
@@ -573,8 +573,8 @@ int main ( int argc, char **argv )
 //          relTagCoord = map.getRelativeTagCoord(absTagX, absTagY, target.getX(), target.getY());
 //          double rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
 //          double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
-////          map.updateRFIDGrid(rxPower - MIN_SENSITIVITY, phase, target.getX(), target.getY());
-////          ray.performingOperation( map, target.getX(),target.getY(), target.getOrientation() , target.getFOV(), target.getRange(), rxPower - MIN_SENSITIVITY, target.getScanAngles().first, target.getScanAngles().second );
+////          map.updateRFIDGrid(rxPower - SENSITIVITY, phase, target.getX(), target.getY());
+////          ray.performingOperation( map, target.getX(),target.getY(), target.getOrientation() , target.getFOV(), target.getRange(), rxPower - SENSITIVITY, target.getScanAngles().first, target.getScanAngles().second );
 //          rfidScan ++;
 
           cleanPossibleDestination2 ( nearCandidates,target );
@@ -608,8 +608,8 @@ int main ( int argc, char **argv )
 //            relTagCoord = map.getRelativeTagCoord(absTagX, absTagY, target.getX(), target.getY());
 //            double rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
 //            double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
-////            map.updateRFIDGrid(rxPower - MIN_SENSITIVITY, phase, target.getX(), target.getY());
-////            ray.performRFIDSensingOperation( map, target.getX(),target.getY(), target.getOrientation() , target.getFOV(), target.getRange(), rxPower - MIN_SENSITIVITY, target.getScanAngles().first, target.getScanAngles().second );
+////            map.updateRFIDGrid(rxPower - SENSITIVITY, phase, target.getX(), target.getY());
+////            ray.performRFIDSensingOperation( map, target.getX(),target.getY(), target.getOrientation() , target.getFOV(), target.getRange(), rxPower - SENSITIVITY, target.getScanAngles().first, target.getScanAngles().second );
 //            rfidScan ++;
 
             // 			cout << "nearCandidates dimensions after choosing : " << nearCandidates.size() << endl;
@@ -732,7 +732,8 @@ int main ( int argc, char **argv )
     travelledDistance = travelledDistance/2;
   }
 
-
+  // Find the tag
+  std::pair<int,int> tag = map.findTag();
   if ( sensedCells >= precision * totalFreeCells )
   {
     cout << "-----------------------------------------------------------------"<<endl;
@@ -746,6 +747,7 @@ int main ( int argc, char **argv )
     cout << "Total time for exploration: " << travelledDistance/0.5 + totalScanTime << "s, " << ( travelledDistance/0.5 + totalScanTime ) /60 << " m" << endl;
     cout << "FINAL: MAP EXPLORED!" << endl;
     cout << "RFID scans performed: " << rfidScan << endl;
+    cout << "RFID pose: [" << tag.first << "," << tag.second << "]" << endl;
     cout << "-----------------------------------------------------------------"<<endl;
 
 
