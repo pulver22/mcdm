@@ -127,9 +127,6 @@ void getSphericCoords(double x, double y, double& r, double& phi){
      // todo: use a threshold instead of exact value
      if (!((tag_x==0) && (tag_y==0))){
          getSphericCoords(tag_x,tag_y, r, phi);
-
-
-
          /*
           SIMPLIFICATION!!! TAG is OMNIDIRECTIONAL
           (a.k.a. don't have tag radiation pattern and
@@ -137,10 +134,8 @@ void getSphericCoords(double x, double y, double& r, double& phi){
          */
          double antL =  TAG_LOSSES + antennaPlaneLoss(phi);
 
-
          // propagation losses
          double propL = LOSS_CONSTANT - (20 * log10  (r * freq)) ;
-
          // signal goes from antenna to tag and comes back again, so we double the losses
          rxPower +=  2*antL + 2*propL ;
      }
