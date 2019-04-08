@@ -17,7 +17,6 @@ const double PHASE_CONSTANT = 4.192e-8;
 const double ANTENNA_LOSSES_LIST [24] = {  -25.2, -25, -20.2, -17.6, -15.6, -14, -11.2, -7.8, -5.2, -2.4, -0.6, 0, -0.6, -2.4, -5.2, -8.8, -12.2, -16.4, -19.2, -20.8, -24.4, -28.2, -24, -22.6};
 
 // M6e RFID reader Specs
-
 // Minimum required power to identify a tag. Also depends on other factors, but
 // this value is a guide
  const double SENSITIVITY = -115; // dB
