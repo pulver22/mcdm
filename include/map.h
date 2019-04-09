@@ -36,20 +36,7 @@ public:
   std::vector<vector<long> > getMap2D();
   std::vector<long> grid;			//vector containing the map as grid of cells sized 1 square metre
   std::vector<int> pathPlanningGrid;
-
-  // show debug info
-  bool debug=True;
-
-  //std::vector<int> RFIDGrid;
-  // new gridmap format
-  grid_map::GridMap  RFIDGridmap_;
-  // map layer name
-  std::string layer_name="layer_name";
-  //! saved ROS gridmap image format
-  std::string rosEncoding;
-  void updateRFIDGridEllipse(double likelihood, double antennaX, double antennaY, double antennaHeading, double minX, double maxX);
-
-
+  std::vector<int> RFIDGrid;
   long numGridRows;
   long numGridCols;
   int gridToPathGridScale;
