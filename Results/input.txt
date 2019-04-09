@@ -27,3 +27,6 @@
 
 ./mcdm_online_exploration ./../Images/cor_test.pgm 1 99 99 180 10 180 1 0 1
 
+
+#RFID
+./mcdm_online_exploration ./../Images/cor_map_05_00_new1.pgm 1 99 99 180 5 180 1 0 1 54 143 865e6 0

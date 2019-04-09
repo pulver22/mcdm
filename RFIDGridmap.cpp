@@ -155,6 +155,7 @@ void RFIDGridmap::addEllipse(grid_map::GridMap&  map_, std::string layerName, do
   // b  = sqrt(a^2-c^2)
 
   // mirror y axis!!!!
+//  antennaX = -antennaX;
   antennaY = -antennaY;
   antennaHeading= -antennaHeading;
 

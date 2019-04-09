@@ -59,13 +59,13 @@ int main ( int argc, char **argv )
   // myGrid.addLine(likelihood, 0.0, 0.0, 100, 100);
 
  // huge circle placed bottom left
- myGrid.addCircle(likelihood, 0.0, 0.0, 20);
+// myGrid.addCircle(likelihood, 0.0, 0.0, 20);
  // huge circle placed middle of X axis == vertical
- myGrid.addCircle(likelihood, 100.0, 0.0, 40);
+ myGrid.addCircle(likelihood, 20.0, 0.0, 20);
  // huge circle placed  middle of y axis == horizontal
- myGrid.addCircle(likelihood, 0.0, 100.0, 60);
+// myGrid.addCircle(likelihood, 0.0, 100.0, 60);
  // huge circle placed  center of image
- myGrid.addCircle(likelihood, 100.0, 100.0, 80);
+// myGrid.addCircle(likelihood, 100.0, 100.0, 80);
   //
   // myGrid.getCell(50,50);
   //

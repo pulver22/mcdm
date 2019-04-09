@@ -59,6 +59,7 @@ public:
   int getRFIDGridValue(long i,long j) const;
   void updateRFIDGrid(double power, double phase, int antennaX, int antennaY);
   std::pair<int,int> findTag();
+  std::pair<int,int> findTagfromGridMap(RFIDGridmap grid);
 	//nav_msgs::OccupancyGrid toROSMsg();
 protected:
   std::vector<long> map;				//vector containing the original map as binary matrix (0 -> free, 1 -> obstacle)

@@ -41,7 +41,7 @@ double TravelDistanceCriterion::evaluate( Pose &p, dummy::Map &map)
     Pose robotPosition = map.getRobotPosition();
     //double distance = robotPosition.getDistance(p);
     string path = astar.pathFind(robotPosition.getX(),robotPosition.getY(),p.getX(),p.getY(),map);
-    double distance = astar.lenghtPath(path);
+    double distance = astar.lengthPath(path);
     //cout << "alive after calling a*" << endl;
     Criterion::insertEvaluation(p, distance);
     

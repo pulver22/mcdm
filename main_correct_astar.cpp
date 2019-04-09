@@ -115,7 +115,7 @@ int main ( int argc, char **argv )
       double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
       // Update the path planning and RFID map
       map.updatePathPlanningGrid ( x, y, range, rxPower - SENSITIVITY);
-      myGrid.addEllipse(rxPower - SENSITIVITY, target.getX(), target.getY(), target.getOrientation(), -0.5, 7.0);
+      myGrid.addEllipse(rxPower - SENSITIVITY, map.getNumGridCols() - target.getX(),  target.getY(), target.getOrientation(), -0.5, 7.0);
       // Search for new candidate position
       ray.findCandidatePositions ( map,x,y,orientation,FOV,range );
       vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
@@ -127,8 +127,8 @@ int main ( int argc, char **argv )
 //      {
 //        //NOTE; calculate path and turnings between actual position and goal
 //        /*string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
-//              travelledDistance = travelledDistance + astar.lenghtPath ( path );
-//              cout << astar.lenghtPath ( path ) << endl;
+//              travelledDistance = travelledDistance + astar.lengthPath ( path );
+//              cout << astar.lengthPath ( path ) << endl;
 //              numOfTurning = numOfTurning + astar.getNumberOfTurning ( path );
 //              numConfiguration++;
 //              */
@@ -217,9 +217,9 @@ int main ( int argc, char **argv )
             cout << function.getEncodedKey(*p1_history,1) << endl; // print cell in the tabulist
             list<Pose>::iterator p2_history = next ( p1_history,1 );
             string path = astar.pathFind ( ( *p2_history ).getX(), ( *p2_history ).getY(), ( *p1_history ).getX(), ( *p1_history ).getY(),map );
-            travelledDistance = travelledDistance + astar.lenghtPath ( path );
+            travelledDistance = travelledDistance + astar.lengthPath ( path );
             numOfTurning = numOfTurning + astar.getNumberOfTurning ( path );
-            //cout << astar.lenghtPath ( path ) << endl;
+            //cout << astar.lengthPath ( path ) << endl;
           }
           cout << "History counter: " << history_counter << endl;
           cout << "Travelled distance calculated from the history: " << travelledDistance << endl;
@@ -234,9 +234,9 @@ int main ( int argc, char **argv )
             cout << function.getEncodedKey(*it,1) << endl; // print cell in the tabulist
             std::list<Pose>::iterator it2 = next ( it,1 );
             string path = astar.pathFind ( ( *it2 ).getX(), ( *it2 ).getY(), ( *it ).getX(), ( *it ).getY(),map );
-            travelledDistance = travelledDistance + astar.lenghtPath ( path );
+            travelledDistance = travelledDistance + astar.lengthPath ( path );
             numOfTurning = numOfTurning + astar.getNumberOfTurning ( path );
-            //cout << astar.lenghtPath ( path ) << endl;
+            //cout << astar.lengthPath ( path ) << endl;
           }
           cout << function.getEncodedKey(*prev(tabuList.end()),1) << endl;  // pribt last item of tabulist
           numConfiguration = tabuList.size();
@@ -331,7 +331,7 @@ int main ( int argc, char **argv )
             string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
             cout << "1: " << travelledDistance << endl;
             // Update the distance counting
-            travelledDistance = travelledDistance + astar.lenghtPath(path);
+            travelledDistance = travelledDistance + astar.lengthPath(path);
             cout << "2: " << travelledDistance << endl;
             // Update the turning counting
             numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
@@ -368,7 +368,7 @@ int main ( int argc, char **argv )
                 string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
                 cout << "1: " << travelledDistance << endl;
                 // Update the overall distance covered by the robot
-                travelledDistance = travelledDistance + astar.lenghtPath(path);
+                travelledDistance = travelledDistance + astar.lengthPath(path);
                 cout << "2: " << travelledDistance << endl;
                 // Update the overall number of turnings
                 numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
@@ -478,8 +478,8 @@ int main ( int argc, char **argv )
       // Calculate the distance between the previous robot pose and the next one (target)
       string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
       // Update the overall covered distance
-      travelledDistance = travelledDistance + astar.lenghtPath ( path );
-      cout << "BT: " << astar.lenghtPath ( path ) << endl;
+      travelledDistance = travelledDistance + astar.lengthPath ( path );
+      cout << "BT: " << astar.lengthPath ( path ) << endl;
       // Update the overall number of turnings
       numOfTurning = numOfTurning + astar.getNumberOfTurning ( path );
 
@@ -502,7 +502,7 @@ int main ( int argc, char **argv )
       double rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
       double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
       map.updatePathPlanningGrid ( x, y, range, rxPower - SENSITIVITY );
-      myGrid.addEllipse(rxPower - SENSITIVITY, target.getX(), target.getY(), target.getOrientation(), -0.5, 7.0);
+      myGrid.addEllipse(rxPower - SENSITIVITY, map.getNumGridCols() - target.getX(), target.getY(), target.getOrientation(), -0.5, 7.0);
       // Remove the current pose from the list of possible candidate cells
       cleanPossibleDestination2 ( nearCandidates,target );
       // Get the list of teh candidate cells with their evaluation
@@ -526,8 +526,8 @@ int main ( int argc, char **argv )
           // Calculate the distance between previous pose to the new one
           string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
           // Update the overall counting of distance
-          travelledDistance = travelledDistance + astar.lenghtPath(path);
-          cout << "BTL "<<astar.lenghtPath ( path ) << endl;
+          travelledDistance = travelledDistance + astar.lengthPath(path);
+          cout << "BTL "<<astar.lengthPath ( path ) << endl;
           // Update the counting of turning
           numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
           // Update the counting of configuration of the robot during the navigation
@@ -564,9 +564,9 @@ int main ( int argc, char **argv )
             cout<< function.getEncodedKey ( target,1 ) << endl;
             // Calculate the distance between the destination and the previous pose
             string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
-            cout << "BT :"<<astar.lenghtPath ( path ) << endl;
+            cout << "BT :"<<astar.lengthPath ( path ) << endl;
             // Update the overall distance covered by the robot
-            travelledDistance = travelledDistance + astar.lenghtPath(path);
+            travelledDistance = travelledDistance + astar.lengthPath(path);
             // Update the overall number of turnings
             numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
             // Update the number of configuration of the robot during navigation
@@ -589,9 +589,9 @@ int main ( int argc, char **argv )
             history.push_back ( function.getEncodedKey ( target,2 ) );
             // Calculate the distance from the previous pose and the destination
             string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
-            cout <<"BT: "<< astar.lenghtPath ( path ) << endl;
+            cout <<"BT: "<< astar.lengthPath ( path ) << endl;
             // Update the overall distance of the robot
-            travelledDistance = travelledDistance + astar.lenghtPath(path);
+            travelledDistance = travelledDistance + astar.lengthPath(path);
             // Update the overall number of turnings
             numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
             // Update the overall number of configuration of the robot during navigation
@@ -620,9 +620,9 @@ int main ( int argc, char **argv )
         history.push_back ( function.getEncodedKey ( target,2 ) );
         // Calculate the distance from the previous cell to the new destination
         string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
-        cout <<"BT:"<< astar.lenghtPath ( path ) << endl;
+        cout <<"BT:"<< astar.lengthPath ( path ) << endl;
         // Update the overall distance covered by the robot
-        travelledDistance = travelledDistance + astar.lenghtPath(path);
+        travelledDistance = travelledDistance + astar.lengthPath(path);
         // Update the oevrall number of turning of the robot
         numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
         // Update the number of configuration of the robot during navigation
@@ -644,7 +644,7 @@ int main ( int argc, char **argv )
   map.printVisitedCells ( history );
   map.drawRFIDScan();
   map.drawRFIDGridScan(myGrid);
-  myGrid.saveAs(("/home/pulver/Desktop/MCDM/rfdi_result2.pgm"));
+  myGrid.saveAs(("/home/pulver/Desktop/MCDM/rfid_result_gridmap.pgm"));
 
   cout << "Num configuration: " << numConfiguration << endl;
   cout << "Travelled distance calculated during the algorithm: " << travelledDistance << endl;
@@ -673,10 +673,10 @@ int main ( int argc, char **argv )
     list<Pose>::iterator p2_history = next ( p1_history,1 );
     string path = astar.pathFind ( ( *p2_history ).getX(), ( *p2_history ).getY(), ( *p1_history ).getX(), ( *p1_history ).getY(),map );
     cout << "1: " << travelledDistance << endl;
-    travelledDistance = travelledDistance + astar.lenghtPath ( path );
+    travelledDistance = travelledDistance + astar.lengthPath ( path );
     cout << "2: " << travelledDistance << endl;
     numOfTurning = numOfTurning + astar.getNumberOfTurning ( path );
-    //cout << astar.lenghtPath ( path ) << endl;
+    //cout << astar.lengthPath ( path ) << endl;
   }
 
   cout << "History counter: " << history_counter << endl;
@@ -691,7 +691,7 @@ int main ( int argc, char **argv )
   {
     std::list<Pose>::iterator it2 = next ( it,1 );
     string path = astar.pathFind ( ( *it2 ).getX(), ( *it2 ).getY(), ( *it ).getX(), ( *it ).getY(),map );
-    travelledDistance = travelledDistance + astar.lenghtPath ( path );
+    travelledDistance = travelledDistance + astar.lengthPath ( path );
     numOfTurning = numOfTurning + astar.getNumberOfTurning ( path );
   }
   numConfiguration = tabuList.size();
@@ -720,6 +720,8 @@ int main ( int argc, char **argv )
     cout << "Total time for exploration: " << travelledDistance/0.5 + totalScanTime << "s, " << ( travelledDistance/0.5 + totalScanTime ) /60 << " m" << endl;
     cout << "FINAL: MAP EXPLORED!" << endl;
     cout << "RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
+    std::pair<int,int> tag = map.findTagfromGridMap(myGrid);
+    cout << "[Grid]RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
     cout << "-----------------------------------------------------------------"<<endl;
 
 
@@ -750,8 +752,8 @@ int main ( int argc, char **argv )
       tmp++;
       std::list<Pose>::iterator it2 = next ( it,1 );
       string path = astar.pathFind ( ( *it2 ).getX(), ( *it2 ).getY(), ( *it ).getX(), ( *it ).getY(),map );
-      finalDistance = finalDistance + astar.lenghtPath ( path );
-      cout << astar.lenghtPath ( path ) << endl;
+      finalDistance = finalDistance + astar.lengthPath ( path );
+      cout << astar.lengthPath ( path ) << endl;
     }
 
 

@@ -182,18 +182,18 @@ string Astar::pathFind( const int & xStart, const int & yStart, const int & xFin
     return ""; // no route found
 }
 
-double Astar::lenghtPath(string path)
+double Astar::lengthPath(string path)
 {
 
-    double lenght = 0.0;
+    double length = 0.0;
     //calculate the distance expressed in cells
     for(char& c : path) {
 	if(c =='0' || c=='2' || c=='4' || c=='6'){
-	    lenght = lenght + 1;
-	}else lenght = lenght + sqrt(2);
+	    length = length + 1;
+	}else length = length + sqrt(2);
     }
 
-    return lenght;
+    return length;
 }
 
 int Astar::getNumberOfTurning(string path){

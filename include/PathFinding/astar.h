@@ -32,7 +32,7 @@ private:
 public:
     Astar();
     virtual ~Astar();
-    double lenghtPath(string path );
+    double lengthPath(string path );
     string pathFind( const int& xStart, const int& yStart, const int& xFinish, const int& yFinish, dummy::Map& originalMap );
     int getNumberOfTurning(string path);
 
