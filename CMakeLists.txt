@@ -36,28 +36,28 @@ include_directories(
 
 find_package(OpenCV REQUIRED
   COMPONENTS
-  opencv_photo
+  opencv_highgui
+  CONFIG
 )
 
+add_executable(grid_map_test grid_map_test.cpp  ${HEADER_FILES})
 
-add_executable(grid_map_main grid_map_main.cpp  ${HEADER_FILES})
-
-target_link_libraries(grid_map_main  ${catkin_LIBRARIES}
+target_link_libraries(grid_map_test lib  ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES})
 
-install(TARGETS grid_map_main RUNTIME DESTINATION bin)
+install(TARGETS grid_map_test RUNTIME DESTINATION bin)
 
-add_test(grid_test grid_map_main)
+add_test(grid_test grid_map_test)
 
 ## ............................................................................
 
-add_library(lib pose.cpp PathFinding/astar.cpp PathFinding/node.cpp map.cpp newray.cpp mcdmfunction.cpp evaluationrecords.cpp Criteria/sensingtimecriterion.cpp Criteria/informationgaincriterion.cpp Criteria/mcdmweightreader.cpp Criteria/traveldistancecriterion.cpp Criteria/weightmatrix.cpp Criteria/criterioncomparator.cpp Criteria/criterion.cpp  )
+add_library(lib pose.cpp PathFinding/astar.cpp PathFinding/node.cpp map.cpp newray.cpp mcdmfunction.cpp evaluationrecords.cpp Criteria/sensingtimecriterion.cpp Criteria/informationgaincriterion.cpp Criteria/mcdmweightreader.cpp Criteria/traveldistancecriterion.cpp Criteria/weightmatrix.cpp Criteria/criterioncomparator.cpp Criteria/criterion.cpp  RFIDGridmap.cpp)
 
 #Find all the files link them to the executable (for qtcreator)
 FILE(GLOB_RECURSE HEADER_FILES include *.h)
 add_executable(mcdm_online_exploration main_correct_astar.cpp  ${HEADER_FILES})
 
-target_link_libraries(mcdm_online_exploration lib  -lboost_unit_test_framework)
+target_link_libraries(mcdm_online_exploration lib  -lboost_unit_test_framework  ${catkin_LIBRARIES}   ${OpenCV_LIBRARIES})
 
 install(TARGETS mcdm_online_exploration RUNTIME DESTINATION bin)
 #add_subdirectory(test)
