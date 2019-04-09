@@ -14,7 +14,7 @@ InformationGainCriterion::~InformationGainCriterion()
 {
 }
 
-double InformationGainCriterion::evaluate(Pose &p, Map &map)
+double InformationGainCriterion::evaluate(Pose &p, dummy::Map &map)
 {
 
     long px = p.getX();
@@ -28,27 +28,27 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
     // Minimum and maximum coordinations sensed by the laser scan
     int minSensedX, maxSensedX;
     int minSensedY,maxSensedY;
-    // intersection point between the laser sensor (at the edge) and the vertical/horizontal segment passing from 
+    // intersection point between the laser sensor (at the edge) and the vertical/horizontal segment passing from
     // the considered cell
-    //int* intersection;    
+    //int* intersection;
     //Map as a bidimensional array (vector) starting
     vector<vector<int>> map2D = map.getMap2D();
     int maxValueY = map2D.size();
     int maxValueX = map2D[0].size();
-    
+
     //area contained in the sensor cone
     int sensedArea;
     //area occupied by obstacles in the sensor cone
     int occupiedArea;
     //effective information gain
     int unExploredMap;
-    
-   
-    
+
+
+
     //calcuate the sensed map based on the robot orientation
     // orientation == 90 means the robot is looking toward the upper border of the map
     if( orientation == 90 ){
-	//minSensedX is the robot position minus the radius projection on the x axis; the same also for maxSensedX but with plus 
+	//minSensedX is the robot position minus the radius projection on the x axis; the same also for maxSensedX but with plus
 	//instead of minus
 	minSensedX = px - p.getR() * cos(p.getPhi()/2);
 	maxSensedX = px + p.getR() * cos(p.getPhi()/2);
@@ -67,7 +67,7 @@ double InformationGainCriterion::evaluate(Pose &p, Map &map)
 		if( j < px ){
 		    // calculate the intersection point between the vertical segment passing for the cell and the radius at the left edge
 		    int* intersection =intersect(i,j,minSensedX,minSensedY,p);
-		    // if the j-coordinate of the considered cell is higher (y grow toward the bottom and x toward right) than the intersection's one, 
+		    // if the j-coordinate of the considered cell is higher (y grow toward the bottom and x toward right) than the intersection's one,
 		    //it means that the cell is not insidie the sensed area, so break this loop and look for the following cell
 		    if ( i > intersection[1]){
 			continue;
@@ -216,11 +216,11 @@ int* InformationGainCriterion::intersect(int p1x, int p1y, int p2x, int p2y, Pos
     float intersectX, intersectY;
     int result[2];
 
-    
-        //Vertical or horizontal segment from the considered cell 
+
+        //Vertical or horizontal segment from the considered cell
    if(p.getOrientation() == 90 || p.getOrientation() == 270){
 	intersectX = p1x;
-	intersectY =py + (intersectX - px)*(p2y - py) / (p2x - px);     
+	intersectY =py + (intersectX - px)*(p2y - py) / (p2x - px);
     } else if (p.getOrientation() == 0 || p.getOrientation() == 180){
 	intersectY = p1y;
 	intersectX = p2x + (intersectY - py) * (p2x -px) / (p2y - py);
@@ -228,11 +228,9 @@ int* InformationGainCriterion::intersect(int p1x, int p1y, int p2x, int p2y, Pos
 
     result[1] = (int) intersectX;
     result[2] = (int) intersectY;
-    
-    
+
+
     //return the coordinations of the interesection point
     return (result);
 }
 */
-
-

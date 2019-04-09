@@ -10,17 +10,17 @@ using namespace dummy;
 
 class NewRay
 {
-  
+
 public:
-  
+
   NewRay();
   //~Ray();
   void findCandidatePositions(dummy::Map &map, long posX, long posY, int orientation, double FOV, int range);
   void findCandidatePositions2(dummy::Map &map, long posX, long posY, int orientation, double FOV, int range);
   int isCandidate(const dummy::Map &map, long i, long j);
-  int isCandidate2(const Map &map, long i, long j);
+  int isCandidate2(const dummy::Map &map, long i, long j);
   std::vector<std::pair<long, long> > getCandidatePositions();
-  pair< double, double > getSensingTime(const Map& map, long int posX, long int posY, int orientation, double FOV, int range);
+  pair< double, double > getSensingTime(const dummy::Map& map, long int posX, long int posY, int orientation, double FOV, int range);
   int performSensingOperation(dummy::Map &map, long posX, long posY, int orientation, double FOV, int range, double firstAngle, double lastAngle);
   void emptyCandidatePositions();
   int getInformationGain(const dummy::Map &map, long posX, long posY, int orientation, double FOV, int range);
@@ -29,7 +29,7 @@ public:
   void calculateInfoGainSensingTime (const dummy::Map &map, long posX, long posY, int orientation, double FOV, int range);
   int setGridToPathGridScale(int value);
   void performRFIDSensingOperation(dummy::Map &map, long posX, long posY, int orientation, double FOV, int range, double power, double firstAngle, double lastAngle);
-  
+
 protected:
   double mapX, mapY;			//coordinates in the map
   long posX, posY;		//starting position of the robot

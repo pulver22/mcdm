@@ -29,13 +29,13 @@ bool operator<(const Node & a,const Node & b){
 // A-star algorithm.
 // The route returned is a string of direction digits.
 string Astar::pathFind( const int & xStart, const int & yStart, const int & xFinish, const int & yFinish,
-		    Map& originalMap )
+		    dummy::Map& originalMap )
 {
-    
+
     const int m = originalMap.getPathPlanningNumCols();
     const int n = originalMap.getPathPlanningNumRows();
- 
-    
+
+
     int map[n][m];
     int closed_nodes_map[n][m]; // map of closed (tried-out) nodes
     int open_nodes_map[n][m]; // map of open (not-yet-tried) nodes
@@ -43,12 +43,12 @@ string Astar::pathFind( const int & xStart, const int & yStart, const int & xFin
     // create map
     for(int y=0;y<m;y++)
     {
-        for(int x=0;x<n;x++){ 
+        for(int x=0;x<n;x++){
 	    map[x][y]= originalMap.getPathPlanningGridValue(x,y);
 	}
     }
 
-    
+
     //cout << "alive in pathfind"<< endl;
     static priority_queue<Node> pq[2]; // list of open (not-yet-tried) nodes
     static int pqi; // pq index
@@ -58,7 +58,7 @@ string Astar::pathFind( const int & xStart, const int & yStart, const int & xFin
     static char c;
     pqi=0;
 
-    
+
     // reset the node maps
     for(y=0;y<m;y++)
     {
@@ -69,7 +69,7 @@ string Astar::pathFind( const int & xStart, const int & yStart, const int & xFin
         }
     }
 
-    
+
     // create the start node and push into list of open nodes
     n0=new Node(xStart, yStart, 0, 0);
     //cout << n0->getxPos() << ":" << n0->getyPos() << endl;
@@ -88,9 +88,9 @@ string Astar::pathFind( const int & xStart, const int & yStart, const int & xFin
         n0=new Node( pq[pqi].top().getxPos(), pq[pqi].top().getyPos(),
                      pq[pqi].top().getLevel(), pq[pqi].top().getPriority());
 
-        x=n0->getxPos(); 
+        x=n0->getxPos();
 	y=n0->getyPos();
-	
+
         pq[pqi].pop(); // remove the node from the open list
         open_nodes_map[x][y]=0;
         // mark it on the closed nodes map
@@ -182,37 +182,37 @@ string Astar::pathFind( const int & xStart, const int & yStart, const int & xFin
     return ""; // no route found
 }
 
-double Astar::lenghtPath(string path)
+double Astar::lengthPath(string path)
 {
 
-    double lenght = 0.0;    
+    double length = 0.0;
     //calculate the distance expressed in cells
     for(char& c : path) {
 	if(c =='0' || c=='2' || c=='4' || c=='6'){
-	    lenght = lenght + 1;
-	}else lenght = lenght + sqrt(2);
+	    length = length + 1;
+	}else length = length + sqrt(2);
     }
-    
-    return lenght;
+
+    return length;
 }
 
 int Astar::getNumberOfTurning(string path){
-    int numberOfTurning = 0;  
+    int numberOfTurning = 0;
     //calculate the number of turning during the path
-    
+
     if(path.size()==0){
 	return 0;
     }else{
 	for(int i=0; i< path.size()-1; i++){
 	    if(path.at(i+1) == path.at(i) +1 || path.at(i+1) == path.at(i) -1 ){
-		numberOfTurning =+ 1;    
+		numberOfTurning =+ 1;
 	    }else if(path.at(i+1) == path.at(i) +2 || path.at(i+1) == path.at(i) -2 ){
 		numberOfTurning =+ 2;
 	    }else if(path.at(i+1) == path.at(i) +3 || path.at(i+1) == path.at(i) -3 ){
 		numberOfTurning =+ 3;
 	    }
 	}
-    
+
 	return numberOfTurning;
     }
 }

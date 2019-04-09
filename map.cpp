@@ -184,7 +184,7 @@ void Map::createGrid(double resolution)
  */
 void Map::createNewMap()
 {
-  std::ofstream imgNew("/home/pulver/Desktop/MCDM/test.pgm", ios::out);
+  std::ofstream imgNew("/home/pulver/Desktop/MCDM/input_map.pgm", ios::out);
   std::ofstream txt("/home/pulver/Desktop/MCDM/freeCell.txt");
   long columns = numGridCols;
   long rows = numGridRows;
@@ -230,7 +230,7 @@ void Map::createPathPlanningGrid(double resolution)
   for(int i = 0; i < numPathPlanningGridCols*numPathPlanningGridRows; ++i)
   {
     pathPlanningGrid.push_back(0);
-    RFIDGrid.push_back(0);
+    RFIDGrid.push_back(250);
   }
 
   //set 1 in the grid cells corrisponding to obstacles
@@ -295,7 +295,7 @@ void Map::updatePathPlanningGrid(int posX, int posY, int rangeInMeters, double p
       if(countScanned == gridToPathGridScale*gridToPathGridScale)
       {
         setPathPlanningGridValue(2, row, col);
-        //setRFIDGridValue(power, row, col);
+        setRFIDGridValue(power, row, col);
       }
       if(setToOne == 1) setPathPlanningGridValue(1, row, col);
     }
@@ -537,7 +537,7 @@ void Map::decreaseFreeCells(){
  */
 void Map::drawVisitedCells()
 {
-  std::ofstream resultMap("/home/pulver/Desktop/MCDM/result.pgm", ios::out);
+  std::ofstream resultMap("/home/pulver/Desktop/MCDM/result_free_cells.pgm", ios::out);
   long columns = numGridCols;
   long rows = numGridRows;
 
@@ -571,7 +571,7 @@ void Map::drawVisitedCells()
  */
 void Map::drawRFIDScan()
 {
-  std::ofstream resultMap("/home/pulver/Desktop/MCDM/rfdi_result.pgm", ios::out);
+  std::ofstream resultMap("/home/pulver/Desktop/MCDM/rfid_result.pgm", ios::out);
   long columns = numPathPlanningGridCols;
   long rows = numPathPlanningGridRows;
 
@@ -592,6 +592,32 @@ void Map::drawRFIDScan()
   resultMap.close();
 }
 
+/**
+ * @brief Map::drawRFIDScan save on disk an image representing the scanned environment. Lighter zone represents
+ * higher probability for the presence of the RFID tag
+ */
+void Map::drawRFIDGridScan(RFIDGridmap grid)
+{
+  std::ofstream resultMap("/home/pulver/Desktop/MCDM/rfid_result_gridmap.pgm", ios::out);
+  long columns = numPathPlanningGridCols;
+  long rows = numPathPlanningGridRows;
+
+  resultMap << "P2\n" << columns << " " << rows << "\n255\n";
+
+  for(long row = 0; row < rows; ++row)
+  {
+    for(long col = 0; col < columns; ++col)
+    {
+      int value = static_cast<int>(grid.getCell(row, col));
+     cout << value << endl;
+      value = std::min(value, 255);
+      value = std::max(value, 0);
+      resultMap << value  << " ";
+    }
+  }
+
+  resultMap.close();
+}
 /**
  * @brief Map::printVisitedCells save on disk the list of all the cells visited by the robot
  * @param history: the list of visited cells
@@ -679,6 +705,24 @@ std::pair<int, int> Map::findTag()
   return tag;
 }
 
-
+std::pair<int, int> Map::findTagfromGridMap(RFIDGridmap grid)
+{
+  std::pair<int,int> tag(0,0);
+  double powerRead = 0;
+  for(int row=0; row < numPathPlanningGridRows; row++)
+  {
+    for(int col=0; col < numPathPlanningGridCols; col++)
+    {
+      if(grid.getCell(row, col) > powerRead)
+      {
+        powerRead = getRFIDGridValue(row, col);
+//        cout << "Value read: " << powerRead << endl;
+        tag.first = row;
+        tag.second = col;
+      }
+    }
+  }
+  return tag;
+}
 
 }

@@ -8,13 +8,13 @@ using namespace std;
  * weights is a list (vector - for pratical purpose) of <encoding, weight> pairs */
 WeightMatrix::WeightMatrix(int numOfCriteria):
     //mapping(new unordered_map<string, string>()),
-    //activeCriteria(new vector<pair<string, bool>>()), 
-    weights(new vector<unordered_map<string, double> *>()), 
-    lastInsertedCriteria(64), 
+    //activeCriteria(new vector<pair<string, bool>>()),
+    weights(new vector<unordered_map<string, double> *>()),
+    lastInsertedCriteria(64),
     //mutex(new mutex()),
-    numOfActiveCriteria(0) 
+    numOfActiveCriteria(0)
 {
-    
+
     //Create a row in the weight matrix for each weight cardinality
     for(int i=0; i<numOfCriteria-1; i++){
         weights->push_back(new unordered_map<string, double>());
@@ -28,7 +28,7 @@ WeightMatrix::WeightMatrix(int numOfCriteria):
 WeightMatrix::~WeightMatrix()
 {
     //delete mutex;
-    
+
     for(int i=weights->size()-1; i>=0; i--){
 	auto it = weights->begin();
         weights->erase(it);
@@ -38,14 +38,14 @@ WeightMatrix::~WeightMatrix()
     //delete activeCriteria;
    // mapping->clear();
     //delete mapping;
-    
+
 }
 
-/*insert the criterion's name and its encoding in mapping unordered_map(hast_table) and 
+/*insert the criterion's name and its encoding in mapping unordered_map(hast_table) and
  * his encoding and his weight in weights vector */
 void WeightMatrix::insertSingleCriterion(string name, double weight, bool active)
 {
-  
+
     //mutex.lock();
     //increase the number of inserted criteria
     lastInsertedCriteria++;
@@ -58,10 +58,10 @@ void WeightMatrix::insertSingleCriterion(string name, double weight, bool active
     ss << tmp;
     string code;
     ss >> code;
-    
+
     //ldbg << "Criterion Code: " << code << endl;
     //insert the entry in the mapping table
-    std::pair<string,string> pair (name,code); 
+    std::pair<string,string> pair (name,code);
     mapping.insert(pair);
     std::pair<string,bool> pairActive (code, active);
     activeCriteria.push_back(pairActive);
@@ -71,7 +71,7 @@ void WeightMatrix::insertSingleCriterion(string name, double weight, bool active
     if (weights->size() > 0)
 	std::pair<string,double> pair(code,weight);
 	(weights->at(0))->emplace(code,weight);
-	
+
 	//weights->push_front(code,weight);
     //mutex.unlock();
 }
@@ -87,7 +87,7 @@ void WeightMatrix::changeCriteriaActivation(const string &name, bool active)
 	if((*it).first == enc)
 	   actualState = (*it).second;
     }
-    
+
     if(actualState == active){
         //if the state should not change, return
         //mutex.unlock();
@@ -105,7 +105,7 @@ void WeightMatrix::changeCriteriaActivation(const string &name, bool active)
 
 /*
  */
-double WeightMatrix::getWeight(list<string> criteriaNames) 
+double WeightMatrix::getWeight(list<string> criteriaNames)
 {
     string enc = computeNamesEncoding(criteriaNames);
     double w = getWeight(enc);
@@ -147,7 +147,7 @@ double WeightMatrix::getWeight(const string& encoding)
     return toRet;
 }
 
-int WeightMatrix::getNumOfActiveCriteria() 
+int WeightMatrix::getNumOfActiveCriteria()
 {
     //mutex.lock();
     int toRet = numOfActiveCriteria;
@@ -157,18 +157,18 @@ int WeightMatrix::getNumOfActiveCriteria()
 
 /* return the encoding of the name searching for it in the mapping structure
  */
-string WeightMatrix::getNameEncoding(string name) 
+string WeightMatrix::getNameEncoding(string name)
 {
-    //mutex.lock();   
+    //mutex.lock();
     string toRet = mapping[name];
     //mutex.unlock();
     return toRet;
 }
 
-/* given a list of criteria names (could be only one), copy the list of the respective encoding in the enc list, 
+/* given a list of criteria names (could be only one), copy the list of the respective encoding in the enc list,
  * then sort it and append every single encoded criterion in the toRet string
  */
-string WeightMatrix::computeNamesEncoding(list<string> criteriaNames) 
+string WeightMatrix::computeNamesEncoding(list<string> criteriaNames)
 {
     //ldbg << "Criteria Names: " << criteriaNames << endl;
     //mutex.lock();
@@ -179,7 +179,7 @@ string WeightMatrix::computeNamesEncoding(list<string> criteriaNames)
     for(it; it != criteriaNames.end(); ++it){
 	string tmp = mapping[*it];
         enc.emplace_back(tmp);
-	
+
     }
 //    ldbg << "Encode before sorting: " << enc << endl;
     enc.sort();
@@ -205,7 +205,7 @@ void WeightMatrix::insertCombinationWeight(list<string> criteriaNames, double we
 }
 
 /*  insert in the weights structure the pair <enconding, weight> where enconding is a string taking care of more
- * than one criterion. 
+ * than one criterion.
  */
 void WeightMatrix::insertCombinationWeight(const string &encoding, double weight)
 {
@@ -228,7 +228,7 @@ void WeightMatrix::insertCombinationWeight(const string &encoding, double weight
 
 
 
-vector<string> WeightMatrix::getActiveCriteria() 
+vector<string> WeightMatrix::getActiveCriteria()
 {
     //mutex.lock();
     vector<string> toRet;
@@ -241,14 +241,14 @@ vector<string> WeightMatrix::getActiveCriteria()
 	    string toApp;
 	    for(unordered_map<string,string>::iterator it2 = mapping.begin(); it2 != mapping.end(); ++it2){
 		if ((*it2).second == k ){
-		toApp = (*it2).first;    
+		toApp = (*it2).first;
 		}
 	    }
 	    toRet.push_back(toApp);
 	}
-	 
+
     }
-  
+
     //mutex.unlock();
     return toRet;
 }
@@ -266,6 +266,3 @@ list<string> WeightMatrix::getKnownCriteria()
     //mutex.unlock();
     return toRet;
 }
-
-
-
