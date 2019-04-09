@@ -593,6 +593,32 @@ void Map::drawRFIDScan()
 }
 
 /**
+ * @brief Map::drawRFIDScan save on disk an image representing the scanned environment. Lighter zone represents
+ * higher probability for the presence of the RFID tag
+ */
+void Map::drawRFIDGridScan(RFIDGridmap grid)
+{
+  std::ofstream resultMap("/home/pulver/Desktop/MCDM/rfdi_result_gridmap.pgm", ios::out);
+  long columns = numPathPlanningGridCols;
+  long rows = numPathPlanningGridRows;
+
+  resultMap << "P2\n" << columns << " " << rows << "\n255\n";
+
+  for(long row = 0; row < rows; ++row)
+  {
+    for(long col = 0; col < columns; ++col)
+    {
+      int value = static_cast<int>(grid.getCell(row, col));
+     cout << value << endl;
+      value = std::min(value, 255);
+      value = std::max(value, 0);
+      resultMap << value  << " ";
+    }
+  }
+
+  resultMap.close();
+}
+/**
  * @brief Map::printVisitedCells save on disk the list of all the cells visited by the robot
  * @param history: the list of visited cells
  */

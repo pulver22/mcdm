@@ -8,6 +8,7 @@
 #include <iostream>
 #include "pose.h"
 #include <unordered_map>
+#include "RFIDGridmap.h"
 
 using namespace std;
 namespace dummy{
@@ -54,6 +55,7 @@ public:
   std::pair<int, int> getRelativeTagCoord(int absTagX, int absTagY, int antennaX, int antennaY);
   void setRFIDGridValue(float power, int i, int j);
   void drawRFIDScan();
+  void drawRFIDGridScan(RFIDGridmap grid);
   int getRFIDGridValue(long i,long j) const;
   void updateRFIDGrid(double power, double phase, int antennaX, int antennaY);
   std::pair<int,int> findTag();

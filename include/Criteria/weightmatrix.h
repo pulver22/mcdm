@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <list>
 #include <vector>
-#include <iterator> 
+#include <iterator>
 #include <mutex>
 #include <map>
 
@@ -22,19 +22,19 @@ public:
     void insertCombinationWeight(std::list<std::string> criteriaNames, double weight);
     void insertCombinationWeight(const std::string &encoding, double weight);
     double getWeight(std::list< std::string > criteriaNames);
-    double getWeight(const std::string &encoding) ; 
+    double getWeight(const std::string &encoding) ;
     std::string getNameEncoding(std::string name) ;
     std::string computeNamesEncoding(std::list<std::string> criteriaNames);
     std::list<std::string> getKnownCriteria() ;
     std::vector<std::string> getActiveCriteria();
     int getNumOfActiveCriteria() ;
     void changeCriteriaActivation(const std::string& name, bool active);
-   
+
 private:
 
     //This member maps a criterion name with its encoding
     std::unordered_map<std::string, std::string> mapping;
-    
+
     //This is the double entrance table that contains all the weight.
     // - the index of the list indicate the cardinality of the weight combination.
     // - the Hash contains the pairs criteria_combination<->weight

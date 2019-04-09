@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <ctime>
+// #include "RFIDGridmap.h"
 
 
 
@@ -17,7 +18,7 @@ using namespace std;
 using namespace dummy;
 bool contains ( std::list< Pose >& list, Pose& p );
 void cleanPossibleDestination2 ( std::list< Pose > &possibleDestinations, Pose& p );
-void pushInitialPositions ( Map map, int x, int y, int orientation,  int range, int FOV, double threshold,
+void pushInitialPositions ( dummy::Map map, int x, int y, int orientation,  int range, int FOV, double threshold,
                             string actualPose, vector< pair< string, list< Pose > > > *graph2 );
 double calculateScanTime ( double scanAngle );
 Pose createFromInitialPose ( int x, int y, int orientation, int variation, int range, int FOV );
@@ -31,7 +32,8 @@ int main ( int argc, char **argv )
   infile.open ( argv[1] );  // the path to the map
   double resolution = atof ( argv[2] );  // the resolution of the map
   double imgresolution = atof ( argv[10] );  // the resolution to use for the planningGrid and RFIDGrid
-  Map map = Map ( infile,resolution, imgresolution );
+  dummy::Map map = dummy::Map ( infile,resolution, imgresolution );
+  RFIDGridmap myGrid(argv[1], resolution, imgresolution, false);
   cout << "Map dimension: " << map.getNumGridCols() << " : "<<  map.getNumGridRows() << endl;
   int gridToPathGridScale = map.getGridToPathGridScale();
   // i switched x and y because the map's orientation inside and outside programs are different
@@ -113,6 +115,7 @@ int main ( int argc, char **argv )
       double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
       // Update the path planning and RFID map
       map.updatePathPlanningGrid ( x, y, range, rxPower - SENSITIVITY);
+      myGrid.addEllipse(rxPower - SENSITIVITY, target.getX(), target.getY(), target.getOrientation(), -0.5, 7.0);
       // Search for new candidate position
       ray.findCandidatePositions ( map,x,y,orientation,FOV,range );
       vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
@@ -499,6 +502,7 @@ int main ( int argc, char **argv )
       double rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
       double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
       map.updatePathPlanningGrid ( x, y, range, rxPower - SENSITIVITY );
+      myGrid.addEllipse(rxPower - SENSITIVITY, target.getX(), target.getY(), target.getOrientation(), -0.5, 7.0);
       // Remove the current pose from the list of possible candidate cells
       cleanPossibleDestination2 ( nearCandidates,target );
       // Get the list of teh candidate cells with their evaluation
@@ -639,6 +643,8 @@ int main ( int argc, char **argv )
   map.drawVisitedCells ();
   map.printVisitedCells ( history );
   map.drawRFIDScan();
+  map.drawRFIDGridScan(myGrid);
+  myGrid.saveAs(("/home/pulver/Desktop/MCDM/rfdi_result2.pgm"));
 
   cout << "Num configuration: " << numConfiguration << endl;
   cout << "Travelled distance calculated during the algorithm: " << travelledDistance << endl;
@@ -797,7 +803,7 @@ void cleanPossibleDestination2 ( std::list< Pose >& possibleDestinations, Pose& 
 }
 
 
-void pushInitialPositions ( Map map, int x, int y, int orientation, int range, int FOV, double threshold, string actualPose, vector< pair< string, list< Pose > > >* graph2 )
+void pushInitialPositions ( dummy::Map map, int x, int y, int orientation, int range, int FOV, double threshold, string actualPose, vector< pair< string, list< Pose > > >* graph2 )
 {
   NewRay ray;
   MCDMFunction function;
