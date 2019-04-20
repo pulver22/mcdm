@@ -21,6 +21,7 @@ void cleanPossibleDestination2 ( std::list< Pose > &possibleDestinations, Pose& 
 void pushInitialPositions ( dummy::Map map, int x, int y, int orientation,  int range, int FOV, double threshold,
                             string actualPose, vector< pair< string, list< Pose > > > *graph2 );
 double calculateScanTime ( double scanAngle );
+void calculateDistance(list<Pose> list, MCDMFunction* function, dummy::Map& map, Astar* astar);
 Pose createFromInitialPose ( int x, int y, int orientation, int variation, int range, int FOV );
 
 // Input : ./mcdm_online_exploration_ros ./../Maps/map_RiccardoFreiburg_1m2.pgm 100 75 5 0 15 180 0.95 0.12
@@ -196,9 +197,7 @@ int main ( int argc, char **argv )
           cout << "Travelled distance calculated during the algorithm: " << travelledDistance << endl;
           cout << "------------------ HISTORY -----------------" << endl;
           // Retrieve the cell visited only the first time
-          travelledDistance = 0;
           vector<string>::iterator it_history = history.begin();
-          int history_counter = 0;
           list<Pose> tmp_history;
           EvaluationRecords record_history;
           for ( it_history; it_history!=prev(history.end(),1); it_history++)
@@ -209,38 +208,11 @@ int main ( int argc, char **argv )
               tmp_history.push_back(record_history.getPoseFromEncoding(*it_history));
             }
           }
-          history_counter = tmp_history.size();
-          list<Pose>::iterator p1_history = tmp_history.begin();
-          // Calculate the overall path connecting these cells
-          for ( p1_history; p1_history!= prev ( tmp_history.end(),1 ); p1_history++ )
-          {
-            cout << function.getEncodedKey(*p1_history,1) << endl; // print cell in the tabulist
-            list<Pose>::iterator p2_history = next ( p1_history,1 );
-            string path = astar.pathFind ( ( *p2_history ).getX(), ( *p2_history ).getY(), ( *p1_history ).getX(), ( *p1_history ).getY(),map );
-            travelledDistance = travelledDistance + astar.lengthPath ( path );
-            numOfTurning = numOfTurning + astar.getNumberOfTurning ( path );
-            //cout << astar.lengthPath ( path ) << endl;
-          }
-          cout << "History counter: " << history_counter << endl;
-          cout << "Travelled distance calculated from the history: " << travelledDistance << endl;
-
+          calculateDistance(tmp_history, &function, map, &astar );
 
           cout << "------------------ TABULIST -----------------" << endl;
           // Calculate the path connecting the cells in the tabulist, namely the cells that are visited one time and couldn't be visite again
-          travelledDistance = 0;
-          list<Pose>::iterator it = tabuList.begin();
-          for ( it; it!= prev ( tabuList.end(),1 ); it++ )
-          {
-            cout << function.getEncodedKey(*it,1) << endl; // print cell in the tabulist
-            std::list<Pose>::iterator it2 = next ( it,1 );
-            string path = astar.pathFind ( ( *it2 ).getX(), ( *it2 ).getY(), ( *it ).getX(), ( *it ).getY(),map );
-            travelledDistance = travelledDistance + astar.lengthPath ( path );
-            numOfTurning = numOfTurning + astar.getNumberOfTurning ( path );
-            //cout << astar.lengthPath ( path ) << endl;
-          }
-          cout << function.getEncodedKey(*prev(tabuList.end()),1) << endl;  // pribt last item of tabulist
-          numConfiguration = tabuList.size();
-          cout << "Travelled distance calculated from the tabulist: " << travelledDistance << endl;
+          calculateDistance(tabuList, &function, map, &astar );
 
           // Normalise the travel distance in meter
           // NOTE: assuming that the robot is moving at 0.5m/s and the resolution of the map is 0.5m per cell)
@@ -650,10 +622,8 @@ int main ( int argc, char **argv )
   cout << "Travelled distance calculated during the algorithm: " << travelledDistance << endl;
 
   cout << "------------------ HISTORY -----------------" << endl;
-  // Calculate which cells have been visited for only one time
-  travelledDistance = 0;
+  // Calculate which cells have been visited only once
   vector<string>::iterator it_history = history.begin();
-  int history_counter = 0;
   list<Pose> tmp_history;
   EvaluationRecords record_history;
   for ( it_history; it_history!=prev(history.end(),1); it_history++)
@@ -663,40 +633,10 @@ int main ( int argc, char **argv )
       tmp_history.push_back(record_history.getPoseFromEncoding(*it_history));
     }
   }
-
-  // Calculate the path among the cells visited only one time
-  history_counter = tmp_history.size();
-  list<Pose>::iterator p1_history = tmp_history.begin();
-  for ( p1_history; p1_history!= prev ( tmp_history.end(),1 ); p1_history++ )
-  {
-    cout << function.getEncodedKey(*p1_history,1) << endl; // print cell in the tabulist
-    list<Pose>::iterator p2_history = next ( p1_history,1 );
-    string path = astar.pathFind ( ( *p2_history ).getX(), ( *p2_history ).getY(), ( *p1_history ).getX(), ( *p1_history ).getY(),map );
-    cout << "1: " << travelledDistance << endl;
-    travelledDistance = travelledDistance + astar.lengthPath ( path );
-    cout << "2: " << travelledDistance << endl;
-    numOfTurning = numOfTurning + astar.getNumberOfTurning ( path );
-    //cout << astar.lengthPath ( path ) << endl;
-  }
-
-  cout << "History counter: " << history_counter << endl;
-  cout << "Travelled distance calculated from the history: " << travelledDistance << endl;
-
+  calculateDistance(tmp_history, &function, map, &astar );
 
   cout << "------------------ TABULIST -----------------" << endl;
-  // Calculate the path among the cells in the tabulist (visited one time and not visible again)
-  travelledDistance = 0;
-  list<Pose>::iterator it = tabuList.begin();
-  for ( it; it!= prev ( tabuList.end(),1 ); it++ )
-  {
-    std::list<Pose>::iterator it2 = next ( it,1 );
-    string path = astar.pathFind ( ( *it2 ).getX(), ( *it2 ).getY(), ( *it ).getX(), ( *it ).getY(),map );
-    travelledDistance = travelledDistance + astar.lengthPath ( path );
-    numOfTurning = numOfTurning + astar.getNumberOfTurning ( path );
-  }
-  numConfiguration = tabuList.size();
-  cout << "Tabulist counter: "<< numConfiguration << endl;
-  cout << "Travelled distance calculated from the tabulist: " << travelledDistance << endl;
+  calculateDistance(tabuList, &function, map, &astar );
 
   // Trasform distance in meters
   if ( imgresolution == 1.0 ) // Corridor map has a resolution of 0.5 meter per cell
@@ -840,4 +780,25 @@ Pose createFromInitialPose ( int x, int y, int orientation, int variation, int r
 {
   Pose tmp = Pose ( x,y, ( orientation + variation ) %360,FOV,range );
   return tmp;
+}
+
+
+void calculateDistance(list<Pose> history, MCDMFunction* function, dummy::Map& map, Astar* astar)
+{
+    std::list<Pose>::iterator it = history.begin();
+    double travelledDistance = 0;
+    int numOfTurning = 0;
+    // Calculate the overall path connecting these cells
+    for ( it; it != prev ( history.end(),1 ); it++ )
+    {
+//        cout << function->getEncodedKey(*it,1) << endl; // print cell in the tabulist
+        std::list<Pose>::iterator it2 = next ( it,1 );
+        string path = astar->pathFind ( ( *it2 ).getX(), ( *it2 ).getY(), ( *it ).getX(), ( *it ).getY(), map );
+        travelledDistance = travelledDistance + astar->lengthPath ( path );
+        numOfTurning = numOfTurning + astar->getNumberOfTurning ( path );
+        //cout << astar.lengthPath ( path ) << endl;
+    }
+    cout << "History counter: " << history.size() << endl;
+    cout << "Num of Turning: " << numOfTurning << endl;
+    cout << "Travelled distance: " << travelledDistance << endl;
 }
