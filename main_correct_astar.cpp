@@ -21,8 +21,12 @@ void cleanPossibleDestination2 ( std::list< Pose > &possibleDestinations, Pose& 
 void pushInitialPositions ( dummy::Map map, int x, int y, int orientation,  int range, int FOV, double threshold,
                             string actualPose, vector< pair< string, list< Pose > > > *graph2 );
 double calculateScanTime ( double scanAngle );
-void calculateDistance(list<Pose> list, MCDMFunction* function, dummy::Map& map, Astar* astar);
+void calculateDistance(list<Pose> list, dummy::Map& map, Astar* astar);
 Pose createFromInitialPose ( int x, int y, int orientation, int variation, int range, int FOV );
+void updatePathMetrics(int* count, Pose* target, Pose* previous, string actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
+                       dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int encodedKeyValue, Astar* astar , long* numConfiguration,
+                       double* totalAngle, double * travelledDistance, int* numOfTurning , double scanAngle);
+list<Pose> cleanHistory(vector<string>* history, EvaluationRecords* record_history);
 
 // Input : ./mcdm_online_exploration_ros ./../Maps/map_RiccardoFreiburg_1m2.pgm 100 75 5 0 15 180 0.95 0.12
 // resolution x y orientation range centralAngle precision threshold
@@ -69,6 +73,7 @@ int main ( int argc, char **argv )
   unordered_map<string,int> visitedCell;
   vector<string>history;
   history.push_back ( function.getEncodedKey ( target,1 ) );
+  EvaluationRecords record;
   //amount of time the robot should do nothing for scanning the environment ( final value expressed in second)
   unsigned int microseconds = 5 * 1000 * 1000 ;
   list<Pose> unexploredFrontiers;
@@ -80,6 +85,8 @@ int main ( int argc, char **argv )
   Astar astar;
   double totalScanTime = 0;
   bool act = true;
+  int encodedKeyValue = 0;
+
   // RFID
   double absTagX =  std::stod(argv[12]); // m.
   double absTagY =  std::stod(argv[11]); // m.
@@ -182,7 +189,7 @@ int main ( int argc, char **argv )
           // Get the last position in the graph and then remove it
           string targetString = graph2.at ( graph2.size()-1 ).first;
           graph2.pop_back();
-          EvaluationRecords record;
+//          EvaluationRecords record;
           target = record.getPoseFromEncoding ( targetString );
           // Add it to the history as cell visited more than once
           history.push_back ( function.getEncodedKey ( target,2 ) );
@@ -197,22 +204,12 @@ int main ( int argc, char **argv )
           cout << "Travelled distance calculated during the algorithm: " << travelledDistance << endl;
           cout << "------------------ HISTORY -----------------" << endl;
           // Retrieve the cell visited only the first time
-          vector<string>::iterator it_history = history.begin();
-          list<Pose> tmp_history;
-          EvaluationRecords record_history;
-          for ( it_history; it_history!=prev(history.end(),1); it_history++)
-          {
-
-            if ((*it_history).back() == '1')
-            {
-              tmp_history.push_back(record_history.getPoseFromEncoding(*it_history));
-            }
-          }
-          calculateDistance(tmp_history, &function, map, &astar );
+          list<Pose> tmp_history = cleanHistory(&history, &record);
+          calculateDistance(tmp_history, map, &astar );
 
           cout << "------------------ TABULIST -----------------" << endl;
           // Calculate the path connecting the cells in the tabulist, namely the cells that are visited one time and couldn't be visite again
-          calculateDistance(tabuList, &function, map, &astar );
+          calculateDistance(tabuList, map, &astar );
 
           // Normalise the travel distance in meter
           // NOTE: assuming that the robot is moving at 0.5m/s and the resolution of the map is 0.5m per cell)
@@ -282,35 +279,39 @@ int main ( int argc, char **argv )
           std::pair<Pose,double> result = function.selectNewPose ( record );
           target = result.first;
           // If the selected destination does not appear among the cells already visited
-          if ( contains ( tabuList,target ) == false )
+          if ( ! contains ( tabuList,target ))
           {
             act = true;
-            count = count + 1;
-            // 			numConfiguration++;
-            // 			cout << "ADDED" << x << " " << y << endl;
             // Add it to the list of visited cells as first-view
-            history.push_back ( function.getEncodedKey ( target,1 ) );
-            cout << function.getEncodedKey ( target,1 ) << endl;
-            // Add it to the list of visited cells from which acting
-            tabuList.push_back ( target );
-            // Remove it from the list of candidate position
-            cleanPossibleDestination2 ( nearCandidates,target );
-            // Push in the graph the previous robot pose and the new list of candidate position, without the current pose of the robot
-            // We don't want to visit this cell again
-            std::pair<string,list<Pose>> pair = make_pair ( actualPose,nearCandidates );
-            graph2.push_back ( pair );
-            // Calculate the path from the previous robot pose to the current one
-            string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
-            cout << "1: " << travelledDistance << endl;
-            // Update the distance counting
-            travelledDistance = travelledDistance + astar.lengthPath(path);
-            cout << "2: " << travelledDistance << endl;
-            // Update the turning counting
-            numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
-            // Update the number of configurations of the robot along the task
-            numConfiguration++;
-            // Update the scanned angle counting
-            totalAngle += scanAngle;
+            encodedKeyValue = 1;
+            updatePathMetrics(&count, &target, &previous, actualPose, &nearCandidates, &graph2, &map, &function,
+                &tabuList, &history, encodedKeyValue, &astar, &numConfiguration, &totalAngle, &travelledDistance, &numOfTurning, scanAngle);
+//                  count = count + 1;
+//                  // 			numConfiguration++;
+//                  // 			cout << "ADDED" << x << " " << y << endl;
+//                  // Add it to the list of visited cells as first-view
+//                  history.push_back ( function.getEncodedKey ( target,1 ) );
+//                  cout << function.getEncodedKey ( target,1 ) << endl;
+//                  // Add it to the list of visited cells from which acting
+//                  tabuList.push_back ( target );
+//                  // Remove it from the list of candidate position
+//                  cleanPossibleDestination2 ( nearCandidates,target );
+//                  // Push in the graph the previous robot pose and the new list of candidate position, without the current pose of the robot
+//                  // We don't want to visit this cell again
+//                  std::pair<string,list<Pose>> pair = make_pair ( actualPose,nearCandidates );
+//                  graph2.push_back ( pair );
+//                  // Calculate the path from the previous robot pose to the current one
+//                  string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
+//                  cout << "1: " << travelledDistance << endl;
+//                  // Update the distance counting
+//                  travelledDistance = travelledDistance + astar.lengthPath(path);
+//                  cout << "2: " << travelledDistance << endl;
+//                  // Update the turning counting
+//                  numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
+//                  // Update the number of configurations of the robot along the task
+//                  numConfiguration++;
+//                  // Update the scanned angle counting
+//                  totalAngle += scanAngle;
           }
           // ...otherwise, if the seleced cell has already been visited
           else
@@ -331,24 +332,27 @@ int main ( int argc, char **argv )
                 // Select the new pose of the robot
                 std::pair<Pose,double> result = function.selectNewPose ( record );
                 target = result.first;
-                // Add it to the list of visited cell to not go back
-                tabuList.push_back ( target );
-                // Add it to history of cell as visited for the first time
-                history.push_back ( function.getEncodedKey ( target,1 ) );
-                cout << function.getEncodedKey ( target,1 ) << endl;
-                // Calculate the path from current robot pose to there
-                string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
-                cout << "1: " << travelledDistance << endl;
-                // Update the overall distance covered by the robot
-                travelledDistance = travelledDistance + astar.lengthPath(path);
-                cout << "2: " << travelledDistance << endl;
-                // Update the overall number of turnings
-                numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
-                // Update the number of configurations of the robot during the navigation
-                numConfiguration++;
-                // Update the overall scan angle
-                totalAngle += scanAngle;
-                count = count + 1;
+                encodedKeyValue = 1;
+                updatePathMetrics(&count, &target, &previous, actualPose, &nearCandidates, &graph2, &map, &function,
+                                  &tabuList, &history, encodedKeyValue, &astar, &numConfiguration, &totalAngle, &travelledDistance, &numOfTurning, scanAngle);
+//                        // Add it to the list of visited cell to not go back
+//                        tabuList.push_back ( target );
+//                        // Add it to history of cell as visited for the first time
+//                        history.push_back ( function.getEncodedKey ( target,1 ) );
+//                        cout << function.getEncodedKey ( target,1 ) << endl;
+//                        // Calculate the path from current robot pose to there
+//                        string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
+//                        cout << "1: " << travelledDistance << endl;
+//                        // Update the overall distance covered by the robot
+//                        travelledDistance = travelledDistance + astar.lengthPath(path);
+//                        cout << "2: " << travelledDistance << endl;
+//                        // Update the overall number of turnings
+//                        numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
+//                        // Update the number of configurations of the robot during the navigation
+//                        numConfiguration++;
+//                        // Update the overall scan angle
+//                        totalAngle += scanAngle;
+//                        count = count + 1;
                 // Set that we are now in backtracking
                 btMode = true;
               }
@@ -477,7 +481,7 @@ int main ( int argc, char **argv )
       myGrid.addEllipse(rxPower - SENSITIVITY, map.getNumGridCols() - target.getX(), target.getY(), target.getOrientation(), -0.5, 7.0);
       // Remove the current pose from the list of possible candidate cells
       cleanPossibleDestination2 ( nearCandidates,target );
-      // Get the list of teh candidate cells with their evaluation
+      // Get the list of the candidate cells with their evaluation
       EvaluationRecords *record = function.evaluateFrontiers ( nearCandidates,map,threshold );
 
       // If there are candidate cells
@@ -487,29 +491,35 @@ int main ( int argc, char **argv )
         std::pair<Pose,double> result = function.selectNewPose ( record );
         target = result.first;
         // If this cells has not been visited before
-        if ( contains ( tabuList,target ) == false )
+        if ( ! contains ( tabuList,target ) )
         {
-          count = count + 1;
-          // Add it to history as visited for the first time
-          history.push_back ( function.getEncodedKey ( target,1 ) );
-          // Add it to cell that must not be visited again
-          tabuList.push_back ( target );
-          cout<< function.getEncodedKey ( target,1 ) << endl;
-          // Calculate the distance between previous pose to the new one
-          string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
-          // Update the overall counting of distance
-          travelledDistance = travelledDistance + astar.lengthPath(path);
-          cout << "BTL "<<astar.lengthPath ( path ) << endl;
-          // Update the counting of turning
-          numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
-          // Update the counting of configuration of the robot during the navigation
-          numConfiguration++;
-          // Update the overall scanned angle
-          totalAngle += scanAngle;
-          // Remove the destination from the list of candidate cells
-          cleanPossibleDestination2 ( nearCandidates,target );
-          // Associate the list of candiates to the current pose
-          std::pair<string,list<Pose>> pair = make_pair ( actualPose,nearCandidates );
+          // Add it to the list of visited cells as first-view
+          encodedKeyValue = 1;
+          updatePathMetrics(&count, &target, &previous, actualPose, &nearCandidates, &graph2, &map, &function,
+                            &tabuList, &history, encodedKeyValue, &astar, &numConfiguration, &totalAngle, &travelledDistance, &numOfTurning, scanAngle);
+//
+//                // Add it to history as visited for the first time
+//                history.push_back ( function.getEncodedKey ( target,1 ) );
+//                // Add it to cell that must not be visited again
+//                tabuList.push_back ( target );
+//                cout<< function.getEncodedKey ( target,1 ) << endl;
+//                // Calculate the distance between previous pose to the new one
+//                string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
+//                // Update the overall counting of distance
+//                travelledDistance = travelledDistance + astar.lengthPath(path);
+//                cout << "BTL "<<astar.lengthPath ( path ) << endl;
+//                // Update the counting of turning
+//                numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
+//                // Update the counting of configuration of the robot during the navigation
+//                numConfiguration++;
+//                // Update the overall scanned angle
+//                totalAngle += scanAngle;
+//                // Remove the destination from the list of candidate cells
+//                cleanPossibleDestination2 ( nearCandidates,target );
+//                // Associate the list of candiates to the current pose
+//                std::pair<string,list<Pose>> pair = make_pair ( actualPose,nearCandidates );
+//                count = count + 1;
+
           // Leave the backtracking branch
           btMode = false;
           nearCandidates.clear();
@@ -522,7 +532,7 @@ int main ( int argc, char **argv )
           if ( nearCandidates.size() != 0 )
           {
             cout << "[BT-MODE1]Already visited, but there are other candidates" << endl;
-            count = count + 1;
+
             // Remove the destination from the candidate list
             cleanPossibleDestination2 ( nearCandidates,target );
             // Get the candidates with their evaluation
@@ -530,21 +540,27 @@ int main ( int argc, char **argv )
             // Select the new destination
             std::pair<Pose,double> result = function.selectNewPose ( record );
             target = result.first;
-            // Add it to the list of cell that must not be visited again
-            tabuList.push_back ( target );
-            // history.push_back ( function.getEncodedKey ( target,1 ) );  // added recently but it was not here
-            cout<< function.getEncodedKey ( target,1 ) << endl;
-            // Calculate the distance between the destination and the previous pose
-            string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
-            cout << "BT :"<<astar.lengthPath ( path ) << endl;
-            // Update the overall distance covered by the robot
-            travelledDistance = travelledDistance + astar.lengthPath(path);
-            // Update the overall number of turnings
-            numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
-            // Update the number of configuration of the robot during navigation
-            numConfiguration++;
-            // Update the overall scanned angle
-            totalAngle += scanAngle;
+
+            // Add it to the list of visited cells as first-view
+            encodedKeyValue = 1;
+            updatePathMetrics(&count, &target, &previous, actualPose, &nearCandidates, &graph2, &map, &function,
+                              &tabuList, &history, encodedKeyValue, &astar, &numConfiguration, &totalAngle, &travelledDistance, &numOfTurning, scanAngle);
+//                    // Add it to the list of cell that must not be visited again
+//                    tabuList.push_back ( target );
+//                    history.push_back ( function.getEncodedKey ( target,1 ) );  // added recently but it was not here
+//                    cout<< function.getEncodedKey ( target,1 ) << endl;
+//                    // Calculate the distance between the destination and the previous pose
+//                    string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
+//                    cout << "BT :"<<astar.lengthPath ( path ) << endl;
+//                    // Update the overall distance covered by the robot
+//                    travelledDistance = travelledDistance + astar.lengthPath(path);
+//                    // Update the overall number of turnings
+//                    numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
+//                    // Update the number of configuration of the robot during navigation
+//                    numConfiguration++;
+//                    // Update the overall scanned angle
+//                    totalAngle += scanAngle;
+//                    count = count + 1;
           }
           // ...otherwise, if there are no more candidates
           else
@@ -555,22 +571,26 @@ int main ( int argc, char **argv )
             // And remove from the graph
             graph2.pop_back();
             target = record->getPoseFromEncoding ( targetString );
-            // Add it to the list of cells that must not be visited again
-            tabuList.push_back ( target );
             // Add it to the history of cell as already more than once
-            history.push_back ( function.getEncodedKey ( target,2 ) );
-            // Calculate the distance from the previous pose and the destination
-            string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
-            cout <<"BT: "<< astar.lengthPath ( path ) << endl;
-            // Update the overall distance of the robot
-            travelledDistance = travelledDistance + astar.lengthPath(path);
-            // Update the overall number of turnings
-            numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
-            // Update the overall number of configuration of the robot during navigation
-            numConfiguration++;
-            // Update the overall scanned angle
-            totalAngle += scanAngle;
-            count++;
+            encodedKeyValue = 2;
+            updatePathMetrics(&count, &target, &previous, actualPose, &nearCandidates, &graph2, &map, &function,
+                              &tabuList, &history, encodedKeyValue, &astar, &numConfiguration, &totalAngle, &travelledDistance, &numOfTurning, scanAngle);
+//                    // Add it to the list of cells that must not be visited again
+//                    tabuList.push_back ( target );
+//                    // Add it to the history of cell as already more than once
+//                    history.push_back ( function.getEncodedKey ( target,2 ) );
+//                    // Calculate the distance from the previous pose and the destination
+//                    string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
+//                    cout <<"BT: "<< astar.lengthPath ( path ) << endl;
+//                    // Update the overall distance of the robot
+//                    travelledDistance = travelledDistance + astar.lengthPath(path);
+//                    // Update the overall number of turnings
+//                    numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
+//                    // Update the overall number of configuration of the robot during navigation
+//                    numConfiguration++;
+//                    // Update the overall scanned angle
+//                    totalAngle += scanAngle;
+//                    count++;
             // Leave backtracking
             btMode = false;
             // Clear candidate list
@@ -586,22 +606,27 @@ int main ( int argc, char **argv )
         // and the remove it form the graph
         graph2.pop_back();
         target = record->getPoseFromEncoding ( targetString );
-        // Add it to the list of cell that must not be visited again
-        tabuList.push_back ( target );
+
         // Add it in history as cell visited more than once
-        history.push_back ( function.getEncodedKey ( target,2 ) );
-        // Calculate the distance from the previous cell to the new destination
-        string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
-        cout <<"BT:"<< astar.lengthPath ( path ) << endl;
-        // Update the overall distance covered by the robot
-        travelledDistance = travelledDistance + astar.lengthPath(path);
-        // Update the oevrall number of turning of the robot
-        numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
-        // Update the number of configuration of the robot during navigation
-        numConfiguration++;
-        // Update the overall scanned angle
-        totalAngle += scanAngle;
-        count = count + 1;
+        encodedKeyValue = 2;
+        updatePathMetrics(&count, &target, &previous, actualPose, &nearCandidates, &graph2, &map, &function,
+                          &tabuList, &history, encodedKeyValue, &astar, &numConfiguration, &totalAngle, &travelledDistance, &numOfTurning, scanAngle);
+//                  // Add it to the list of cell that must not be visited again
+//                  tabuList.push_back ( target );
+//                  // Add it in history as cell visited more than once
+//                  history.push_back ( function.getEncodedKey ( target,2 ) );
+//                  // Calculate the distance from the previous cell to the new destination
+//                  string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
+//                  cout <<"BT:"<< astar.lengthPath ( path ) << endl;
+//                  // Update the overall distance covered by the robot
+//                  travelledDistance = travelledDistance + astar.lengthPath(path);
+//                  // Update the oevrall number of turning of the robot
+//                  numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
+//                  // Update the number of configuration of the robot during navigation
+//                  numConfiguration++;
+//                  // Update the overall scanned angle
+//                  totalAngle += scanAngle;
+//                  count = count + 1;
         // Leave backtracking
         btMode = false;
         cout << "[BT-MODE3] Go back to previous positions in the graph" << endl;
@@ -623,20 +648,11 @@ int main ( int argc, char **argv )
 
   cout << "------------------ HISTORY -----------------" << endl;
   // Calculate which cells have been visited only once
-  vector<string>::iterator it_history = history.begin();
-  list<Pose> tmp_history;
-  EvaluationRecords record_history;
-  for ( it_history; it_history!=prev(history.end(),1); it_history++)
-  {
-    if ((*it_history).back() == '1')
-    {
-      tmp_history.push_back(record_history.getPoseFromEncoding(*it_history));
-    }
-  }
-  calculateDistance(tmp_history, &function, map, &astar );
+  list<Pose> tmp_history = cleanHistory(&history, &record);
+  calculateDistance(tmp_history, map, &astar );
 
   cout << "------------------ TABULIST -----------------" << endl;
-  calculateDistance(tabuList, &function, map, &astar );
+  calculateDistance(tabuList, map, &astar );
 
   // Trasform distance in meters
   if ( imgresolution == 1.0 ) // Corridor map has a resolution of 0.5 meter per cell
@@ -682,30 +698,7 @@ int main ( int argc, char **argv )
     cout << "FINAL: MAP NOT EXPLORED! :(" << endl;
     cout << "-----------------------------------------------------------------"<<endl;
   }
-  /*
-  double finalDistance = 0;
-  cout << tabuList.size() << endl;
-  int tmp = 0;
-  list<Pose>::iterator it = tabuList.begin();
-  for ( it; it!= prev ( tabuList.end(),1 ); it++ )
-    {
-      tmp++;
-      std::list<Pose>::iterator it2 = next ( it,1 );
-      string path = astar.pathFind ( ( *it2 ).getX(), ( *it2 ).getY(), ( *it ).getX(), ( *it ).getY(),map );
-      finalDistance = finalDistance + astar.lengthPath ( path );
-      cout << astar.lengthPath ( path ) << endl;
-    }
 
-
-  cout << "FINAL LENGTH from tabulist: " << finalDistance << endl;
-  cout << tmp << endl;
-  cout << history.size() << endl;
-  vector<string>::iterator it3 = history.begin();
-  for ( it3; it3 != history.end(); it3++ )
-    {
-      cout << *it3 << endl;
-    }
-    */
   auto endMCDM= chrono::high_resolution_clock::now();
 
   double totalTimeMCDM = chrono::duration<double,milli> ( endMCDM -startMCDM ).count();
@@ -783,7 +776,7 @@ Pose createFromInitialPose ( int x, int y, int orientation, int variation, int r
 }
 
 
-void calculateDistance(list<Pose> history, MCDMFunction* function, dummy::Map& map, Astar* astar)
+void calculateDistance(list<Pose> history, dummy::Map& map, Astar* astar)
 {
     std::list<Pose>::iterator it = history.begin();
     double travelledDistance = 0;
@@ -798,7 +791,52 @@ void calculateDistance(list<Pose> history, MCDMFunction* function, dummy::Map& m
         numOfTurning = numOfTurning + astar->getNumberOfTurning ( path );
         //cout << astar.lengthPath ( path ) << endl;
     }
-    cout << "History counter: " << history.size() << endl;
+    cout << "Number of cells: " << history.size() << endl;
     cout << "Num of Turning: " << numOfTurning << endl;
-    cout << "Travelled distance: " << travelledDistance << endl;
+    cout << "Travelled distance (cells): " << travelledDistance << endl;
+    cout << "Travelled distance (meters): " << travelledDistance / 2.0 << endl; // Valid only if imgresolution == 1.0 (cell side is 0.5m)
+}
+
+void updatePathMetrics(int* count, Pose* target, Pose* previous, string actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
+    dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int encodedKeyValue, Astar* astar , long* numConfiguration,
+    double* totalAngle, double* travelledDistance, int* numOfTurning , double scanAngle)
+{
+  // Add it to the list of visited cells as first-view
+  history->push_back ( function->getEncodedKey ( *target, encodedKeyValue ) );
+  cout << function->getEncodedKey ( *target,1 ) << endl;
+  // Add it to the list of visited cells from which acting
+  tabuList->push_back ( *target );
+  // Remove it from the list of candidate position
+  cleanPossibleDestination2 ( *nearCandidates, *target );
+  // Push in the graph the previous robot pose and the new list of candidate position, without the current pose of the robot
+  // We don't want to visit this cell again
+  std::pair<string,list<Pose>> pair = make_pair ( actualPose, *nearCandidates );
+  graph2->push_back ( pair );
+  // Calculate the path from the previous robot pose to the current one
+  string path = astar->pathFind ( target->getX(), target->getY(), previous->getX(), previous->getY(), *map );
+  cout << "1: " << *travelledDistance << endl;
+  // Update the distance counting
+  *travelledDistance = *travelledDistance + astar->lengthPath(path);
+  cout << "2: " << *travelledDistance << endl;
+  // Update the turning counting
+  *numOfTurning = *numOfTurning + astar->getNumberOfTurning(path);
+  // Update the scanning angle
+  *totalAngle += scanAngle;
+  // Update the number of configurations of the robot along the task
+  (*numConfiguration)++;
+  // Update counter of iterations
+  (*count)++;
+}
+
+list<Pose> cleanHistory(vector<string>* history, EvaluationRecords* record_history){
+  vector<string>::iterator it_history = history->begin();
+  list<Pose> tmp_history;
+  for ( it_history; it_history!=prev(history->end(),1); it_history++)
+  {
+    if ((*it_history).back() == '1')
+    {
+      tmp_history.push_back(record_history->getPoseFromEncoding(*it_history));
+    }
+  }
+  return tmp_history;
 }

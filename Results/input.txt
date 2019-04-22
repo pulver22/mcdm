@@ -30,3 +30,26 @@
 
 #RFID
 ./mcdm_online_exploration ./../Images/cor_map_05_00_new1.pgm 1 99 99 180 5 180 1 0 1 54 143 865e6 0
+Num configuration: 64
+Travelled distance calculated during the algorithm: 219.007
+------------------ HISTORY -----------------
+History counter: 64
+Num of Turning: 29
+Travelled distance: 358.831
+------------------ TABULIST -----------------
+History counter: 64
+Num of Turning: 29
+Travelled distance: 358.831
+-----------------------------------------------------------------
+Area sensed: 916 / 916
+Total cell visited :64
+Total travelled distance (meters): 109.504
+Total travel time: 219.007s, 3.65012 m
+Total number of turning: 21
+Sum of scan angles (radians): 82.251
+Total time for scanning: 2861.15
+Total time for exploration: 3080.16s, 51.336 m
+FINAL: MAP EXPLORED!
+RFID pose: [56,142]
+[Grid]RFID pose: [56,136]
+-----------------------------------------------------------------
