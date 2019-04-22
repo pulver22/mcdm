@@ -27,6 +27,8 @@ void updatePathMetrics(int* count, Pose* target, Pose* previous, string actualPo
                        dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int encodedKeyValue, Astar* astar , long* numConfiguration,
                        double* totalAngle, double * travelledDistance, int* numOfTurning , double scanAngle);
 list<Pose> cleanHistory(vector<string>* history, EvaluationRecords* record_history);
+void printResult(long newSensedCells, long totalFreeCells, double precision, long numConfiguration, double travelledDistance,
+                 int numOfTurning, double totalAngle, double totalScanTime);
 
 // Input : ./mcdm_online_exploration_ros ./../Maps/map_RiccardoFreiburg_1m2.pgm 100 75 5 0 15 180 0.95 0.12
 // resolution x y orientation range centralAngle precision threshold
@@ -217,19 +219,21 @@ int main ( int argc, char **argv )
           {
             travelledDistance = travelledDistance/2;
           }
-          cout << "-----------------------------------------------------------------"<<endl;
-          cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
-          cout << "Total cell visited :" << numConfiguration <<endl;
-          cout << "Total travelled distance (meters): " << travelledDistance << endl;
-          cout << "Total travel time: " << travelledDistance / 0.5 << "s, " << ( travelledDistance/0.5) /60 << " m"<< endl;
-          cout << "I came back to the original position since i don't have any other candidate position"<< endl;
-          cout << "Total exploration time (s): " << travelledDistance / 0.5 << endl;
-          cout << "Total number of turning: " << numOfTurning << endl;
-          cout << "Sum of scan angles (radians): " << totalAngle << endl;
-          cout << "Total time for scanning: " << totalScanTime << endl;
-          cout << "Total time for exploration: " << travelledDistance/0.5 + totalScanTime << "s, " << ( travelledDistance/0.5 + totalScanTime ) /60 << " m" << endl;
-          cout << "FINAL: MAP NOT EXPLORED! :(" << endl;
-          cout << "-----------------------------------------------------------------"<<endl;
+          printResult(newSensedCells, totalFreeCells, precision, numConfiguration, travelledDistance, numOfTurning,
+              totalAngle, totalScanTime);
+//                cout << "-----------------------------------------------------------------"<<endl;
+//                cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
+//                cout << "Total cell visited :" << numConfiguration <<endl;
+//                cout << "Total travelled distance (meters): " << travelledDistance << endl;
+//                cout << "Total travel time: " << travelledDistance / 0.5 << "s, " << ( travelledDistance/0.5) /60 << " m"<< endl;
+//                cout << "I came back to the original position since i don't have any other candidate position"<< endl;
+//                cout << "Total exploration time (s): " << travelledDistance / 0.5 << endl;
+//                cout << "Total number of turning: " << numOfTurning << endl;
+//                cout << "Sum of scan angles (radians): " << totalAngle << endl;
+//                cout << "Total time for scanning: " << totalScanTime << endl;
+//                cout << "Total time for exploration: " << travelledDistance/0.5 + totalScanTime << "s, " << ( travelledDistance/0.5 + totalScanTime ) /60 << " m" << endl;
+//                cout << "FINAL: MAP NOT EXPLORED! :(" << endl;
+//                cout << "-----------------------------------------------------------------"<<endl;
           exit ( 0 );
         }
 
@@ -660,44 +664,51 @@ int main ( int argc, char **argv )
     travelledDistance = travelledDistance/2;
   }
 
+
+  printResult(newSensedCells, totalFreeCells, precision, numConfiguration, travelledDistance, numOfTurning,
+      totalAngle, totalScanTime);
   // Find the tag
   std::pair<int,int> tag = map.findTag();
+  cout << "RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
+  tag = map.findTagfromGridMap(myGrid);
+  cout << "[Grid]RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
+  cout << "-----------------------------------------------------------------"<<endl;
   // Print this information if correct coverage has been achieved
-  if ( sensedCells >= precision * totalFreeCells )
-  {
-    cout << "-----------------------------------------------------------------"<<endl;
-    cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
-    cout << "Total cell visited :" << numConfiguration <<endl;
-    cout << "Total travelled distance (meters): " << travelledDistance << endl;
-    cout << "Total travel time: " << travelledDistance / 0.5 << "s, " << ( travelledDistance/0.5) /60 << " m"<< endl;
-    cout << "Total number of turning: " << numOfTurning << endl;
-    cout << "Sum of scan angles (radians): " << totalAngle << endl;
-    cout << "Total time for scanning: " << totalScanTime << endl;
-    cout << "Total time for exploration: " << travelledDistance/0.5 + totalScanTime << "s, " << ( travelledDistance/0.5 + totalScanTime ) /60 << " m" << endl;
-    cout << "FINAL: MAP EXPLORED!" << endl;
-    cout << "RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
-    std::pair<int,int> tag = map.findTagfromGridMap(myGrid);
-    cout << "[Grid]RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
-    cout << "-----------------------------------------------------------------"<<endl;
-
-
-  }
-  else
-  {
-    cout << "-----------------------------------------------------------------"<<endl;
-    cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
-    cout << "I came back to the original position since i don't have any other candidate position"<< endl;
-    cout << "Total cell visited :" << numConfiguration <<endl;
-    cout << "Total travelled distance (meters): " << travelledDistance << endl;
-    cout << "Total travel time: " << travelledDistance / 0.5 << "s, " << ( travelledDistance/0.5) /60 << " m"<< endl;
-    cout << "Total exploration time (s): " << travelledDistance / 0.5 << endl;
-    cout << "Total number of turning: " << numOfTurning << endl;
-    cout << "Sum of scan angles (radians): " << totalAngle << endl;
-    cout << "Total time for scanning: " << totalScanTime << endl;
-    cout << "Total time for exploration: " << travelledDistance/0.5 + totalScanTime << "s, " << ( travelledDistance/0.5 + totalScanTime ) /60 << " m" << endl;
-    cout << "FINAL: MAP NOT EXPLORED! :(" << endl;
-    cout << "-----------------------------------------------------------------"<<endl;
-  }
+//  if ( sensedCells >= precision * totalFreeCells )
+//  {
+//    cout << "-----------------------------------------------------------------"<<endl;
+//    cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
+//    cout << "Total cell visited :" << numConfiguration <<endl;
+//    cout << "Total travelled distance (meters): " << travelledDistance << endl;
+//    cout << "Total travel time: " << travelledDistance / 0.5 << "s, " << ( travelledDistance/0.5) /60 << " m"<< endl;
+//    cout << "Total number of turning: " << numOfTurning << endl;
+//    cout << "Sum of scan angles (radians): " << totalAngle << endl;
+//    cout << "Total time for scanning: " << totalScanTime << endl;
+//    cout << "Total time for exploration: " << travelledDistance/0.5 + totalScanTime << "s, " << ( travelledDistance/0.5 + totalScanTime ) /60 << " m" << endl;
+//    cout << "FINAL: MAP EXPLORED!" << endl;
+//    cout << "RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
+//
+//    cout << "[Grid]RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
+//    cout << "-----------------------------------------------------------------"<<endl;
+//
+//
+//  }
+//  else
+//  {
+//    cout << "-----------------------------------------------------------------"<<endl;
+//    cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
+//    cout << "I came back to the original position since i don't have any other candidate position"<< endl;
+//    cout << "Total cell visited :" << numConfiguration <<endl;
+//    cout << "Total travelled distance (meters): " << travelledDistance << endl;
+//    cout << "Total travel time: " << travelledDistance / 0.5 << "s, " << ( travelledDistance/0.5) /60 << " m"<< endl;
+//    cout << "Total exploration time (s): " << travelledDistance / 0.5 << endl;
+//    cout << "Total number of turning: " << numOfTurning << endl;
+//    cout << "Sum of scan angles (radians): " << totalAngle << endl;
+//    cout << "Total time for scanning: " << totalScanTime << endl;
+//    cout << "Total time for exploration: " << travelledDistance/0.5 + totalScanTime << "s, " << ( travelledDistance/0.5 + totalScanTime ) /60 << " m" << endl;
+//    cout << "FINAL: MAP NOT EXPLORED! :(" << endl;
+//    cout << "-----------------------------------------------------------------"<<endl;
+//  }
 
   auto endMCDM= chrono::high_resolution_clock::now();
 
@@ -839,4 +850,30 @@ list<Pose> cleanHistory(vector<string>* history, EvaluationRecords* record_histo
     }
   }
   return tmp_history;
+}
+
+void printResult(long newSensedCells, long totalFreeCells, double precision, long numConfiguration, double travelledDistance,
+    int numOfTurning, double totalAngle, double totalScanTime)
+{
+  cout << "-----------------------------------------------------------------"<<endl;
+  cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
+  cout << "Total cell visited :" << numConfiguration <<endl;
+  cout << "Total travelled distance (meters): " << travelledDistance << endl;
+  cout << "Total travel time: " << travelledDistance / 0.5 << "s, " << ( travelledDistance/0.5) /60 << " m"<< endl;
+  cout << "I came back to the original position since i don't have any other candidate position"<< endl;
+  cout << "Total exploration time (s): " << travelledDistance / 0.5 << endl;
+  cout << "Total number of turning: " << numOfTurning << endl;
+  cout << "Sum of scan angles (radians): " << totalAngle << endl;
+  cout << "Total time for scanning: " << totalScanTime << endl;
+  cout << "Total time for exploration: " << travelledDistance/0.5 + totalScanTime << "s, " <<
+                                              ( travelledDistance/0.5 + totalScanTime ) /60 << " m" << endl;
+  if (newSensedCells < precision * totalFreeCells)
+  {
+    cout << "FINAL: MAP NOT EXPLORED! :(" << endl;
+  } else
+  {
+    cout << "FINAL: MAP EXPLORED!" << endl;
+  }
+
+  cout << "-----------------------------------------------------------------"<<endl;
 }
