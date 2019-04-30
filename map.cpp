@@ -609,7 +609,7 @@ void Map::drawRFIDGridScan(RFIDGridmap grid)
     for(long col = 0; col < columns; ++col)
     {
       int value = static_cast<int>(grid.getCell(row, col));
-     cout << value << endl;
+//     cout << value << endl;
       value = std::min(value, 255);
       value = std::max(value, 0);
       resultMap << value  << " ";
