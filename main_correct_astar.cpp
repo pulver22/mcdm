@@ -78,6 +78,7 @@ int main ( int argc, char **argv )
   NewRay ray;
   ray.setGridToPathGridScale ( gridToPathGridScale );
   MCDMFunction function(w_info_gain, w_travel_distance, w_sensing_time);
+//  MCDMFunction function;
   long sensedCells = 0;
   long newSensedCells = 0;
   long totalFreeCells = map.getTotalFreeCells();

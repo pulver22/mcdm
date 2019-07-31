@@ -14,21 +14,21 @@ class MCDMFunction
 {
 
 public:
-    MCDMFunction();
-    ~MCDMFunction();
-    double evaluateFrontier(Pose& p, dummy::Map& map);
-    EvaluationRecords* evaluateFrontiers(const list< Pose >& frontiers, dummy::Map& map, double threshold);
-    pair< Pose, double > selectNewPose(EvaluationRecords* evaluationRecords);
-    string getEncodedKey(Pose& p, int value);
-    EvaluationRecords* evaluateFrontiersVec(const std::vector< Pose >& frontiers,  dummy::Map& map,double threshold);
+  MCDMFunction(float w_criterion_1, float w_criterion_2, float w_criterion_3);
+  ~MCDMFunction();
+  double evaluateFrontier(Pose& p, dummy::Map& map);
+  EvaluationRecords* evaluateFrontiers(const list< Pose >& frontiers, dummy::Map& map, double threshold);
+  pair< Pose, double > selectNewPose(EvaluationRecords* evaluationRecords);
+  string getEncodedKey(Pose& p, int value);
+  EvaluationRecords* evaluateFrontiersVec(const std::vector< Pose >& frontiers,  dummy::Map& map,double threshold);
 
 protected:
 
-    Criterion * createCriterion(string name, double weight);
-    unordered_map<string, Criterion* > criteria;
-    vector<Criterion* > activeCriteria;
-    WeightMatrix * matrix ;
-   //mutex myMutex;
+  Criterion * createCriterion(string name, double weight);
+  unordered_map<string, Criterion* > criteria;
+  vector<Criterion* > activeCriteria;
+  WeightMatrix * matrix ;
+  //mutex myMutex;
 
 };
 #endif // MCDMFUNCTION_H

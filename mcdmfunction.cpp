@@ -19,7 +19,7 @@ using namespace dummy;
 
 /* create a list of criteria with name and <encoded_name,weight> pair after reading that from a file
  */
-MCDMFunction::MCDMFunction() //:
+MCDMFunction::MCDMFunction(float w_criterion_1, float w_criterion_2, float w_criterion_3) //:
 //criteria(new unordered_map<string, Criterion* >())
 //activeCriteria(new vector<Criterion >() )
 {
@@ -27,7 +27,7 @@ MCDMFunction::MCDMFunction() //:
   // Initialization ad-hoc: create a weightmatrix for 3 criteria with predefined weight
   MCDMWeightReader reader;
   //cout << "test" << endl;
-  matrix = reader.getMatrix();
+  matrix = reader.getMatrix(w_criterion_1, w_criterion_2, w_criterion_3);
   //cout << "test2" << endl;
 
   // get the list of all criteria to be considered
