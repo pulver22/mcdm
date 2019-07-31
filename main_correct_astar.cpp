@@ -19,7 +19,7 @@ using namespace dummy;
 bool contains ( std::list< Pose >& list, Pose& p );
 void cleanPossibleDestination2 ( std::list< Pose > &possibleDestinations, Pose& p );
 void pushInitialPositions ( dummy::Map map, int x, int y, int orientation,  int range, int FOV, double threshold,
-                            string actualPose, vector< pair< string, list< Pose > > > *graph2 );
+                            string actualPose, vector< pair< string, list< Pose > > > *graph2, MCDMFunction *function);
 double calculateScanTime ( double scanAngle );
 void calculateDistance(list<Pose> list, dummy::Map& map, Astar* astar);
 Pose createFromInitialPose ( int x, int y, int orientation, int variation, int range, int FOV );
@@ -29,6 +29,7 @@ void updatePathMetrics(int* count, Pose* target, Pose* previous, string actualPo
 list<Pose> cleanHistory(vector<string>* history, EvaluationRecords* record_history);
 void printResult(long newSensedCells, long totalFreeCells, double precision, long numConfiguration, double travelledDistance,
                  int numOfTurning, double totalAngle, double totalScanTime);
+void filePutContents(const std::string& name, const std::string& content, bool append = false);
 
 // Input : ./mcdm_online_exploration_ros ./../Maps/map_RiccardoFreiburg_1m2.pgm 100 75 5 0 15 180 0.95 0.12
 // resolution x y orientation range centralAngle precision threshold
@@ -53,6 +54,17 @@ int main ( int argc, char **argv )
   int initRange = atoi ( argv[6] );
   double precision = atof ( argv[8] );
   double threshold = atof ( argv[9] );
+  // RFID
+  double absTagX =  std::stod(argv[12]); // m.
+  double absTagY =  std::stod(argv[11]); // m.
+  double freq = std::stod(argv[13]); // Hertzs
+  double txtPower= std::stod(argv[14]); // dBs
+  std::pair<int, int> relTagCoord;
+  // MCDM Matrix weights
+  double w_info_gain = 0.6;//atof(argv[11]);
+  double w_travel_distance = 0.2;//atof(argv[12]);
+  double w_sensing_time = 0.2;//atof(argv[13]);
+  std::string out_log ("/home/pulver/Desktop/results.csv");//(argv[14]);
   //x,y,orientation,range,FOV
 
   Pose initialPose = Pose ( initX,initY,initOrientation,initRange,initFov );
@@ -65,9 +77,9 @@ int main ( int argc, char **argv )
   vector<pair<string,list<Pose>>> graph2;
   NewRay ray;
   ray.setGridToPathGridScale ( gridToPathGridScale );
-  MCDMFunction function;
+  MCDMFunction function(w_info_gain, w_travel_distance, w_sensing_time);
   long sensedCells = 0;
-  long newSensedCells =0;
+  long newSensedCells = 0;
   long totalFreeCells = map.getTotalFreeCells();
   int count = 0;
   double travelledDistance = 0;
@@ -89,12 +101,7 @@ int main ( int argc, char **argv )
   bool act = true;
   int encodedKeyValue = 0;
 
-  // RFID
-  double absTagX =  std::stod(argv[12]); // m.
-  double absTagY =  std::stod(argv[11]); // m.
-  double freq = std::stod(argv[13]); // Hertzs
-  double txtPower= std::stod(argv[14]); // dBs
-  std::pair<int, int> relTagCoord;
+
 
   do
   {
@@ -171,7 +178,7 @@ int main ( int argc, char **argv )
         graph2.pop_back();
         actualPose = function.getEncodedKey ( target,0 );
         // Add to the graph the initial positions and the candidates from there (calculated inside the function)
-        pushInitialPositions ( map, x, y,orientation, range,FOV, threshold, actualPose, &graph2 );
+        pushInitialPositions ( map, x, y,orientation, range,FOV, threshold, actualPose, &graph2, &function );
       }
 
 
@@ -221,6 +228,10 @@ int main ( int argc, char **argv )
           }
           printResult(newSensedCells, totalFreeCells, precision, numConfiguration, travelledDistance, numOfTurning,
               totalAngle, totalScanTime);
+          string content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + ","
+                           + to_string(float(newSensedCells)/float(totalFreeCells)) + "," + to_string(numConfiguration) + ","
+                           + to_string(travelledDistance) + "," + to_string(totalScanTime) + "\n";
+          filePutContents(out_log, content, true );
           exit ( 0 );
         }
 
@@ -654,6 +665,10 @@ int main ( int argc, char **argv )
 
   printResult(newSensedCells, totalFreeCells, precision, numConfiguration, travelledDistance, numOfTurning,
       totalAngle, totalScanTime);
+  string content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + ","
+                   + to_string(float(newSensedCells)/float(totalFreeCells)) + "," + to_string(numConfiguration) + ","
+                   + to_string(travelledDistance) + "," + to_string(totalScanTime) + "\n";
+  filePutContents(out_log, content, true );
   // Find the tag
   std::pair<int,int> tag = map.findTag();
   cout << "RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
@@ -671,12 +686,10 @@ int main ( int argc, char **argv )
 bool contains ( std::list<Pose>& list, Pose& p )
 {
   bool result = false;
-  MCDMFunction function;
 
   std::list<Pose>::iterator findIter = std::find ( list.begin(), list.end(), p );
   if ( findIter != list.end() )
   {
-    //cout << "Found it: "<< function.getEncodedKey(p,0) <<endl;
     result = true;
   }
 
@@ -685,13 +698,9 @@ bool contains ( std::list<Pose>& list, Pose& p )
 
 void cleanPossibleDestination2 ( std::list< Pose >& possibleDestinations, Pose& p )
 {
-  MCDMFunction function;
-  //cout<<"I remove "<< function.getEncodedKey(p,0) << endl;
-  //cout << possibleDestinations->size() << endl;
   std::list<Pose>::iterator findIter = std::find ( possibleDestinations.begin(), possibleDestinations.end(), p );
   if ( findIter != possibleDestinations.end() )
   {
-    //cout << function.getEncodedKey(*findIter,0) << endl;
     possibleDestinations.erase ( findIter );
   }
   else cout<< "not found" << endl;
@@ -699,10 +708,9 @@ void cleanPossibleDestination2 ( std::list< Pose >& possibleDestinations, Pose& 
 }
 
 
-void pushInitialPositions ( dummy::Map map, int x, int y, int orientation, int range, int FOV, double threshold, string actualPose, vector< pair< string, list< Pose > > >* graph2 )
+void pushInitialPositions ( dummy::Map map, int x, int y, int orientation, int range, int FOV, double threshold, string actualPose, vector< pair< string, list< Pose > > >* graph2, MCDMFunction *function )
 {
   NewRay ray;
-  MCDMFunction function;
   ray.findCandidatePositions ( map,x,y,orientation ,FOV,range );
   vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
   ray.emptyCandidatePositions();
@@ -719,7 +727,7 @@ void pushInitialPositions ( dummy::Map map, int x, int y, int orientation, int r
     frontiers.push_back ( p3 );
     frontiers.push_back ( p4 );
   }
-  EvaluationRecords *record = function.evaluateFrontiers ( frontiers,map,threshold );
+  EvaluationRecords *record = function->evaluateFrontiers ( frontiers,map,threshold );
   list<Pose>nearCandidates = record->getFrontiers();
   std::pair<string,list<Pose>> pair = make_pair ( actualPose,nearCandidates );
   graph2->push_back ( pair );
@@ -826,4 +834,21 @@ void printResult(long newSensedCells, long totalFreeCells, double precision, lon
   }
 
   cout << "-----------------------------------------------------------------"<<endl;
+}
+
+// Usage example: filePutContents("./yourfile.txt", "content", true);
+void filePutContents(const std::string& name, const std::string& content, bool append ) {
+  std::ofstream outfile;
+  if (outfile.fail()){
+    cout << "File does not exist! Create a new one!" << endl;
+    outfile.open(name);
+  }
+  else
+  {
+    cout << "File exists! Appending data!" << endl;
+    outfile.open(name, std::ios_base::app);
+  }
+
+
+  outfile << content;
 }
