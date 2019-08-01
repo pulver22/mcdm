@@ -24,6 +24,7 @@ public:
   int performSensingOperation(dummy::Map &map, long posX, long posY, int orientation, double FOV, int range, double firstAngle, double lastAngle);
   void emptyCandidatePositions();
   int getInformationGain(const dummy::Map &map, long posX, long posY, int orientation, double FOV, int range);
+  int getRFIDGain(const dummy::Map &map, long posX, long posY, int orientation, double FOV, int range);
   long convertPoint(long y);
   long convertPointPP(long y);
   void calculateInfoGainSensingTime (const dummy::Map &map, long posX, long posY, int orientation, double FOV, int range);
