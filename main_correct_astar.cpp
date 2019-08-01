@@ -55,15 +55,16 @@ int main ( int argc, char **argv )
   double precision = atof ( argv[8] );
   double threshold = atof ( argv[9] );
   // RFID
-  double absTagX =  std::stod(argv[12]); // m.
-  double absTagY =  std::stod(argv[11]); // m.
-  double freq = std::stod(argv[13]); // Hertzs
-  double txtPower= std::stod(argv[14]); // dBs
+  double absTagX = 54;// std::stod(argv[12]); // m.
+  double absTagY = 143;// std::stod(argv[11]); // m.
+  double freq = 865e6;//std::stod(argv[13]); // Hertzs
+  double txtPower = 0;//std::stod(argv[14]); // dBs
   std::pair<int, int> relTagCoord;
   // MCDM Matrix weights
   double w_info_gain = 0.6;//atof(argv[11]);
   double w_travel_distance = 0.2;//atof(argv[12]);
   double w_sensing_time = 0.2;//atof(argv[13]);
+  double w_rfid_gain = 0.2;//atof(argv[13]);
   std::string out_log ("/home/pulver/Desktop/results.csv");//(argv[14]);
   //x,y,orientation,range,FOV
 
@@ -78,6 +79,7 @@ int main ( int argc, char **argv )
   NewRay ray;
   ray.setGridToPathGridScale ( gridToPathGridScale );
   MCDMFunction function(w_info_gain, w_travel_distance, w_sensing_time);
+//  MCDMFunction function(w_info_gain, w_travel_distance, w_sensing_time, w_rfid_gain);
 //  MCDMFunction function;
   long sensedCells = 0;
   long newSensedCells = 0;

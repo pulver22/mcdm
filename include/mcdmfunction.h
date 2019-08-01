@@ -15,6 +15,7 @@ class MCDMFunction
 
 public:
   MCDMFunction(float w_criterion_1, float w_criterion_2, float w_criterion_3);
+  MCDMFunction(float w_criterion_1, float w_criterion_2, float w_criterion_3, float w_criterion_4);
   ~MCDMFunction();
   double evaluateFrontier(Pose& p, dummy::Map& map);
   EvaluationRecords* evaluateFrontiers(const list< Pose >& frontiers, dummy::Map& map, double threshold);
