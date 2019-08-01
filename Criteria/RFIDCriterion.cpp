@@ -13,7 +13,7 @@ RFIDCriterion::RFIDCriterion(double weight)
 
 RFIDCriterion::~RFIDCriterion() {}
 
-double RFIDCriterion::evaluate(Pose &p, dummy::Map *map) {
+double RFIDCriterion::evaluate(Pose &p, dummy::Map &map) {
 
   float px = p.getX();
   float py = p.getY();
@@ -23,7 +23,10 @@ double RFIDCriterion::evaluate(Pose &p, dummy::Map *map) {
   int range = p.getRange();
   double angle = p.getFOV();
   double unExploredMap = 0;
-//  unExploredMap = map->getRFIDReading(px, py, orientation, angle, range);  TODO: re-enable when method add
+  NewRay ray;
+  //Map *map2 = &map;
+  unExploredMap=(double)ray.getInformationGain(map,px,py,orientation,angle,range);
+//  unExploredMap = map->getRFIDReading(px, py, orientation, angle, range); // TODO: re-enable when method add
   Criterion::insertEvaluation(p, unExploredMap);
   return unExploredMap;
 }
