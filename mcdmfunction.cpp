@@ -4,6 +4,7 @@
 #include "Criteria/criteriaName.h"
 #include "Criteria/traveldistancecriterion.h"
 #include "Criteria/informationgaincriterion.h"
+#include "Criteria/RFIDCriterion.h"
 #include "Criteria/sensingtimecriterion.h"
 #include "Criteria/mcdmweightreader.h"
 #include "Criteria/criterioncomparator.h"
@@ -44,6 +45,34 @@ MCDMFunction::MCDMFunction(float w_criterion_1, float w_criterion_2, float w_cri
 
 }
 
+
+/* create a list of criteria with name and <encoded_name,weight> pair after reading that from a file
+ */
+MCDMFunction::MCDMFunction(float w_criterion_1, float w_criterion_2, float w_criterion_3, float w_criterion_4) //:
+//criteria(new unordered_map<string, Criterion* >())
+//activeCriteria(new vector<Criterion >() )
+{
+
+  // Initialization ad-hoc: create a weightmatrix for 3 criteria with predefined weight
+  MCDMWeightReader reader;
+  //cout << "test" << endl;
+  matrix = reader.getMatrix(w_criterion_1, w_criterion_2, w_criterion_3, w_criterion_4);
+  //cout << "test2" << endl;
+
+  // get the list of all criteria to be considered
+  list<string> listCriteria = matrix->getKnownCriteria();
+  for (list<string>::iterator it = listCriteria.begin(); it != listCriteria.end(); ++it) {
+    string name = *it;
+    // retrieve the weight of the criterion using the encoded version of the name
+    double weight = matrix->getWeight(matrix->getNameEncoding(name));
+    Criterion *c = createCriterion(name, weight);
+    if (c != NULL) {
+      criteria.emplace(name, c);
+    }
+  }
+
+}
+
 MCDMFunction::~MCDMFunction() {
   //delete matrix;
 
@@ -58,6 +87,8 @@ Criterion *MCDMFunction::createCriterion(string name, double weight) {
     toRet = new InformationGainCriterion(weight);
   } else if (name == (TRAVEL_DISTANCE)) {
     toRet = new TravelDistanceCriterion(weight);
+  } else if (name == (RFID_READING)) {
+    toRet = new RFIDCriterion(weight);
   }
   return toRet;
 }
