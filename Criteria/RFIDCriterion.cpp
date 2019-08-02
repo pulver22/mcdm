@@ -9,7 +9,8 @@
 using namespace dummy;
 
 RFIDCriterion::RFIDCriterion(double weight)
-    : Criterion(RFID_READING, weight, true) {}
+    : Criterion(RFID_READING, weight, true) {
+    }
 
 RFIDCriterion::~RFIDCriterion() {}
 

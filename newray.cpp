@@ -759,7 +759,7 @@ int NewRay::getRFIDGain(const dummy::Map &map, long posX, long posY, int orienta
       double distance = sqrt((i - posX*gridToPathGridScale)*(i - posX*gridToPathGridScale) + (j - posY*gridToPathGridScale)*(j - posY*gridToPathGridScale));
 
       //if a cell is free and within range of the robot, generate the ray connecting the robot cell and the free cell
-      if(map.getRFIDGridValue(i, j) == 0 && distance <= range*gridToPathGridScale)
+      if(map.getRFIDGridValue(i, j) > 0 && distance <= range*gridToPathGridScale)
       {
         double curX = posX*gridToPathGridScale + gridToPathGridScale/2;		//starting position of the ray
         double curY = posY*gridToPathGridScale + gridToPathGridScale/2;
