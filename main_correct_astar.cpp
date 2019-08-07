@@ -55,17 +55,17 @@ int main ( int argc, char **argv )
   double precision = atof ( argv[8] );
   double threshold = atof ( argv[9] );
   // RFID
-  double absTagX = 54;// std::stod(argv[12]); // m.
-  double absTagY = 143;// std::stod(argv[11]); // m.
-  double freq = 865e6;//std::stod(argv[13]); // Hertzs
-  double txtPower = 0;//std::stod(argv[14]); // dBs
+  double absTagX = std::stod(argv[12]); // m.
+  double absTagY = std::stod(argv[11]); // m.
+  double freq = std::stod(argv[13]); // Hertzs
+  double txtPower = std::stod(argv[14]); // dBs
   std::pair<int, int> relTagCoord;
   // MCDM Matrix weights
-  double w_info_gain = atof(argv[11]);
-  double w_travel_distance = atof(argv[12]);
-  double w_sensing_time = atof(argv[13]);
-  double w_rfid_gain = atof(argv[14]);
-  std::string out_log ("/home/pulver/Desktop/MCDM/results.csv");//(argv[14]);
+  double w_info_gain = atof(argv[15]);
+  double w_travel_distance = atof(argv[16]);
+  double w_sensing_time = atof(argv[17]);
+  double w_rfid_gain = atof(argv[18]);
+  std::string out_log (argv[19]);
   //x,y,orientation,range,FOV
 
   Pose initialPose = Pose ( initX,initY,initOrientation,initRange,initFov );
