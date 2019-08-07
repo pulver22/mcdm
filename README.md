@@ -33,7 +33,7 @@ where:
 - `/home/pulver/Desktop/MCDM/result_iliad.csv` is the path where to save the final result
 
 ### MAPS DETAILS
-#### 1) OREBRO TEKHNIKHUSET
+#### 1) [OREBRO TEKHNIKHUSET](./Images/cor_map_05_00_new1.pgm)
 `./mcdm_online_exploration ./../Images/cor_map_05_00_new1.pgm 1 99 99 180 5 180 1 0 1 54 143 865e6 0`
 -   Map size: 200x200
 -   Resolution: 0.5
@@ -41,7 +41,7 @@ where:
 -   RFID tag: (54,143) \[around the bottom left corner, just after the black space]
 
 
-#### 2) INB3123
+#### 2) [INB3123](./Images/inb3123_1m4px.pgm)
 `./mcdm_online_exploration ./../Images/inb3123_1m4px.pgm 1 300 300 180 12 180 1 0 1 278 87 865e6 0`
 -   Map size: 500x500
 -   Resolution: 0.025000
@@ -49,7 +49,7 @@ where:
 -   RFID tag: (278,87) \[at the junction of the second corridor]
 
 
-#### 3) INB_ENGINEERING
+#### 3) [INB_ENGINEERING](./Images/inb3123_1m4px.pgm)
 `./mcdm_online_exploration ./../Images/inb_eng_1m4px.pgm 1 318 411 180 12 180 1 0 1 174 263 865e6 0`
 -   Map size: 500x500
 -   Resolution: 0.025000
@@ -65,7 +65,7 @@ where:
 -   RFID tag: (,) \[]
 
 
-#### 5) ILIAD
+#### 5) [ILIAD](./Images/ncfm_old.pgm)
 `./mcdm_online_exploration ./../Images/ncfm_old.pgm 1 132 345 180 5 180 1 0 1 294 305 865e6 0`
 -   Map size: 500x500
 -   Resolution: 0.1
