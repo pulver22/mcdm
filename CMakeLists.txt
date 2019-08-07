@@ -54,7 +54,7 @@ add_test(grid_test grid_map_test)
 add_library(lib pose.cpp PathFinding/astar.cpp PathFinding/node.cpp map.cpp newray.cpp mcdmfunction.cpp evaluationrecords.cpp
         Criteria/sensingtimecriterion.cpp Criteria/informationgaincriterion.cpp Criteria/mcdmweightreader.cpp
         Criteria/traveldistancecriterion.cpp Criteria/weightmatrix.cpp Criteria/criterioncomparator.cpp Criteria/criterion.cpp
-        RFIDGridmap.cpp Criteria/RFIDCriterion.cpp)
+        RFIDGridmap.cpp Criteria/RFIDCriterion.cpp utils.cpp)
 
 #Find all the files link them to the executable (for qtcreator)
 FILE(GLOB_RECURSE HEADER_FILES include *.h)
