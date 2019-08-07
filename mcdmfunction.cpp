@@ -180,7 +180,7 @@ MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map &ma
       }
 
       if (k == activeCriteria.begin()) {
-        weight = 1;
+        weight = 1.0;
       } else {
         weight = matrix->getWeight(names);
       }

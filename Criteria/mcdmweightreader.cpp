@@ -11,9 +11,13 @@ WeightMatrix *MCDMWeightReader::getMatrix(float w_criterion_1, float w_criterion
   cout << w_criterion_1 << " " << w_criterion_2 << " " << w_criterion_3 << endl;
   matrix = new WeightMatrix(3);
   // int numCriteria = 3;
-  matrix->insertSingleCriterion(INFORMATION_GAIN, w_criterion_1, true);
-  matrix->insertSingleCriterion(TRAVEL_DISTANCE, w_criterion_2, true);
-  matrix->insertSingleCriterion(SENSING_TIME, w_criterion_3, true);
+  bool to_use;
+  to_use = (w_criterion_1 > 0.0) ? true : false;
+  matrix->insertSingleCriterion(INFORMATION_GAIN, w_criterion_1, to_use);
+  to_use = (w_criterion_2 > 0.0) ? true : false;
+  matrix->insertSingleCriterion(TRAVEL_DISTANCE, w_criterion_2, to_use);
+  to_use = (w_criterion_3 > 0.0) ? true : false;
+  matrix->insertSingleCriterion(SENSING_TIME, w_criterion_3, to_use);
   string str1(INFORMATION_GAIN);
   string str2(TRAVEL_DISTANCE);
   string str3(SENSING_TIME);
@@ -72,12 +76,18 @@ WeightMatrix *MCDMWeightReader::getMatrix(float w_criterion_1, float w_criterion
 
 WeightMatrix *MCDMWeightReader::getMatrix(float w_criterion_1, float w_criterion_2, float w_criterion_3, float w_criterion_4) {
   WeightMatrix *matrix = NULL;
+  bool to_use;
+  cout << w_criterion_1 << " " << w_criterion_2 << " " << w_criterion_3 << " " << w_criterion_4 << endl;
   matrix = new WeightMatrix(4);
   // int numCriteria = 3;
-  matrix->insertSingleCriterion(INFORMATION_GAIN, w_criterion_1, true);
-  matrix->insertSingleCriterion(TRAVEL_DISTANCE, w_criterion_2, true);
-  matrix->insertSingleCriterion(SENSING_TIME, w_criterion_3, true);
-  matrix->insertSingleCriterion(RFID_READING, w_criterion_4, true);
+  to_use = (w_criterion_1 > 0.0) ? true : false;
+  matrix->insertSingleCriterion(INFORMATION_GAIN, w_criterion_1, to_use);
+  to_use = (w_criterion_2 > 0.0) ? true : false;
+  matrix->insertSingleCriterion(TRAVEL_DISTANCE, w_criterion_2, to_use);
+  to_use = (w_criterion_3 > 0.0) ? true : false;
+  matrix->insertSingleCriterion(SENSING_TIME, w_criterion_3, to_use);
+  to_use = (w_criterion_4 > 0.0) ? true : false;
+  matrix->insertSingleCriterion(RFID_READING, w_criterion_4, to_use);
   string str1(INFORMATION_GAIN);
   string str2(TRAVEL_DISTANCE);
   string str3(SENSING_TIME);

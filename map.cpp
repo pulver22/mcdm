@@ -411,7 +411,7 @@ std::vector<vector<long> > Map::getMap2D(){
 
 //various getters
 /**
- * @brief Map::getRFIDGridValue get the value associated with one cell of the grid
+ * @brief Map::getGridValue get the value associated with one cell of the grid
  * @param i: the x-position in the grid
  * @param j: the y-position in the grid
  * @return the associated value with that cell
@@ -571,7 +571,7 @@ void Map::drawVisitedCells()
  */
 void Map::drawRFIDScan()
 {
-  std::ofstream resultMap("/home/pulver/Desktop/MCDM/rfid_result.pgm", ios::out);
+  std::ofstream resultMap("/home/pulver/Desktop/MCDM/rfid_scan.pgm", ios::out);
   long columns = numPathPlanningGridCols;
   long rows = numPathPlanningGridRows;
 
@@ -598,7 +598,7 @@ void Map::drawRFIDScan()
  */
 void Map::drawRFIDGridScan(RFIDGridmap grid)
 {
-  std::ofstream resultMap("/home/pulver/Desktop/MCDM/rfid_result_gridmap.pgm", ios::out);
+  std::ofstream resultMap("/home/pulver/Desktop/MCDM/rfid_grid_scan.pgm", ios::out);
   long columns = numPathPlanningGridCols;
   long rows = numPathPlanningGridRows;
 
@@ -713,7 +713,7 @@ std::pair<int, int> Map::findTagfromGridMap(RFIDGridmap grid)
   {
     for(int col=0; col < numPathPlanningGridCols; col++)
     {
-      if(grid.getCell(row, col) > powerRead)
+      if(grid.getCell(row, col) < powerRead)
       {
         powerRead = getRFIDGridValue(row, col);
 //        cout << "Value read: " << powerRead << endl;

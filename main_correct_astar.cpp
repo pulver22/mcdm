@@ -61,11 +61,11 @@ int main ( int argc, char **argv )
   double txtPower = 0;//std::stod(argv[14]); // dBs
   std::pair<int, int> relTagCoord;
   // MCDM Matrix weights
-  double w_info_gain = 0.6;//atof(argv[11]);
-  double w_travel_distance = 0.2;//atof(argv[12]);
-  double w_sensing_time = 0.2;//atof(argv[13]);
-  double w_rfid_gain = 0.2;//atof(argv[13]);
-  std::string out_log ("/home/pulver/Desktop/results.csv");//(argv[14]);
+  double w_info_gain = atof(argv[11]);
+  double w_travel_distance = atof(argv[12]);
+  double w_sensing_time = atof(argv[13]);
+  double w_rfid_gain = atof(argv[14]);
+  std::string out_log ("/home/pulver/Desktop/MCDM/results.csv");//(argv[14]);
   //x,y,orientation,range,FOV
 
   Pose initialPose = Pose ( initX,initY,initOrientation,initRange,initFov );
@@ -78,8 +78,9 @@ int main ( int argc, char **argv )
   vector<pair<string,list<Pose>>> graph2;
   NewRay ray;
   ray.setGridToPathGridScale ( gridToPathGridScale );
-  MCDMFunction function(w_info_gain, w_travel_distance, w_sensing_time);
-//  MCDMFunction function(w_info_gain, w_travel_distance, w_sensing_time, w_rfid_gain);
+  // MCDMFunction function(w_info_gain, w_travel_distance, w_sensing_time);
+  MCDMFunction function(w_info_gain, w_travel_distance, w_sensing_time, w_rfid_gain);
+  cout << "MCDM matrix created! " << endl;
 //  MCDMFunction function;
   long sensedCells = 0;
   long newSensedCells = 0;
@@ -193,8 +194,8 @@ int main ( int argc, char **argv )
         candidatePosition = ray.getCandidatePositions();
         ray.emptyCandidatePositions();
 
-        cout << "No other candidate position" << endl;
-        cout << "----- BACKTRACKING -----" << endl;
+        // cout << "No other candidate position" << endl;
+        // cout << "----- BACKTRACKING -----" << endl;
         // If the graph contains cells that can be explored
         if ( graph2.size() > 1 )
         {
@@ -205,7 +206,7 @@ int main ( int argc, char **argv )
           target = record.getPoseFromEncoding ( targetString );
           // Add it to the history as cell visited more than once
           history.push_back ( function.getEncodedKey ( target,2 ) );
-          cout << "[BT]No significative position reachable. Come back to previous position" << endl;
+          // cout << "[BT]No significative position reachable. Come back to previous position" << endl;
           count = count + 1;
         }
         //...otherwise, if the graph does not contain cells that can be explored
@@ -231,7 +232,7 @@ int main ( int argc, char **argv )
           }
           printResult(newSensedCells, totalFreeCells, precision, numConfiguration, travelledDistance, numOfTurning,
               totalAngle, totalScanTime);
-          string content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + ","
+          string content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + "," + to_string(w_rfid_gain) + ","
                            + to_string(float(newSensedCells)/float(totalFreeCells)) + "," + to_string(numConfiguration) + ","
                            + to_string(travelledDistance) + "," + to_string(totalScanTime) + "\n";
           filePutContents(out_log, content, true );
@@ -326,7 +327,7 @@ int main ( int argc, char **argv )
             // If there still are more candidates to explore from the last pose in the graph
             if ( graph2.at ( graph2.size()-1 ).second.size() != 0 )
             {
-              cout << "[BT1 - Tabulist]There are visible cells but the selected one is already explored!Come back to second best position from the previous position"<< endl;
+              // cout << "[BT1 - Tabulist]There are visible cells but the selected one is already explored!Come back to second best position from the previous position"<< endl;
               // Remove the current position from possible candidates
               cleanPossibleDestination2 ( nearCandidates,target );
               // Get the list of new candidate position with associated evaluation
@@ -382,7 +383,7 @@ int main ( int argc, char **argv )
               target = record->getPoseFromEncoding ( targetString );
               // Save it history as cell visited more than once
               history.push_back ( function.getEncodedKey ( target,2 ) );
-              cout << "[BT2 - Tabulist]There are visible cells but the selected one is already explored!Come back to two position ago"<< endl;
+              // cout << "[BT2 - Tabulist]There are visible cells but the selected one is already explored!Come back to two position ago"<< endl;
               count = count + 1;
             }
 
@@ -403,7 +404,7 @@ int main ( int argc, char **argv )
           {
             // if it's not, set the old position as the current one
             previous = target;  //TODO: WHY?
-            cout << "[BT3]There are no visible cells so come back to previous position in the graph structure" << endl;
+            // cout << "[BT3]There are no visible cells so come back to previous position in the graph structure" << endl;
             // Save the new target in the history as cell visited more than once
             history.push_back ( function.getEncodedKey ( target,2 ) );
             count = count + 1;
@@ -414,7 +415,7 @@ int main ( int argc, char **argv )
             // If there are no more cells in the graph, just finish the navigation
             if ( graph2.size() == 0 )
             {
-              cout << "[BT4]No other possibilities to do backtracking on previous positions" << endl;
+              // cout << "[BT4]No other possibilities to do backtracking on previous positions" << endl;
               break;
             }
             // Select the last position in the graph
@@ -424,8 +425,8 @@ int main ( int argc, char **argv )
             target = record->getPoseFromEncoding ( targetString );
             // Set the previous pose as the current one
             previous = target;
-            cout << "[BT5]There are no visible cells so come back to previous position" << endl;
-            cout << "[BT5]Cell already explored!Come back to previous position"<< endl;
+            // cout << "[BT5]There are no visible cells so come back to previous position" << endl;
+            // cout << "[BT5]Cell already explored!Come back to previous position"<< endl;
             // Add it in history as cell visited more than once
             history.push_back ( function.getEncodedKey ( target,2 ) );
             count = count + 1;
@@ -455,12 +456,12 @@ int main ( int argc, char **argv )
       string actualPose = function.getEncodedKey ( target,0 );
       map.setCurrentPose ( target );
       //NOTE; calculate path and turnings between actual position and goal
-      cout<< function.getEncodedKey ( target,1 ) << endl;
+      // cout<< function.getEncodedKey ( target,1 ) << endl;
       // Calculate the distance between the previous robot pose and the next one (target)
       string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
       // Update the overall covered distance
       travelledDistance = travelledDistance + astar.lengthPath ( path );
-      cout << "BT: " << astar.lengthPath ( path ) << endl;
+      // cout << "BT: " << astar.lengthPath ( path ) << endl;
       // Update the overall number of turnings
       numOfTurning = numOfTurning + astar.getNumberOfTurning ( path );
 
@@ -528,7 +529,7 @@ int main ( int argc, char **argv )
           // Leave the backtracking branch
           btMode = false;
           nearCandidates.clear();
-          cout << "[BT-MODE4] Go back to previous positions in the graph" << endl;
+          // cout << "[BT-MODE4] Go back to previous positions in the graph" << endl;
         }
         // ... otherwise, if the cells has already been visisted
         else
@@ -536,7 +537,7 @@ int main ( int argc, char **argv )
           // If there are other candidates
           if ( nearCandidates.size() != 0 )
           {
-            cout << "[BT-MODE1]Already visited, but there are other candidates" << endl;
+            // cout << "[BT-MODE1]Already visited, but there are other candidates" << endl;
 
             // Remove the destination from the candidate list
             cleanPossibleDestination2 ( nearCandidates,target );
@@ -570,7 +571,7 @@ int main ( int argc, char **argv )
           // ...otherwise, if there are no more candidates
           else
           {
-            cout << "[BT-MODE2] Go back to previous positions in the graph" << endl;
+            // cout << "[BT-MODE2] Go back to previous positions in the graph" << endl;
             // Select as target the last element in the graph
             string targetString = graph2.at ( graph2.size()-1 ).first;
             // And remove from the graph
@@ -634,7 +635,7 @@ int main ( int argc, char **argv )
 //                  count = count + 1;
         // Leave backtracking
         btMode = false;
-        cout << "[BT-MODE3] Go back to previous positions in the graph" << endl;
+        // cout << "[BT-MODE3] Go back to previous positions in the graph" << endl;
       }
       delete record;
     }
@@ -668,9 +669,9 @@ int main ( int argc, char **argv )
 
   printResult(newSensedCells, totalFreeCells, precision, numConfiguration, travelledDistance, numOfTurning,
       totalAngle, totalScanTime);
-  string content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + ","
-                   + to_string(float(newSensedCells)/float(totalFreeCells)) + "," + to_string(numConfiguration) + ","
-                   + to_string(travelledDistance) + "," + to_string(totalScanTime) + "\n";
+      string content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + "," + to_string(w_rfid_gain) + ","
+                       + to_string(float(newSensedCells)/float(totalFreeCells)) + "," + to_string(numConfiguration) + ","
+                       + to_string(travelledDistance) + "," + to_string(totalScanTime) + "\n";
   filePutContents(out_log, content, true );
   // Find the tag
   std::pair<int,int> tag = map.findTag();
@@ -706,7 +707,7 @@ void cleanPossibleDestination2 ( std::list< Pose >& possibleDestinations, Pose& 
   {
     possibleDestinations.erase ( findIter );
   }
-  else cout<< "not found" << endl;
+  // else cout<< "not found" << endl;
 
 }
 
@@ -775,7 +776,7 @@ void updatePathMetrics(int* count, Pose* target, Pose* previous, string actualPo
 {
   // Add it to the list of visited cells as first-view
   history->push_back ( function->getEncodedKey ( *target, encodedKeyValue ) );
-  cout << function->getEncodedKey ( *target,1 ) << endl;
+  // cout << function->getEncodedKey ( *target,1 ) << endl;
   // Add it to the list of visited cells from which acting
   tabuList->push_back ( *target );
   // Remove it from the list of candidate position
@@ -786,10 +787,10 @@ void updatePathMetrics(int* count, Pose* target, Pose* previous, string actualPo
   graph2->push_back ( pair );
   // Calculate the path from the previous robot pose to the current one
   string path = astar->pathFind ( target->getX(), target->getY(), previous->getX(), previous->getY(), *map );
-  cout << "1: " << *travelledDistance << endl;
+  // cout << "1: " << *travelledDistance << endl;
   // Update the distance counting
   *travelledDistance = *travelledDistance + astar->lengthPath(path);
-  cout << "2: " << *travelledDistance << endl;
+  // cout << "2: " << *travelledDistance << endl;
   // Update the turning counting
   *numOfTurning = *numOfTurning + astar->getNumberOfTurning(path);
   // Update the scanning angle
