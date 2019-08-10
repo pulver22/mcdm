@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <boost/filesystem.hpp>
 #include <fstream>
 
 Utilities::Utilities(){}
