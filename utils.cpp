@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <fstream>
 
 Utilities::Utilities(){}
 
@@ -109,7 +110,7 @@ void Utilities::updatePathMetrics(int* count, Pose* target, Pose* previous, stri
   (*count)++;
 }
 
-list<Pose> cleanHistory(vector<string>* history, EvaluationRecords* record){
+list<Pose> Utilities::cleanHistory(vector<string>* history, EvaluationRecords* record){
   vector<string>::iterator it_history = history->begin();
   list<Pose> tmp_history;
   for ( it_history; it_history!=prev(history->end(),1); it_history++)
@@ -122,7 +123,7 @@ list<Pose> cleanHistory(vector<string>* history, EvaluationRecords* record){
   return tmp_history;
 }
 
-void printResult(long newSensedCells, long totalFreeCells, double precision,
+void Utilities::printResult(long newSensedCells, long totalFreeCells, double precision,
                  long numConfiguration, double travelledDistance,
                  int numOfTurning, double totalAngle, double totalScanTime)
 {
@@ -150,16 +151,25 @@ void printResult(long newSensedCells, long totalFreeCells, double precision,
 }
 
 // Usage example: filePutContents("./yourfile.txt", "content", true);
-void filePutContents(const std::string& name, const std::string& content, bool append ) {
+void Utilities::filePutContents(const std::string& name, const std::string& content, bool append ) {
   std::ofstream outfile;
+  std::ifstream pFile(name);
   if (outfile.fail()){
-    cout << "File does not exist! Create a new one!" << endl;
-    outfile.open(name);
+    cout << "Error while opening the stream." << endl;
+    // cout << "File does not exist! Create a new one!" << endl;
+    // outfile.open(name);
+    // outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,coverage,numConfiguration,travelledDistance,totalScanTime";
   }
   else
   {
-    cout << "File exists! Appending data!" << endl;
-    outfile.open(name, std::ios_base::app);
+    if (pFile.peek() == std::ifstream::traits_type::eof()){ // file is empty
+      cout << "File does not exist! Create a new one!" << endl;
+      outfile.open(name);
+      outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,coverage,numConfiguration,travelledDistance,totalScanTime" << endl;
+    }else{
+      cout << "File exists! Appending data!" << endl;
+      outfile.open(name, std::ios_base::app);
+    }
   }
 
 

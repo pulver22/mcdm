@@ -17,20 +17,20 @@
 
 using namespace std;
 using namespace dummy;
-bool contains ( std::list< Pose >& list, Pose& p );
-void cleanPossibleDestination2 ( std::list< Pose > &possibleDestinations, Pose& p );
-void pushInitialPositions ( dummy::Map map, int x, int y, int orientation,  int range, int FOV, double threshold,
-                            string actualPose, vector< pair< string, list< Pose > > > *graph2, MCDMFunction *function);
-double calculateScanTime ( double scanAngle );
-void calculateDistance(list<Pose> list, dummy::Map& map, Astar* astar);
-Pose createFromInitialPose ( int x, int y, int orientation, int variation, int range, int FOV );
-void updatePathMetrics(int* count, Pose* target, Pose* previous, string actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
-                       dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int encodedKeyValue, Astar* astar , long* numConfiguration,
-                       double* totalAngle, double * travelledDistance, int* numOfTurning , double scanAngle);
-list<Pose> cleanHistory(vector<string>* history, EvaluationRecords* record_history);
-void printResult(long newSensedCells, long totalFreeCells, double precision, long numConfiguration, double travelledDistance,
-                 int numOfTurning, double totalAngle, double totalScanTime);
-void filePutContents(const std::string& name, const std::string& content, bool append = false);
+// bool contains ( std::list< Pose >& list, Pose& p );
+// void cleanPossibleDestination2 ( std::list< Pose > &possibleDestinations, Pose& p );
+// void pushInitialPositions ( dummy::Map map, int x, int y, int orientation,  int range, int FOV, double threshold,
+//                             string actualPose, vector< pair< string, list< Pose > > > *graph2, MCDMFunction *function);
+// double calculateScanTime ( double scanAngle );
+// void calculateDistance(list<Pose> list, dummy::Map& map, Astar* astar);
+// Pose createFromInitialPose ( int x, int y, int orientation, int variation, int range, int FOV );
+// void updatePathMetrics(int* count, Pose* target, Pose* previous, string actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
+//                        dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int encodedKeyValue, Astar* astar , long* numConfiguration,
+//                        double* totalAngle, double * travelledDistance, int* numOfTurning , double scanAngle);
+// list<Pose> cleanHistory(vector<string>* history, EvaluationRecords* record_history);
+// void printResult(long newSensedCells, long totalFreeCells, double precision, long numConfiguration, double travelledDistance,
+//                  int numOfTurning, double totalAngle, double totalScanTime);
+// void filePutContents(const std::string& name, const std::string& content, bool append = false);
 
 // Example: ./mcdm_online_exploration ./../Images/cor_map_05_00_new1.pgm 1 99 99 180 5 180 1 0 1 54 143 865e6 0
 int main ( int argc, char **argv )
@@ -135,7 +135,7 @@ int main ( int argc, char **argv )
       double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
       // Update the path planning and RFID map
       map.updatePathPlanningGrid ( x, y, range, rxPower - SENSITIVITY);
-      myGrid.addEllipse(rxPower - SENSITIVITY, map.getNumGridCols() - target.getX(),  target.getY(), target.getOrientation(), -0.5, 7.0);
+      myGrid.addEllipse(rxPower - SENSITIVITY, map.getNumGridCols() - target.getX(),  target.getY(), target.getOrientation(), -1.0, range);
       // Search for new candidate position
       ray.findCandidatePositions ( map,x,y,orientation,FOV,range );
       vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
@@ -200,7 +200,7 @@ int main ( int argc, char **argv )
           cout << "Travelled distance calculated during the algorithm: " << travelledDistance << endl;
           cout << "------------------ HISTORY -----------------" << endl;
           // Retrieve the cell visited only the first time
-          list<Pose> tmp_history = cleanHistory(&history, &record);
+          list<Pose> tmp_history = utils.cleanHistory(&history, &record);
           utils.calculateDistance(tmp_history, map, &astar );
 
           cout << "------------------ TABULIST -----------------" << endl;
@@ -213,12 +213,12 @@ int main ( int argc, char **argv )
           {
             travelledDistance = travelledDistance/2;
           }
-          printResult(newSensedCells, totalFreeCells, precision, numConfiguration, travelledDistance, numOfTurning,
+          utils.printResult(newSensedCells, totalFreeCells, precision, numConfiguration, travelledDistance, numOfTurning,
               totalAngle, totalScanTime);
           string content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + "," + to_string(w_rfid_gain) + ","
                            + to_string(float(newSensedCells)/float(totalFreeCells)) + "," + to_string(numConfiguration) + ","
                            + to_string(travelledDistance) + "," + to_string(totalScanTime) + "\n";
-          filePutContents(out_log, content, true );
+          utils.filePutContents(out_log, content, true );
           exit ( 0 );
         }
 
@@ -522,7 +522,7 @@ int main ( int argc, char **argv )
 
   cout << "------------------ HISTORY -----------------" << endl;
   // Calculate which cells have been visited only once
-  list<Pose> tmp_history = cleanHistory(&history, &record);
+  list<Pose> tmp_history = utils.cleanHistory(&history, &record);
   utils.calculateDistance(tmp_history, map, &astar );
 
   cout << "------------------ TABULIST -----------------" << endl;
@@ -535,12 +535,12 @@ int main ( int argc, char **argv )
   }
 
 
-  printResult(newSensedCells, totalFreeCells, precision, numConfiguration, travelledDistance, numOfTurning,
+  utils.printResult(newSensedCells, totalFreeCells, precision, numConfiguration, travelledDistance, numOfTurning,
       totalAngle, totalScanTime);
       string content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + "," + to_string(w_rfid_gain) + ","
                        + to_string(float(newSensedCells)/float(totalFreeCells)) + "," + to_string(numConfiguration) + ","
                        + to_string(travelledDistance) + "," + to_string(totalScanTime) + "\n";
-  filePutContents(out_log, content, true );
+  utils.filePutContents(out_log, content, true );
   // Find the tag
   std::pair<int,int> tag = map.findTag();
   cout << "RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
