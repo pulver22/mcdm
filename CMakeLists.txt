@@ -66,6 +66,11 @@ add_executable(random_walk random_walk.cpp  ${HEADER_FILES})
 target_link_libraries(random_walk lib  -lboost_unit_test_framework  ${catkin_LIBRARIES}   ${OpenCV_LIBRARIES})
 install(TARGETS random_walk RUNTIME DESTINATION bin)
 
+
+add_executable(random_frontier random_frontier.cpp  ${HEADER_FILES})
+target_link_libraries(random_frontier lib  -lboost_unit_test_framework  ${catkin_LIBRARIES}   ${OpenCV_LIBRARIES})
+install(TARGETS random_frontier RUNTIME DESTINATION bin)
+
 #add_subdirectory(test)
 
 
