@@ -41,7 +41,7 @@ public:
   * @param graph2: the structure where to save current pose and its candidate positions
   * @param function: the MCDM function object
   */
-  void pushInitialPositions (dummy::Map map, int x, int y, int orientation,
+  void pushInitialPositions (dummy::Map *map, int x, int y, int orientation,
                              int range, int FOV, double threshold,
                              string actualPose,
                              vector< pair< string, list< Pose > > > *graph2,
@@ -57,7 +57,7 @@ public:
   * @param map: a copy of the map
   * @param astar: the astar object used for parsing the map and calculating the distance
   */
-  void calculateDistance(list<Pose> list, dummy::Map& map, Astar* astar);
+  void calculateDistance(list<Pose> list, dummy::Map* map, Astar* astar);
   /**
   * Create a new Pose object starting from another one
   * @param x: the x-coordinate of the robot expressed in cell

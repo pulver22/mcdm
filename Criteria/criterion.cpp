@@ -1,18 +1,18 @@
 /*
  * Copyright 2015 <copyright holder> <email>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  */
 
 #include "Criteria/criterion.h"
@@ -39,17 +39,18 @@ void Criterion::insertEvaluation( Pose &p, double value)
 {
 //    if(evaluation.contains(point))
 //        lprint << "#repeated frontier!!!" << endl;
-    
+
    // string pose = getEncodedKey(p);
     EvaluationRecords *record = new EvaluationRecords();
     string pose = record->getEncodedKey(p);
+    // std::cout << pose << "," << value << std::endl;
     evaluation.emplace(pose, value);
-    
+
     if(value >= maxValue)
 	maxValue = value;
     if(value <= minValue)
         minValue = value;
-    
+
     delete record;
     //pose.clear();
 }
@@ -97,17 +98,17 @@ void Criterion::normalizeLowGood()
 
 double Criterion::getEvaluation(Pose &p) const
 {
-   
+
     //string pose = getEncodedKey(p);
     EvaluationRecords *record = new EvaluationRecords();
     string pose = record->getEncodedKey(p);
     double value = evaluation.at(pose);
     delete record;
     return value;
-    
+
 }
 
-string Criterion::getName() 
+string Criterion::getName()
 {
     return name;
 }
@@ -129,11 +130,11 @@ void Criterion::setWeight(double weight)
 
 string Criterion::getEncodedKey(Pose &p)
 {
- 
-    
-   
+
+
+
     string key =  to_string(p.getX()) + "/" + to_string( p.getY()) + "/" + to_string( p.getOrientation()) + "/" + to_string(p.getRange()) +"/" + to_string(p.getFOV());
-    
+
     /*
     string key =  to_string(p.getX());
     key.append( "/");
@@ -142,12 +143,10 @@ string Criterion::getEncodedKey(Pose &p)
     key.append( to_string(p.getOrientation())) ;
     key.append( "/");
     key.append(to_string(p.getRange()));
-    key.append( "/"); 
+    key.append( "/");
     key.append(to_string(p.getFOV()));
     */
 
-    
+
     return key;
 }
-
-

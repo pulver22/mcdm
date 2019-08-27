@@ -27,7 +27,7 @@ void Utilities::cleanPossibleDestination2(std::list<Pose> *possibleDestinations,
 }
 
 
-void Utilities::pushInitialPositions ( dummy::Map map, int x, int y, int orientation, int range, int FOV, double threshold, string actualPose, vector< pair< string, list< Pose > > >* graph2, MCDMFunction *function )
+void Utilities::pushInitialPositions ( dummy::Map* map, int x, int y, int orientation, int range, int FOV, double threshold, string actualPose, vector< pair< string, list< Pose > > >* graph2, MCDMFunction *function )
 {
   NewRay ray;
   ray.findCandidatePositions ( map,x,y,orientation ,FOV,range );
@@ -46,7 +46,7 @@ void Utilities::pushInitialPositions ( dummy::Map map, int x, int y, int orienta
     frontiers.push_back ( p3 );
     frontiers.push_back ( p4 );
   }
-  EvaluationRecords *record = function->evaluateFrontiers ( frontiers,map,threshold );
+  EvaluationRecords *record = function->evaluateFrontiers ( frontiers, map, threshold );
   list<Pose>nearCandidates = record->getFrontiers();
   std::pair<string,list<Pose>> pair = make_pair ( actualPose,nearCandidates );
   graph2->push_back ( pair );
@@ -64,7 +64,7 @@ Pose Utilities::createFromInitialPose ( int x, int y, int orientation, int varia
 }
 
 
-void Utilities::calculateDistance(list<Pose> history, dummy::Map& map, Astar* astar)
+void Utilities::calculateDistance(list<Pose> history, dummy::Map* map, Astar* astar)
 {
     std::list<Pose>::iterator it = history.begin();
     double travelledDistance = 0;
@@ -98,7 +98,7 @@ void Utilities::updatePathMetrics(int* count, Pose* target, Pose* previous, stri
   std::pair<string,list<Pose>> pair = make_pair ( actualPose, *nearCandidates );
   graph2->push_back ( pair );
   // Calculate the path from the previous robot pose to the current one
-  string path = astar->pathFind ( target->getX(), target->getY(), previous->getX(), previous->getY(), *map );
+  string path = astar->pathFind ( target->getX(), target->getY(), previous->getX(), previous->getY(), map );
   // Update the distance counting
   *travelledDistance = *travelledDistance + astar->lengthPath(path);
   // Update the turning counting
@@ -168,7 +168,7 @@ void Utilities::filePutContents(const std::string& name, const std::string& cont
       outfile.open(name);
       outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,coverage,numConfiguration,travelledDistance,totalScanTime" << endl;
     }else{
-      cout << "File exists! Appending data!" << endl;
+      // cout << "File exists! Appending data!" << endl;
       outfile.open(name, std::ios_base::app);
     }
   }
@@ -192,7 +192,7 @@ void Utilities::saveCoverage(const std::string& name, const std::string& content
       outfile.open(name);
       outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,numConfiguration,incrementalCoverage" << endl;
     }else{
-      cout << "File exists! Appending data!" << endl;
+      // cout << "File exists! Appending data!" << endl;
       outfile.open(name, std::ios_base::app);
     }
   }

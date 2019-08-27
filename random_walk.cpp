@@ -111,6 +111,10 @@ int main ( int argc, char **argv )
   std::random_device rd; // obtain a random number from hardware
   std::mt19937 eng(rd()); // seed the generator
   std::uniform_int_distribution<> distr(0, 359); // define the range
+  long x, y;
+  int orientation, range;
+  double FOV, scanAngle, rxPower, phase;
+  string actualPose, encoding;
 
   do
   {
@@ -119,28 +123,32 @@ int main ( int argc, char **argv )
                 + "," + to_string(numConfiguration) + ","
                 + to_string(100 * float(newSensedCells)/float(totalFreeCells)) + "\n";
       utils.filePutContents(coverage_log, content, true );
-      long x = target.getX();
-      long y = target.getY();
-      int orientation = target.getOrientation();
-      int range = target.getRange();
-      double FOV = target.getFOV();
-      string actualPose = function.getEncodedKey ( target,0 );
+      x = target.getX();
+      y = target.getY();
+      orientation = target.getOrientation();
+      range = target.getRange();
+      FOV = target.getFOV();
+      actualPose = function.getEncodedKey ( target,0 );
       map.setCurrentPose ( target );
-      string encoding = to_string ( target.getX() ) + to_string ( target.getY() );
+      // Update the overall covered distance
+      string path = astar.pathFind ( target.getX(), target.getY(), previous.getX(), previous.getY(), &map );
+      travelledDistance = travelledDistance + astar.lengthPath ( path );
+      previous = target;
+      encoding = to_string ( target.getX() ) + to_string ( target.getY() );
       visitedCell.emplace ( encoding,0 );
       // Get the sensing time required for scanning
-      target.setScanAngles ( ray.getSensingTime ( map,x,y,orientation,FOV,range ) );
+      target.setScanAngles ( ray.getSensingTime ( &map,x,y,orientation,FOV,range ) );
       // Perform a scanning operation
-      newSensedCells = sensedCells + ray.performSensingOperation ( map,x,y,orientation,FOV,range, target.getScanAngles().first, target.getScanAngles().second );
+      newSensedCells = sensedCells + ray.performSensingOperation ( &map, x, y, orientation,FOV,range, target.getScanAngles().first, target.getScanAngles().second );
       // Calculate the scanning angle
-      double scanAngle = target.getScanAngles().second - target.getScanAngles().first;
+      scanAngle = target.getScanAngles().second - target.getScanAngles().first;
       // Update the overall scanning time
       totalScanTime += utils.calculateScanTime ( scanAngle*180/PI );
       // Calculare the relative RFID tag position to the robot position
       relTagCoord = map.getRelativeTagCoord(absTagX, absTagY, target.getX(), target.getY());
       // Calculate the received power and phase
-      double rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
-      double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
+      rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
+      phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
       // Update the path planning and RFID map
       map.updatePathPlanningGrid ( x, y, range, rxPower - SENSITIVITY);
       myGrid.addEllipse(rxPower - SENSITIVITY, map.getNumGridCols() - target.getX(),  target.getY(), target.getOrientation(), -1.0, range);
@@ -152,6 +160,9 @@ int main ( int argc, char **argv )
       // cout << "Target: " << target.getX() << ", " << target.getY() << endl;
       sensedCells = newSensedCells;
       numConfiguration++;
+      // Add target to history and tabulist
+      history.push_back(function.getEncodedKey(target, 1));
+      tabuList.push_back(target);
 
   }
   // Perform exploration until a certain coverage is achieved
@@ -169,10 +180,10 @@ int main ( int argc, char **argv )
   cout << "------------------ HISTORY -----------------" << endl;
   // Calculate which cells have been visited only once
   list<Pose> tmp_history = utils.cleanHistory(&history, &record);
-  utils.calculateDistance(tmp_history, map, &astar );
+  utils.calculateDistance(tmp_history, &map, &astar );
 
   cout << "------------------ TABULIST -----------------" << endl;
-  utils.calculateDistance(tabuList, map, &astar );
+  utils.calculateDistance(tabuList, &map, &astar );
 
   // Trasform distance in meters
   if ( imgresolution == 1.0 ) // Corridor map has a resolution of 0.5 meter per cell

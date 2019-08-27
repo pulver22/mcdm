@@ -14,7 +14,7 @@ InformationGainCriterion::~InformationGainCriterion()
 {
 }
 
-double InformationGainCriterion::evaluate(Pose &p, dummy::Map &map)
+double InformationGainCriterion::evaluate(Pose &p, dummy::Map *map)
 {
 
     long px = p.getX();

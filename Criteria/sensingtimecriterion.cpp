@@ -33,17 +33,17 @@ SensingTimeCriterion::~SensingTimeCriterion()
 
 }
 
-double SensingTimeCriterion::SensingTimeCriterion::evaluate(Pose &p,dummy::Map &map)
+double SensingTimeCriterion::SensingTimeCriterion::evaluate(Pose &p,dummy::Map *map)
 {
   NewRay ray;
   double sensingTime;
-  double angle;
+  double angle = 0.0;
   int orientation = p.getOrientation();
 
   double startingPhi = orientation*PI/180 - (p.getFOV())/2;
   double endingPhi = orientation*PI/180 + (p.getFOV())/2;
   int add2pi = 0;
-  
+
   if(startingPhi <= 0)
   {
     add2pi = 1;
@@ -80,7 +80,7 @@ double SensingTimeCriterion::SensingTimeCriterion::evaluate(Pose &p,dummy::Map &
     }else {
   sensingTime = 1;
     }
-    
+
     */
 
   //New mofidication to have angle in [0, 3.14]
@@ -99,4 +99,3 @@ void SensingTimeCriterion::insertEvaluation(Pose& p, double value)
     insertEvaluation(p,value);
 }
 */
-

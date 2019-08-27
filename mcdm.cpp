@@ -129,9 +129,9 @@ int main ( int argc, char **argv )
       string encoding = to_string ( target.getX() ) + to_string ( target.getY() );
       visitedCell.emplace ( encoding,0 );
       // Get the sensing time required for scanning
-      target.setScanAngles ( ray.getSensingTime ( map,x,y,orientation,FOV,range ) );
+      target.setScanAngles ( ray.getSensingTime ( &map,x,y,orientation,FOV,range ) );
       // Perform a scanning operation
-      newSensedCells = sensedCells + ray.performSensingOperation ( map,x,y,orientation,FOV,range, target.getScanAngles().first, target.getScanAngles().second );
+      newSensedCells = sensedCells + ray.performSensingOperation ( &map,x,y,orientation,FOV,range, target.getScanAngles().first, target.getScanAngles().second );
       // Calculate the scanning angle
       double scanAngle = target.getScanAngles().second - target.getScanAngles().first;
       // Update the overall scanning time
@@ -145,7 +145,7 @@ int main ( int argc, char **argv )
       map.updatePathPlanningGrid ( x, y, range, rxPower - SENSITIVITY);
       myGrid.addEllipse(rxPower - SENSITIVITY, map.getNumGridCols() - target.getX(),  target.getY(), target.getOrientation(), -1.0, range);
       // Search for new candidate position
-      ray.findCandidatePositions ( map,x,y,orientation,FOV,range );
+      ray.findCandidatePositions ( &map,x,y,orientation,FOV,range );
       vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
       ray.emptyCandidatePositions();
       // If the exploration just started
@@ -173,7 +173,7 @@ int main ( int argc, char **argv )
         graph2.pop_back();
         actualPose = function.getEncodedKey ( target,0 );
         // Add to the graph the initial positions and the candidates from there (calculated inside the function)
-        utils.pushInitialPositions ( map, x, y,orientation, range,FOV, threshold, actualPose, &graph2, &function );
+        utils.pushInitialPositions ( &map, x, y,orientation, range,FOV, threshold, actualPose, &graph2, &function );
       }
 
 
@@ -181,7 +181,7 @@ int main ( int argc, char **argv )
       if ( candidatePosition.size() == 0 )
       {
         // Find candidates
-        ray.findCandidatePositions2 ( map,x,y,orientation,FOV,range );
+        ray.findCandidatePositions2 ( &map,x,y,orientation,FOV,range );
         candidatePosition = ray.getCandidatePositions();
         ray.emptyCandidatePositions();
 
@@ -209,11 +209,11 @@ int main ( int argc, char **argv )
           cout << "------------------ HISTORY -----------------" << endl;
           // Retrieve the cell visited only the first time
           list<Pose> tmp_history = utils.cleanHistory(&history, &record);
-          utils.calculateDistance(tmp_history, map, &astar );
+          utils.calculateDistance(tmp_history, &map, &astar );
 
           cout << "------------------ TABULIST -----------------" << endl;
           // Calculate the path connecting the cells in the tabulist, namely the cells that are visited one time and couldn't be visite again
-          utils.calculateDistance(tabuList, map, &astar );
+          utils.calculateDistance(tabuList, &map, &astar );
 
           // Normalise the travel distance in meter
           // NOTE: assuming that the robot is moving at 0.5m/s and the resolution of the map is 0.5m per cell)
@@ -264,7 +264,7 @@ int main ( int argc, char **argv )
         unexploredFrontiers = frontiers;
 
         // Evaluate the frontiers and return a list of <frontier, evaluation> pairs
-        EvaluationRecords *record = function.evaluateFrontiers ( frontiers,map,threshold );
+        EvaluationRecords *record = function.evaluateFrontiers ( frontiers, &map, threshold );
         nearCandidates = record->getFrontiers();
 
         // If there are candidate positions
@@ -296,7 +296,7 @@ int main ( int argc, char **argv )
               // Remove the current position from possible candidates
               utils.cleanPossibleDestination2 ( &nearCandidates, target );
               // Get the list of new candidate position with associated evaluation
-              record = function.evaluateFrontiers ( nearCandidates,map,threshold );
+              record = function.evaluateFrontiers ( nearCandidates, &map, threshold );
               // If there are candidate positions
               if ( record->size() != 0 )
               {
@@ -405,7 +405,7 @@ int main ( int argc, char **argv )
       //NOTE; calculate path and turnings between actual position and goal
       // cout<< function.getEncodedKey ( target,1 ) << endl;
       // Calculate the distance between the previous robot pose and the next one (target)
-      string path = astar.pathFind ( target.getX(),target.getY(),previous.getX(),previous.getY(),map );
+      string path = astar.pathFind ( target.getX(), target.getY(), previous.getX(), previous.getY(), &map );
       // Update the overall covered distance
       travelledDistance = travelledDistance + astar.lengthPath ( path );
       // cout << "BT: " << astar.lengthPath ( path ) << endl;
@@ -418,7 +418,7 @@ int main ( int argc, char **argv )
       previous = target;
 
       // Calculate how much time it takes to scan the current area
-      target.setScanAngles ( ray.getSensingTime ( map,x,y,orientation,FOV,range ) );
+      target.setScanAngles ( ray.getSensingTime ( &map,x,y,orientation,FOV,range ) );
       // Get the scanning angle
       double scanAngle = target.getScanAngles().second - target.getScanAngles().first;
       // Update the overall scanned angle
@@ -435,7 +435,7 @@ int main ( int argc, char **argv )
       // Remove the current pose from the list of possible candidate cells
       utils.cleanPossibleDestination2 ( &nearCandidates,target );
       // Get the list of the candidate cells with their evaluation
-      EvaluationRecords *record = function.evaluateFrontiers ( nearCandidates,map,threshold );
+      EvaluationRecords *record = function.evaluateFrontiers ( nearCandidates, &map, threshold );
 
       // If there are candidate cells
       if ( record->size() != 0 )
@@ -466,7 +466,7 @@ int main ( int argc, char **argv )
             // Remove the destination from the candidate list
             utils.cleanPossibleDestination2 ( &nearCandidates,target );
             // Get the candidates with their evaluation
-            EvaluationRecords *record = function.evaluateFrontiers ( nearCandidates,map,threshold );
+            EvaluationRecords *record = function.evaluateFrontiers ( nearCandidates, & map, threshold );
             // Select the new destination
             std::pair<Pose,double> result = function.selectNewPose ( record );
             target = result.first;
@@ -531,10 +531,10 @@ int main ( int argc, char **argv )
   cout << "------------------ HISTORY -----------------" << endl;
   // Calculate which cells have been visited only once
   list<Pose> tmp_history = utils.cleanHistory(&history, &record);
-  utils.calculateDistance(tmp_history, map, &astar );
+  utils.calculateDistance(tmp_history, &map, &astar );
 
   cout << "------------------ TABULIST -----------------" << endl;
-  utils.calculateDistance(tabuList, map, &astar );
+  utils.calculateDistance(tabuList, &map, &astar );
 
   // Trasform distance in meters
   if ( imgresolution == 1.0 ) // Corridor map has a resolution of 0.5 meter per cell

@@ -95,22 +95,19 @@ Criterion *MCDMFunction::createCriterion(string name, double weight) {
 
 // For a candidate frontier, calculate its evaluation regarding to considered criteria and put it in the evaluation record (through
 //the evaluate method provided by Criterion class)
-double MCDMFunction::evaluateFrontier(Pose &p, dummy::Map &map) {
+void MCDMFunction::evaluateFrontier(Pose &p, dummy::Map *map) {
 
 
   for (int i = 0; i < activeCriteria.size(); i++) {
     Criterion *c = activeCriteria.at(i);
     c->evaluate(p, map);
   }
-
-
-  return 0.0;
 }
 
 
 // Scan a list of candidate positions,then apply the choquet fuzzy algorithm
 EvaluationRecords *
-MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map &map, double threshold) {
+MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map *map, double threshold) {
 
 
   //Clean the last evaluation
@@ -134,8 +131,7 @@ MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map &ma
   list<Pose>::const_iterator it2;
   for (it2 = frontiers.begin(); it2 != frontiers.end(); it2++) {
     Pose f = *it2;
-    double value = 0.0;
-    value = evaluateFrontier(f, map);
+    evaluateFrontier(f, map);
   }
 
 

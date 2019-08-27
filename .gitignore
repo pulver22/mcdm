@@ -3,3 +3,25 @@ CMakeLists.txt.user
 
 
 \.idea/
+
+atomic_configure/
+
+catkin/catkin_generated/version/
+
+catkin_generated/
+
+cmake_install.cmake
+
+CMakeCache.txt
+
+CMakeFiles/3.14.5/
+
+CMakeFiles/_catkin_empty_exported_target.dir/
+
+CMakeFiles/actionlib_generate_messages_cpp.dir/
+
+CMakeFiles/actionlib_generate_messages_eus.dir/
+
+gtest/
+
+devel/

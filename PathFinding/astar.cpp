@@ -28,12 +28,11 @@ bool operator<(const Node & a,const Node & b){
 
 // A-star algorithm.
 // The route returned is a string of direction digits.
-string Astar::pathFind( const int & xStart, const int & yStart, const int & xFinish, const int & yFinish,
-		    dummy::Map& originalMap )
+string Astar::pathFind( const int & xStart, const int & yStart, const int & xFinish, const int & yFinish, dummy::Map *originalMap )
 {
 
-    const int m = originalMap.getPathPlanningNumCols();
-    const int n = originalMap.getPathPlanningNumRows();
+    const int m = originalMap->getPathPlanningNumCols();
+    const int n = originalMap->getPathPlanningNumRows();
 
 
     int map[n][m];
@@ -44,7 +43,7 @@ string Astar::pathFind( const int & xStart, const int & yStart, const int & xFin
     for(int y=0;y<m;y++)
     {
         for(int x=0;x<n;x++){
-	    map[x][y]= originalMap.getPathPlanningGridValue(x,y);
+	    map[x][y]= originalMap->getPathPlanningGridValue(x,y);
 	}
     }
 

@@ -20,7 +20,7 @@ NewRay::NewRay()
  * @param j: the y-position of the cell
  * @return if a cell is candidate (1, meaning it's adiacent to a free cell) or not (0)
  */
-int NewRay::isCandidate(const dummy::Map &map, long i,long  j)
+int NewRay::isCandidate(const dummy::Map *map, long i,long  j)
 {
   int candidate = 0;
   long r = i;
@@ -28,15 +28,15 @@ int NewRay::isCandidate(const dummy::Map &map, long i,long  j)
   long minR = r - 1, maxR = r + 1, minS = s -1, maxS = s + 1;
   if(minR < 0) minR = 0;
   if(minS < 0) minS = 0;
-  if(maxR > map.getPathPlanningNumRows()) maxR = map.getPathPlanningNumRows();
-  if(maxS > map.getPathPlanningNumCols()) maxS = map.getPathPlanningNumCols();
+  if(maxR > map->getPathPlanningNumRows()) maxR = map->getPathPlanningNumRows();
+  if(maxS > map->getPathPlanningNumCols()) maxS = map->getPathPlanningNumCols();
 
 
   for(r = minR; r <= maxR; ++r)
   {
     for(s = minS; s <= maxS; ++s)
     {
-      if (map.getPathPlanningGridValue(r, s) == 0) candidate = 1;
+      if (map->getPathPlanningGridValue(r, s) == 0) candidate = 1;
     }
   }
   return candidate;
@@ -50,7 +50,7 @@ int NewRay::isCandidate(const dummy::Map &map, long i,long  j)
  * @param j: the y-position of the cell
  * @return if a cell is candidate (1, meaning it's adiacent to a free cell) or not (0)
  */
-int NewRay::isCandidate2(const dummy::Map &map, long i, long j)
+int NewRay::isCandidate2(const dummy::Map *map, long i, long j)
 {
   int candidate = 0;
   long r = i;
@@ -58,8 +58,8 @@ int NewRay::isCandidate2(const dummy::Map &map, long i, long j)
   long minR = r - 1, maxR = r + 1, minS = s -1, maxS = s + 1;
   if(minR < 0) minR = 0;
   if(minS < 0) minS = 0;
-  if(maxR > map.getPathPlanningNumRows()) maxR = map.getPathPlanningNumRows();
-  if(maxS > map.getPathPlanningNumCols()) maxS = map.getPathPlanningNumCols();
+  if(maxR > map->getPathPlanningNumRows()) maxR = map->getPathPlanningNumRows();
+  if(maxS > map->getPathPlanningNumCols()) maxS = map->getPathPlanningNumCols();
 
 
   for(r = minR; r <= maxR; ++r)
@@ -70,7 +70,7 @@ int NewRay::isCandidate2(const dummy::Map &map, long i, long j)
       {
         for(int sg = s*gridToPathGridScale; sg < s*gridToPathGridScale + gridToPathGridScale; ++sg)
         {
-          if (map.getGridValue(rg, sg) == 0) candidate = 1;
+          if (map->getGridValue(rg, sg) == 0) candidate = 1;
         }
       }
     }
@@ -89,12 +89,12 @@ int NewRay::isCandidate2(const dummy::Map &map, long i, long j)
  * @param FOV: the FOV of the sensor used for scanning
  * @param range: the range of the sensor used for scanning
  */
-void NewRay::findCandidatePositions(dummy::Map &map, long posX, long posY, int orientation, double FOV, int range)
+void NewRay::findCandidatePositions(dummy::Map *map, long posX, long posY, int orientation, double FOV, int range)
 {
-  NewRay::numGridRows = map.getNumGridRows();
-  NewRay::numPathPlanningGridCols = map.getPathPlanningNumCols();
-  NewRay::numPathPlanningGridRows = map.getPathPlanningNumRows();
-  NewRay::gridToPathGridScale = map.getGridToPathGridScale();
+  NewRay::numGridRows = map->getNumGridRows();
+  NewRay::numPathPlanningGridCols = map->getPathPlanningNumCols();
+  NewRay::numPathPlanningGridRows = map->getPathPlanningNumRows();
+  NewRay::gridToPathGridScale = map->getGridToPathGridScale();
 
   //set the correct FOV orientation
   double startingPhi = orientation*PI/180 - FOV/2;
@@ -120,8 +120,8 @@ void NewRay::findCandidatePositions(dummy::Map &map, long posX, long posY, int o
 
   if(minI < 0) minI = 0;
   if(minJ < 0) minJ = 0;
-  if(maxI > map.getPathPlanningNumRows()) maxI = map.getPathPlanningNumRows();
-  if(maxJ > map.getPathPlanningNumCols()) maxJ = map.getPathPlanningNumCols();
+  if(maxI > map->getPathPlanningNumRows()) maxI = map->getPathPlanningNumRows();
+  if(maxJ > map->getPathPlanningNumCols()) maxJ = map->getPathPlanningNumCols();
 
   //scan the cells in the selected portion of the map
   for(long i = minI; i <= maxI; ++i)
@@ -130,10 +130,10 @@ void NewRay::findCandidatePositions(dummy::Map &map, long posX, long posY, int o
     {
 
       double distance = sqrt((i - posX)*(i - posX) + (j - posY)*(j - posY));
-      //cout << map.getGridValue(i, j) << " : " << distance << " : " <<range << endl;
+      //cout << map->getGridValue(i, j) << " : " << distance << " : " <<range << endl;
 
       //if a cell is a candidate one and within range of the robot, generate the ray connecting the robot cell and the free cell
-      if(map.getPathPlanningGridValue(i, j) == 2 && distance <= range)
+      if(map->getPathPlanningGridValue(i, j) == 2 && distance <= range)
       {
 
         if(NewRay::isCandidate(map, i, j) == 1)
@@ -170,9 +170,9 @@ void NewRay::findCandidatePositions(dummy::Map &map, long posX, long posY, int o
               curX = robotX + 0.5 - u*sin(slope);
 
               //not needed, but left anyway
-              if(curX < 0 || curX > map.getPathPlanningNumRows() || curY < 0 || curY > map.getPathPlanningNumCols()) hit = 1;
+              if(curX < 0 || curX > map->getPathPlanningNumRows() || curY < 0 || curY > map->getPathPlanningNumCols()) hit = 1;
 
-              if(map.getPathPlanningGridValue((long)curX, (long)curY) == 1)
+              if(map->getPathPlanningGridValue((long)curX, (long)curY) == 1)
               {
                 hit = 1;		//hit set to 1 if an obstacle is found
                 //std::cout << "HIT! cell: " << j << " " << i << " Hit point: " << curY << " " << curX << std::endl;
@@ -204,12 +204,12 @@ void NewRay::findCandidatePositions(dummy::Map &map, long posX, long posY, int o
  * @param FOV: the FOV of the sensor used for scanning
  * @param range: the range of the sensor used for scanning
  */
-void NewRay::findCandidatePositions2(dummy::Map &map, long posX, long posY, int orientation, double FOV, int range)
+void NewRay::findCandidatePositions2(dummy::Map *map, long posX, long posY, int orientation, double FOV, int range)
 {
-  NewRay::numGridRows = map.getNumGridRows();
-  NewRay::numPathPlanningGridCols = map.getPathPlanningNumCols();
-  NewRay::numPathPlanningGridRows = map.getPathPlanningNumRows();
-  NewRay::gridToPathGridScale = map.getGridToPathGridScale();
+  NewRay::numGridRows = map->getNumGridRows();
+  NewRay::numPathPlanningGridCols = map->getPathPlanningNumCols();
+  NewRay::numPathPlanningGridRows = map->getPathPlanningNumRows();
+  NewRay::gridToPathGridScale = map->getGridToPathGridScale();
 
   //set the correct FOV orientation
   double startingPhi = orientation*PI/180 - FOV/2;
@@ -235,8 +235,8 @@ void NewRay::findCandidatePositions2(dummy::Map &map, long posX, long posY, int 
 
   if(minI < 0) minI = 0;
   if(minJ < 0) minJ = 0;
-  if(maxI > map.getPathPlanningNumRows()) maxI = map.getPathPlanningNumRows();
-  if(maxJ > map.getPathPlanningNumCols()) maxJ = map.getPathPlanningNumCols();
+  if(maxI > map->getPathPlanningNumRows()) maxI = map->getPathPlanningNumRows();
+  if(maxJ > map->getPathPlanningNumCols()) maxJ = map->getPathPlanningNumCols();
 
   //scan the cells in the selected portion of the map
   for(long i = minI; i <= maxI; ++i)
@@ -245,10 +245,10 @@ void NewRay::findCandidatePositions2(dummy::Map &map, long posX, long posY, int 
     {
 
       double distance = sqrt((i - posX)*(i - posX) + (j - posY)*(j - posY));
-      //cout << map.getGridValue(i, j) << " : " << distance << " : " <<range << endl;
+      //cout << map->getGridValue(i, j) << " : " << distance << " : " <<range << endl;
 
       //if a cell is a candidate one and within range of the robot, generate the ray connecting the robot cell and the free cell
-      if(map.getPathPlanningGridValue(i, j) == 2 && distance <= range)
+      if(map->getPathPlanningGridValue(i, j) == 2 && distance <= range)
       {
 
         if(NewRay::isCandidate2(map, i, j) == 1)
@@ -285,9 +285,9 @@ void NewRay::findCandidatePositions2(dummy::Map &map, long posX, long posY, int 
               curX = robotX + 0.5 - u*sin(slope);
 
               //not needed, but left anyway
-              if(curX < 0 || curX > map.getPathPlanningNumRows() || curY < 0 || curY > map.getPathPlanningNumCols()) hit = 1;
+              if(curX < 0 || curX > map->getPathPlanningNumRows() || curY < 0 || curY > map->getPathPlanningNumCols()) hit = 1;
 
-              if(map.getPathPlanningGridValue((long)curX, (long)curY) == 1)
+              if(map->getPathPlanningGridValue((long)curX, (long)curY) == 1)
               {
                 hit = 1;		//hit set to 1 if an obstacle is found
                 //std::cout << "HIT! cell: " << j << " " << i << " Hit point: " << curY << " " << curX << std::endl;
@@ -331,11 +331,11 @@ void NewRay::emptyCandidatePositions()
 //calculate the sensing time of a possible scanning operation, returns the minimum FOV required to scan all the free cells from the considered pose
 //ATTENTION: the FOV is always centered in the orientation of the robot
 //ATTENTION: in order to optimize the computing time, this method should be fused with the information gain one
-std::pair<double,double> NewRay::getSensingTime(const dummy::Map &map, long posX,long posY, int orientation, double FOV, int range)
+std::pair<double,double> NewRay::getSensingTime(const dummy::Map *map, long posX,long posY, int orientation, double FOV, int range)
 {
 
-  NewRay::numGridRows = map.getNumGridRows();
-  setGridToPathGridScale(map.getGridToPathGridScale());
+  NewRay::numGridRows = map->getNumGridRows();
+  setGridToPathGridScale(map->getGridToPathGridScale());
 
 
   double minPhi = 0;	//slope of the first ray required
@@ -366,8 +366,8 @@ std::pair<double,double> NewRay::getSensingTime(const dummy::Map &map, long posX
 
   if(minI < 0) minI = 0;
   if(minJ < 0) minJ = 0;
-  if(maxI > map.getNumGridRows()) maxI = map.getNumGridRows();
-  if(maxJ > map.getNumGridCols()) maxJ = map.getNumGridCols();
+  if(maxI > map->getNumGridRows()) maxI = map->getNumGridRows();
+  if(maxJ > map->getNumGridCols()) maxJ = map->getNumGridCols();
 
   //scan the cells in the selected portion of the map
   for(long i = minI; i <= maxI; ++i)
@@ -378,7 +378,7 @@ std::pair<double,double> NewRay::getSensingTime(const dummy::Map &map, long posX
       double distance = sqrt((i - posX*gridToPathGridScale)*(i - posX*gridToPathGridScale) + (j - posY*gridToPathGridScale)*(j - posY*gridToPathGridScale));
 
       //if a cell is free and within range of the robot, generate the ray connecting the robot cell and the free cell
-      if(map.getGridValue(i, j) == 0 && distance <= range*gridToPathGridScale)
+      if(map->getGridValue(i, j) == 0 && distance <= range*gridToPathGridScale)
       {
         double curX = posX*gridToPathGridScale + gridToPathGridScale/2;		//starting position of the ray
         double curY = posY*gridToPathGridScale + gridToPathGridScale/2;
@@ -409,9 +409,9 @@ std::pair<double,double> NewRay::getSensingTime(const dummy::Map &map, long posX
             curX = robotX + 0.5 - u*sin(slope);
 
             //not needed, but left anyway
-            if(curX < 0 || curX > map.getNumGridRows() || curY < 0 || curY > map.getNumGridCols()) hit = 1;
+            if(curX < 0 || curX > map->getNumGridRows() || curY < 0 || curY > map->getNumGridCols()) hit = 1;
 
-            if(map.getGridValue((long)curX, (long)curY) == 1)
+            if(map->getGridValue((long)curX, (long)curY) == 1)
             {
               hit = 1;		//hit set to 1 if an obstacle is found
               //std::cout << "HIT! cell: " << j << " " << i << " Hit point: " << curY << " " << curX << std::endl;
@@ -473,11 +473,11 @@ std::pair<double,double> NewRay::getSensingTime(const dummy::Map &map, long posX
  * @param lastAngle: the final angle of the sensing operation
  * @return
  */
-int NewRay::performSensingOperation(dummy::Map &map, long posX, long posY, int orientation, double FOV, int range, double firstAngle, double lastAngle)
+int NewRay::performSensingOperation(dummy::Map *map, long posX, long posY, int orientation, double FOV, int range, double firstAngle, double lastAngle)
 {
 
-  NewRay::numGridRows = map.getNumGridRows();
-  setGridToPathGridScale(map.getGridToPathGridScale());
+  NewRay::numGridRows = map->getNumGridRows();
+  setGridToPathGridScale(map->getGridToPathGridScale());
   int counter = 0;
 
   //set the correct FOV orientation
@@ -504,8 +504,8 @@ int NewRay::performSensingOperation(dummy::Map &map, long posX, long posY, int o
 
   if(minI < 0) minI = 0;
   if(minJ < 0) minJ = 0;
-  if(maxI > map.getNumGridRows()) maxI = map.getNumGridRows();
-  if(maxJ > map.getNumGridCols()) maxJ = map.getNumGridCols();
+  if(maxI > map->getNumGridRows()) maxI = map->getNumGridRows();
+  if(maxJ > map->getNumGridCols()) maxJ = map->getNumGridCols();
 
   //scan the cells in the selected portion of the map
   for(long i = minI; i <= maxI; ++i)
@@ -516,7 +516,7 @@ int NewRay::performSensingOperation(dummy::Map &map, long posX, long posY, int o
       double distance = sqrt((i - posX*gridToPathGridScale)*(i - posX*gridToPathGridScale) + (j - posY*gridToPathGridScale)*(j - posY*gridToPathGridScale));
 
       //if a cell is free and within range of the robot, generate the ray connecting the robot cell and the free cell
-      if(map.getGridValue(i, j) == 0 && distance <= range*gridToPathGridScale)
+      if(map->getGridValue(i, j) == 0 && distance <= range*gridToPathGridScale)
       {
         double curX = posX*gridToPathGridScale + gridToPathGridScale/2;		//starting position of the ray
         double curY = posY*gridToPathGridScale + gridToPathGridScale/2;
@@ -548,9 +548,9 @@ int NewRay::performSensingOperation(dummy::Map &map, long posX, long posY, int o
             curX = robotX + 0.5 - u*sin(slope);
 
             //not needed, but left anyway
-            if(curX < 0 || curX > map.getNumGridRows() || curY < 0 || curY > map.getNumGridCols()) hit = 1;
+            if(curX < 0 || curX > map->getNumGridRows() || curY < 0 || curY > map->getNumGridCols()) hit = 1;
 
-            if(map.getGridValue((long)curX, (long)curY) == 1)
+            if(map->getGridValue((long)curX, (long)curY) == 1)
             {
               hit = 1;		//hit set to 1 if an obstacle is found
               //std::cout << "HIT! cell: " << j << " " << i << " Hit point: " << curY << " " << curX << std::endl;
@@ -558,7 +558,7 @@ int NewRay::performSensingOperation(dummy::Map &map, long posX, long posY, int o
 
             if((long)curX == i && (long)curY == j)	//if the free cell is reached, set its value to 2 and stop the ray
             {
-              map.setGridValue(2, i, j);
+              map->setGridValue(2, i, j);
               counter++;
               //std::cout << "Cell scanned: " << (int)curY << " " << (int)curX << std::endl;
               hit = 1;
@@ -602,12 +602,12 @@ long NewRay::convertPointPP(long y)
  * @param range: the range of the sensor used for scanning
  * @return the number of the free scell in the scannable area
  */
-int NewRay::getInformationGain(const dummy::Map &map, long posX, long posY, int orientation, double FOV, int range)
+int NewRay::getInformationGain(const dummy::Map *map, long posX, long posY, int orientation, double FOV, int range)
 {
   //int raycounter = 0;
-  setGridToPathGridScale(map.getGridToPathGridScale());
+  setGridToPathGridScale(map->getGridToPathGridScale());
   int counter = 0;	//count number of free cells that can be seen
-  NewRay::numGridRows = map.getNumGridRows();
+  NewRay::numGridRows = map->getNumGridRows();
 
   //set the correct FOV orientation
   double startingPhi = orientation*PI/180 - FOV/2;
@@ -633,8 +633,8 @@ int NewRay::getInformationGain(const dummy::Map &map, long posX, long posY, int 
 
   if(minI < 0) minI = 0;
   if(minJ < 0) minJ = 0;
-  if(maxI > map.getNumGridRows()) maxI = map.getNumGridRows();
-  if(maxJ > map.getNumGridCols()) maxJ = map.getNumGridCols();
+  if(maxI > map->getNumGridRows()) maxI = map->getNumGridRows();
+  if(maxJ > map->getNumGridCols()) maxJ = map->getNumGridCols();
 
   //scan the cells in the selected portion of the map
   for(long i = minI; i <= maxI; ++i)
@@ -644,7 +644,7 @@ int NewRay::getInformationGain(const dummy::Map &map, long posX, long posY, int 
       double distance = sqrt((i - posX*gridToPathGridScale)*(i - posX*gridToPathGridScale) + (j - posY*gridToPathGridScale)*(j - posY*gridToPathGridScale));
 
       //if a cell is free and within range of the robot, generate the ray connecting the robot cell and the free cell
-      if(map.getGridValue(i, j) == 0 && distance <= range*gridToPathGridScale)
+      if(map->getGridValue(i, j) == 0 && distance <= range*gridToPathGridScale)
       {
         double curX = posX*gridToPathGridScale + gridToPathGridScale/2;		//starting position of the ray
         double curY = posY*gridToPathGridScale + gridToPathGridScale/2;
@@ -676,13 +676,13 @@ int NewRay::getInformationGain(const dummy::Map &map, long posX, long posY, int 
             curX = robotX + 0.5 - u*sin(slope);
 
             //not needed, but left anyway
-            if(curX < 0 || curX > map.getNumGridRows() || curY < 0 || curY > map.getNumGridCols())
+            if(curX < 0 || curX > map->getNumGridRows() || curY < 0 || curY > map->getNumGridCols())
             {
               hit = 1;
               //break;
             }
 
-            if(map.getGridValue((long)curX, (long)curY) == 1)
+            if(map->getGridValue((long)curX, (long)curY) == 1)
             {
               hit = 1;		//hit set to 1 if an obstacle is found
               //std::cout << "HIT! cell: " << j << " " << i << " Hit point: " << curY << " " << curX << std::endl;
@@ -717,12 +717,12 @@ int NewRay::getInformationGain(const dummy::Map &map, long posX, long posY, int 
  * @param range: the range of the sensor used for scanning
  * @return the number of the free scell in the scannable area
  */
-int NewRay::getRFIDGain(const dummy::Map &map, long posX, long posY, int orientation, double FOV, int range)
+int NewRay::getRFIDGain(const dummy::Map *map, long posX, long posY, int orientation, double FOV, int range)
 {
   //int raycounter = 0;
-  setGridToPathGridScale(map.getGridToPathGridScale());
+  setGridToPathGridScale(map->getGridToPathGridScale());
   int counter = 0;	//count number of free cells that can be seen
-  NewRay::numGridRows = map.getNumGridRows();
+  NewRay::numGridRows = map->getNumGridRows();
 
   //set the correct FOV orientation
   double startingPhi = orientation*PI/180 - FOV/2;
@@ -748,8 +748,8 @@ int NewRay::getRFIDGain(const dummy::Map &map, long posX, long posY, int orienta
 
   if(minI < 0) minI = 0;
   if(minJ < 0) minJ = 0;
-  if(maxI > map.getNumGridRows()) maxI = map.getNumGridRows();
-  if(maxJ > map.getNumGridCols()) maxJ = map.getNumGridCols();
+  if(maxI > map->getNumGridRows()) maxI = map->getNumGridRows();
+  if(maxJ > map->getNumGridCols()) maxJ = map->getNumGridCols();
 
   //scan the cells in the selected portion of the map
   for(long i = minI; i <= maxI; ++i)
@@ -759,7 +759,7 @@ int NewRay::getRFIDGain(const dummy::Map &map, long posX, long posY, int orienta
       double distance = sqrt((i - posX*gridToPathGridScale)*(i - posX*gridToPathGridScale) + (j - posY*gridToPathGridScale)*(j - posY*gridToPathGridScale));
 
       //if a cell is free and within range of the robot, generate the ray connecting the robot cell and the free cell
-      if(map.getRFIDGridValue(i, j) > 0 && distance <= range*gridToPathGridScale)
+      if(map->getRFIDGridValue(i, j) > 0 && distance <= range*gridToPathGridScale)
       {
         double curX = posX*gridToPathGridScale + gridToPathGridScale/2;		//starting position of the ray
         double curY = posY*gridToPathGridScale + gridToPathGridScale/2;
@@ -791,13 +791,13 @@ int NewRay::getRFIDGain(const dummy::Map &map, long posX, long posY, int orienta
             curX = robotX + 0.5 - u*sin(slope);
 
             //not needed, but left anyway
-            if(curX < 0 || curX > map.getNumGridRows() || curY < 0 || curY > map.getNumGridCols())
+            if(curX < 0 || curX > map->getNumGridRows() || curY < 0 || curY > map->getNumGridCols())
             {
               hit = 1;
               //break;
             }
 
-            if(map.getGridValue((long)curX, (long)curY) == 1)
+            if(map->getGridValue((long)curX, (long)curY) == 1)
             {
               hit = 1;		//hit set to 1 if an obstacle is found
               //std::cout << "HIT! cell: " << j << " " << i << " Hit point: " << curY << " " << curX << std::endl;
@@ -833,11 +833,11 @@ int NewRay::setGridToPathGridScale(int value)
 
 
 //ATTENTION: it doesn't work
-void NewRay::calculateInfoGainSensingTime (const dummy::Map &map, long posX, long posY, int orientation, double FOV, int range)
+void NewRay::calculateInfoGainSensingTime (const dummy::Map *map, long posX, long posY, int orientation, double FOV, int range)
 {
   //int raycounter = 0;
   informationGain = 0;	//count number of free cells that can be seen
-  NewRay::numGridRows = map.getNumGridRows();
+  NewRay::numGridRows = map->getNumGridRows();
 
   double minPhi = 0;	//slope of the first ray required
   double maxPhi = 0;	//slope of the last ray required
@@ -865,8 +865,8 @@ void NewRay::calculateInfoGainSensingTime (const dummy::Map &map, long posX, lon
 
   if(minI < 0) minI = 0;
   if(minJ < 0) minJ = 0;
-  if(maxI > map.getNumGridRows()) maxI = map.getNumGridRows();
-  if(maxJ > map.getNumGridCols()) maxJ = map.getNumGridCols();
+  if(maxI > map->getNumGridRows()) maxI = map->getNumGridRows();
+  if(maxJ > map->getNumGridCols()) maxJ = map->getNumGridCols();
 
   //scan the cells in the selected portion of the map
   for(long i = minI; i <= maxI; ++i)
@@ -877,7 +877,7 @@ void NewRay::calculateInfoGainSensingTime (const dummy::Map &map, long posX, lon
       double distance = sqrt((i - posX)*(i - posX) + (j - posY)*(j - posY));
 
       //if a cell is free and within range of the robot, generate the ray connecting the robot cell and the free cell
-      if(map.getGridValue(i, j) == 0 && distance <= range)
+      if(map->getGridValue(i, j) == 0 && distance <= range)
       {
         double curX = posX;		//starting position of the ray
         double curY = posY;
@@ -909,9 +909,9 @@ void NewRay::calculateInfoGainSensingTime (const dummy::Map &map, long posX, lon
             curX = robotX + 0.5 - u*sin(slope);
 
             //not needed, but left anyway
-            if(curX < 0 || curX > map.getNumGridRows() || curY < 0 || curY > map.getNumGridCols()) hit = 1;
+            if(curX < 0 || curX > map->getNumGridRows() || curY < 0 || curY > map->getNumGridCols()) hit = 1;
 
-            if(map.getGridValue((long)curX, (long)curY) == 1)
+            if(map->getGridValue((long)curX, (long)curY) == 1)
             {
               hit = 1;		//hit set to 1 if an obstacle is found
               //std::cout << "HIT! cell: " << j << " " << i << " Hit point: " << curY << " " << curX << std::endl;
@@ -965,11 +965,11 @@ void NewRay::calculateInfoGainSensingTime (const dummy::Map &map, long posX, lon
  * @param lastAngle: the final angle of the sensing operation
  * @return
  */
-void NewRay::performRFIDSensingOperation(dummy::Map &map, long posX, long posY, int orientation, double FOV, int range, double power, double firstAngle, double lastAngle)
+void NewRay::performRFIDSensingOperation(dummy::Map *map, long posX, long posY, int orientation, double FOV, int range, double power, double firstAngle, double lastAngle)
 {
   cout << "[" << posX << "," << posY << "]" << endl;
-  NewRay::numGridRows = map.getNumGridRows();
-  setGridToPathGridScale(map.getGridToPathGridScale());
+  NewRay::numGridRows = map->getNumGridRows();
+  setGridToPathGridScale(map->getGridToPathGridScale());
   int counter = 0;
 
   //set the correct FOV orientation
@@ -996,8 +996,8 @@ void NewRay::performRFIDSensingOperation(dummy::Map &map, long posX, long posY, 
 
   if(minI < 0) minI = 0;
   if(minJ < 0) minJ = 0;
-  if(maxI > map.getNumGridRows()) maxI = map.getNumGridRows();
-  if(maxJ > map.getNumGridCols()) maxJ = map.getNumGridCols();
+  if(maxI > map->getNumGridRows()) maxI = map->getNumGridRows();
+  if(maxJ > map->getNumGridCols()) maxJ = map->getNumGridCols();
 
   //scan the cells in the selected portion of the map
   for(long i = minI; i <= maxI; ++i)
@@ -1008,7 +1008,7 @@ void NewRay::performRFIDSensingOperation(dummy::Map &map, long posX, long posY, 
       double distance = sqrt((i - posX*gridToPathGridScale)*(i - posX*gridToPathGridScale) + (j - posY*gridToPathGridScale)*(j - posY*gridToPathGridScale));
 
       //if a cell is free and within range of the robot, generate the ray connecting the robot cell and the free cell
-      if(map.getGridValue(i, j) == 0 && distance <= range*gridToPathGridScale)
+      if(map->getGridValue(i, j) == 0 && distance <= range*gridToPathGridScale)
       {
         double curX = posX*gridToPathGridScale + gridToPathGridScale/2;		//starting position of the ray
         double curY = posY*gridToPathGridScale + gridToPathGridScale/2;
@@ -1040,9 +1040,9 @@ void NewRay::performRFIDSensingOperation(dummy::Map &map, long posX, long posY, 
             curX = robotX + 0.5 - u*sin(slope);
 
             //not needed, but left anyway
-            if(curX < 0 || curX > map.getNumGridRows() || curY < 0 || curY > map.getNumGridCols()) hit = 1;
+            if(curX < 0 || curX > map->getNumGridRows() || curY < 0 || curY > map->getNumGridCols()) hit = 1;
 
-            if(map.getGridValue((long)curX, (long)curY) == 1)
+            if(map->getGridValue((long)curX, (long)curY) == 1)
             {
               hit = 1;		//hit set to 1 if an obstacle is found
               //std::cout << "HIT! cell: " << j << " " << i << " Hit point: " << curY << " " << curX << std::endl;
@@ -1050,7 +1050,7 @@ void NewRay::performRFIDSensingOperation(dummy::Map &map, long posX, long posY, 
 
             if((long)curX == i && (long)curY == j)	//if the free cell is reached, set its value to 2 and stop the ray
             {
-              map.setRFIDGridValue(50, i, j);
+              map->setRFIDGridValue(50, i, j);
               counter++;
               //std::cout << "Cell scanned: " << (int)curY << " " << (int)curX << std::endl;
               hit = 1;
