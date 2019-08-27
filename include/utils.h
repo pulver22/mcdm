@@ -124,6 +124,15 @@ public:
   */
   void filePutContents(const std::string& name, const std::string& content,
                        bool append = false);
+
+  /**
+  * Save on file the exploration results
+  * @param name: the output file name
+  * @param content: the sring to append to the file
+  * @param append: if the file needs to be created from scratch or we append
+  */
+  void saveCoverage(const std::string& name, const std::string& content,
+                        bool append = false);
 protected:
 
 };

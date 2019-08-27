@@ -245,6 +245,8 @@ void Map::createPathPlanningGrid(double resolution)
         RFIDGrid[static_cast<long>((row/clusterSize)*numPathPlanningGridCols) + static_cast<long>(col/clusterSize)] = 1;
         //NOTE: i don't remember when it should be used
         //map[(long)(row/clusterSize)*numGridCols + (long)(col/clusterSize)] = 1;
+      }else {
+        listFreeCells.push_back(std::make_pair((row/clusterSize), col/clusterSize));
       }
     }
   }
@@ -723,6 +725,16 @@ std::pair<int, int> Map::findTagfromGridMap(RFIDGridmap grid)
     }
   }
   return tag;
+}
+
+std::pair<long, long> Map::getRandomFreeCell(){
+  std::random_device rd;     // only used once to initialise (seed) engine
+  std::mt19937 rng(rd());    // random-number engine used (Mersenne-Twister in this case)
+  std::uniform_int_distribution<int> uni(0, totalFreeCells-1); // guaranteed unbiased
+
+  auto random_integer = uni(rng);
+  std::pair<long, long> random_cell = listFreeCells.at(random_integer);
+  return random_cell;
 }
 
 }

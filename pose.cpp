@@ -15,13 +15,13 @@ Pose::Pose(long aX,long aY, int orientation, int range, double FOV)
 
 Pose::Pose()
 {
-  
+
 }
 
 
 Pose::~Pose()
 {
-  
+
 }
 
 double Pose::getDistance( Pose& pose)
@@ -59,8 +59,8 @@ bool Pose::isEqual(Pose& p)
     if(aX == p.getX() & aY == p.getY() & orientation == p.getOrientation() & FOV == p.getFOV() & range == p.getRange()){
 	return true;
     } else return false;
-	
-    
+
+
 
 }
 
@@ -93,4 +93,10 @@ std::pair<double, double> Pose::getScanAngles()
   return scanAngles;
 }
 
-
+void Pose::updateFromData(std::pair<long, long> position, float orientation, int range, double FOV) {
+  this->aX = position.first;
+  this->aY = position.second;
+  this->orientation = orientation;
+  this->range = range;
+  this->FOV = FOV;
+}

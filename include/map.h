@@ -58,8 +58,9 @@ public:
   void drawRFIDGridScan(RFIDGridmap grid);
   int getRFIDGridValue(long i,long j) const;
   void updateRFIDGrid(double power, double phase, int antennaX, int antennaY);
-  std::pair<int,int> findTag();
-  std::pair<int,int> findTagfromGridMap(RFIDGridmap grid);
+  std::pair<int, int> findTag();
+  std::pair<int, int> findTagfromGridMap(RFIDGridmap grid);
+  std::pair<long, long> getRandomFreeCell();
 	//nav_msgs::OccupancyGrid toROSMsg();
 protected:
   std::vector<long> map;				//vector containing the original map as binary matrix (0 -> free, 1 -> obstacle)
@@ -76,6 +77,7 @@ protected:
   long totalFreeCells;
   void decreaseFreeCells();
   Pose currentPose;
+  std::vector<pair<long, long>> listFreeCells;
 
 };
 }

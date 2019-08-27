@@ -66,6 +66,7 @@ int main ( int argc, char **argv )
   double w_sensing_time = atof(argv[17]);
   double w_rfid_gain = atof(argv[18]);
   std::string out_log (argv[19]);
+  std::string coverage_log (argv[20]);
   //x,y,orientation,range,FOV
   Utilities utils;
 
@@ -105,12 +106,19 @@ int main ( int argc, char **argv )
   double totalScanTime = 0;
   bool act = true;
   int encodedKeyValue = 0;
+  string content;
 
   do
   {
     // If we are doing "forward" navigation towards cells never visited before
     if ( btMode == false )
     {
+
+      content = to_string(w_info_gain) + ","  + to_string(w_travel_distance)
+                + "," + to_string(w_sensing_time) + "," + to_string(w_rfid_gain)
+                + "," + to_string(numConfiguration) + ","
+                + to_string(100 * float(newSensedCells)/float(totalFreeCells)) + "\n";
+      utils.filePutContents(coverage_log, content, true );
       long x = target.getX();
       long y = target.getY();
       int orientation = target.getOrientation();
@@ -215,7 +223,7 @@ int main ( int argc, char **argv )
           }
           utils.printResult(newSensedCells, totalFreeCells, precision, numConfiguration, travelledDistance, numOfTurning,
               totalAngle, totalScanTime);
-          string content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + "," + to_string(w_rfid_gain) + ","
+          content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + "," + to_string(w_rfid_gain) + ","
                            + to_string(float(newSensedCells)/float(totalFreeCells)) + "," + to_string(numConfiguration) + ","
                            + to_string(travelledDistance) + "," + to_string(totalScanTime) + "\n";
           utils.filePutContents(out_log, content, true );
@@ -537,9 +545,9 @@ int main ( int argc, char **argv )
 
   utils.printResult(newSensedCells, totalFreeCells, precision, numConfiguration, travelledDistance, numOfTurning,
       totalAngle, totalScanTime);
-      string content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + "," + to_string(w_rfid_gain) + ","
-                       + to_string(float(newSensedCells)/float(totalFreeCells)) + "," + to_string(numConfiguration) + ","
-                       + to_string(travelledDistance) + "," + to_string(totalScanTime) + "\n";
+  content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + "," + to_string(w_rfid_gain) + ","
+             + to_string(float(newSensedCells)/float(totalFreeCells)) + "," + to_string(numConfiguration) + ","
+             + to_string(travelledDistance) + "," + to_string(totalScanTime) + "\n";
   utils.filePutContents(out_log, content, true );
   // Find the tag
   std::pair<int,int> tag = map.findTag();
