@@ -8,7 +8,7 @@ using namespace std;
 
 WeightMatrix *MCDMWeightReader::getMatrix(float w_criterion_1, float w_criterion_2, float w_criterion_3) {
   WeightMatrix *matrix = NULL;
-  cout << w_criterion_1 << " " << w_criterion_2 << " " << w_criterion_3 << endl;
+  // cout << w_criterion_1 << " " << w_criterion_2 << " " << w_criterion_3 << endl;
   matrix = new WeightMatrix(3);
   // int numCriteria = 3;
   bool to_use;
@@ -37,7 +37,7 @@ WeightMatrix *MCDMWeightReader::getMatrix(float w_criterion_1, float w_criterion
   matrix->insertCombinationWeight(list1, (w_criterion_1 + w_criterion_2 + 0.1));
   matrix->insertCombinationWeight(list2, (w_criterion_1 + w_criterion_3 + 0.1));
   matrix->insertCombinationWeight(list3, (w_criterion_2 + w_criterion_3 + 0.1));
-  matrix->insertCombinationWeight(list4, (w_criterion_1 + w_criterion_2 + w_criterion_3));
+  matrix->insertCombinationWeight(list4, 1.0);
 
   return matrix;
 }
@@ -77,7 +77,7 @@ WeightMatrix *MCDMWeightReader::getMatrix(float w_criterion_1, float w_criterion
 WeightMatrix *MCDMWeightReader::getMatrix(float w_criterion_1, float w_criterion_2, float w_criterion_3, float w_criterion_4) {
   WeightMatrix *matrix = NULL;
   bool to_use;
-  cout << w_criterion_1 << " " << w_criterion_2 << " " << w_criterion_3 << " " << w_criterion_4 << endl;
+  // cout << w_criterion_1 << " " << w_criterion_2 << " " << w_criterion_3 << " " << w_criterion_4 << endl;
   matrix = new WeightMatrix(4);
   // int numCriteria = 3;
   to_use = (w_criterion_1 > 0.0) ? true : false;
@@ -131,16 +131,16 @@ WeightMatrix *MCDMWeightReader::getMatrix(float w_criterion_1, float w_criterion
   list11.push_back(str2);
   list11.push_back(str3);
   list11.push_back(str4);
-  matrix->insertCombinationWeight(list1, (w_criterion_1 + w_criterion_2 + 0.1));  // IG, TD
-  matrix->insertCombinationWeight(list2, (w_criterion_1 + w_criterion_3 + 0.1));  // IG, ST
-  matrix->insertCombinationWeight(list3, (w_criterion_1 + w_criterion_4 + 0.1));  // IG, RFID
-  matrix->insertCombinationWeight(list4, (w_criterion_1 + w_criterion_2 + w_criterion_3 + 0.1));  // IG, TD, ST
-  matrix->insertCombinationWeight(list5, (w_criterion_1 + w_criterion_2 + w_criterion_4 + 0.1));  // IG, TD, RFID
-  matrix->insertCombinationWeight(list6, (w_criterion_1 + w_criterion_3 + w_criterion_4 + 0.1));  // IG, ST, RFID
-  matrix->insertCombinationWeight(list7, (w_criterion_2 + w_criterion_3 + 0.1));  // TD, ST
-  matrix->insertCombinationWeight(list8, (w_criterion_2 + w_criterion_4 + 0.1));  // TD, RFID
-  matrix->insertCombinationWeight(list9, (w_criterion_2 + w_criterion_3 + w_criterion_4 + 0.1));  // TD, ST, RFID
-  matrix->insertCombinationWeight(list10, (w_criterion_3 + w_criterion_4 + 0.1)); // ST, RFID
-  matrix->insertCombinationWeight(list11, (w_criterion_1 + w_criterion_2 + w_criterion_3 + w_criterion_4 + 0.1)); // IG, TD, ST, RFID
+  matrix->insertCombinationWeight(list1, std::min((w_criterion_1 + w_criterion_2 + 0.1), 1.0));  // IG, TD
+  matrix->insertCombinationWeight(list2, std::min((w_criterion_1 + w_criterion_3 + 0.1), 1.0));  // IG, ST
+  matrix->insertCombinationWeight(list3, std::min((w_criterion_1 + w_criterion_4 + 0.1), 1.0));  // IG, RFID
+  matrix->insertCombinationWeight(list4, std::min((w_criterion_1 + w_criterion_2 + w_criterion_3 + 0.1), 1.0));  // IG, TD, ST
+  matrix->insertCombinationWeight(list5, std::min((w_criterion_1 + w_criterion_2 + w_criterion_4 + 0.1), 1.0));  // IG, TD, RFID
+  matrix->insertCombinationWeight(list6, std::min((w_criterion_1 + w_criterion_3 + w_criterion_4 + 0.1), 1.0));  // IG, ST, RFID
+  matrix->insertCombinationWeight(list7, std::min((w_criterion_2 + w_criterion_3 + 0.1), 1.0));  // TD, ST
+  matrix->insertCombinationWeight(list8, std::min((w_criterion_2 + w_criterion_4 + 0.1), 1.0));  // TD, RFID
+  matrix->insertCombinationWeight(list9, std::min((w_criterion_2 + w_criterion_3 + w_criterion_4 + 0.1), 1.0));  // TD, ST, RFID
+  matrix->insertCombinationWeight(list10, std::min((w_criterion_3 + w_criterion_4 + 0.1), 1.0)); // ST, RFID
+  matrix->insertCombinationWeight(list11, 1.0); // IG, TD, ST, RFID
   return matrix;
 }

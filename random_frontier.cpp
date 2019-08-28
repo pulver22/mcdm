@@ -85,7 +85,7 @@ int main ( int argc, char **argv )
   ray.setGridToPathGridScale ( gridToPathGridScale );
   // MCDMFunction function(w_info_gain, w_travel_distance, w_sensing_time);
   MCDMFunction function(w_info_gain, w_travel_distance, w_sensing_time, w_rfid_gain);
-  cout << "MCDM matrix created! " << endl;
+  // cout << "MCDM matrix created! " << endl;
 //  MCDMFunction function;
   long sensedCells = 0;
   long newSensedCells = 0;

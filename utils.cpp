@@ -77,10 +77,10 @@ void Utilities::calculateDistance(list<Pose> history, dummy::Map* map, Astar* as
         travelledDistance = travelledDistance + astar->lengthPath ( path );
         numOfTurning = numOfTurning + astar->getNumberOfTurning ( path );
     }
-    cout << "Number of cells: " << history.size() << endl;
-    cout << "Num of Turning: " << numOfTurning << endl;
-    cout << "Travelled distance (cells): " << travelledDistance << endl;
-    cout << "Travelled distance (meters): " << travelledDistance / 2.0 << endl; // Valid only if imgresolution == 1.0 (cell side is 0.5m)
+    // cout << "Number of cells: " << history.size() << endl;
+    // cout << "Num of Turning: " << numOfTurning << endl;
+    // cout << "Travelled distance (cells): " << travelledDistance << endl;
+    // cout << "Travelled distance (meters): " << travelledDistance / 2.0 << endl; // Valid only if imgresolution == 1.0 (cell side is 0.5m)
 }
 
 void Utilities::updatePathMetrics(int* count, Pose* target, Pose* previous, string actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
@@ -164,7 +164,7 @@ void Utilities::filePutContents(const std::string& name, const std::string& cont
   else
   {
     if (pFile.peek() == std::ifstream::traits_type::eof()){ // file is empty
-      cout << "File does not exist! Create a new one!" << endl;
+      // cout << "File does not exist! Create a new one!" << endl;
       outfile.open(name);
       outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,coverage,numConfiguration,travelledDistance,totalScanTime" << endl;
     }else{
@@ -188,7 +188,7 @@ void Utilities::saveCoverage(const std::string& name, const std::string& content
   else
   {
     if (pFile.peek() == std::ifstream::traits_type::eof()){ // file is empty
-      cout << "File does not exist! Create a new one!" << endl;
+      // cout << "File does not exist! Create a new one!" << endl;
       outfile.open(name);
       outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,numConfiguration,incrementalCoverage" << endl;
     }else{

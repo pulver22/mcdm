@@ -225,7 +225,7 @@ void Map::createPathPlanningGrid(double resolution)
   //std::cout << "imgResolution: " << resolution << " clusterSize: " << clusterSize << std::endl;
   Map::numPathPlanningGridRows = static_cast<int>(numRows/clusterSize);
   Map::numPathPlanningGridCols = static_cast<int>(numCols/clusterSize);
-  cout <<"numPathPlanningGridRows: " << numPathPlanningGridRows <<", numPathPlanningGridCols: "<< numPathPlanningGridCols << endl;
+  // cout <<"numPathPlanningGridRows: " << numPathPlanningGridRows <<", numPathPlanningGridCols: "<< numPathPlanningGridCols << endl;
 
   for(int i = 0; i < numPathPlanningGridCols*numPathPlanningGridRows; ++i)
   {
@@ -251,7 +251,7 @@ void Map::createPathPlanningGrid(double resolution)
     }
   }
   Map::gridToPathGridScale = static_cast<int>(numGridRows / numPathPlanningGridRows);
-  cout << "Scale: " << gridToPathGridScale << endl;
+  // cout << "Scale: " << gridToPathGridScale << endl;
 
 
 }

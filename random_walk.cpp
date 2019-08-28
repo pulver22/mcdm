@@ -42,12 +42,12 @@ int main ( int argc, char **argv )
   double imgresolution = atof ( argv[10] );  // the resolution to use for the planningGrid and RFIDGrid
   dummy::Map map = dummy::Map ( infile,resolution, imgresolution );
   RFIDGridmap myGrid(argv[1], resolution, imgresolution, false);
-  cout << "Map dimension: " << map.getNumGridCols() << " : "<<  map.getNumGridRows() << endl;
+  // cout << "Map dimension: " << map.getNumGridCols() << " : "<<  map.getNumGridRows() << endl;
   int gridToPathGridScale = map.getGridToPathGridScale();
   // i switched x and y because the map's orientation inside and outside programs are different
   long initX = static_cast<long>( atoi ( argv[4] ) *imgresolution );  // initial X-position of the robot in map frame
   long initY = static_cast<long>( atoi ( argv[3] ) *imgresolution );  // initial Y-position of the robot in map frame
-  std::cout << "initX: " << initX << " initY: " << initY << std::endl;
+  // std::cout << "initX: " << initX << " initY: " << initY << std::endl;
   int initOrientation = atoi ( argv[5] );  // initial orientation of the robot in map frame
   double initFov = atoi ( argv[7] );  // initial FOV of the robot sensor
   initFov = initFov * PI /180;
@@ -82,7 +82,7 @@ int main ( int argc, char **argv )
   ray.setGridToPathGridScale ( gridToPathGridScale );
   // MCDMFunction function(w_info_gain, w_travel_distance, w_sensing_time);
   MCDMFunction function(w_info_gain, w_travel_distance, w_sensing_time, w_rfid_gain);
-  cout << "MCDM matrix created! " << endl;
+  // cout << "MCDM matrix created! " << endl;
 //  MCDMFunction function;
   long sensedCells = 0;
   long newSensedCells = 0;
@@ -174,15 +174,15 @@ int main ( int argc, char **argv )
   map.drawRFIDGridScan(myGrid);
   myGrid.saveAs(("/home/pulver/Desktop/MCDM/rfid_result_gridmap.pgm"));
 
-  cout << "Num configuration: " << numConfiguration << endl;
-  cout << "Travelled distance calculated during the algorithm: " << travelledDistance << endl;
-
-  cout << "------------------ HISTORY -----------------" << endl;
+  // cout << "Num configuration: " << numConfiguration << endl;
+  // cout << "Travelled distance calculated during the algorithm: " << travelledDistance << endl;
+  //
+  // cout << "------------------ HISTORY -----------------" << endl;
   // Calculate which cells have been visited only once
   list<Pose> tmp_history = utils.cleanHistory(&history, &record);
   utils.calculateDistance(tmp_history, &map, &astar );
 
-  cout << "------------------ TABULIST -----------------" << endl;
+  // cout << "------------------ TABULIST -----------------" << endl;
   utils.calculateDistance(tabuList, &map, &astar );
 
   // Trasform distance in meters
@@ -200,10 +200,10 @@ int main ( int argc, char **argv )
   utils.filePutContents(out_log, content, true );
   // Find the tag
   std::pair<int,int> tag = map.findTag();
-  cout << "RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
+  // cout << "RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
   tag = map.findTagfromGridMap(myGrid);
-  cout << "[Grid]RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
-  cout << "-----------------------------------------------------------------"<<endl;
+  // cout << "[Grid]RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
+  // cout << "-----------------------------------------------------------------"<<endl;
   auto endMCDM= chrono::high_resolution_clock::now();
 
   double totalTimeMCDM = chrono::duration<double,milli> ( endMCDM -startMCDM ).count();
