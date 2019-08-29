@@ -71,28 +71,28 @@ tput setaf 7; echo "[10/10]"; tput setaf sgr0;
 # INB_ATRIUM
 tput setaf 6; echo "==== INB_ATRIUM ===="; tput setaf sgr0;
 tput setaf 7; echo "[1/10]"; tput setaf sgr0;
-./../build/random_walk ./../Images/INB_atrium_1m20px.pgm 1 217 236 180 60 180 0.99 0 1 174 263 865e6 0 1 0 0 0 /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/result_random_walk_inb_atrium.csv /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/coverage_random_walk_inb_atrium_1.csv
+./../build/random_walk ./../Images/INB_atrium_1m20px.pgm 1 217 236 180 12 180 0.99 0 1 174 263 865e6 0 1 0 0 0 /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/result_random_walk_inb_atrium.csv /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/coverage_random_walk_inb_atrium_1.csv
 tput setaf 7; echo "[2/10]"; tput setaf sgr0;
-./../build/random_walk ./../Images/INB_atrium_1m20px.pgm 1 217 236 180 60 180 0.99 0 1 174 263 865e6 0 1 0 0 0 /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/result_random_walk_inb_atrium.csv /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/coverage_random_walk_inb_atrium_2.csv
+./../build/random_walk ./../Images/INB_atrium_1m20px.pgm 1 217 236 180 12 180 0.99 0 1 174 263 865e6 0 1 0 0 0 /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/result_random_walk_inb_atrium.csv /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/coverage_random_walk_inb_atrium_2.csv
 tput setaf 7; echo "[3/10]"; tput setaf sgr0;
-./../build/random_walk ./../Images/INB_atrium_1m20px.pgm 1 217 236 180 60 180 0.99 0 1 174 263 865e6 0 1 0 0 0 /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/result_random_walk_inb_atrium.csv /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/coverage_random_walk_inb_atrium_3.csv
+./../build/random_walk ./../Images/INB_atrium_1m20px.pgm 1 217 236 180 12 180 0.99 0 1 174 263 865e6 0 1 0 0 0 /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/result_random_walk_inb_atrium.csv /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/coverage_random_walk_inb_atrium_3.csv
 tput setaf 7; echo "[4/10]"; tput setaf sgr0;
-./../build/random_walk ./../Images/INB_atrium_1m20px.pgm 1 217 236 180 60 180 0.99 0 1 174 263 865e6 0 1 0 0 0 /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/result_random_walk_inb_atrium.csv /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/coverage_random_walk_inb_atrium_4.csv
+./../build/random_walk ./../Images/INB_atrium_1m20px.pgm 1 217 236 180 12 180 0.99 0 1 174 263 865e6 0 1 0 0 0 /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/result_random_walk_inb_atrium.csv /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/coverage_random_walk_inb_atrium_4.csv
 tput setaf 7; echo "[5/10]"; tput setaf sgr0;
-./../build/random_walk ./../Images/INB_atrium_1m20px.pgm 1 217 236 180 60 180 0.99 0 1 174 263 865e6 0 1 0 0 0 /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/result_random_walk_inb_atrium.csv /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/coverage_random_walk_inb_atrium_5.csv
+./../build/random_walk ./../Images/INB_atrium_1m20px.pgm 1 217 236 180 12 180 0.99 0 1 174 263 865e6 0 1 0 0 0 /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/result_random_walk_inb_atrium.csv /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/coverage_random_walk_inb_atrium_5.csv
 tput setaf 7; echo "[6/10]"; tput setaf sgr0;
-./../build/random_walk ./../Images/INB_atrium_1m20px.pgm 1 217 236 180 60 180 0.99 0 1 174 263 865e6 0 1 0 0 0 /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/result_random_walk_inb_atrium.csv /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/coverage_random_walk_inb_atrium_6.csv
+./../build/random_walk ./../Images/INB_atrium_1m20px.pgm 1 217 236 180 12 180 0.99 0 1 174 263 865e6 0 1 0 0 0 /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/result_random_walk_inb_atrium.csv /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/coverage_random_walk_inb_atrium_6.csv
 tput setaf 7; echo "[7/10]"; tput setaf sgr0;
-./../build/random_walk ./../Images/INB_atrium_1m20px.pgm 1 217 236 180 60 180 0.99 0 1 174 263 865e6 0 1 0 0 0 /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/result_random_walk_inb_atrium.csv /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/coverage_random_walk_inb_atrium_7.csv
+./../build/random_walk ./../Images/INB_atrium_1m20px.pgm 1 217 236 180 12 180 0.99 0 1 174 263 865e6 0 1 0 0 0 /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/result_random_walk_inb_atrium.csv /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/coverage_random_walk_inb_atrium_7.csv
 tput setaf 7; echo "[8/10]"; tput setaf sgr0;
-./../build/random_walk ./../Images/INB_atrium_1m20px.pgm 1 217 236 180 60 180 0.99 0 1 174 263 865e6 0 1 0 0 0 /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/result_random_walk_inb_atrium.csv /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/coverage_random_walk_inb_atrium_8.csv
+./../build/random_walk ./../Images/INB_atrium_1m20px.pgm 1 217 236 180 12 180 0.99 0 1 174 263 865e6 0 1 0 0 0 /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/result_random_walk_inb_atrium.csv /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/coverage_random_walk_inb_atrium_8.csv
 tput setaf 7; echo "[9/10]"; tput setaf sgr0;
-./../build/random_walk ./../Images/INB_atrium_1m20px.pgm 1 217 236 180 60 180 0.99 0 1 174 263 865e6 0 1 0 0 0 /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/result_random_walk_inb_atrium.csv /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/coverage_random_walk_inb_atrium_9.csv
+./../build/random_walk ./../Images/INB_atrium_1m20px.pgm 1 217 236 180 12 180 0.99 0 1 174 263 865e6 0 1 0 0 0 /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/result_random_walk_inb_atrium.csv /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/coverage_random_walk_inb_atrium_9.csv
 tput setaf 7; echo "[10/10]"; tput setaf sgr0;
-./../build/random_walk ./../Images/INB_atrium_1m20px.pgm 1 217 236 180 60 180 0.99 0 1 174 263 865e6 0 1 0 0 0 /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/result_random_walk_inb_atrium.csv /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/coverage_random_walk_inb_atrium_10.csv
+./../build/random_walk ./../Images/INB_atrium_1m20px.pgm 1 217 236 180 12 180 0.99 0 1 174 263 865e6 0 1 0 0 0 /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/result_random_walk_inb_atrium.csv /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/inb_atrium/coverage_random_walk_inb_atrium_10.csv
 
 
-# # ILIAD
+# ILIAD
 tput setaf 6; echo "==== ILIAD ===="; tput setaf sgr0;
 tput setaf 7; echo "[1/10]"; tput setaf sgr0;
 ./../build/random_walk ./../Images/ncfm_old.pgm 1 132 345 180 30 180 0.99 0 1 294 305 865e6 0 1 0 0 0 /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/ILIAD/result_random_walk_iliad.csv /home/pulver/Dropbox/University/PostDoc/MCDM/random_walk/orebro/coverage_random_walk_iliad_1.csv
