@@ -132,7 +132,8 @@ int main ( int argc, char **argv )
       // Get the sensing time required for scanning
       target.setScanAngles ( ray.getSensingTime ( &map,x,y,orientation,FOV,range ) );
       // Perform a scanning operation
-      newSensedCells = sensedCells + ray.performSensingOperationEllipse ( &map,x,y,orientation,FOV,range, target.getScanAngles().first, target.getScanAngles().second );
+       //                                                               ( map,   posX, l  posY, int posOri, double firstAngle, double lastAngle, long a_pcell, long b_pcell)
+      newSensedCells = sensedCells + ray.performSensingOperationEllipse ( &map,x,y,orientation,                target.getScanAngles().first, target.getScanAngles().second, 4, 2 );
       // Calculate the scanning angle
       double scanAngle = target.getScanAngles().second - target.getScanAngles().first;
       // Update the overall scanning time
