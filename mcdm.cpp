@@ -9,6 +9,7 @@
 # define PI           3.14159265358979323846  /* pi */
 #include <unistd.h>
 #include <time.h>
+#include <math.h>
 #include <ctime>
 #include "utils.h"
 // #include "RFIDGridmap.h"
@@ -131,7 +132,7 @@ int main ( int argc, char **argv )
       // Get the sensing time required for scanning
       target.setScanAngles ( ray.getSensingTime ( &map,x,y,orientation,FOV,range ) );
       // Perform a scanning operation
-      newSensedCells = sensedCells + ray.performSensingOperation ( &map,x,y,orientation,FOV,range, target.getScanAngles().first, target.getScanAngles().second );
+      newSensedCells = sensedCells + ray.performSensingOperationEllipse ( &map,x,y,orientation,FOV,range, target.getScanAngles().first, target.getScanAngles().second );
       // Calculate the scanning angle
       double scanAngle = target.getScanAngles().second - target.getScanAngles().first;
       // Update the overall scanning time
@@ -143,7 +144,7 @@ int main ( int argc, char **argv )
       double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
       // Update the path planning and RFID map
       map.updatePathPlanningGrid ( x, y, range, rxPower - SENSITIVITY);
-      myGrid.addEllipse(rxPower - SENSITIVITY, map.getNumGridCols() - target.getX(),  target.getY(), target.getOrientation(), -1.0, range);
+      myGrid.addEllipse(rxPower - SENSITIVITY, map.getNumGridRows() - target.getX(),  target.getY(), target.getOrientation(), -1.0, range);
       // Search for new candidate position
       ray.findCandidatePositions ( &map,x,y,orientation,FOV,range );
       vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
@@ -431,7 +432,7 @@ int main ( int argc, char **argv )
       double rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
       double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
       map.updatePathPlanningGrid ( x, y, range, rxPower - SENSITIVITY );
-      myGrid.addEllipse(rxPower - SENSITIVITY, map.getNumGridCols() - target.getX(), target.getY(), target.getOrientation(), -0.5, 7.0);
+      myGrid.addEllipse(rxPower - SENSITIVITY, map.getNumGridRows() - target.getX(), target.getY(), target.getOrientation(), -1.0, range);
       // Remove the current pose from the list of possible candidate cells
       utils.cleanPossibleDestination2 ( &nearCandidates,target );
       // Get the list of the candidate cells with their evaluation
@@ -545,20 +546,25 @@ int main ( int argc, char **argv )
 
   utils.printResult(newSensedCells, totalFreeCells, precision, numConfiguration, travelledDistance, numOfTurning,
       totalAngle, totalScanTime);
-  content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + "," + to_string(w_rfid_gain) + ","
-             + to_string(float(newSensedCells)/float(totalFreeCells)) + "," + to_string(numConfiguration) + ","
-             + to_string(travelledDistance) + "," + to_string(totalScanTime) + "\n";
-  utils.filePutContents(out_log, content, true );
   // Find the tag
-  std::pair<int,int> tag = map.findTag();
-  cout << "RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
+  std::pair<int,int> tag;
+  // FIXME: not accurate, it must not be used
+    // tag= map.findTag();
+    // cout << "RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
   tag = map.findTagfromGridMap(myGrid);
   cout << "[Grid]RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
+  double distance_to_tag = sqrt(pow(absTagX - tag.first, 2) + pow(absTagY - tag.second, 2));
+  cout << "Distance to tag: " << to_string(distance_to_tag) << " cells" << endl;
   cout << "-----------------------------------------------------------------"<<endl;
-  auto endMCDM= chrono::high_resolution_clock::now();
+  auto endMCDM = chrono::high_resolution_clock::now();
+  content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + "," + to_string(w_rfid_gain) + ","
+             + to_string(float(newSensedCells)/float(totalFreeCells)) + "," + to_string(numConfiguration) + ","
+             + to_string(travelledDistance) + "," + to_string(totalScanTime) + "," 
+             + to_string(distance_to_tag) +  "\n";
+  utils.filePutContents(out_log, content, true );
 
   double totalTimeMCDM = chrono::duration<double,milli> ( endMCDM -startMCDM ).count();
-  //     cout << "Total time for MCDM algorithm : " << totalTimeMCDM << "ms, " << totalTimeMCDM/1000 <<" s, " <<
-  // 		totalTimeMCDM/60000 << " m "<< endl;
+  cout << "Total time for MCDM algorithm : " << totalTimeMCDM << "ms, " << totalTimeMCDM/1000 <<" s, " <<
+          totalTimeMCDM/60000 << " m "<< endl;
 
 }

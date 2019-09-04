@@ -222,10 +222,11 @@ void Map::createPathPlanningGrid(double resolution)
 {
   //cluster cells into grid
   float clusterSize = static_cast<float>(1/resolution);
-  //std::cout << "imgResolution: " << resolution << " clusterSize: " << clusterSize << std::endl;
+  std::cout << "imgResolution: " << resolution << " clusterSize: " << clusterSize << std::endl;
+  std::cout << "numRows: " << numRows << " numCols: " << numCols << std::endl;
   Map::numPathPlanningGridRows = static_cast<int>(numRows/clusterSize);
   Map::numPathPlanningGridCols = static_cast<int>(numCols/clusterSize);
-  // cout <<"numPathPlanningGridRows: " << numPathPlanningGridRows <<", numPathPlanningGridCols: "<< numPathPlanningGridCols << endl;
+  cout <<"numPathPlanningGridRows: " << numPathPlanningGridRows <<", numPathPlanningGridCols: "<< numPathPlanningGridCols << endl;
 
   for(int i = 0; i < numPathPlanningGridCols*numPathPlanningGridRows; ++i)
   {
@@ -573,7 +574,7 @@ void Map::drawVisitedCells()
  */
 void Map::drawRFIDScan()
 {
-  std::ofstream resultMap("/home/pulver/Desktop/MCDM/rfid_scan.pgm", ios::out);
+  std::ofstream resultMap("/home/pulver/Desktop/MCDM/rfid_result.pgm", ios::out);
   long columns = numPathPlanningGridCols;
   long rows = numPathPlanningGridRows;
 
@@ -581,14 +582,14 @@ void Map::drawRFIDScan()
 
   for(long row = 0; row < rows; ++row)
   {
-    for(long col = 0; col < columns; ++col)
-    {
-      int value = getRFIDGridValue(row, col);
+      for(long col = 0; col < columns; ++col)
+      {
+          int value = getRFIDGridValue(row, col);
 //      cout << value << endl;
-      value = std::min(value, 255);
-      value = std::max(value, 0);
-      resultMap << value  << " ";
-    }
+          value = std::min(value, 255);
+          value = std::max(value, 0);
+          resultMap << value  << " ";
+      }
   }
 
   resultMap.close();
@@ -614,6 +615,7 @@ void Map::drawRFIDGridScan(RFIDGridmap grid)
 //     cout << value << endl;
       value = std::min(value, 255);
       value = std::max(value, 0);
+      if (value <= 200) value = std::max(value - 100, 0);
       resultMap << value  << " ";
     }
   }
@@ -690,15 +692,30 @@ std::pair<int, int> Map::getRelativeTagCoord(int absTagX, int absTagY, int anten
 std::pair<int, int> Map::findTag()
 {
   std::pair<int,int> tag(0,0);
-  double powerRead = 0;
-  for(int row=0; row < numPathPlanningGridRows; row++)
+  double powerRead = 0.0;
+  for(long row = 0; row < numPathPlanningGridRows; row++)
   {
-    for(int col=0; col < numPathPlanningGridCols; col++)
+    for(long col = 0; col < numPathPlanningGridCols ; col++)
     {
-      if(getRFIDGridValue(row, col) > powerRead)
+
+      // Instead at looking at the individual pixel, sum the power in the 5x5 surrounding area
+      double local_power = 0.0;
+      for (int i = -5; i <= 5; i++){
+        for (int j = -5; j <= 5; j++){
+          int value = (getRFIDGridValue(row + i, col + j));
+          // cout << value << endl;
+          // value = std::min(value, 255);
+          // value = std::max(value, 0);
+          // if (value != 0) value = 255 - value;
+          local_power = local_power + value;
+          // local_power = local_power + getRFIDGridValue(row + i, col + j);
+        }
+      }
+      // cout << "local_power: " << local_power << endl;
+      if(local_power < powerRead)
       {
-        powerRead = getRFIDGridValue(row, col);
-//        cout << "Value read: " << powerRead << endl;
+        powerRead = local_power;
+        // cout << "Value read: " << powerRead << endl;
         tag.first = row;
         tag.second = col;
       }
@@ -715,13 +732,27 @@ std::pair<int, int> Map::findTagfromGridMap(RFIDGridmap grid)
   {
     for(int col=0; col < numPathPlanningGridCols; col++)
     {
-      if(grid.getCell(row, col) < powerRead)
+      double tmp_power = 0.0;
+      for (int i = -3; i <= 3; i++){
+        for (int j = -3; j <= 3; j++){
+          tmp_power = tmp_power + grid.getCell(row, col); 
+        }
+      }
+      if(tmp_power > powerRead)
       {
-        powerRead = getRFIDGridValue(row, col);
+        powerRead = tmp_power;
 //        cout << "Value read: " << powerRead << endl;
         tag.first = row;
         tag.second = col;
       }
+
+//       if(grid.getCell(row, col) > powerRead)
+//       {
+//         powerRead = getRFIDGridValue(row, col);
+// //        cout << "Value read: " << powerRead << endl;
+//         tag.first = row;
+//         tag.second = col;
+//       }
     }
   }
   return tag;

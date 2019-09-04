@@ -257,6 +257,8 @@ void RFIDGridmap::saveLayer( grid_map::GridMap map_, std::string layerName, std:
   // and map everything between 0 and 1
   for (grid_map::GridMapIterator iterator(map_); !iterator.isPastEnd(); ++iterator) {
     val = (map_.at(layerName, *iterator) - min)/(max-min);
+    if (val < 0.9) val = val - 0.4;
+    val = std::max(0.0, val);
     map_.at(layerName, *iterator) = val;
   }
 

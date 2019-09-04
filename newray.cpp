@@ -460,6 +460,155 @@ std::pair<double,double> NewRay::getSensingTime(const dummy::Map *map, long posX
   return angles;
 }
 
+//perform the sensing operation by setting the value of the free cell scanned to 2
+int NewRay::performSensingOperationEllipse(dummy::Map *map, long posX, long posY, int posOri, double firstAngle, double lastAngle, long a_pcell, long b_pcell)
+{
+
+     /*
+     dummy::Map  map, 
+     long posX robot coordinate x position in planning cells, focal point 
+     long posY robot coordinate y position in planning cells, focal point 
+     int  posOri   robot orientation in degrees
+     double firstAngle FOV starting angle in radians
+     double lastAngle  FOV end angle in radians
+     long a_pcell   #ellipse radius on the x-axis in planning cells 
+     long b_pcell   #ellipse radius on the y-axis in planning cells
+    */
+
+  NewRay::numGridRows = map->getNumGridRows();
+  setGridToPathGridScale(map->getGridToPathGridScale());
+  int counter = 0;
+
+  //set the correct FOV orientation
+  double  orientation = posOri * PI / 180.0;
+
+  double startingPhi = firstAngle; 
+  double endingPhi = lastAngle; 
+  int add2pi = 0;
+
+  if(startingPhi <= 0)
+  {
+    add2pi = 1;
+    startingPhi = 2*PI + startingPhi;
+    endingPhi = 2*PI + endingPhi;
+  }
+
+  if(endingPhi > 2*PI) add2pi = 1;
+
+  // data check
+  if ((a_pcell==0)||(b_pcell==0)){
+      std::cout << "INVALID ELLIPSE RADIUS!!!" <<std::endl;
+      return 0;
+  }
+  
+  if (a_pcell<b_pcell){
+      long tmp;
+      tmp = a_pcell;
+      a_pcell=b_pcell;
+      b_pcell=tmp;
+      std::cout << "minor radius smaller than mayor one!" <<std::endl;
+  }
+
+  
+  // get some relevant points of the ellipse in cell units
+  long c_pcell = sqrt((a_pcell*a_pcell) - (b_pcell*b_pcell));
+  
+  long a_cell = a_pcell*gridToPathGridScale;
+  long b_cell = b_pcell*gridToPathGridScale;
+  long c_cell = c_pcell*gridToPathGridScale;
+
+  // first focal point of the ellipse: robot pose
+  long x_f1_cell = posX*gridToPathGridScale;
+  long y_f1_cell = posY*gridToPathGridScale;
+  
+  // center of the ellipse: to get ranges
+  long x_0_cell = x_f1_cell+ (c_cell * cos(orientation));
+  long y_0_cell = y_f1_cell+ (c_cell * sin(orientation));
+  
+  // second focal point of the ellipse: to get distances
+  long x_f2_cell = x_0_cell + (c_cell * cos(orientation));
+  long y_f2_cell = y_0_cell + (c_cell * sin(orientation));
+
+  //select the portion of map to be scanned
+  // no matter the orientation of the ellipse, a is the mayor radius
+  
+  long minI = x_0_cell + gridToPathGridScale/2 - a_cell;
+  long maxI = x_0_cell + gridToPathGridScale/2 + a_cell;
+  long minJ = x_0_cell + gridToPathGridScale/2 - a_cell;
+  long maxJ = x_0_cell + gridToPathGridScale/2 + a_cell;
+
+  if(minI < 0) minI = 0;
+  if(minJ < 0) minJ = 0;
+  if(maxI > map->getNumGridRows()) maxI = map->getNumGridRows();
+  if(maxJ > map->getNumGridCols()) maxJ = map->getNumGridCols();
+
+  //scan the cells in the selected portion of the map
+  for(long i = minI; i <= maxI; ++i)
+  {
+    for(long j = minJ; j <=maxJ; ++j)
+    {
+
+      // in an ellipse, sum of distance to focal points is constant
+      double d1 = sqrt((i - x_f1_cell)*(i - x_f1_cell) + (j - y_f1_cell)*(j - y_f1_cell));
+      double d2 = sqrt((i - x_f2_cell)*(i - x_f2_cell) + (j - y_f2_cell)*(j - y_f2_cell));
+      bool isInside = (d1 + d2 <= 2*a_cell );
+
+      //if a cell is free and within range of the robot, generate the ray connecting the robot cell and the free cell
+      if(map->getGridValue(i, j) == 0 && isInside)
+      {
+        double curX = posX*gridToPathGridScale + gridToPathGridScale/2;		//starting position of the ray
+        double curY = posY*gridToPathGridScale + gridToPathGridScale/2;
+        double robotX = posX*gridToPathGridScale + gridToPathGridScale/2;		//position of the robot
+        double robotY = posY*gridToPathGridScale + gridToPathGridScale/2;
+
+        double convertedI = NewRay::convertPoint(i);
+        double convertedRX = NewRay::convertPoint(robotX);
+
+        double slope = atan2(NewRay::convertPoint(i) - NewRay::convertPoint(robotX), j - robotY);	//calculate the slope of the ray with atan2
+
+        if(slope <= 0 && add2pi == 0) slope = slope + 2*PI;
+        if(add2pi == 1) slope = 2*PI + slope;		//needed in case of FOV spanning from negative to positive angle values
+
+        //std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
+
+        if(slope >= startingPhi && slope <= endingPhi)	//only cast the ray if it is inside the FOV of the robot
+        {
+          //raycounter++;
+          //std::cout << "Inside loop, slope: " << slope  << " Cell: " << j << " " << i << std::endl;
+
+          int hit = 0;			//set to 1 when obstacle is hit by ray or when the cell is reached in order to stop the ray
+          double u = 0;			//current position along the ray
+          while(hit == 0)		//scan the map along the ray until an ostacle is found or the considered cell is reached
+          {
+
+            //convert the position on the ray to cell coordinates to check the grid
+            curY = robotY + 0.5 + u*cos(slope);
+            curX = robotX + 0.5 - u*sin(slope);
+
+            //not needed, but left anyway
+            if(curX < 0 || curX > map->getNumGridRows() || curY < 0 || curY > map->getNumGridCols()) hit = 1;
+
+            if(map->getGridValue((long)curX, (long)curY) == 1)
+            {
+              hit = 1;		//hit set to 1 if an obstacle is found
+              //std::cout << "HIT! cell: " << j << " " << i << " Hit point: " << curY << " " << curX << std::endl;
+            }
+
+            if((long)curX == i && (long)curY == j)	//if the free cell is reached, set its value to 2 and stop the ray
+            {
+              map->setGridValue(2, i, j);
+              counter++;
+              //std::cout << "Cell scanned: " << (int)curY << " " << (int)curX << std::endl;
+              hit = 1;
+            }
+            u += 0.2;		//move forward along the ray
+          }
+        }
+      }
+    }
+  }
+  return counter;
+}
 
 /**
  * @brief NewRay::performSensingOperation: perform the sensing operation by setting the value of the free cell scanned to 2
