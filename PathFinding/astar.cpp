@@ -40,12 +40,12 @@ string Astar::pathFind( const int & xStart, const int & yStart, const int & xFin
     int open_nodes_map[n][m]; // map of open (not-yet-tried) nodes
     int dir_map[n][m]; // map of directions
     // create map
-    for(int y=0;y<m;y++)
-    {
-        for(int x=0;x<n;x++){
-	    map[x][y]= originalMap->getPathPlanningGridValue(x,y);
-	}
-    }
+//    for(int y=0;y<m;y++)
+//    {
+//        for(int x=0;x<n;x++){
+//	    map[x][y]= originalMap->getPathPlanningGridValue(x,y);
+//	}
+//    }
 
 
     //cout << "alive in pathfind"<< endl;
@@ -125,8 +125,8 @@ string Astar::pathFind( const int & xStart, const int & yStart, const int & xFin
         {
             xdx=x+dx[i]; ydy=y+dy[i];
 
-            if(!(xdx<0 || xdx>n-1 || ydy<0 || ydy>m-1 || map[xdx][ydy]==1
-                || closed_nodes_map[xdx][ydy]==1))
+//            if(!(xdx<0 || xdx>n-1 || ydy<0 || ydy>m-1 || map[xdx][ydy]==1
+            if(!(xdx<0 || xdx>n-1 || ydy<0 || ydy>m-1 || originalMap->getPathPlanningGridValue(xdx,ydy) ==1 || closed_nodes_map[xdx][ydy]==1))
             {
                 // generate a child node
                 m0=new Node( xdx, ydy, n0->getLevel(),

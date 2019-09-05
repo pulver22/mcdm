@@ -133,7 +133,12 @@ int main ( int argc, char **argv )
       target.setScanAngles ( ray.getSensingTime ( &map,x,y,orientation,FOV,range ) );
       // Perform a scanning operation
        //                                                               ( map,   posX, l  posY, int posOri, double firstAngle, double lastAngle, long a_pcell, long b_pcell)
-      newSensedCells = sensedCells + ray.performSensingOperationEllipse ( &map,x,y,orientation,                target.getScanAngles().first, target.getScanAngles().second, 4, 2 );
+      double major_axis, minor_axis;
+      double focal_length = (range - 1.0) / 2.0; // (X_max - X_min)/2
+      major_axis = focal_length + 1.0;  // (focal_length + X_min)
+      minor_axis = sqrt(pow(major_axis, 2) - pow(focal_length, 2));
+      // cout << "Ellipse axis: " << major_axis << ", " << minor_axis << endl;
+      newSensedCells = sensedCells + ray.performSensingOperationEllipse ( &map,x,y,orientation,             target.getScanAngles().first, target.getScanAngles().second, major_axis, minor_axis);
       // Calculate the scanning angle
       double scanAngle = target.getScanAngles().second - target.getScanAngles().first;
       // Update the overall scanning time

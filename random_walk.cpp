@@ -194,17 +194,18 @@ int main ( int argc, char **argv )
 
   utils.printResult(newSensedCells, totalFreeCells, precision, numConfiguration, travelledDistance, numOfTurning,
       totalAngle, totalScanTime);
+  std::pair<int,int> tag;
+  tag = map.findTagfromGridMap(myGrid);
+  cout << "[Grid]RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
+  double distance_to_tag = sqrt(pow(absTagX - tag.first, 2) + pow(absTagY - tag.second, 2));
+  cout << "Distance to tag: " << to_string(distance_to_tag) << " cells" << endl;
+  cout << "-----------------------------------------------------------------"<<endl;
+  auto endMCDM = chrono::high_resolution_clock::now();
   content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + "," + to_string(w_rfid_gain) + ","
              + to_string(float(newSensedCells)/float(totalFreeCells)) + "," + to_string(numConfiguration) + ","
-             + to_string(travelledDistance) + "," + to_string(totalScanTime) + "\n";
+             + to_string(travelledDistance) + "," + to_string(totalScanTime) + "," 
+             + to_string(distance_to_tag) +  "\n";
   utils.filePutContents(out_log, content, true );
-  // Find the tag
-  std::pair<int,int> tag = map.findTag();
-  // cout << "RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
-  tag = map.findTagfromGridMap(myGrid);
-  // cout << "[Grid]RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
-  // cout << "-----------------------------------------------------------------"<<endl;
-  auto endMCDM= chrono::high_resolution_clock::now();
 
   double totalTimeMCDM = chrono::duration<double,milli> ( endMCDM -startMCDM ).count();
   //     cout << "Total time for MCDM algorithm : " << totalTimeMCDM << "ms, " << totalTimeMCDM/1000 <<" s, " <<

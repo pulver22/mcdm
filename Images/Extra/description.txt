@@ -1,0 +1,17 @@
+===== MAPs for Experiments ====
+
+1) Obreo: 
+    - File: orebro_small.pgm
+    - Resolution: 0.5 m/px
+2) NCFM
+    - File: ncfm_small.pgm
+    - Resolution: 0.25 m/px
+3) INB_3123
+    - File: inb3123_small.pgm
+    - Resolution: 0.5 m/px
+4) INB_Eng
+    - File: inbeng_small.pgm
+    - Resolution: 0.33 m/px
+5) INB_Atrium
+    - File: inbatrium_small.pgm
+    - Resolution: 0.377 m/px
