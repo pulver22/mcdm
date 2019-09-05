@@ -5,6 +5,7 @@
 #include "math.h"
 #include "map.h"
 #include <utility>
+#include <stdio.h>
 
 using namespace dummy;
 
@@ -21,7 +22,7 @@ public:
   int isCandidate2(const dummy::Map *map, long i, long j);
   std::vector<std::pair<long, long> > getCandidatePositions();
   pair< double, double > getSensingTime(const dummy::Map* map, long int posX, long int posY, int orientation, double FOV, int range);
-  int performSensingOperationEllipse(dummy::Map *map, long posX, long posY, int posOri, double firstAngle, double lastAngle, long a_pcell, long b_pcell);
+  int performSensingOperationEllipse(dummy::Map *map, long posX, long posY, int posOri, double firstAngle, double lastAngle, long a_pcell, long b_pcell, bool debug=false);
   int performSensingOperation(dummy::Map *map, long posX, long posY, int orientation, double FOV, int range, double firstAngle, double lastAngle);
   void emptyCandidatePositions();
   int getInformationGain(const dummy::Map *map, long posX, long posY, int orientation, double FOV, int range);
