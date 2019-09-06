@@ -118,10 +118,13 @@ int main ( int argc, char **argv )
 
   do
   {
-      content = to_string(w_info_gain) + ","  + to_string(w_travel_distance)
-                + "," + to_string(w_sensing_time) + "," + to_string(w_rfid_gain)
-                + "," + to_string(numConfiguration) + ","
-                + to_string(100 * float(newSensedCells)/float(totalFreeCells)) + "\n";
+      content = to_string(w_info_gain) 
+                + "," + to_string(w_travel_distance)
+                + "," + to_string(w_sensing_time) 
+                + "," + to_string(w_rfid_gain)
+                + "," + to_string(numConfiguration) 
+                + "," + to_string(100 * float(newSensedCells)/float(totalFreeCells))  
+                + "," + to_string(travelledDistance) + "\n" ;
       utils.filePutContents(coverage_log, content, true );
       x = target.getX();
       y = target.getY();
@@ -139,7 +142,12 @@ int main ( int argc, char **argv )
       // Get the sensing time required for scanning
       target.setScanAngles ( ray.getSensingTime ( &map,x,y,orientation,FOV,range ) );
       // Perform a scanning operation
-      newSensedCells = sensedCells + ray.performSensingOperation ( &map, x, y, orientation,FOV,range, target.getScanAngles().first, target.getScanAngles().second );
+      double major_axis, minor_axis;
+      double focal_length = (range - 1.0) / 2.0; // (X_max - X_min)/2
+      major_axis = focal_length + 1.0;  // (focal_length + X_min)
+      minor_axis = sqrt(pow(major_axis, 2) - pow(focal_length, 2));
+      // cout << "Ellipse axis: " << major_axis << ", " << minor_axis << endl;
+      newSensedCells = sensedCells + ray.performSensingOperationEllipse ( &map,x,y,orientation,             target.getScanAngles().first, target.getScanAngles().second, major_axis, minor_axis);
       // Calculate the scanning angle
       scanAngle = target.getScanAngles().second - target.getScanAngles().first;
       // Update the overall scanning time

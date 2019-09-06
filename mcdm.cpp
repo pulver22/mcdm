@@ -115,10 +115,13 @@ int main ( int argc, char **argv )
     if ( btMode == false )
     {
 
-      content = to_string(w_info_gain) + ","  + to_string(w_travel_distance)
-                + "," + to_string(w_sensing_time) + "," + to_string(w_rfid_gain)
-                + "," + to_string(numConfiguration) + ","
-                + to_string(100 * float(newSensedCells)/float(totalFreeCells)) + "\n";
+      content = to_string(w_info_gain) 
+                + "," + to_string(w_travel_distance)
+                + "," + to_string(w_sensing_time) 
+                + "," + to_string(w_rfid_gain)
+                + "," + to_string(numConfiguration) 
+                + "," + to_string(100 * float(newSensedCells)/float(totalFreeCells)) 
+                + "," + to_string(travelledDistance) + "\n" ;
       utils.filePutContents(coverage_log, content, true );
       long x = target.getX();
       long y = target.getY();
