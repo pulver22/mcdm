@@ -8,6 +8,8 @@ accuracy_05        = np.loadtxt(open("/home/pulver/Desktop/MCDM/variable_ellipse
 accuracy_1         = np.loadtxt(open("/home/pulver/Desktop/MCDM/variable_ellipse/accuracy_r.csv", "rb"), delimiter=",", skiprows=1)
 accuracy_15        = np.loadtxt(open("/home/pulver/Desktop/MCDM/variable_ellipse/accuracy_15r.csv", "rb"), delimiter=",", skiprows=1)
 accuracy_2         = np.loadtxt(open("/home/pulver/Desktop/MCDM/variable_ellipse/accuracy_2r.csv", "rb"), delimiter=",", skiprows=1)
+accuracy_25         = np.loadtxt(open("/home/pulver/Desktop/MCDM/variable_ellipse/accuracy_25r.csv", "rb"), delimiter=",", skiprows=1)
+accuracy_3         = np.loadtxt(open("/home/pulver/Desktop/MCDM/variable_ellipse/accuracy_3r.csv", "rb"), delimiter=",", skiprows=1)
 accuracy_4         = np.loadtxt(open("/home/pulver/Desktop/MCDM/variable_ellipse/accuracy_4r.csv", "rb"), delimiter=",", skiprows=1)
 accuracy_5         = np.loadtxt(open("/home/pulver/Desktop/MCDM/variable_ellipse/accuracy_5r.csv", "rb"), delimiter=",", skiprows=1)
 accuracy_6         = np.loadtxt(open("/home/pulver/Desktop/MCDM/variable_ellipse/accuracy_6r.csv", "rb"), delimiter=",", skiprows=1)
@@ -39,6 +41,16 @@ std = np.std(accuracy_2, axis=0)
 accuracy_2 = np.vstack((accuracy_2, avg))
 accuracy_2 = np.vstack((accuracy_2, std))
 
+avg = np.average(accuracy_25, axis=0)
+std = np.std(accuracy_25, axis=0)
+accuracy_25 = np.vstack((accuracy_25, avg))
+accuracy_25 = np.vstack((accuracy_25, std))
+
+avg = np.average(accuracy_3, axis=0)
+std = np.std(accuracy_3, axis=0)
+accuracy_3 = np.vstack((accuracy_3, avg))
+accuracy_3 = np.vstack((accuracy_3, std))
+
 avg = np.average(accuracy_4, axis=0)
 std = np.std(accuracy_4, axis=0)
 accuracy_4 = np.vstack((accuracy_4, avg))
@@ -58,53 +70,36 @@ avg = np.average(accuracy_11, axis=0)
 std = np.std(accuracy_11, axis=0)
 accuracy_11 = np.vstack((accuracy_11, avg))
 accuracy_11 = np.vstack((accuracy_11, std))
-# exit(0)
 
 
-# coverage_1m       = np.loadtxt(open("/home/pulver/Desktop/MCDM/variable_ellipse/coverage_mcdm_inb_3123_1.csv", "rb"), delimiter=",", skiprows=1)
-# coverage_2m       = np.loadtxt(open("/home/pulver/Desktop/MCDM/variable_ellipse/coverage_mcdm_inb_3123_2.csv", "rb"), delimiter=",", skiprows=1)
-# coverage_3m       = np.loadtxt(open("/home/pulver/Desktop/MCDM/variable_ellipse/coverage_mcdm_inb_3123_3.csv", "rb"), delimiter=",", skiprows=1)
-# coverage_4m       = np.loadtxt(open("/home/pulver/Desktop/MCDM/variable_ellipse/coverage_mcdm_inb_3123_4.csv", "rb"), delimiter=",", skiprows=1)
-# coverage_5m       = np.loadtxt(open("/home/pulver/Desktop/MCDM/variable_ellipse/coverage_mcdm_inb_3123_5.csv", "rb"), delimiter=",", skiprows=1)
-# coverage_6m       = np.loadtxt(open("/home/pulver/Desktop/MCDM/variable_ellipse/coverage_mcdm_inb_3123_6.csv", "rb"), delimiter=",", skiprows=1)
-# coverage_7m       = np.loadtxt(open("/home/pulver/Desktop/MCDM/variable_ellipse/coverage_mcdm_inb_3123_7.csv", "rb"), delimiter=",", skiprows=1)
-# coverage_8m       = np.loadtxt(open("/home/pulver/Desktop/MCDM/variable_ellipse/coverage_mcdm_inb_3123_8.csv", "rb"), delimiter=",", skiprows=1)
-# coverage_9m       = np.loadtxt(open("/home/pulver/Desktop/MCDM/variable_ellipse/coverage_mcdm_inb_3123_9.csv", "rb"), delimiter=",", skiprows=1)
-# coverage_10m      = np.loadtxt(open("/home/pulver/Desktop/MCDM/variable_ellipse/coverage_mcdm_inb_3123_10.csv", "rb"), delimiter=",", skiprows=1)
+# print(accuracy_025[-2])
+# print(accuracy_025[-2,1])
+# print( accuracy_025[-2,2])
+configs    = np.asarray([accuracy_025[-2,1], accuracy_05[-2,1], accuracy_1[-2,1], accuracy_15[-2,1], accuracy_2[-2,1], accuracy_25[-2,1], accuracy_3[-2,1], accuracy_4[-2,1], accuracy_5[-2,1], accuracy_6[-2,1], accuracy_11[-2,1]])
+accuracies = np.asarray([accuracy_025[-2,2], accuracy_05[-2,2], accuracy_1[-2,2], accuracy_15[-2,2], accuracy_2[-2,2], accuracy_25[-2,2], accuracy_3[-2,2], accuracy_4[-2,2], accuracy_5[-2,2], accuracy_6[-2,2], accuracy_11[-2,2]])
+plt.plot(configs, accuracies, '--', linewidth=1, color="orange")
 
-# Calculate the RFID accuracy
-# final_acc = accuracies.sum(axis=1) / 10.0
-# print(final_acc)
-
-# # Calculate the number of configurations required for full map coverage
-# coverage_1m = coverage_1m[-1,4]
-# coverage_2m = coverage_2m[-1,4]
-# coverage_3m = coverage_3m[-1,4]
-# coverage_4m = coverage_4m[-1,4]
-# coverage_5m = coverage_5m[-1,4]
-# coverage_6m = coverage_6m[-1,4]
-# coverage_7m = coverage_7m[-1,4]
-# coverage_8m = coverage_8m[-1,4]
-# coverage_9m = coverage_9m[-1,4]
-# coverage_10m = coverage_10m[-1,4]
-# map_coverage = np.asarray([coverage_1m, coverage_2m, coverage_3m, coverage_4m, coverage_5m, coverage_6m, coverage_7m, coverage_8m, coverage_9m, coverage_10m])
-
-print(accuracy_025[-2])
-print(accuracy_025[-2,1])
-print( accuracy_025[-2,2])
 plt.plot(accuracy_025[-2,1], accuracy_025[-2,2], label="0.25r", marker="o", markersize=10)
-plt.plot(accuracy_05[-2,1], accuracy_05[-2,2], label="0.5r", marker="o", markersize=10)
-plt.plot(accuracy_1[-2,1], accuracy_1[-2,2], label="r", marker="o", markersize=10)
-plt.plot(accuracy_15[-2,1], accuracy_15[-2,2], label="1.5r", marker="o", markersize=10)
-plt.plot(accuracy_2[-2,1], accuracy_2[-2,2], label="2r", marker="o", markersize=10)
-plt.plot(accuracy_4[-2,1], accuracy_4[-2,2], label="4r", marker="o", markersize=10)
-plt.plot(accuracy_5[-2,1], accuracy_5[-2,2], label="5r", marker="o", markersize=10)
-plt.plot(accuracy_6[-2,1], accuracy_6[-2,2], label="6r", marker="o", markersize=10)
-plt.plot(accuracy_11[-2,1], accuracy_11[-2,2], label="11r", marker="o", markersize=10)
+plt.plot(accuracy_05[-2,1], accuracy_05[-2,2], label="0.5r", marker="v", markersize=10)
+plt.plot(accuracy_1[-2,1], accuracy_1[-2,2], label="r", marker="^", markersize=10)
+plt.plot(accuracy_15[-2,1], accuracy_15[-2,2], label="1.5r", marker="<", markersize=10)
+plt.plot(accuracy_2[-2,1], accuracy_2[-2,2], label="2r", marker=">", markersize=10)
+plt.plot(accuracy_25[-2,1], accuracy_25[-2,2], label="2.5r", marker="D", markersize=10)
+plt.plot(accuracy_3[-2,1], accuracy_3[-2,2], label="3r", marker="d", markersize=10)
+plt.plot(accuracy_4[-2,1], accuracy_4[-2,2], label="4r", marker="s", markersize=10)
+plt.plot(accuracy_5[-2,1], accuracy_5[-2,2], label="5r", marker="p", markersize=10)
+plt.plot(accuracy_6[-2,1], accuracy_6[-2,2], label="6r", marker="P", markersize=10)
+plt.plot(accuracy_11[-2,1], accuracy_11[-2,2], label="11r", marker="X", markersize=10)
 
-plt.legend(loc="lower right")
+
+
+
+
+
+
+plt.legend(loc="lower right", ncol=3)
 plt.ylim((0, 1.1))
-plt.xlabel("Robot Configuration")
+plt.xlabel("Robot Configurations")
 plt.ylabel("RFID Detection Accuracy")
 # x = np.arange(1, final_acc.shape[0] + 1, 1)
 # ax = plt.gca()

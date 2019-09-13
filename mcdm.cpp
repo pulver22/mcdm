@@ -678,16 +678,18 @@ int main ( int argc, char **argv )
     value_tag = map.findTagfromGridMap(RFID_maps_list[i]);
     value = value_tag.first;
     tag = value_tag.second;
-    cout << "[Grid]RFID pose: [" << tag.second << "," << tag.first << "]" << "  ->  GT:[" << tags_coord[i].second << "," << tags_coord[i].first << "]" << endl;
+    // cout << "[Grid]RFID pose: [" << tag.second << "," << tag.first << "]" << "  ->  GT:[" << tags_coord[i].second << "," << tags_coord[i].first << "]" << endl;
     distance_to_tag = sqrt(pow(tags_coord[i].first - tag.first, 2) + pow(tags_coord[i].second - tag.second, 2));
-    cout << "Value: " << value << endl;
-    if (value >=2) accuracy = accuracy + 1;
-    cout << "Distance to tag: " << to_string(distance_to_tag) << " cells" << endl;
-    if (distance_to_tag <= 8.0) {
-      distance_to_tag = 1;
-    }else distance_to_tag = 0.0;
+    // cout << "Value: " << value << endl;
+    // if (value >=2) accuracy = accuracy + 1;
+    // cout << "Distance to tag: " << to_string(distance_to_tag) << " cells" << endl;
+    if (distance_to_tag <= 15.0) accuracy = accuracy + 1;
+    // if (distance_to_tag <= 8.0) {
+    //   distance_to_tag = 1;
+    // }else distance_to_tag = 0.0;
     tags_distance_from_gt += to_string(distance_to_tag) + ",";
   }
+  cout << "Accuracy: " << to_string(accuracy) << endl;
   tags_distance_from_gt += "\n";
   utils.filePutContents(detection_log, tags_distance_from_gt, true);
   accuracy = accuracy / 10.0;
