@@ -59,7 +59,7 @@ public:
   int getRFIDGridValue(long i,long j) const;
   void updateRFIDGrid(double power, double phase, int antennaX, int antennaY);
   std::pair<int, int> findTag();
-  std::pair<int, int> findTagfromGridMap(RFIDGridmap grid);
+  std::pair<int, std::pair<int, int>> findTagfromGridMap(RFIDGridmap grid);
   std::pair<long, long> getRandomFreeCell();
 	//nav_msgs::OccupancyGrid toROSMsg();
 protected:

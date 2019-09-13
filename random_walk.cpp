@@ -203,7 +203,10 @@ int main ( int argc, char **argv )
   utils.printResult(newSensedCells, totalFreeCells, precision, numConfiguration, travelledDistance, numOfTurning,
       totalAngle, totalScanTime);
   std::pair<int,int> tag;
-  tag = map.findTagfromGridMap(myGrid);
+  std::pair<int, std::pair<int, int>> value_tag;
+  int value = 0;
+  value_tag = map.findTagfromGridMap(myGrid);
+  tag = value_tag.second;
   cout << "[Grid]RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
   double distance_to_tag = sqrt(pow(absTagX - tag.first, 2) + pow(absTagY - tag.second, 2));
   cout << "Distance to tag: " << to_string(distance_to_tag) << " cells" << endl;

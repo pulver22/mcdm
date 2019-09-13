@@ -13,11 +13,13 @@
 #include <ctime>
 #include "utils.h"
 // #include "RFIDGridmap.h"
+#include "yaml-cpp/yaml.h"
 
 
 
 using namespace std;
 using namespace dummy;
+using namespace YAML;
 // bool contains ( std::list< Pose >& list, Pose& p );
 // void cleanPossibleDestination2 ( std::list< Pose > &possibleDestinations, Pose& p );
 // void pushInitialPositions ( dummy::Map map, int x, int y, int orientation,  int range, int FOV, double threshold,
@@ -42,7 +44,7 @@ int main ( int argc, char **argv )
   double resolution = atof ( argv[2] );  // the resolution of the map
   double imgresolution = atof ( argv[10] );  // the resolution to use for the planningGrid and RFIDGrid
   dummy::Map map = dummy::Map ( infile,resolution, imgresolution );
-  RFIDGridmap myGrid(argv[1], resolution, imgresolution, false);
+  
   // cout << "Map dimension: " << map.getNumGridCols() << " : "<<  map.getNumGridRows() << endl;
   int gridToPathGridScale = map.getGridToPathGridScale();
   // i switched x and y because the map's orientation inside and outside programs are different
@@ -56,18 +58,90 @@ int main ( int argc, char **argv )
   double precision = atof ( argv[8] );
   double threshold = atof ( argv[9] );
   // RFID
-  double absTagX = std::stod(argv[12]); // m.
-  double absTagY = std::stod(argv[11]); // m.
-  double freq = std::stod(argv[13]); // Hertzs
-  double txtPower = std::stod(argv[14]); // dBs
+  
+  YAML::Node config = YAML::LoadFile(argv[11]);
+  // cout << "2" << endl;
+  
+  double absTag1_X = config["tag1X"].as<double>();
+  double absTag1_Y = config["tag1Y"].as<double>();
+
+  double absTag2_X = config["tag2X"].as<double>();
+  double absTag2_Y = config["tag2Y"].as<double>();
+
+  double absTag3_X = config["tag3X"].as<double>();
+  double absTag3_Y = config["tag3Y"].as<double>();
+
+  double absTag4_X = config["tag4X"].as<double>();
+  double absTag4_Y = config["tag4Y"].as<double>();
+
+  double absTag5_X = config["tag5X"].as<double>();
+  double absTag5_Y = config["tag5Y"].as<double>();
+
+  double absTag6_X = config["tag6X"].as<double>();
+  double absTag6_Y = config["tag6Y"].as<double>();
+
+  double absTag7_X = config["tag7X"].as<double>();
+  double absTag7_Y = config["tag7Y"].as<double>();
+
+  double absTag8_X = config["tag8X"].as<double>();
+  double absTag8_Y = config["tag8Y"].as<double>();
+
+  double absTag9_X = config["tag9X"].as<double>();
+  double absTag9_Y = config["tag9Y"].as<double>();
+
+  double absTag10_X = config["tag10X"].as<double>();
+  double absTag10_Y = config["tag10Y"].as<double>();
+
+  std::vector<std::pair<double,double>> tags_coord;
+  tags_coord.push_back(std::make_pair(absTag1_X, absTag1_Y));
+  tags_coord.push_back(std::make_pair(absTag2_X, absTag2_Y));
+  tags_coord.push_back(std::make_pair(absTag3_X, absTag3_Y));
+  tags_coord.push_back(std::make_pair(absTag4_X, absTag4_Y));
+  tags_coord.push_back(std::make_pair(absTag5_X, absTag5_Y));
+  tags_coord.push_back(std::make_pair(absTag6_X, absTag6_Y));
+  tags_coord.push_back(std::make_pair(absTag7_X, absTag7_Y));
+  tags_coord.push_back(std::make_pair(absTag8_X, absTag8_Y));
+  tags_coord.push_back(std::make_pair(absTag9_X, absTag9_Y));
+  tags_coord.push_back(std::make_pair(absTag10_X, absTag10_Y));
+
+  RFIDGridmap myGrid1(argv[1], resolution, imgresolution, false);
+  RFIDGridmap myGrid2(argv[1], resolution, imgresolution, false);
+  RFIDGridmap myGrid3(argv[1], resolution, imgresolution, false);
+  RFIDGridmap myGrid4(argv[1], resolution, imgresolution, false);
+  RFIDGridmap myGrid5(argv[1], resolution, imgresolution, false);
+  RFIDGridmap myGrid6(argv[1], resolution, imgresolution, false);
+  RFIDGridmap myGrid7(argv[1], resolution, imgresolution, false);
+  RFIDGridmap myGrid8(argv[1], resolution, imgresolution, false);
+  RFIDGridmap myGrid9(argv[1], resolution, imgresolution, false);
+  RFIDGridmap myGrid10(argv[1], resolution, imgresolution, false);
+  std::vector<RFIDGridmap> RFID_maps_list;
+  RFID_maps_list.push_back(myGrid1);
+  RFID_maps_list.push_back(myGrid2);
+  RFID_maps_list.push_back(myGrid3);
+  RFID_maps_list.push_back(myGrid4);
+  RFID_maps_list.push_back(myGrid5);
+  RFID_maps_list.push_back(myGrid6);
+  RFID_maps_list.push_back(myGrid7);
+  RFID_maps_list.push_back(myGrid8);
+  RFID_maps_list.push_back(myGrid9);
+  RFID_maps_list.push_back(myGrid10);
+  // cout << "Tag:" << absTagX << "," << absTagY << endl;
+  // double absTagX = double(s_TagX); // m.
+  // double absTagY = double(s_TagX); // m.
+  // double absTagX = std::stod(argv[12]); // m.
+  // double absTagY = std::stod(argv[11]); // m.
+  double freq = std::stod(argv[12]); // Hertzs
+  double txtPower = std::stod(argv[13]); // dBs
   std::pair<int, int> relTagCoord;
   // MCDM Matrix weights
-  double w_info_gain = atof(argv[15]);
-  double w_travel_distance = atof(argv[16]);
-  double w_sensing_time = atof(argv[17]);
-  double w_rfid_gain = atof(argv[18]);
-  std::string out_log (argv[19]);
-  std::string coverage_log (argv[20]);
+  double w_info_gain = atof(argv[14]);
+  double w_travel_distance = atof(argv[15]);
+  double w_sensing_time = atof(argv[16]);
+  double w_rfid_gain = atof(argv[17]);
+  std::string out_log (argv[18]);
+  std::string coverage_log (argv[19]);
+  std::string detection_log (argv[20]);
+  std::string accuracy_log (argv[22]);
   //x,y,orientation,range,FOV
   Utilities utils;
 
@@ -109,6 +183,18 @@ int main ( int argc, char **argv )
   int encodedKeyValue = 0;
   string content;
 
+  double distStep = 0.1;
+  double minX, maxX, minY, maxY;
+   
+  // for (int i=0;i<30;i++){
+  //   activeAreaFriis(freq, txtPower, SENSITIVITY, distStep, minX, minY, maxX, maxY);
+  //   cout << "[" << txtPower<< "]" << endl;
+  //   cout << "[" << minX << "," << maxX << "]" << endl;
+  //   cout << "[" << minY << "," << maxY << "]" << endl << endl;
+  //   txtPower = txtPower+3;
+  // }
+  // exit(0);
+
   do
   {
     // If we are doing "forward" navigation towards cells never visited before
@@ -137,8 +223,11 @@ int main ( int argc, char **argv )
       // Perform a scanning operation
        //                                                               ( map,   posX, l  posY, int posOri, double firstAngle, double lastAngle, long a_pcell, long b_pcell)
       double major_axis, minor_axis;
-      double focal_length = (range - 1.0) / 2.0; // (X_max - X_min)/2
-      major_axis = focal_length + 1.0;  // (focal_length + X_min)
+      double X_max = range;
+      double X_min = atoi ( argv[21] );
+      // cout << X_max << " " << X_min << endl;
+      double focal_length = (X_max - X_min) / 2.0; // (X_max - X_min)/2
+      major_axis = focal_length + X_min;  // (focal_length + X_min)
       minor_axis = sqrt(pow(major_axis, 2) - pow(focal_length, 2));
       // cout << "Ellipse axis: " << major_axis << ", " << minor_axis << endl;
       newSensedCells = sensedCells + ray.performSensingOperationEllipse ( &map,x,y,orientation,             target.getScanAngles().first, target.getScanAngles().second, major_axis, minor_axis);
@@ -146,14 +235,23 @@ int main ( int argc, char **argv )
       double scanAngle = target.getScanAngles().second - target.getScanAngles().first;
       // Update the overall scanning time
       totalScanTime += utils.calculateScanTime ( scanAngle*180/PI );
+      
+      
       // Calculare the relative RFID tag position to the robot position
-      relTagCoord = map.getRelativeTagCoord(absTagX, absTagY, target.getX(), target.getY());
-      // Calculate the received power and phase
-      double rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
-      double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
-      // Update the path planning and RFID map
-      map.updatePathPlanningGrid ( x, y, range, rxPower - SENSITIVITY);
-      myGrid.addEllipse(rxPower - SENSITIVITY, map.getNumGridRows() - target.getX(),  target.getY(), target.getOrientation(), -1.0, range);
+      for (int i = 0; i < tags_coord.size(); i++){
+        relTagCoord = map.getRelativeTagCoord(tags_coord[i].first, tags_coord[i].second, target.getX(), target.getY());
+        // Calculate the received power and phase
+        double rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
+        double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
+        // Update the path planning and RFID map
+        map.updatePathPlanningGrid ( x, y, range, rxPower - SENSITIVITY);
+        if (rxPower < SENSITIVITY){
+          rxPower = 0;
+        } else rxPower = 1;
+        RFID_maps_list[i].addEllipse(rxPower , map.getNumGridRows() - target.getX(),  target.getY(), target.getOrientation(), -1.0, range);
+      }
+           
+      
       // Search for new candidate position
       ray.findCandidatePositions ( &map,x,y,orientation,FOV,range );
       vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
@@ -435,13 +533,20 @@ int main ( int argc, char **argv )
       totalAngle += scanAngle;
       // ...and the overall scan time
       totalScanTime += utils.calculateScanTime ( scanAngle*180/PI );
-      // Calculate the relative coordinate to the robot of the RFID tag
-      relTagCoord = map.getRelativeTagCoord(absTagX, absTagY, target.getX(), target.getY());
-      // Calculate received power and phase
-      double rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
-      double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
-      map.updatePathPlanningGrid ( x, y, range, rxPower - SENSITIVITY );
-      myGrid.addEllipse(rxPower - SENSITIVITY, map.getNumGridRows() - target.getX(), target.getY(), target.getOrientation(), -1.0, range);
+      
+      
+       // Calculare the relative RFID tag position to the robot position
+      for (int i = 0; i < tags_coord.size(); i++){
+        relTagCoord = map.getRelativeTagCoord(tags_coord[i].first, tags_coord[i].second, target.getX(), target.getY());
+        // Calculate the received power and phase
+        double rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
+        double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
+        // Update the path planning and RFID map
+        map.updatePathPlanningGrid ( x, y, range, rxPower - SENSITIVITY);
+        RFID_maps_list[i].addEllipse(rxPower - SENSITIVITY, map.getNumGridRows() - target.getX(),  target.getY(), target.getOrientation(), -1.0, range);
+      }
+           
+      
       // Remove the current pose from the list of possible candidate cells
       utils.cleanPossibleDestination2 ( &nearCandidates,target );
       // Get the list of the candidate cells with their evaluation
@@ -532,8 +637,12 @@ int main ( int argc, char **argv )
   map.drawVisitedCells ();
   map.printVisitedCells ( history );
   map.drawRFIDScan();
-  map.drawRFIDGridScan(myGrid);
-  myGrid.saveAs(("/home/pulver/Desktop/MCDM/rfid_result_gridmap.pgm"));
+  map.drawRFIDGridScan(myGrid1);
+  for (int i=0; i < RFID_maps_list.size(); i++){
+    std::string path = "/home/pulver/Desktop/MCDM/rfid_result_gridmap_" + to_string(i+1) + ".pgm";
+    RFID_maps_list[i].saveAs(path);
+  }
+  
 
   // cout << "Num configuration: " << numConfiguration << endl;
   // cout << "Travelled distance calculated during the algorithm: " << travelledDistance << endl;
@@ -547,23 +656,43 @@ int main ( int argc, char **argv )
   utils.calculateDistance(tabuList, &map, &astar );
 
   // Trasform distance in meters
-  if ( imgresolution == 1.0 ) // Corridor map has a resolution of 0.5 meter per cell
-  {
-    travelledDistance = travelledDistance/2;
-  }
+  // if ( imgresolution == 1.0 ) // Corridor map has a resolution of 0.5 meter per cell
+  // {
+  //   travelledDistance = travelledDistance/2;
+  // }
 
 
   utils.printResult(newSensedCells, totalFreeCells, precision, numConfiguration, travelledDistance, numOfTurning,
       totalAngle, totalScanTime);
   // Find the tag
-  std::pair<int,int> tag;
+  std::pair<int, std::pair<int, int>> value_tag;
+  int value = 0;
+  std::pair<int, int> tag;
   // FIXME: not accurate, it must not be used
     // tag= map.findTag();
     // cout << "RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
-  tag = map.findTagfromGridMap(myGrid);
-  cout << "[Grid]RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
-  double distance_to_tag = sqrt(pow(absTagX - tag.first, 2) + pow(absTagY - tag.second, 2));
-  cout << "Distance to tag: " << to_string(distance_to_tag) << " cells" << endl;
+  std::string tags_distance_from_gt;
+  double distance_to_tag = 0;
+  double accuracy = 0;
+  for (int i=0; i < RFID_maps_list.size(); i++){
+    value_tag = map.findTagfromGridMap(RFID_maps_list[i]);
+    value = value_tag.first;
+    tag = value_tag.second;
+    cout << "[Grid]RFID pose: [" << tag.second << "," << tag.first << "]" << "  ->  GT:[" << tags_coord[i].second << "," << tags_coord[i].first << "]" << endl;
+    distance_to_tag = sqrt(pow(tags_coord[i].first - tag.first, 2) + pow(tags_coord[i].second - tag.second, 2));
+    cout << "Value: " << value << endl;
+    if (value >=2) accuracy = accuracy + 1;
+    cout << "Distance to tag: " << to_string(distance_to_tag) << " cells" << endl;
+    if (distance_to_tag <= 8.0) {
+      distance_to_tag = 1;
+    }else distance_to_tag = 0.0;
+    tags_distance_from_gt += to_string(distance_to_tag) + ",";
+  }
+  tags_distance_from_gt += "\n";
+  utils.filePutContents(detection_log, tags_distance_from_gt, true);
+  accuracy = accuracy / 10.0;
+  std::string accuracy_content = to_string(initRange) + "," + to_string(numConfiguration) + "," + to_string(accuracy) + "\n";
+  utils.filePutContents(accuracy_log, accuracy_content, true);
   cout << "-----------------------------------------------------------------"<<endl;
   auto endMCDM = chrono::high_resolution_clock::now();
   content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + "," + to_string(w_rfid_gain) + ","

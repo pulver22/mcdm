@@ -29,6 +29,9 @@ find_package( catkin REQUIRED COMPONENTS
   sensor_msgs
 )
 
+
+find_package(yaml-cpp 0.6.2 REQUIRED)
+
 include_directories(
   ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIR}
@@ -59,7 +62,7 @@ add_library(lib pose.cpp PathFinding/astar.cpp PathFinding/node.cpp map.cpp newr
 #Find all the files link them to the executable (for qtcreator)
 FILE(GLOB_RECURSE HEADER_FILES include *.h)
 add_executable(mcdm_online_exploration mcdm.cpp  ${HEADER_FILES})
-target_link_libraries(mcdm_online_exploration lib  -lboost_unit_test_framework  ${catkin_LIBRARIES}   ${OpenCV_LIBRARIES})
+target_link_libraries(mcdm_online_exploration lib  -lboost_unit_test_framework  ${catkin_LIBRARIES}   ${OpenCV_LIBRARIES}  yaml-cpp)
 install(TARGETS mcdm_online_exploration RUNTIME DESTINATION bin)
 
 add_executable(random_walk random_walk.cpp  ${HEADER_FILES})

@@ -8,6 +8,9 @@ import matplotlib.ticker as plticker
 # mcdm_data_1            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_mcdm_orebro_35_1.csv", "rb"), delimiter=",", skiprows=1)
 # mcdm_data_2            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_mcdm_orebro_35_2.csv", "rb"), delimiter=",", skiprows=1)
 # mcdm_data_3            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_mcdm_orebro_35_3.csv", "rb"), delimiter=",", skiprows=1)
+# stachniss_data_1            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_stachniss_orebro_1.csv", "rb"), delimiter=",", skiprows=1)
+# stachniss_data_2            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_stachniss_orebro_2.csv", "rb"), delimiter=",", skiprows=1)
+# stachniss_data_3            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_stachniss_orebro_3.csv", "rb"), delimiter=",", skiprows=1)
 # random_frontier_data_1 = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_random_frontier_orebro_1.csv", "rb"), delimiter=",", skiprows=1)
 # random_frontier_data_2 = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_random_frontier_orebro_2.csv", "rb"), delimiter=",", skiprows=1)
 # random_frontier_data_3 = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_random_frontier_orebro_3.csv", "rb"), delimiter=",", skiprows=1)
@@ -18,6 +21,9 @@ import matplotlib.ticker as plticker
 mcdm_data_1            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_mcdm_ncfm_28_1.csv", "rb"), delimiter=",", skiprows=1)
 mcdm_data_2            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_mcdm_ncfm_28_2.csv", "rb"), delimiter=",", skiprows=1)
 mcdm_data_3            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_mcdm_ncfm_28_3.csv", "rb"), delimiter=",", skiprows=1)
+stachniss_data_1       = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_stachniss_ncfm_1.csv", "rb"), delimiter=",", skiprows=1)
+stachniss_data_2       = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_stachniss_ncfm_2.csv", "rb"), delimiter=",", skiprows=1)
+stachniss_data_3       = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_stachniss_ncfm_3.csv", "rb"), delimiter=",", skiprows=1)
 random_frontier_data_1 = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_random_frontier_ncfm_1.csv", "rb"), delimiter=",", skiprows=1)
 random_frontier_data_2 = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_random_frontier_ncfm_2.csv", "rb"), delimiter=",", skiprows=1)
 random_frontier_data_3 = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_random_frontier_ncfm_3.csv", "rb"), delimiter=",", skiprows=1)
@@ -28,6 +34,9 @@ random_walk_data_3     = np.loadtxt(open("/home/pulver/Dropbox/University/PostDo
 # mcdm_data_1            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_mcdm_inb_atrium_28_1.csv", "rb"), delimiter=",", skiprows=1)
 # mcdm_data_2            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_mcdm_inb_atrium_28_2.csv", "rb"), delimiter=",", skiprows=1)
 # mcdm_data_3            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_mcdm_inb_atrium_28_3.csv", "rb"), delimiter=",", skiprows=1)
+# stachniss_data_1            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_stachniss_inb_atrium_1.csv", "rb"), delimiter=",", skiprows=1)
+# stachniss_data_2            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_stachniss_inb_atrium_2.csv", "rb"), delimiter=",", skiprows=1)
+# stachniss_data_3            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_stachniss_inb_atrium_3.csv", "rb"), delimiter=",", skiprows=1)
 # random_frontier_data_1 = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_random_frontier_inb_atrium_1.csv", "rb"), delimiter=",", skiprows=1)
 # random_frontier_data_2 = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_random_frontier_inb_atrium_2.csv", "rb"), delimiter=",", skiprows=1)
 # random_frontier_data_3 = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_random_frontier_inb_atrium_3.csv", "rb"), delimiter=",", skiprows=1)
@@ -35,9 +44,9 @@ random_walk_data_3     = np.loadtxt(open("/home/pulver/Dropbox/University/PostDo
 # random_walk_data_2     = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_random_walk_inb_atrium_2.csv", "rb"), delimiter=",", skiprows=1)
 # random_walk_data_3     = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_random_walk_inb_atrium_3.csv", "rb"), delimiter=",", skiprows=1)
 # # # INB_ENG
-# mcdm_data_1            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_mcdm_inb_eng_28_1.csv", "rb"), delimiter=",", skiprows=1)
-# mcdm_data_2            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_mcdm_inb_eng_28_2.csv", "rb"), delimiter=",", skiprows=1)
-# mcdm_data_3            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_mcdm_inb_eng_28_3.csv", "rb"), delimiter=",", skiprows=1)
+# stachniss_data_1            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_mcdm_inb_eng_1.csv", "rb"), delimiter=",", skiprows=1)
+# stachniss_data_2            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_mcdm_inb_eng_2.csv", "rb"), delimiter=",", skiprows=1)
+# stachniss_data_3            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_mcdm_inb_eng_3.csv", "rb"), delimiter=",", skiprows=1)
 # random_frontier_data_1 = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_random_frontier_inb_eng_1.csv", "rb"), delimiter=",", skiprows=1)
 # random_frontier_data_2 = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_random_frontier_inb_eng_2.csv", "rb"), delimiter=",", skiprows=1)
 # random_frontier_data_3 = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_random_frontier_inb_eng_3.csv", "rb"), delimiter=",", skiprows=1)
@@ -45,9 +54,9 @@ random_walk_data_3     = np.loadtxt(open("/home/pulver/Dropbox/University/PostDo
 # random_walk_data_2     = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_random_walk_inb_eng_2.csv", "rb"), delimiter=",", skiprows=1)
 # random_walk_data_3     = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_random_walk_inb_eng_3.csv", "rb"), delimiter=",", skiprows=1)
 # # INB_Atrium
-# mcdm_data_1            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_mcdm_inb_3123_28_1.csv", "rb"), delimiter=",", skiprows=1)
-# mcdm_data_2            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_mcdm_inb_3123_28_2.csv", "rb"), delimiter=",", skiprows=1)
-# mcdm_data_3            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_mcdm_inb_3123_28_3.csv", "rb"), delimiter=",", skiprows=1)
+# stachniss_data_1            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_mcdm_inb_3123_1.csv", "rb"), delimiter=",", skiprows=1)
+# stachniss_data_2            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_mcdm_inb_3123_2.csv", "rb"), delimiter=",", skiprows=1)
+# stachniss_data_3            = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_mcdm_inb_3123_3.csv", "rb"), delimiter=",", skiprows=1)
 # random_frontier_data_1 = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_random_frontier_inb3123_1.csv", "rb"), delimiter=",", skiprows=1)
 # random_frontier_data_2 = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_random_frontier_inb3123_2.csv", "rb"), delimiter=",", skiprows=1)
 # random_frontier_data_3 = np.loadtxt(open("/home/pulver/Dropbox/University/PostDoc/MCDM/coverage_travel/coverage_random_frontier_inb3123_3.csv", "rb"), delimiter=",", skiprows=1)
@@ -59,6 +68,9 @@ random_walk_data_3     = np.loadtxt(open("/home/pulver/Dropbox/University/PostDo
 mcdm_data_1 = mcdm_data_1[:, -3:]
 mcdm_data_2 = mcdm_data_2[:, -3:]
 mcdm_data_3 = mcdm_data_3[:, -3:]
+stachniss_data_1 = stachniss_data_1[:, -3:]
+stachniss_data_2 = stachniss_data_2[:, -3:]
+stachniss_data_3 = stachniss_data_3[:, -3:]
 random_frontier_data_1 = random_frontier_data_1[:, -3:]
 random_frontier_data_2 = random_frontier_data_2[:, -3:]
 random_frontier_data_3 = random_frontier_data_3[:, -3:]
@@ -69,6 +81,9 @@ random_walk_data_3 = random_walk_data_3[:, -3:]
 mcdm_data_1 = np.delete(mcdm_data_1, 1, 1)
 mcdm_data_2 = np.delete(mcdm_data_2, 1, 1)
 mcdm_data_3 = np.delete(mcdm_data_3, 1, 1)
+stachniss_data_1 = np.delete(stachniss_data_1, 1, 1)
+stachniss_data_2 = np.delete(stachniss_data_2, 1, 1)
+stachniss_data_3 = np.delete(stachniss_data_3, 1, 1)
 random_frontier_data_1 = np.delete(random_frontier_data_1, 1, 1)
 random_frontier_data_2 = np.delete(random_frontier_data_2, 1, 1)
 random_frontier_data_3 = np.delete(random_frontier_data_3, 1, 1)
@@ -80,6 +95,9 @@ random_walk_data_3 = np.delete(random_walk_data_3, 1, 1)
 unique_1 = np.unique(mcdm_data_1, axis=0)
 unique_2 = np.unique(mcdm_data_2, axis=0)
 unique_3 = np.unique(mcdm_data_3, axis=0)
+unique_stachniss_1 = np.unique(stachniss_data_1, axis=0)
+unique_stachniss_2 = np.unique(stachniss_data_2, axis=0)
+unique_stachniss_3 = np.unique(stachniss_data_3, axis=0)
 unique_rf_1 = np.unique(random_frontier_data_1, axis=0)
 unique_rf_2 = np.unique(random_frontier_data_2, axis=0)
 unique_rf_3 = np.unique(random_frontier_data_3, axis=0)
@@ -100,6 +118,15 @@ for i in range(3):
     while arr_list[i].shape[0] < np.max(len_arr):
         arr_list[i] = np.vstack([arr_list[i], arr_list[i][-1,:]])
     final[:,i] = arr_list[i][:,1]
+
+len_stachniss_arr = [unique_stachniss_1.shape[0], unique_stachniss_2.shape[0], unique_stachniss_3.shape[0]]
+max_len_index = np.argmax(len_stachniss_arr)
+final_stachniss = np.zeros(shape=(np.max(len_stachniss_arr), 5))
+arr_stachniss_list = [unique_stachniss_1, unique_stachniss_2, unique_stachniss_3]
+for i in range(3):
+    while arr_stachniss_list[i].shape[0] < np.max(len_stachniss_arr):
+        arr_stachniss_list[i] = np.vstack([arr_stachniss_list[i], arr_stachniss_list[i][-1,:]])
+    final_stachniss[:,i] = arr_stachniss_list[i][:,1]
 
 len_rf_arr = [unique_rf_1.shape[0], unique_rf_2.shape[0], unique_rf_3.shape[0]]
 max_len_index = np.argmax(len_rf_arr)
@@ -122,6 +149,8 @@ for i in range(3):
 # Calculate average and std dev from the trajectories
 final[:,3] = np.average(final[:,0:3], axis=1)
 final[:,4] = np.std(final[:,0:3], axis=1)
+final_stachniss[:,3] = np.average(final_stachniss[:,0:3], axis=1)
+final_stachniss[:,4] = np.std(final_stachniss[:,0:3], axis=1)
 final_rf[:,3] = np.average(final_rf[:,0:3], axis=1)
 final_rf[:,4] = np.std(final_rf[:,0:3], axis=1)
 final_rw[:,3] = np.average(final_rw[:,0:3], axis=1)
@@ -134,6 +163,12 @@ print("x: ", len(x))
 print(final.shape[0])
 plt.plot(x, final[:, 3],  color='#CC4F1B', label='NBS')
 plt.fill_between(x, final[:, 3]-final[:, 4], final[:, 3]+final[:, 4], alpha=0.5, edgecolor='#CC4F1B', facecolor='#FF9848')
+
+x = np.arange(1, final_stachniss.shape[0] + 1, 1)
+print("x: ", len(x))
+print(final_stachniss.shape[0])
+plt.plot(x, final_stachniss[:, 3],  color='#410093', label='Stachniss et al.')
+plt.fill_between(x, final_stachniss[:, 3]-final_stachniss[:, 4], final_stachniss[:, 3]+final_stachniss[:, 4], alpha=0.5, edgecolor='#5000ac', facecolor='#7201ff')
 
 x = np.arange(1, final_rf.shape[0] + 1, 1)
 print("x: ", len(x))
