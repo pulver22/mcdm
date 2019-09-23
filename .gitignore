@@ -37,3 +37,19 @@ CMakeFiles/actionlib_generate_messages_py.dir/
 CMakeFiles/actionlib_msgs_generate_messages_cpp.dir/
 
 *.make
+
+*.ini
+
+*.cmake
+
+*.tcl
+
+*.so
+
+Makefile
+
+mcdm_online_exploration
+
+*.cbp
+
+.vscode/settings.json
