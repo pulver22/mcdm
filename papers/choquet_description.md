@@ -2,8 +2,8 @@
 
 How does the Choquet Fuzzy Integral work?
 1) Identify a frontier $p$
-2) Evaluate the frontier $p$ using the $n$ criteria (in our example we use $n=3$)
-3) Order the criteria from the last significant to the most important one based on the previous evaluation (e.g., $c2 - c3 - c1$)
+2) Evaluate the frontier $p$ using $n$ available criteria, $u(c_i)$ (in our example we use $n=3$)
+3) Order the criteria from the last significant to the most important one based on the previous evaluation (e.g.,$u(c2) < u(c3) <u(c1)$ then  $c2 - c3 - c1$)
 4) Starting from the less significant one, for each criterion find the list (combination) of criteria whose evaluation is greater than that one ( given $c2$ -> $(c1,c2,c3)$)
    * If it's the first consider criterion, multiply it for the weight of the coalition  ( $u(c2) * \eta(c1,c2,c3)$)
    * If it's not the first considered one, subtract the evaluation of the previous criterion first and then multiply the result for the weight of the coalition ($(u(c3) - u(c2)) * \eta(c3,c1)$)
