@@ -109,7 +109,7 @@ void MCDMFunction::evaluateFrontier(Pose &p, dummy::Map *map) {
 EvaluationRecords *
 MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map *map, double threshold) {
 
-
+  Pose f;
   //Clean the last evaluation
   //NOTE: probably working
   unordered_map<string, Criterion *>::iterator it;
@@ -121,15 +121,17 @@ MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map *ma
 
   // listActiveCriteria contains the name of the criteria while "criteria struct" contain the pairs <name, criterion>
   vector<string> listActiveCriteria = matrix->getActiveCriteria();
+  // cout << "List activeCriteria: " << endl;
   for (vector<string>::iterator it = listActiveCriteria.begin(); it != listActiveCriteria.end(); it++) {
     activeCriteria.push_back(criteria[*it]);
+    // cout << "   " << criteria[*it] << endl;
   }
 
 
   //Evaluate the frontiers
   list<Pose>::const_iterator it2;
   for (it2 = frontiers.begin(); it2 != frontiers.end(); it2++) {
-    Pose f = *it2;
+    f = *it2;
     evaluateFrontier(f, map);
   }
 
@@ -141,77 +143,70 @@ MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map *ma
 
   //Create the EvaluationRecords
   EvaluationRecords *toRet = new EvaluationRecords();
+  
 
 
   // analyze every single frontier f, and add in the evaluationRecords <frontier, evaluation>
   for (list<Pose>::const_iterator i = frontiers.begin(); i != frontiers.end(); i++) {
 
-    //cout <<"---------------------NEW FRONTIER -------------------"<<endl;
-
-    double infoGainImportance;
-    bool dobreak = false;
-    Pose f = *i;
+    // cout <<"---------------------NEW FRONTIER -------------------"<<endl;
+    f = *i;
 
     // order criteria depending on the considered frontier
     sort(activeCriteria.begin(), activeCriteria.end(), CriterionComparator(f));
 
-
     //apply the choquet integral
     Criterion *lastCrit = NULL;
     double finalValue = 0.0;
+    // cout << "\n==== New frontier ====" << endl;
 
-    cout << "----" << endl;
-    for (vector<Criterion *>::iterator k = activeCriteria.begin(); !dobreak && k != activeCriteria.end(); k++) {
+    // WEIGHTED AVG
+    for (vector<Criterion *>::iterator k = activeCriteria.begin(); k != activeCriteria.end(); k++) {
       //cout << "------------------New criterio observed------------- " << endl;
+      // cout << endl;
       Criterion *c = NULL;
       double weight = 0.0;
       list<string> names;
-      cout << "First: " << (*k)->getName() << endl;
-      for (vector<Criterion *>::iterator j = k+1; j != activeCriteria.end(); j++) {
-        //CHECK IF THE ITERATOR RETURN THE COUPLE <STRING,CRITERION>
-        Criterion *next = (*j);
-        names.push_back(next->getName()); // The list of criteria whose evaluation is >= than the one's considered
-        cout << "   Name: " << next->getName() << endl;
-      }
-
-      // if (k == activeCriteria.begin()) {
-      //   weight = 1.0;
-      // } else {
-        // weight = matrix->getWeight(names);
-        // cout << "Weight  : " << weight << endl;
-      // }
-
-
-      if (k == activeCriteria.begin()) {
-        c = (*k);
-        weight =  matrix->getWeight(c->getName());
-        finalValue += c->getEvaluation(f) * weight;
-        cout << "[1]" << (*k)->getName() << " : " << matrix->getWeight((*k)->getName()) << endl;
-        if ((c->getName() == "informationGain") && (c->getEvaluation(f) == 0)) {
-          //cout << "alive" << endl;
-          dobreak = true;
-          break;
-        }
-      } else {
-        c = (*k);
-        weight =  matrix->getWeight(c->getName());
-        double tmpValue = c->getEvaluation(f) - lastCrit->getEvaluation(f);
-        finalValue += tmpValue * weight;
-        cout << "[2]" << (*k)->getName() << " : " << matrix->getWeight((*k)->getName()) << endl;
-        if ((c->getName() == "informationGain") && (c->getEvaluation(f) == 0)) {
-          //cout << "alive" << endl;
-          dobreak = true;
-          break;
-        }
-
-      }
-      //  cout << (*k)->getName() << " : " << matrix->getWeight((*k)->getName()) << endl;
-      lastCrit = c;
-
+      names.push_back((*k)->getName());
+      // Get the weight of the single criterion
+      weight = matrix->getWeight(names);
+      finalValue += (*k)->getWeight() * (*k)->getEvaluation(f);
+      // cout << "Name: " << (*k)->getName() << ", evaluation: "<< (*k)->getEvaluation(f) << " , weight: " << weight << endl;
+      // cout << "    finalValue: " << finalValue << endl;
     }
-    cout << "finalValue: " << finalValue << endl;
+
+
+    //MCDM
+          // // cout << "First: " << activeCriteria.at(0)->getName() << endl;
+          // for (vector<Criterion *>::iterator k = activeCriteria.begin(); k != activeCriteria.end(); k++) {
+          //   //cout << "------------------New criterio observed------------- " << endl;
+          //   // cout << endl;
+          //   Criterion *c = NULL;
+          //   double weight = 0.0;
+          //   list<string> names;
+          //   for (vector<Criterion *>::iterator j = k; j != activeCriteria.end(); j++) {
+          //     Criterion *next = (*j);
+          //     names.push_back(next->getName()); // The list of criteria whose evaluation is >= than the one's considered
+          //     // cout << "   Name: " << next->getName() << endl;
+          //   }
+
+          //   weight = matrix->getWeight(names);
+
+          //   // TODO: maybe add that if infoGain->getEvaluation == 0, set the finalValue = 0 so we discard that frontier and speed up navigation
+          //   if (k == activeCriteria.begin()) {
+          //     c = (*k);
+          //     finalValue += c->getEvaluation(f) * weight;
+          //     // cout << "[1]" << (*k)->getName() << " , eval: " << c->getEvaluation(f) << ", weight: " << weight << endl;
+          //   } else {
+          //     c = (*k);
+          //     double tmpValue = c->getEvaluation(f) - lastCrit->getEvaluation(f);
+          //     finalValue += tmpValue * weight;
+          //     // cout << "[2]" << (*k)->getName() << " , eval: " << c->getEvaluation(f) << ", weight: " << weight << endl;
+          //   }
+          //   lastCrit = c;
+          // }
+    // cout << "\nfinalValue: " << finalValue << endl;
     if (finalValue > threshold) {
-      //cout <<"Angles: "<< f.getScanAngles().first <<","<< f.getScanAngles().second<< endl;
       toRet->putEvaluation(f, finalValue);
     }
 
