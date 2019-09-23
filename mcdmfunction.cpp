@@ -126,7 +126,6 @@ MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map *ma
   }
 
 
-
   //Evaluate the frontiers
   list<Pose>::const_iterator it2;
   for (it2 = frontiers.begin(); it2 != frontiers.end(); it2++) {
@@ -161,30 +160,33 @@ MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map *ma
     Criterion *lastCrit = NULL;
     double finalValue = 0.0;
 
+    cout << "----" << endl;
     for (vector<Criterion *>::iterator k = activeCriteria.begin(); !dobreak && k != activeCriteria.end(); k++) {
       //cout << "------------------New criterio observed------------- " << endl;
       Criterion *c = NULL;
       double weight = 0.0;
-      //Get the list of criterion whose evaluation is >= than the one's considered
       list<string> names;
-
-
-      for (vector<Criterion *>::iterator j = k; j != activeCriteria.end(); j++) {
+      cout << "First: " << (*k)->getName() << endl;
+      for (vector<Criterion *>::iterator j = k+1; j != activeCriteria.end(); j++) {
         //CHECK IF THE ITERATOR RETURN THE COUPLE <STRING,CRITERION>
         Criterion *next = (*j);
-        names.push_back(next->getName());
+        names.push_back(next->getName()); // The list of criteria whose evaluation is >= than the one's considered
+        cout << "   Name: " << next->getName() << endl;
       }
 
-      if (k == activeCriteria.begin()) {
-        weight = 1.0;
-      } else {
-        weight = matrix->getWeight(names);
-      }
+      // if (k == activeCriteria.begin()) {
+      //   weight = 1.0;
+      // } else {
+        // weight = matrix->getWeight(names);
+        // cout << "Weight  : " << weight << endl;
+      // }
 
 
       if (k == activeCriteria.begin()) {
         c = (*k);
+        weight =  matrix->getWeight(c->getName());
         finalValue += c->getEvaluation(f) * weight;
+        cout << "[1]" << (*k)->getName() << " : " << matrix->getWeight((*k)->getName()) << endl;
         if ((c->getName() == "informationGain") && (c->getEvaluation(f) == 0)) {
           //cout << "alive" << endl;
           dobreak = true;
@@ -192,8 +194,10 @@ MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map *ma
         }
       } else {
         c = (*k);
+        weight =  matrix->getWeight(c->getName());
         double tmpValue = c->getEvaluation(f) - lastCrit->getEvaluation(f);
         finalValue += tmpValue * weight;
+        cout << "[2]" << (*k)->getName() << " : " << matrix->getWeight((*k)->getName()) << endl;
         if ((c->getName() == "informationGain") && (c->getEvaluation(f) == 0)) {
           //cout << "alive" << endl;
           dobreak = true;
@@ -201,10 +205,11 @@ MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map *ma
         }
 
       }
+      //  cout << (*k)->getName() << " : " << matrix->getWeight((*k)->getName()) << endl;
       lastCrit = c;
 
     }
-
+    cout << "finalValue: " << finalValue << endl;
     if (finalValue > threshold) {
       //cout <<"Angles: "<< f.getScanAngles().first <<","<< f.getScanAngles().second<< endl;
       toRet->putEvaluation(f, finalValue);
@@ -255,3 +260,5 @@ string MCDMFunction::getEncodedKey(Pose &p, int value) {
   }
   return key;
 }
+
+
