@@ -159,54 +159,54 @@ MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map *ma
     Criterion *lastCrit = NULL;
     double finalValue = 0.0;
     // cout << "\n==== New frontier ====" << endl;
-
+    bool no_info_gain = false;
+    
     // WEIGHTED AVG
+    // for (vector<Criterion *>::iterator k = activeCriteria.begin(); k != activeCriteria.end(); k++) {
+    //   Criterion *c = NULL;
+    //   double weight = 0.0;
+    //   list<string> names;
+    //   names.push_back((*k)->getName());
+    //   // Get the weight of the single criterion
+    //   weight = matrix->getWeight(names);
+    //   finalValue += (*k)->getWeight() * (*k)->getEvaluation(f);
+    //   if ((*k)->getName().compare("informationGain") == 0){
+    //     if ((*k)->getEvaluation(f) == 0){
+    //       no_info_gain = true;
+    //     }
+    //   }
+    // }
+
+    //MCDM
     for (vector<Criterion *>::iterator k = activeCriteria.begin(); k != activeCriteria.end(); k++) {
-      //cout << "------------------New criterio observed------------- " << endl;
-      // cout << endl;
       Criterion *c = NULL;
       double weight = 0.0;
       list<string> names;
-      names.push_back((*k)->getName());
-      // Get the weight of the single criterion
+      for (vector<Criterion *>::iterator j = k; j != activeCriteria.end(); j++) {
+        Criterion *next = (*j);
+        names.push_back(next->getName()); // The list of criteria whose evaluation is >= than the one's considered
+      }
+
       weight = matrix->getWeight(names);
-      finalValue += (*k)->getWeight() * (*k)->getEvaluation(f);
-      // cout << "Name: " << (*k)->getName() << ", evaluation: "<< (*k)->getEvaluation(f) << " , weight: " << weight << endl;
-      // cout << "    finalValue: " << finalValue << endl;
+
+      if (k == activeCriteria.begin()) {
+        c = (*k);
+        finalValue += c->getEvaluation(f) * weight;
+      } else {
+        c = (*k);
+        double tmpValue = c->getEvaluation(f) - lastCrit->getEvaluation(f);
+        finalValue += tmpValue * weight;
+      }
+      lastCrit = c;
+
+      if (c->getName().compare("informationGain") == 0){
+        if (c->getEvaluation(f) == 0){
+          no_info_gain = true;
+        }
+      }
     }
 
-
-    //MCDM
-          // // cout << "First: " << activeCriteria.at(0)->getName() << endl;
-          // for (vector<Criterion *>::iterator k = activeCriteria.begin(); k != activeCriteria.end(); k++) {
-          //   //cout << "------------------New criterio observed------------- " << endl;
-          //   // cout << endl;
-          //   Criterion *c = NULL;
-          //   double weight = 0.0;
-          //   list<string> names;
-          //   for (vector<Criterion *>::iterator j = k; j != activeCriteria.end(); j++) {
-          //     Criterion *next = (*j);
-          //     names.push_back(next->getName()); // The list of criteria whose evaluation is >= than the one's considered
-          //     // cout << "   Name: " << next->getName() << endl;
-          //   }
-
-          //   weight = matrix->getWeight(names);
-
-          //   // TODO: maybe add that if infoGain->getEvaluation == 0, set the finalValue = 0 so we discard that frontier and speed up navigation
-          //   if (k == activeCriteria.begin()) {
-          //     c = (*k);
-          //     finalValue += c->getEvaluation(f) * weight;
-          //     // cout << "[1]" << (*k)->getName() << " , eval: " << c->getEvaluation(f) << ", weight: " << weight << endl;
-          //   } else {
-          //     c = (*k);
-          //     double tmpValue = c->getEvaluation(f) - lastCrit->getEvaluation(f);
-          //     finalValue += tmpValue * weight;
-          //     // cout << "[2]" << (*k)->getName() << " , eval: " << c->getEvaluation(f) << ", weight: " << weight << endl;
-          //   }
-          //   lastCrit = c;
-          // }
-    // cout << "\nfinalValue: " << finalValue << endl;
-    if (finalValue > threshold) {
+    if (finalValue > threshold and no_info_gain == false) {
       toRet->putEvaluation(f, finalValue);
     }
 
