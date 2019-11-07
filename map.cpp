@@ -1,6 +1,7 @@
 #include <map.h>
 #include <fstream>
 #include <iostream>
+#include <random>
 using namespace std;
 
 namespace dummy{

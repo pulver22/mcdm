@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <iostream>
 #include <iterator>
+#include <random>
 #include "map.h"
 #include "newray.h"
 #include "mcdmfunction.h"
