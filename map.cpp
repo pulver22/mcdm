@@ -223,11 +223,11 @@ void Map::createPathPlanningGrid(double resolution)
 {
   //cluster cells into grid
   float clusterSize = static_cast<float>(1/resolution);
-  std::cout << "imgResolution: " << resolution << " clusterSize: " << clusterSize << std::endl;
-  std::cout << "numRows: " << numRows << " numCols: " << numCols << std::endl;
+  // std::cout << "imgResolution: " << resolution << " clusterSize: " << clusterSize << std::endl;
+  // std::cout << "numRows: " << numRows << " numCols: " << numCols << std::endl;
   Map::numPathPlanningGridRows = static_cast<int>(numRows/clusterSize);
   Map::numPathPlanningGridCols = static_cast<int>(numCols/clusterSize);
-  cout <<"numPathPlanningGridRows: " << numPathPlanningGridRows <<", numPathPlanningGridCols: "<< numPathPlanningGridCols << endl;
+  // cout <<"numPathPlanningGridRows: " << numPathPlanningGridRows <<", numPathPlanningGridCols: "<< numPathPlanningGridCols << endl;
 
   for(int i = 0; i < numPathPlanningGridCols*numPathPlanningGridRows; ++i)
   {

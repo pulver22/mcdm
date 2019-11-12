@@ -329,8 +329,8 @@ int main ( int argc, char **argv )
           {
             travelledDistance = travelledDistance/2;
           }
-          utils.printResult(newSensedCells, totalFreeCells, precision, numConfiguration, travelledDistance, numOfTurning,
-              totalAngle, totalScanTime);
+          // utils.printResult(newSensedCells, totalFreeCells, precision, numConfiguration, travelledDistance, numOfTurning,
+          //     totalAngle, totalScanTime);
           content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + "," + to_string(w_rfid_gain) + ","
                            + to_string(float(newSensedCells)/float(totalFreeCells)) + "," + to_string(numConfiguration) + ","
                            + to_string(travelledDistance) + "," + to_string(totalScanTime) + "\n";
@@ -662,8 +662,8 @@ int main ( int argc, char **argv )
   // }
 
 
-  utils.printResult(newSensedCells, totalFreeCells, precision, numConfiguration, travelledDistance, numOfTurning,
-      totalAngle, totalScanTime);
+  // utils.printResult(newSensedCells, totalFreeCells, precision, numConfiguration, travelledDistance, numOfTurning,
+  //     totalAngle, totalScanTime);
   // Find the tag
   std::pair<int, std::pair<int, int>> value_tag;
   int value = 0;
