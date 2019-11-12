@@ -142,6 +142,7 @@ int main ( int argc, char **argv )
   std::string coverage_log (argv[19]);
   std::string detection_log (argv[20]);
   std::string accuracy_log (argv[22]);
+  bool use_mcdm = bool(atoi(argv[23]));
   //x,y,orientation,range,FOV
   Utilities utils;
 
@@ -156,7 +157,7 @@ int main ( int argc, char **argv )
   NewRay ray;
   ray.setGridToPathGridScale ( gridToPathGridScale );
   // MCDMFunction function(w_info_gain, w_travel_distance, w_sensing_time);
-  MCDMFunction function(w_info_gain, w_travel_distance, w_sensing_time, w_rfid_gain);
+  MCDMFunction function(w_info_gain, w_travel_distance, w_sensing_time, w_rfid_gain, use_mcdm);
   // cout << "MCDM matrix created! " << endl;
 //  MCDMFunction function;
   long sensedCells = 0;

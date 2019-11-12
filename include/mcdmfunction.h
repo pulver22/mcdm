@@ -14,8 +14,8 @@ class MCDMFunction
 {
 
 public:
-  MCDMFunction(float w_criterion_1, float w_criterion_2, float w_criterion_3);
-  MCDMFunction(float w_criterion_1, float w_criterion_2, float w_criterion_3, float w_criterion_4);
+  MCDMFunction(float w_criterion_1, float w_criterion_2, float w_criterion_3, bool use_mcdm);
+  MCDMFunction(float w_criterion_1, float w_criterion_2, float w_criterion_3, float w_criterion_4, bool use_mcdm);
   ~MCDMFunction();
   void evaluateFrontier(Pose& p, dummy::Map* map);
   EvaluationRecords* evaluateFrontiers(const list< Pose >& frontiers, dummy::Map* map, double threshold);
@@ -29,6 +29,7 @@ protected:
   unordered_map<string, Criterion* > criteria;
   vector<Criterion* > activeCriteria;
   WeightMatrix * matrix ;
+  bool use_mcdm;
   //mutex myMutex;
 
 };

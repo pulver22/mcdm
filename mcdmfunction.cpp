@@ -20,11 +20,11 @@ using namespace dummy;
 
 /* create a list of criteria with name and <encoded_name,weight> pair after reading that from a file
  */
-MCDMFunction::MCDMFunction(float w_criterion_1, float w_criterion_2, float w_criterion_3) //:
+MCDMFunction::MCDMFunction(float w_criterion_1, float w_criterion_2, float w_criterion_3, bool use_mcdm) //:
 //criteria(new unordered_map<string, Criterion* >())
 //activeCriteria(new vector<Criterion >() )
 {
-
+  this->use_mcdm = use_mcdm;
   // Initialization ad-hoc: create a weightmatrix for 3 criteria with predefined weight
   MCDMWeightReader reader;
   //cout << "test" << endl;
@@ -48,10 +48,11 @@ MCDMFunction::MCDMFunction(float w_criterion_1, float w_criterion_2, float w_cri
 
 /* create a list of criteria with name and <encoded_name,weight> pair after reading that from a file
  */
-MCDMFunction::MCDMFunction(float w_criterion_1, float w_criterion_2, float w_criterion_3, float w_criterion_4) //:
+MCDMFunction::MCDMFunction(float w_criterion_1, float w_criterion_2, float w_criterion_3, float w_criterion_4, bool use_mcdm) //:
 //criteria(new unordered_map<string, Criterion* >())
 //activeCriteria(new vector<Criterion >() )
 {
+  this->use_mcdm = use_mcdm;
 
   // Initialization ad-hoc: create a weightmatrix for 3 criteria with predefined weight
   MCDMWeightReader reader;
@@ -162,57 +163,62 @@ MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map *ma
     bool no_info_gain = false;
     
     // WEIGHTED AVG
-    // for (vector<Criterion *>::iterator k = activeCriteria.begin(); k != activeCriteria.end(); k++) {
-    //   Criterion *c = NULL;
-    //   double weight = 0.0;
-    //   list<string> names;
-    //   names.push_back((*k)->getName());
-    //   // Get the weight of the single criterion
-    //   weight = matrix->getWeight(names);
-    //   finalValue += (*k)->getWeight() * (*k)->getEvaluation(f);
-    //   if ((*k)->getName().compare("informationGain") == 0){
-    //     if ((*k)->getEvaluation(f) == 0){
-    //       no_info_gain = true;
-    //     }
-    //   }
-    // }
-
-    //MCDM
-    for (vector<Criterion *>::iterator k = activeCriteria.begin(); k != activeCriteria.end(); k++) {
-      Criterion *c = NULL;
-      double weight = 0.0;
-      list<string> names;
-      for (vector<Criterion *>::iterator j = k; j != activeCriteria.end(); j++) {
-        Criterion *next = (*j);
-        names.push_back(next->getName()); // The list of criteria whose evaluation is >= than the one's considered
-      }
-
-      weight = matrix->getWeight(names);
-
-      if (k == activeCriteria.begin()) {
-        c = (*k);
-        finalValue += c->getEvaluation(f) * weight;
-      } else {
-        c = (*k);
-        double tmpValue = c->getEvaluation(f) - lastCrit->getEvaluation(f);
-        finalValue += tmpValue * weight;
-      }
-      lastCrit = c;
-
-      if (c->getName().compare("informationGain") == 0){
-        if (c->getEvaluation(f) == 0){
-          no_info_gain = true;
+    if (this->use_mcdm == false){
+      for (vector<Criterion *>::iterator k = activeCriteria.begin(); k != activeCriteria.end(); k++) {
+        Criterion *c = NULL;
+        double weight = 0.0;
+        list<string> names;
+        names.push_back((*k)->getName());
+        // Get the weight of the single criterion
+        weight = matrix->getWeight(names);
+        finalValue += (*k)->getWeight() * (*k)->getEvaluation(f);
+        if ((*k)->getName().compare("informationGain") == 0){
+          if ((*k)->getEvaluation(f) == 0){
+            no_info_gain = true;
+          }
         }
       }
+    }else{
+      //MCDM
+      for (vector<Criterion *>::iterator k = activeCriteria.begin(); k != activeCriteria.end(); k++) {
+        Criterion *c = NULL;
+        double weight = 0.0;
+        list<string> names;
+        for (vector<Criterion *>::iterator j = k; j != activeCriteria.end(); j++) {
+          Criterion *next = (*j);
+          names.push_back(next->getName()); // The list of criteria whose evaluation is >= than the one's considered
+        }
+
+        weight = matrix->getWeight(names);
+
+        if (k == activeCriteria.begin()) {
+          c = (*k);
+          finalValue += c->getEvaluation(f) * weight;
+        } else {
+          c = (*k);
+          double tmpValue = c->getEvaluation(f) - lastCrit->getEvaluation(f);
+          finalValue += tmpValue * weight;
+        }
+        lastCrit = c;
+
+        if (c->getName().compare("informationGain") == 0){
+          if (c->getEvaluation(f) == 0){
+            no_info_gain = true;
+          }
+        }
+      }
+
+
     }
 
     if (finalValue > threshold and no_info_gain == false) {
-      toRet->putEvaluation(f, finalValue);
+        toRet->putEvaluation(f, finalValue);
+      }
+  
     }
+    
 
-
-  }
-
+    
 
   activeCriteria.clear();
   return toRet;
