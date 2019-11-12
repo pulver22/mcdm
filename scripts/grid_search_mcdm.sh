@@ -1,3 +1,4 @@
+use_mcdm=1
 w_sensing_time=0.33
 sum_weights=1.0
 max_w=$(echo "($sum_weights - $w_sensing_time)" | bc -l)
@@ -29,13 +30,23 @@ starting_w=0.00
 w_info_gain=0.0
 counter=0
 batch_size=10
+
+
+if (($use_mcdm == 1))
+then
+    echo "========== MCDM =========="
+else
+    echo "========== wAVG =========="
+fi
+
+
 while (( $(echo "$w_info_gain < $max_w" |bc -l) ));
 do
     w_info_gain=$(echo "($starting_w + $counter * $increment)" | bc -l)
     w_travel_distance=$(echo "($max_w - $w_info_gain)" | bc -l)
     echo "-----------------------------------------------------------------"
     echo "Testing : [$w_info_gain , $w_travel_distance, $w_sensing_time] "
-    ./../build/mcdm_online_exploration ./../Images/inbeng_small_correct.pgm 1 72 124 180 26 180 0.999 0 1 ./../config/tag_inbeng_1.yaml 865e6 0 $w_info_gain $w_travel_distance 0 0 /tmp/result_gs_mcdm.csv /tmp/coverage_gs_mcdm.csv /tmp/distance_gs_mcdm.csv 1 /tmp/accuracy_gs_mcdm.csv &>/dev/null &
+    ./../build/mcdm_online_exploration ./../Images/inbeng_small_correct.pgm 1 72 124 180 26 180 0.999 0 1 ./../config/tag_inbeng_1.yaml 865e6 0 $w_info_gain $w_travel_distance 0 0 /tmp/result_gs_mcdm.csv /tmp/coverage_gs_mcdm.csv /tmp/distance_gs_mcdm.csv 1 /tmp/accuracy_gs_mcdm.csv $use_mcdm &>/dev/null &
     ((counter++))
     if ((counter%batch_size==0))
     then
