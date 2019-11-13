@@ -1,2 +1,50 @@
-tag1X: 47
-tag1Y: 147
+mapPath: ./../Images/inb3123_small.pgm
+resolution: 1
+imgResolution: 1
+initX: 97
+initY: 102
+initOrientation: 180
+initFov: 180
+initRange: 6
+precision: 1
+threshold: 0
+RFIDfreq: 865e6
+txtPower: 0
+w_infoGain: 1
+w_travelDistance: 0
+w_sensingTime: 0
+w_rfidGain: 0
+# outLog: /home/pulver/Dropbox/University/PostDoc/MCDM/mcdm/logic_exps/mcdm_vs_avg/inb3123/mcdm_result_inb3123_1.csv
+# coverageLog: /home/pulver/Dropbox/University/PostDoc/MCDM/mcdm/logic_exps/mcdm_vs_avg/inb3123/mcdm_coverage_mcdm_inb3123_0_1.csv
+# detectionLog: /home/pulver/Dropbox/University/PostDoc/MCDM/mcdm/logic_exps/mcdm_vs_avg/inb3123/distance_tag_25r.csv
+# accuracyLog: /home/pulver/Dropbox/University/PostDoc/MCDM/mcdm/logic_exps/mcdm_vs_avg/inb3123/mcdm_ccuracy_25r.csv
+
+tag1X: 0
+tag1Y: 0
+
+tag2X: 0
+tag2Y: 0
+
+tag3X: 0
+tag3Y: 0
+
+tag4X: 0
+tag4Y: 0
+
+tag5X: 0
+tag5Y: 0
+
+tag6X: 0
+tag6Y: 0
+
+tag7X: 0
+tag7Y: 0
+
+tag8X: 0
+tag8Y: 0
+
+tag9X: 0
+tag9Y: 0
+
+tag10X: 0
+tag10Y: 0
