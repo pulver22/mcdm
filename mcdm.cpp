@@ -21,20 +21,6 @@
 using namespace std;
 using namespace dummy;
 using namespace YAML;
-// bool contains ( std::list< Pose >& list, Pose& p );
-// void cleanPossibleDestination2 ( std::list< Pose > &possibleDestinations, Pose& p );
-// void pushInitialPositions ( dummy::Map map, int x, int y, int orientation,  int range, int FOV, double threshold,
-//                             string actualPose, vector< pair< string, list< Pose > > > *graph2, MCDMFunction *function);
-// double calculateScanTime ( double scanAngle );
-// void calculateDistance(list<Pose> list, dummy::Map& map, Astar* astar);
-// Pose createFromInitialPose ( int x, int y, int orientation, int variation, int range, int FOV );
-// void updatePathMetrics(int* count, Pose* target, Pose* previous, string actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
-//                        dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int encodedKeyValue, Astar* astar , long* numConfiguration,
-//                        double* totalAngle, double * travelledDistance, int* numOfTurning , double scanAngle);
-// list<Pose> cleanHistory(vector<string>* history, EvaluationRecords* record_history);
-// void printResult(long newSensedCells, long totalFreeCells, double precision, long numConfiguration, double travelledDistance,
-//                  int numOfTurning, double totalAngle, double totalScanTime);
-// void filePutContents(const std::string& name, const std::string& content, bool append = false);
 
 bool recordContainsCandidates(EvaluationRecords* record, Utilities* utils,
                               int* count, Pose* target, Pose* previous, string* actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
@@ -42,6 +28,15 @@ bool recordContainsCandidates(EvaluationRecords* record, Utilities* utils,
                               double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold);
 bool recordNOTContainsCandidates(vector<pair<string,list<Pose>>>* graph2, EvaluationRecords* record, Pose* target, Pose* previous, vector<string>* history,
                                   MCDMFunction* function, int* count);
+bool recordContainsCandidatesBT(EvaluationRecords* record, Utilities* utils,
+                              int* count, Pose* target, Pose* previous, string* actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
+                              dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int* encodedKeyValue, Astar* astar , long* numConfiguration,
+                              double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold);
+bool recordNOTContainsCandidatesBT(EvaluationRecords* record, Utilities* utils,
+                              int* count, Pose* target, Pose* previous, string* actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
+                              dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int* encodedKeyValue, Astar* astar , long* numConfiguration,
+                              double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold);
+
 // Example: ./mcdm_online_exploration ./../Images/cor_map_05_00_new1.pgm 1 99 99 180 5 180 1 0 1 54 143 865e6 0
 int main ( int argc, char **argv )
 {
@@ -464,78 +459,35 @@ int main ( int argc, char **argv )
       // If there are candidate cells
       if ( record->size() != 0 )
       {
-        // Find the new destination
-        std::pair<Pose,double> result = function.selectNewPose ( record );
-        target = result.first;
-        // If this cells has not been visited before
-        if ( ! utils.contains ( tabuList,target ) )
-        {
-          // Add it to the list of visited cells as first-view
-          encodedKeyValue = 1;
-          utils.updatePathMetrics(&count, &target, &previous, actualPose, &nearCandidates, &graph2, &map, &function,
-                            &tabuList, &history, encodedKeyValue, &astar, &numConfiguration, &totalAngle, &travelledDistance, &numOfTurning, scanAngle);
-          // Leave the backtracking branch
-          btMode = false;
-          nearCandidates.clear();
-          // cout << "[BT-MODE4] Go back to previous positions in the graph" << endl;
-        }
-        // ... otherwise, if the cells has already been visisted
-        else
-        {
-          // If there are other candidates
-          if ( nearCandidates.size() != 0 )
-          {
-            // cout << "[BT-MODE1]Already visited, but there are other candidates" << endl;
-
-            // Remove the destination from the candidate list
-            utils.cleanPossibleDestination2 ( &nearCandidates,target );
-            // Get the candidates with their evaluation
-            EvaluationRecords *record = function.evaluateFrontiers ( nearCandidates, & map, threshold );
-            // Select the new destination
-            std::pair<Pose,double> result = function.selectNewPose ( record );
-            target = result.first;
-
-            // Add it to the list of visited cells as first-view
-            encodedKeyValue = 1;
-            utils.updatePathMetrics(&count, &target, &previous, actualPose, &nearCandidates, &graph2, &map, &function,
-                              &tabuList, &history, encodedKeyValue, &astar, &numConfiguration, &totalAngle, &travelledDistance, &numOfTurning, scanAngle);
-          }
-          // ...otherwise, if there are no more candidates
-          else
-          {
-            // cout << "[BT-MODE2] Go back to previous positions in the graph" << endl;
-            // Select as target the last element in the graph
-            string targetString = graph2.at ( graph2.size()-1 ).first;
-            // And remove from the graph
-            graph2.pop_back();
-            target = record->getPoseFromEncoding ( targetString );
-            // Add it to the history of cell as already more than once
-            encodedKeyValue = 2;
-            utils.updatePathMetrics(&count, &target, &previous, actualPose, &nearCandidates, &graph2, &map, &function,
-                              &tabuList, &history, encodedKeyValue, &astar, &numConfiguration, &totalAngle, &travelledDistance, &numOfTurning, scanAngle);
-            // Leave backtracking
-            btMode = false;
-            // Clear candidate list
-            nearCandidates.clear();
-          }
-        }
+        recordContainsCandidatesBT(record, &utils,
+                                    &count, &target, &previous, &actualPose, &nearCandidates, 
+                                    &graph2, &map, &function, &tabuList, &history, 
+                                    &encodedKeyValue, &astar, &numConfiguration,
+                                    &totalAngle, &travelledDistance, &numOfTurning , &scanAngle, 
+                                    &btMode, &threshold);
       }
       // ... if there are not candidate cells
       else
       {
-        // Select as new pose, the last cell in the graph
-        string targetString = graph2.at ( graph2.size()-1 ).first;
-        // and the remove it form the graph
-        graph2.pop_back();
-        target = record->getPoseFromEncoding ( targetString );
+        recordNOTContainsCandidatesBT(record, &utils,
+                                    &count, &target, &previous, &actualPose, &nearCandidates, 
+                                    &graph2, &map, &function, &tabuList, &history, 
+                                    &encodedKeyValue, &astar, &numConfiguration,
+                                    &totalAngle, &travelledDistance, &numOfTurning , &scanAngle, 
+                                    &btMode, &threshold);
+        // // Select as new pose, the last cell in the graph
+        // string targetString = graph2.at ( graph2.size()-1 ).first;
+        // // and the remove it form the graph
+        // graph2.pop_back();
+        // target = record->getPoseFromEncoding ( targetString );
 
-        // Add it in history as cell visited more than once
-        encodedKeyValue = 2;
-        utils.updatePathMetrics(&count, &target, &previous, actualPose, &nearCandidates, &graph2, &map, &function,
-                          &tabuList, &history, encodedKeyValue, &astar, &numConfiguration, &totalAngle, &travelledDistance, &numOfTurning, scanAngle);
-        // Leave backtracking
-        btMode = false;
-        // cout << "[BT-MODE3] Go back to previous positions in the graph" << endl;
+        // // Add it in history as cell visited more than once
+        // encodedKeyValue = 2;
+        // utils.updatePathMetrics(&count, &target, &previous, actualPose, &nearCandidates, &graph2, &map, &function,
+        //                   &tabuList, &history, encodedKeyValue, &astar, &numConfiguration, &totalAngle, &travelledDistance, &numOfTurning, scanAngle);
+        // // Leave backtracking
+        // btMode = false;
+        // // cout << "[BT-MODE3] Go back to previous positions in the graph" << endl;
       }
       delete record;
     }
@@ -726,4 +678,86 @@ bool recordNOTContainsCandidates(vector<pair<string,list<Pose>>>* graph2, Evalua
   history->push_back ( function->getEncodedKey ( *target,2 ) );
   count = count + 1;
   return false;
+}
+
+
+bool recordContainsCandidatesBT(EvaluationRecords* record, Utilities* utils,
+                              int* count, Pose* target, Pose* previous, string* actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
+                              dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int* encodedKeyValue, Astar* astar , long* numConfiguration,
+                              double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold)
+{
+  // Find the new destination
+  std::pair<Pose,double> result = function->selectNewPose ( record );
+  *target = result.first;
+  // If this cells has not been visited before
+  if ( ! utils->contains ( *tabuList, *target ) )
+  {
+    // Add it to the list of visited cells as first-view
+    *encodedKeyValue = 1;
+    utils->updatePathMetrics(count, target, previous, *actualPose, nearCandidates, graph2, map, function,
+                      tabuList, history, *encodedKeyValue, astar, numConfiguration, totalAngle, travelledDistance, numOfTurning, *scanAngle);
+    // Leave the backtracking branch
+    *btMode = false;
+    nearCandidates->clear();
+    // cout << "[BT-MODE4] Go back to previous positions in the graph" << endl;
+  }
+  // ... otherwise, if the cells has already been visisted
+  else
+  {
+    // If there are other candidates
+    if ( nearCandidates->size() != 0 )
+    {
+      // cout << "[BT-MODE1]Already visited, but there are other candidates" << endl;
+
+      // Remove the destination from the candidate list
+      utils->cleanPossibleDestination2 ( nearCandidates, *target );
+      // Get the candidates with their evaluation
+      EvaluationRecords *record = function->evaluateFrontiers ( *nearCandidates, map, *threshold );
+      // Select the new destination
+      std::pair<Pose,double> result = function->selectNewPose ( record );
+      *target = result.first;
+
+      // Add it to the list of visited cells as first-view
+      *encodedKeyValue = 1;
+      utils->updatePathMetrics(count, target, previous, *actualPose, nearCandidates, graph2, map, function,
+                      tabuList, history, *encodedKeyValue, astar, numConfiguration, totalAngle, travelledDistance, numOfTurning, *scanAngle);
+    }
+    // ...otherwise, if there are no more candidates
+    else
+    {
+      // cout << "[BT-MODE2] Go back to previous positions in the graph" << endl;
+      // Select as target the last element in the graph
+      string targetString = graph2->at ( graph2->size()-1 ).first;
+      // And remove from the graph
+      graph2->pop_back();
+      *target = record->getPoseFromEncoding ( targetString );
+      // Add it to the history of cell as already more than once
+      *encodedKeyValue = 2;
+      utils->updatePathMetrics(count, target, previous, *actualPose, nearCandidates, graph2, map, function,
+                      tabuList, history, *encodedKeyValue, astar, numConfiguration, totalAngle, travelledDistance, numOfTurning, *scanAngle);
+      // Leave backtracking
+      *btMode = false;
+      // Clear candidate list
+      nearCandidates->clear();
+    }
+  }
+}
+
+bool recordNOTContainsCandidatesBT(EvaluationRecords* record, Utilities* utils,
+                              int* count, Pose* target, Pose* previous, string* actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
+                              dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int* encodedKeyValue, Astar* astar , long* numConfiguration,
+                              double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold){
+  // Select as new pose, the last cell in the graph
+  string targetString = graph2->at ( graph2->size()-1 ).first;
+  // and the remove it form the graph
+  graph2->pop_back();
+  *target = record->getPoseFromEncoding ( targetString );
+
+  // Add it in history as cell visited more than once
+  *encodedKeyValue = 2;
+  utils->updatePathMetrics(count, target, previous, *actualPose, nearCandidates, graph2, map, function,
+                    tabuList, history, *encodedKeyValue, astar, numConfiguration, totalAngle, travelledDistance, numOfTurning, *scanAngle);
+  // Leave backtracking
+  *btMode = false;
+  // cout << "[BT-MODE3] Go back to previous positions in the graph" << endl;
 }
