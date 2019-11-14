@@ -14,23 +14,28 @@ These criteria are combined using the Choquet Fuzzy Integral as aggregation func
 After downloading the repo, you need to run:
 
 ```sh
-$  ./build/mcdm_online_exploration ./Images/ncfm_old.pgm 1 132 345 180 5 180 1 0 1 294 305 865e6 0 1 0 0 0 /home/pulver/Desktop/MCDM/result_iliad.csv
+$  ./../build/mcdm_online_exploration ./../Images/inbeng_small_correct.pgm 1 72 124 180 26 180 0.999 0 1 ./../config/tag_inbeng_1.yaml 865e6 0 0.5 0.5 0 0 /tmp/result_inbeng.csv /tmp/coverage_mcdm_inbeng.csv /tmp/distance_tag.csv 1 /tmp/accuracy.csv 1
 ```
 where:
-- `./build/mcdm_online_exploration` is the executable file
-- `./Images/ncfm_old.pgm` is the image file you want to use
+- `./../build/mcdm_online_exploration` is the executable file
+- `./../Images/inbeng_small_correct.pgm` is the image file you want to use
 - `1` means we are using the full resolution of the map, without resizing it
-- `132` and `345` are the coordinates of the starting position of the robot
+- `72` and `124` are the coordinates of the starting position of the robot
 - `180` is the initial orientation of the robot
-- `5` is the sensor range expressed in cells
+- `26` is the sensor range expressed in cells
 - `180` is the maximum scan angle
-- `1` means we want the full coverage ( use 0.9X with a lower resolution)
+- `0.999` means we want the full coverage ( use 0.9X with a lower resolution)
 - `0` is the threshold factor for discarding frontiers and speeding up the exploration (us 0.XX for different values)
 - `1` means we use cells of one square meter per size during the navigation
-- `294` and `305` are the coordinates of the RFID tag
+- `./../config/tag_inbeng_1.yaml` is the file containing the position of 10 RFID tags
 - `865e6` and `0` are the frequency (hz) and trasmitted power (dB) for the RFID scan
-- `1 0 0 0` are the w_info_gain, w_travel_distance, w_sensing_time, w_rfid_gain respectively
-- `/home/pulver/Desktop/MCDM/result_iliad.csv` is the path where to save the final result
+- `0.5 0.5 0 0` are the w_info_gain, w_travel_distance, w_sensing_time, w_rfid_gain respectively
+- `/tmp/result_inbeng.csv` is the path where to save the final result
+- `/tmp/coverage_mcdm_inbeng.csv` is the path where to save increasing coverage results
+- `/tmp/distance_tag.csv` is the path where to save the distance from each RFID tags
+- `1` use for building the ellipse in the radiation model 
+- `/tmp/accuracy.csv` is the path where to save detection accuracy results
+- `1` boolean to use mcdm (1) or the weighted_average (0) as aggregation function
 
 ### MAPS DETAILS
 #### 1) [OREBRO TEKHNIKHUSET](./Images/cor_map_05_00_new1.pgm)
