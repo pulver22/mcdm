@@ -133,6 +133,103 @@ public:
   */
   void saveCoverage(const std::string& name, const std::string& content,
                         bool append = false);
+  /**
+    * What to do when we are doing forward motion and there are candidates to explore from the considered position
+    * @param record: list of candiate position
+    * @param count: the iteration count of the MCDM algorithm
+    * @param target: the next position of the robot
+    * @param previous: the current position of the robot
+    * @param actualPose: the encoding of the current pose of the robot
+    * @param nearCandidates: the list of possible destination for the robot
+    * @param graph2: the structure containing positions and their nearCandidates
+    * @param map: a copy of the map
+    * @param function: a MCDM function object
+    * @param tabuList: the list of Pose which cannot be assumed again
+    * @param history: list of encoding of all visited cells by the robot
+    * @param encodedKeyValue: a value representing which kind of encoding we want
+    * @param astar: a copy of Astar object for calculating the distance between two pose
+    * @param numConfiguration: number of configuration assumed by the robot so far
+    * @param totalAngle: scanning angle performed so far
+    * @param travelledDistance: length traversed by the robot so far
+    * @param numOfTurning: number of rotation of 45 deg performed by the robot so far
+    * @param scanAngle: angle scanned in the current iteration
+    * @param btMode: if doing forward motion or backtracking
+    * @param threshold: to cut frontiers
+  */
+  bool recordContainsCandidates(EvaluationRecords* record, 
+                              int* count, Pose* target, Pose* previous, string* actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
+                              dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int* encodedKeyValue, Astar* astar , long* numConfiguration,
+                                double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold);
+  
+  /**
+    * What to do when we are doing forward motion and there are no more candidates to explore from the considered position
+    * @param graph2: the structure containing positions and their nearCandidates
+    * @param record: list of candiate position
+    * @param target: the next position of the robot
+    * @param previous: the current position of the robot
+    * @param history: list of encoding of all visited cells by the robot
+    * @param function: a MCDM function object
+    * @param count: the iteration count of the MCDM algorithm
+  */
+  bool recordNOTContainsCandidates(vector<pair<string,list<Pose>>>* graph2, EvaluationRecords* record, Pose* target, Pose* previous, vector<string>* history,
+                                    MCDMFunction* function, int* count);
+  
+  /**
+    * What to do when we are in backtracking and there are candidates to explore from the considered position
+    * @param record: list of candiate position
+    * @param count: the iteration count of the MCDM algorithm
+    * @param target: the next position of the robot
+    * @param previous: the current position of the robot
+    * @param actualPose: the encoding of the current pose of the robot
+    * @param nearCandidates: the list of possible destination for the robot
+    * @param graph2: the structure containing positions and their nearCandidates
+    * @param map: a copy of the map
+    * @param function: a MCDM function object
+    * @param tabuList: the list of Pose which cannot be assumed again
+    * @param history: list of encoding of all visited cells by the robot
+    * @param encodedKeyValue: a value representing which kind of encoding we want
+    * @param astar: a copy of Astar object for calculating the distance between two pose
+    * @param numConfiguration: number of configuration assumed by the robot so far
+    * @param totalAngle: scanning angle performed so far
+    * @param travelledDistance: length traversed by the robot so far
+    * @param numOfTurning: number of rotation of 45 deg performed by the robot so far
+    * @param scanAngle: angle scanned in the current iteration
+    * @param btMode: if doing forward motion or backtracking
+    * @param threshold: to cut frontiers
+  */
+  bool recordContainsCandidatesBT(EvaluationRecords* record, 
+                                int* count, Pose* target, Pose* previous, string* actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
+                                dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int* encodedKeyValue, Astar* astar , long* numConfiguration,
+                                double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold);
+  
+  /**
+    * What to do when we are in backtracking and there are no more candidates to explore from the considered position
+    * @param record: list of candiate position
+    * @param count: the iteration count of the MCDM algorithm
+    * @param target: the next position of the robot
+    * @param previous: the current position of the robot
+    * @param actualPose: the encoding of the current pose of the robot
+    * @param nearCandidates: the list of possible destination for the robot
+    * @param graph2: the structure containing positions and their nearCandidates
+    * @param map: a copy of the map
+    * @param function: a MCDM function object
+    * @param tabuList: the list of Pose which cannot be assumed again
+    * @param history: list of encoding of all visited cells by the robot
+    * @param encodedKeyValue: a value representing which kind of encoding we want
+    * @param astar: a copy of Astar object for calculating the distance between two pose
+    * @param numConfiguration: number of configuration assumed by the robot so far
+    * @param totalAngle: scanning angle performed so far
+    * @param travelledDistance: length traversed by the robot so far
+    * @param numOfTurning: number of rotation of 45 deg performed by the robot so far
+    * @param scanAngle: angle scanned in the current iteration
+    * @param btMode: if doing forward motion or backtracking
+    * @param threshold: to cut frontiers
+  */
+  bool recordNOTContainsCandidatesBT(EvaluationRecords* record, 
+                                int* count, Pose* target, Pose* previous, string* actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
+                                dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int* encodedKeyValue, Astar* astar , long* numConfiguration,
+                                double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold);
+
 protected:
 
 };
