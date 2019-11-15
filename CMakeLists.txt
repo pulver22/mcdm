@@ -29,8 +29,18 @@ find_package( catkin REQUIRED COMPONENTS
   sensor_msgs
 )
 
+## System dependencies are found with CMake's conventions
+#find_package(Eigen3 REQUIRED)
+# Solution to find Eigen3 with Saucy.
+find_package(Eigen3 QUIET)
+if(NOT EIGEN3_FOUND)
+  find_package(PkgConfig REQUIRED)
+  pkg_check_modules(EIGEN3 REQUIRED eigen3)
+  set(EIGEN3_INCLUDE_DIR ${EIGEN3_INCLUDE_DIRS})
+endif()
 
-find_package(yaml-cpp 0.6.2 REQUIRED)
+
+find_package(yaml-cpp REQUIRED)
 
 include_directories(
   ${catkin_INCLUDE_DIRS}
@@ -54,7 +64,7 @@ add_test(grid_test grid_map_test)
 
 ## ............................................................................
 
-add_library(lib pose.cpp PathFinding/astar.cpp PathFinding/node.cpp map.cpp newray.cpp mcdmfunction.cpp evaluationrecords.cpp
+add_library(lib RadarModel.cpp pose.cpp PathFinding/astar.cpp PathFinding/node.cpp map.cpp newray.cpp mcdmfunction.cpp evaluationrecords.cpp
         Criteria/sensingtimecriterion.cpp Criteria/informationgaincriterion.cpp Criteria/mcdmweightreader.cpp
         Criteria/traveldistancecriterion.cpp Criteria/weightmatrix.cpp Criteria/criterioncomparator.cpp Criteria/criterion.cpp
         RFIDGridmap.cpp Criteria/RFIDCriterion.cpp utils.cpp)

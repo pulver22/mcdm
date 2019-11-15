@@ -5,7 +5,7 @@
 #include "newray.h"
 #include "mcdmfunction.h"
 #include "Criteria/traveldistancecriterion.h"
-#include "radio_models/propagationModel.cpp"
+//#include "radio_models/propagationModel.cpp"
 # define PI           3.14159265358979323846  /* pi */
 #include <unistd.h>
 #include <time.h>
@@ -14,6 +14,8 @@
 #include "utils.h"
 // #include "RFIDGridmap.h"
 #include "yaml-cpp/yaml.h"
+#include "RadarModel.hpp"
+#include <vector>
 
 
 
@@ -38,7 +40,46 @@ using namespace YAML;
 // Example: ./mcdm_online_exploration ./../Images/cor_map_05_00_new1.pgm 1 99 99 180 5 180 1 0 1 54 143 865e6 0
 int main ( int argc, char **argv )
 {
+
   auto startMCDM = chrono::high_resolution_clock::now();
+
+  int arguments = 23;
+  if (argc<=arguments){
+    cout << "Missing arguments! You provided "<< (argc-1)<< " and you need: "<< arguments << endl;
+    return 0;
+  } else {
+    cout << "Arguments:" << endl;
+    cout << "- Map image file: " << argv[1] << endl;
+    cout << "- Map image resolution: " << argv[2] << " m./cell?" << endl;
+    cout << "- initial Y-position of the robot in map frame: " << argv[3] << " cell?" << endl;
+    cout << "- initial X-position of the robot in map frame: " << argv[4] << " cell?" << endl;
+    cout << "- initial orientation of the robot in map frame: " << argv[5] << " (deg?) in steps of 15 degs?" << endl;
+    cout << "- initRange: " << argv[6] << " cells?" << endl;
+    cout << "- initial FOV of the robot sensor: " << argv[7] << " degs?" << endl;
+    cout << "- precision: " << argv[8] << " -?" << endl;
+    cout << "- threshold: " << argv[9] << " -?" << endl;
+
+    cout << "- resolution to use for the planningGrid and RFIDGrid: " << argv[10] << " m./cell?" << endl;
+    cout << "- YAML file with tag locations: " << argv[11] << endl;
+    cout << "- freq: " << argv[12] << " Hertzs" << endl;
+    cout << "- txtPower: " << argv[13] << " dBs" << endl;
+
+    cout << "- w_info_gain: " << argv[14] << " -?" << endl;
+    cout << "- w_travel_distance: " << argv[15] << " -?" << endl;
+    cout << "- w_sensing_time: " << argv[16] << " -?" << endl;
+    cout << "- w_rfid_gain: " << argv[17] << " -?" << endl;
+    cout << "- out_log: " << argv[18] << endl;
+    cout << "- coverage_log: " << argv[19] << endl;
+    cout << "- out_log: " << argv[20] << endl;
+    cout << "- ellipse X_min: " << argv[21] << endl;
+    cout << "- accuracy_log: " << argv[22] << endl;
+    cout << "- use_mcdm: " << argv[23] << endl;
+  }
+
+
+
+
+
   ifstream infile;
   infile.open ( argv[1] );  // the path to the map
   double resolution = atof ( argv[2] );  // the resolution of the map
@@ -196,6 +237,21 @@ int main ( int argc, char **argv )
   // }
   // exit(0);
 
+
+
+  // Radar model: 
+  double nx = 6; // radar model active area x-range m.
+  double ny = 4;  // radar model active area y-range m.  
+  double rs = resolution; // radar model grid resolution m./cell :: SAME AS INPUT IMAGE!!!
+  double sigma_power = 10; //dB
+  double sigma_phase = 0.1; //rads
+  std::vector<double> freqs{ freq }; // only 1 freq... noice!
+
+  cout <<"Building radar model." << endl;
+  RadarModel rm(nx, ny, rs, sigma_power, sigma_phase, txtPower, freqs, tags_coord, argv[1] );
+  cout << "Radar model built." << endl;
+
+
   do
   {
     // If we are doing "forward" navigation towards cells never visited before
@@ -242,8 +298,8 @@ int main ( int argc, char **argv )
       for (int i = 0; i < tags_coord.size(); i++){
         relTagCoord = map.getRelativeTagCoord(tags_coord[i].first, tags_coord[i].second, target.getX(), target.getY());
         // Calculate the received power and phase
-        double rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
-        double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
+        double rxPower = rm.received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
+        double phase = rm.phaseDifference(relTagCoord.first, relTagCoord.second, freq);
         // Update the path planning and RFID map
         map.updatePathPlanningGrid ( x, y, range, rxPower - SENSITIVITY);
         if (rxPower < SENSITIVITY){
@@ -538,12 +594,16 @@ int main ( int argc, char **argv )
       
        // Calculare the relative RFID tag position to the robot position
       for (int i = 0; i < tags_coord.size(); i++){
-        relTagCoord = map.getRelativeTagCoord(tags_coord[i].first, tags_coord[i].second, target.getX(), target.getY());
+        relTagCoord = map.getRelativeTagCoord(tags_coord[i].first, tags_coord[i].second, x, y );
         // Calculate the received power and phase
-        double rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
-        double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
+        double rxPower = rm.received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
+        double phase = rm.phaseDifference(relTagCoord.first, relTagCoord.second, freq);
         // Update the path planning and RFID map
         map.updatePathPlanningGrid ( x, y, range, rxPower - SENSITIVITY);
+        
+        //So, robot at pr (x,y,orientation) (long, long, int) receives rxPower,phase,freq from tag i . 
+        rm.addMeasurement(x,y,orientation, rxPower,phase,freq, i);
+
         RFID_maps_list[i].addEllipse(rxPower - SENSITIVITY, map.getNumGridRows() - target.getX(),  target.getY(), target.getOrientation(), -1.0, range);
       }
            
@@ -708,4 +768,7 @@ int main ( int argc, char **argv )
   cout << "Total time for MCDM algorithm : " << totalTimeMCDM << "ms, " << totalTimeMCDM/1000 <<" s, " <<
           totalTimeMCDM/60000 << " m "<< endl;
 
+
+  cout << "Saving tag distribution maps... "<< endl;
+  rm.saveProbMaps("/tmp/");
 }
