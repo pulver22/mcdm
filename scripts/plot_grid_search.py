@@ -31,42 +31,67 @@ def mjrFormatter(x, pos):
 def mjrFormatter_no_TeX(x, pos):
     return "2^{0}".format(x)
 
-wAVG = np.genfromtxt('/tmp/result_gs_wAVG.csv', skip_header=True, delimiter=',')  
-mcdm = np.genfromtxt('/tmp/result_gs_mcdm.csv', skip_header=True, delimiter=',')  
+wAVG_r1 = np.genfromtxt('/tmp/result_gs_wAVG_r1.csv', skip_header=True, delimiter=',')  
+wAVG_r2 = np.genfromtxt('/tmp/result_gs_wAVG_r2.csv', skip_header=True, delimiter=',')  
+wAVG_r3 = np.genfromtxt('/tmp/result_gs_wAVG_r3.csv', skip_header=True, delimiter=',')  
+mcdm_r1 = np.genfromtxt('/tmp/result_gs_mcdm_r1.csv', skip_header=True, delimiter=',')  
+mcdm_r2 = np.genfromtxt('/tmp/result_gs_mcdm_r2.csv', skip_header=True, delimiter=',')  
+mcdm_r3 = np.genfromtxt('/tmp/result_gs_mcdm_r3.csv', skip_header=True, delimiter=',')  
+
+mcdm_list = [mcdm_r1, mcdm_r2, mcdm_r3]
+wAVG_list = [wAVG_r1, wAVG_r2, wAVG_r3]
+
+final_mcdm_matrix = np.zeros(shape=(len(param_list), len(param_list)))
+final_wAVG_matrix = np.zeros(shape=(len(param_list), len(param_list)))
+for mcdm in mcdm_list:
+    # Order the two arrays based on w_info_gain
+    mcdm_sorted = mcdm[mcdm[:,0].argsort()]
+    # Keep only [w_info_gain, w_travel_distance, travelledDistance]
+    mcdm_sorted = np.delete(mcdm_sorted, [2,3,4,5,7], axis=1)
+    # Remove also the criteria weight
+    mcdm_matrix = np.delete(mcdm_sorted, [0,1], axis=1)
+    # Reshape into a 2D matrix
+    mcdm_matrix = np.reshape(mcdm_matrix, (-1, len(param_list)))
+    final_mcdm_matrix = final_mcdm_matrix +  mcdm_matrix
+
+for wAVG in wAVG_list:
+    # Order the two arrays based on w_info_gain
+    wAVG_sorted = wAVG[wAVG[:,0].argsort()]
+    # Keep only [w_info_gain, w_travel_distance, travelledDistance]
+    wAVG_sorted = np.delete(wAVG_sorted, [2,3,4,5,7], axis=1)
+    # Remove also the criteria weight
+    wAVG_matrix = np.delete(wAVG_sorted, [0,1], axis=1)
+    # Reshape into a 2D matrix
+    wAVG_matrix = np.reshape(wAVG_matrix, (-1, len(param_list)))
+    final_wAVG_matrix = final_wAVG_matrix + wAVG_matrix
 
 
-# Order the two arrays based on w_info_gain
-wAVG_sorted = wAVG[wAVG[:,0].argsort()]
-mcdm_sorted = mcdm[mcdm[:,0].argsort()]
+# Normalize the matrix
+final_mcdm_matrix /= len(mcdm_list)
+final_wAVG_matrix /= len(wAVG_list)
 
-# Keep only [w_info_gain, w_travel_distance, travelledDistance]
-wAVG_sorted = np.delete(wAVG_sorted, [2,3,4,5,7,8], axis=1)
-mcdm_sorted = np.delete(mcdm_sorted, [2,3,4,5,7,8], axis=1)
+np.savetxt('/tmp/clean_wAVG.txt', final_wAVG_matrix)
+np.savetxt('/tmp/clean_mcdm.txt', final_mcdm_matrix)
+# # Remove also the criteria weight
+# wAVG_matrix = np.delete(wAVG_sorted, [0,1], axis=1)
+# mcdm_matrix = np.delete(mcdm_sorted, [0,1], axis=1)
 
-np.savetxt('/tmp/clean_wAVG.txt', wAVG_sorted)
-np.savetxt('/tmp/clean_mcdm.txt', mcdm_sorted)
-# exit(0)
-# Remove also the criteria weight
-wAVG_matrix = np.delete(wAVG_sorted, [0,1], axis=1)
-mcdm_matrix = np.delete(mcdm_sorted, [0,1], axis=1)
+# max_wAVG = np.max(wAVG_matrix[:,0])
+# max_mcdm = np.max(mcdm_matrix[:,0])
+# wAVG_matrix = np.reshape(wAVG_matrix, (-1, 9))
+# mcdm_matrix = np.reshape(mcdm_matrix, (-1, 9))
+# print(final_wAVG_matrix.shape)
+# print(wAVG)
+# print(final_mcdm_matrix.shape)
 
-max_wAVG = np.max(wAVG_matrix[:,0])
-max_mcdm = np.max(mcdm_matrix[:,0])
-wAVG_matrix = np.reshape(wAVG_matrix, (-1, 9))
-mcdm_matrix = np.reshape(mcdm_matrix, (-1, 9))
-print(wAVG_matrix.shape)
-print(wAVG)
-print(mcdm_matrix.shape)
-# print("{}, {}".format(max_wAVG, max_mcdm))
-max_value = max_wAVG if max_wAVG >= max_mcdm else max_mcdm
+# # print("{}, {}".format(max_wAVG, max_mcdm))
+# max_value = max_wAVG if max_wAVG >= max_mcdm else max_mcdm
 
-# wAVG_matrix = build_matrix(wAVG_matrix, max_value)
-# mcdm_matrix = build_matrix(mcdm_matrix, max_value)
 # Plot the matrix
 fig = plt.figure()
 ax1 = fig.add_subplot(1,2,1)
 ax1.set_aspect('equal')
-plt.imshow(wAVG_matrix, interpolation='nearest', cmap=plt.cm.ocean)
+plt.imshow(final_wAVG_matrix, interpolation='nearest', cmap=plt.cm.ocean)
 plt.colorbar()
 plt.ylabel("w_info_gain")
 plt.xlabel("w_travel_distance")
@@ -80,7 +105,7 @@ plt.title("TravelledDistance [wAVG]")
 
 ax2 = fig.add_subplot(1,2,2)
 ax2.set_aspect('equal')
-plt.imshow(mcdm_matrix, interpolation='nearest', cmap=plt.cm.ocean)
+plt.imshow(final_mcdm_matrix, interpolation='nearest', cmap=plt.cm.ocean)
 plt.colorbar()
 plt.ylabel("w_info_gain")
 plt.xlabel("w_travel_distance")
