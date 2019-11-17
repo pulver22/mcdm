@@ -31,15 +31,29 @@ def mjrFormatter(x, pos):
 def mjrFormatter_no_TeX(x, pos):
     return "2^{0}".format(x)
 
-wAVG_r1 = np.genfromtxt('/tmp/result_gs_wAVG_r1.csv', skip_header=True, delimiter=',')  
-wAVG_r2 = np.genfromtxt('/tmp/result_gs_wAVG_r2.csv', skip_header=True, delimiter=',')  
-wAVG_r3 = np.genfromtxt('/tmp/result_gs_wAVG_r3.csv', skip_header=True, delimiter=',')  
-mcdm_r1 = np.genfromtxt('/tmp/result_gs_mcdm_r1.csv', skip_header=True, delimiter=',')  
-mcdm_r2 = np.genfromtxt('/tmp/result_gs_mcdm_r2.csv', skip_header=True, delimiter=',')  
-mcdm_r3 = np.genfromtxt('/tmp/result_gs_mcdm_r3.csv', skip_header=True, delimiter=',')  
+wAVG_r1 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg/result_gs_wAVG_r1.csv', skip_header=True, delimiter=',')  
+wAVG_r2 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg/result_gs_wAVG_r2.csv', skip_header=True, delimiter=',')  
+wAVG_r3 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg/result_gs_wAVG_r3.csv', skip_header=True, delimiter=',')  
+wAVG_r4 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg/result_gs_wAVG_r4.csv', skip_header=True, delimiter=',')  
+wAVG_r5 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg/result_gs_wAVG_r5.csv', skip_header=True, delimiter=',')  
+wAVG_r6 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg/result_gs_wAVG_r6.csv', skip_header=True, delimiter=',')  
+wAVG_r7 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg/result_gs_wAVG_r7.csv', skip_header=True, delimiter=',')  
+wAVG_r8 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg/result_gs_wAVG_r8.csv', skip_header=True, delimiter=',')  
+wAVG_r9 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg/result_gs_wAVG_r9.csv', skip_header=True, delimiter=',')  
+wAVG_r10 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg/result_gs_wAVG_r10.csv', skip_header=True, delimiter=',')  
+mcdm_r1 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg/result_gs_mcdm_r1.csv', skip_header=True, delimiter=',')  
+mcdm_r2 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg/result_gs_mcdm_r2.csv', skip_header=True, delimiter=',')  
+mcdm_r3 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg/result_gs_mcdm_r3.csv', skip_header=True, delimiter=',')  
+mcdm_r4 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg/result_gs_mcdm_r4.csv', skip_header=True, delimiter=',')  
+mcdm_r5 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg/result_gs_mcdm_r5.csv', skip_header=True, delimiter=',')  
+mcdm_r6 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg/result_gs_mcdm_r6.csv', skip_header=True, delimiter=',')  
+mcdm_r7 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg/result_gs_mcdm_r7.csv', skip_header=True, delimiter=',')  
+mcdm_r8 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg/result_gs_mcdm_r8.csv', skip_header=True, delimiter=',')  
+mcdm_r9 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg/result_gs_mcdm_r9.csv', skip_header=True, delimiter=',')  
+mcdm_r10 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg/result_gs_mcdm_r10.csv', skip_header=True, delimiter=',')  
 
-mcdm_list = [mcdm_r1, mcdm_r2, mcdm_r3]
-wAVG_list = [wAVG_r1, wAVG_r2, wAVG_r3]
+mcdm_list = [mcdm_r1, mcdm_r2, mcdm_r3, mcdm_r4, mcdm_r5, mcdm_r6, mcdm_r7, mcdm_r8, mcdm_r9, mcdm_r10]
+wAVG_list = [wAVG_r1, wAVG_r2, wAVG_r3, wAVG_r4, wAVG_r5, wAVG_r6, wAVG_r7, wAVG_r8, wAVG_r9, wAVG_r10]
 
 final_mcdm_matrix = np.zeros(shape=(len(param_list), len(param_list)))
 final_wAVG_matrix = np.zeros(shape=(len(param_list), len(param_list)))
