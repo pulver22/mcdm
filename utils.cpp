@@ -611,7 +611,7 @@ void Utilities::findTags(vector<RFIDGridmap> *RFID_maps_list, vector<pair<double
     // }else distance_to_tag = 0.0;
     tags_distance_from_gt += to_string(distance_to_tag) + ",";
   }
-  cout << "Accuracy: " << to_string(accuracy) << endl;
+  cout << "Accuracy: " << to_string(accuracy/10.0) << endl;
   tags_distance_from_gt += "\n";
   this->filePutContents(detection_log, tags_distance_from_gt, true);
   accuracy = accuracy / 10.0;

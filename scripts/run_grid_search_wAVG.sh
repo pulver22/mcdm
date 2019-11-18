@@ -1,9 +1,10 @@
 use_mcdm=0
 param_list=(0.0 0.01 0.1 0.5 1.0 5.0 10.0 50.0 100.0)
+# param_list=(0.01 0.1 0.5 1.0 5.0 10.0 50.0 100.0)
 len_param_list=${#param_list[@]}
 
 counter=0
-batch_size=4
+batch_size=10
 
 total_runs=10
 counter_run=0
@@ -29,11 +30,11 @@ do
             w_rfid_gain=0.0
             w_travel_distance=${param_list[$j]}
             echo "-->[B] IG: $w_info_gain, TD: $w_travel_distance, ST: $w_sensing_time"
-            sum_w=$(echo "$w_info_gain + $w_travel_distance + $w_sensing_time" | bc -l)
-            # Normalise the variable in [0, 1]
-            w_info_gain=$(echo "$w_info_gain / $sum_w" | bc -l)
-            w_travel_distance=$(echo "$w_travel_distance / $sum_w" | bc -l)
-            w_sensing_time=$(echo "$w_sensing_time / $sum_w" | bc -l)
+            # sum_w=$(echo "$w_info_gain + $w_travel_distance + $w_sensing_time" | bc -l)
+            # # Normalise the variable in [0, 1]
+            # w_info_gain=$(echo "$w_info_gain / $sum_w" | bc -l)
+            # w_travel_distance=$(echo "$w_travel_distance / $sum_w" | bc -l)
+            # w_sensing_time=$(echo "$w_sensing_time / $sum_w" | bc -l)
             # sum_w=$(($w_info_gain + $w_travel_distance))
             # echo "---> SUM: $sum_w"
             # echo "-->[A] IG: $w_info_gain, TD: $w_travel_distance, ST: $w_sensing_time"
@@ -43,10 +44,10 @@ do
             if ((counter%batch_size==0))
             then
                 wait
-                echo "================================================================="
-                num_batch=$(echo "scale=2;($counter/$batch_size)" | bc -l)
-                echo "Batch [$num_batch] of scripts is done!"
-                echo "================================================================="
+                # echo "================================================================="
+                # num_batch=$(echo "scale=2;($counter/$batch_size)" | bc -l)
+                # echo "Batch [$num_batch] of scripts is done!"
+                # echo "================================================================="
                 # counter=0
             fi
             echo ""

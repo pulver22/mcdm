@@ -127,8 +127,16 @@ int main ( int argc, char **argv )
   std::string accuracy_log (argv[22]);
   bool use_mcdm = bool(atoi(argv[23]));
   //x,y,orientation,range,FOV
-  Utilities utils(w_info_gain, w_travel_distance, w_sensing_time, w_rfid_gain);
-
+  double norm_w_info_gain, norm_w_travel_distance, norm_w_sensing_time, norm_w_rfid_gain;
+  double sum_w = w_info_gain + w_travel_distance + w_sensing_time + w_rfid_gain;
+  norm_w_info_gain = w_info_gain / sum_w;
+  norm_w_travel_distance = w_travel_distance / sum_w;
+  norm_w_sensing_time = w_sensing_time / sum_w;
+  norm_w_rfid_gain = w_rfid_gain / sum_w;
+  // cout << "[ " << norm_w_info_gain << ", " << norm_w_travel_distance 
+  //       << ", " << norm_w_sensing_time << ", " << norm_w_rfid_gain << " ]" << endl;
+  Utilities utils(norm_w_info_gain, norm_w_travel_distance, norm_w_sensing_time, norm_w_rfid_gain);
+  MCDMFunction function(norm_w_info_gain, norm_w_travel_distance, norm_w_sensing_time, norm_w_rfid_gain, use_mcdm);
   Pose initialPose = Pose ( initX,initY,initOrientation,initRange,initFov );
   Pose invertedInitial = utils.createFromInitialPose ( initX,initY,initOrientation,180,initRange,initFov );
   Pose eastInitial = utils.createFromInitialPose ( initX,initY,initOrientation,90,initRange,initFov );
@@ -139,10 +147,6 @@ int main ( int argc, char **argv )
   vector<pair<string,list<Pose>>> graph2;
   NewRay ray;
   ray.setGridToPathGridScale ( gridToPathGridScale );
-  // MCDMFunction function(w_info_gain, w_travel_distance, w_sensing_time);
-  MCDMFunction function(w_info_gain, w_travel_distance, w_sensing_time, w_rfid_gain, use_mcdm);
-  // cout << "MCDM matrix created! " << endl;
-//  MCDMFunction function;
   long sensedCells = 0;
   long newSensedCells = 0;
   long totalFreeCells = map.getTotalFreeCells();
@@ -186,6 +190,10 @@ int main ( int argc, char **argv )
                 + "," + to_string(w_travel_distance)
                 + "," + to_string(w_sensing_time) 
                 + "," + to_string(w_rfid_gain)
+                + "," + to_string(norm_w_info_gain)
+                + "," + to_string(norm_w_travel_distance)
+                + "," + to_string(norm_w_sensing_time)
+                + "," + to_string(norm_w_rfid_gain)
                 + "," + to_string(numConfiguration) 
                 + "," + to_string(100 * float(newSensedCells)/float(totalFreeCells)) 
                 + "," + to_string(travelledDistance) + "\n" ;
@@ -319,8 +327,9 @@ int main ( int argc, char **argv )
   cout << "-----------------------------------------------------------------"<<endl;
   auto endMCDM = chrono::high_resolution_clock::now();
   content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + "," + to_string(w_rfid_gain) + ","
-             + to_string(float(newSensedCells)/float(totalFreeCells)) + "," + to_string(numConfiguration) + ","
-             + to_string(travelledDistance) + "," + to_string(totalScanTime)+ "\n";
+            + to_string(norm_w_info_gain) + ","  + to_string(norm_w_travel_distance) + "," + to_string(norm_w_sensing_time) + "," + to_string(norm_w_rfid_gain) + ","
+            + to_string(float(newSensedCells)/float(totalFreeCells)) + "," + to_string(numConfiguration) + ","
+            + to_string(travelledDistance) + "," + to_string(totalScanTime)+ "\n";
   utils.filePutContents(out_log, content, true );
 
   double totalTimeMCDM = chrono::duration<double,milli> ( endMCDM -startMCDM ).count();
