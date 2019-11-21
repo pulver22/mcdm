@@ -6,7 +6,6 @@
 #include "newray.h"
 #include "mcdmfunction.h"
 #include "Criteria/traveldistancecriterion.h"
-#include "radio_models/propagationModel.cpp"
 # define PI           3.14159265358979323846  /* pi */
 #include <unistd.h>
 #include <time.h>
@@ -112,6 +111,21 @@ int main ( int argc, char **argv )
   int encodedKeyValue = 0;
   string content;
 
+
+
+  // Radar model: 
+  double nx = 6; // radar model active area x-range m.
+  double ny = 4;  // radar model active area y-range m.  
+  double rs = resolution; // radar model grid resolution m./cell :: SAME AS INPUT IMAGE!!!
+  double sigma_power = 10; //dB
+  double sigma_phase = 0.1; //rads
+  std::vector<double> freqs{ freq }; // only 1 freq... noice!
+  std::vector<std::pair<double,double>> tags_coord;
+  tags_coord.push_back(std::make_pair(absTagX, absTagY));
+  cout <<"Building radar model." << endl;
+  RadarModel rM(nx, ny, rs, sigma_power, sigma_phase, txtPower, freqs, tags_coord, argv[1] );
+  cout << "Radar model built." << endl;
+
   do
   {
     // If we are doing "forward" navigation towards cells never visited before
@@ -151,8 +165,8 @@ int main ( int argc, char **argv )
       // Calculare the relative RFID tag position to the robot position
       relTagCoord = map.getRelativeTagCoord(absTagX, absTagY, target.getX(), target.getY());
       // Calculate the received power and phase
-      double rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
-      double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
+      double rxPower = rM.received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
+      double phase = rM.phaseDifference(relTagCoord.first, relTagCoord.second, freq);    
       // Update the path planning and RFID map
       map.updatePathPlanningGrid ( x, y, range, rxPower - SENSITIVITY);
       myGrid.addEllipse(rxPower - SENSITIVITY, map.getNumGridCols() - target.getX(),  target.getY(), target.getOrientation(), -1.0, range);
@@ -442,8 +456,8 @@ int main ( int argc, char **argv )
       // Calculate the relative coordinate to the robot of the RFID tag
       relTagCoord = map.getRelativeTagCoord(absTagX, absTagY, target.getX(), target.getY());
       // Calculate received power and phase
-      double rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
-      double phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
+      double rxPower = rM.received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
+      double phase = rM.phaseDifference(relTagCoord.first, relTagCoord.second, freq);
       map.updatePathPlanningGrid ( x, y, range, rxPower - SENSITIVITY );
       myGrid.addEllipse(rxPower - SENSITIVITY, map.getNumGridCols() - target.getX(), target.getY(), target.getOrientation(), -0.5, 7.0);
       // Remove the current pose from the list of possible candidate cells

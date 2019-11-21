@@ -6,7 +6,6 @@
 #include "newray.h"
 #include "mcdmfunction.h"
 #include "Criteria/traveldistancecriterion.h"
-#include "radio_models/propagationModel.cpp"
 # define PI           3.14159265358979323846  /* pi */
 #include <unistd.h>
 #include <time.h>
@@ -117,6 +116,19 @@ int main ( int argc, char **argv )
   double FOV, scanAngle, rxPower, phase;
   string actualPose, encoding;
 
+  // Radar model: 
+  double nx = 6; // radar model active area x-range m.
+  double ny = 4;  // radar model active area y-range m.  
+  double rs = resolution; // radar model grid resolution m./cell :: SAME AS INPUT IMAGE!!!
+  double sigma_power = 10; //dB
+  double sigma_phase = 0.1; //rads
+  std::vector<double> freqs{ freq }; // only 1 freq... noice!
+  std::vector<std::pair<double,double>> tags_coord;
+  tags_coord.push_back(std::make_pair(absTagX, absTagY));
+  cout <<"Building radar model." << endl;
+  RadarModel RM(nx, ny, rs, sigma_power, sigma_phase, txtPower, freqs, tags_coord, argv[1] );
+  cout << "Radar model built." << endl;
+
   do
   {
       content = to_string(w_info_gain) 
@@ -155,9 +167,9 @@ int main ( int argc, char **argv )
       totalScanTime += utils.calculateScanTime ( scanAngle*180/PI );
       // Calculare the relative RFID tag position to the robot position
       relTagCoord = map.getRelativeTagCoord(absTagX, absTagY, target.getX(), target.getY());
-      // Calculate the received power and phase
-      rxPower = received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
-      phase = phaseDifference(relTagCoord.first, relTagCoord.second, freq);
+      // Calculate the received power and phase            
+      rxPower = RM.received_power_friis(relTagCoord.first, relTagCoord.second, freq, txtPower);
+      phase = RM.phaseDifference(relTagCoord.first, relTagCoord.second, freq);    
       // Update the path planning and RFID map
       map.updatePathPlanningGrid ( x, y, range, rxPower - SENSITIVITY);
       myGrid.addEllipse(rxPower - SENSITIVITY, map.getNumGridCols() - target.getX(),  target.getY(), target.getOrientation(), -1.0, range);

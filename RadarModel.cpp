@@ -64,13 +64,10 @@ RadarModel::RadarModel(const double nx, const double ny, const double resolution
         _txtPower = txtPower;
         _freqs = freqs;
         _resolution = resolution;
+        _tags_coords = tags_coords;
         _numTags =  tags_coords.size();
 
-
-        // This is a hacky way to get a global area in the radar model equal to the image size and resolution
-        _imageCV = cv::imread(imageFileURI , CV_LOAD_IMAGE_UNCHANGED );
-        _NIC = _imageCV.rows; // radar model total x-range space (cells).
-        _NJC = _imageCV.cols;  // radar model total x-range space (cells).
+        initRefMap(imageFileURI);
 
         //cout <<"HI!" << std::endl;
         // build spline to interpolate antenna gains;
@@ -152,6 +149,65 @@ RadarModel::RadarModel(const double nx, const double ny, const double resolution
     }
 
 
+
+void RadarModel::initRefMap(const std::string imageURI){
+
+        // This is a hacky way to get a global area in the radar model equal to the image size and resolution
+        _imageCV = cv::imread(imageURI , CV_LOAD_IMAGE_UNCHANGED );
+
+        // CV: Rotate 90 Degrees COUNTER To get our data to have increasing X to right and increasing Y up
+        cv::flip(_imageCV, _imageCV, 1);
+        cv::transpose(_imageCV, _imageCV);
+        
+        _NIC = _imageCV.rows; // radar model total x-range space (cells).
+        _NJC = _imageCV.cols;  // radar model total x-range space (cells).
+
+        // cell value ranges
+        double  minValue;
+        double  maxValue;
+
+        //2D position of the grid map in the grid map frame [m].
+        double orig_x;
+        double orig_y;
+
+        // orig will be placed at the CENTER OF THE IMAGE
+        //orig_x= 0;
+        //orig_y= 0;
+
+        _origMap= grid_map::GridMap (vector<string>({"layer"}));
+        _origMap.setGeometry(Length(_NIC, _NJC), _resolution);
+        //_origMap.setGeometry(Length(_NIC, _NJC), _resolution, Position(orig_x, orig_y));
+
+
+        cv::minMaxLoc(_imageCV, &minValue, &maxValue);
+        _origMap["layer"].setConstant(NAN);
+        GridMapCvConverter::addLayerFromImage<unsigned char, 3>(_imageCV, "layer", _origMap, minValue, maxValue);
+        
+        grid_map::Position p;       
+        grid_map::Index index;
+        
+        index =grid_map::Index(0,0);
+        _origMap.getPosition(index,p);  
+        std::cout<<"P: (" << p(0) << ", " << p(1)<<") m. == Cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
+
+        index =grid_map::Index(_NIC,0);
+        _origMap.getPosition(index,p);  
+        std::cout<<"P: (" << p(0) << ", " << p(1)<<") m. == Cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
+
+        index =grid_map::Index(0,_NJC);
+        _origMap.getPosition(index,p);  
+        std::cout<<"P: (" << p(0) << ", " << p(1)<<") m. == Cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
+
+        index =grid_map::Index(_NIC,_NJC);
+        _origMap.getPosition(index,p);  
+        std::cout<<"P: (" << p(0) << ", " << p(1)<<") m. == Cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
+
+        
+
+}
+
+
+
     //So, robot at pr (x,y,orientation) (long, long, int) receives rxPower,phase,freq from tag i . 
     void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, double rxPower, double phase, double freq, int i){
       // cout <<"Position: (" << x_m << " m., " << y_m << " m., " << orientation_deg <<"º) " << std::endl;
@@ -231,13 +287,95 @@ RadarModel::RadarModel(const double nx, const double ny, const double resolution
         std::string fileURI;
         Eigen::MatrixXf data_mat ;
 
+        PrintMap(savePath);
 
+
+        // prob distribution maps
         for(int i = 0; i <_numTags; ++i) {
           tagLayerName = std::to_string(i);
           fileURI  = savePath + "final_prob_" +tagLayerName + ".png";
           data_mat = _rfid_belief_maps[tagLayerName];
           PrintProb(fileURI, &data_mat, _NIC*_resolution, _NJC*_resolution, _resolution);
         }
+    }
+
+    //print original map with tag locations
+    void RadarModel::PrintMap( std::string savePath){
+        std::string fileURI;
+        cv::Mat image;
+        grid_map::Index index;            
+        cv::Scalar green( 0, 255, 0 );
+        cv::Scalar blue( 255, 0, 0 );      
+        cv::Scalar red( 0, 0, 255 );
+        cv::Scalar yellow( 0, 255, 255 );      
+
+
+        fileURI  = savePath + "ref_map.png";
+
+
+        
+        // Convert to image.
+
+        const float minValue = _origMap["layer"].minCoeff();
+        const float maxValue = _origMap["layer"].maxCoeff();
+
+        GridMapCvConverter::toImage<unsigned char, 3>(_origMap, "layer", CV_8UC3, minValue, maxValue, image);
+      
+        //add tag locations into cv mat:              
+        cv::Point center;
+
+        for (int i = 0; i < _tags_coords.size(); i++){
+            double x = _tags_coords[i].first;
+            double y =  _tags_coords[i].second;
+            grid_map::Position p(x,  y);                    
+            _origMap.getIndex(p,index);         
+            std::cout<<"Green: (" << p(0) << ", " << p(1)<<") m. == Cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
+                           
+            center = cv::Point( index.x(), index.y() );
+            //cv::circle( image,center,6,green,-1,8 );
+            cv::circle(image, center , 10, green, -1);
+
+        }
+        // map references: ..............................................................
+      // double maxX=  _origMap.getLength().x()/2;
+      // double maxY=  _origMap.getLength().y()/2;
+
+      // grid_map::Position p(0,  0);
+      // _origMap.getIndex(p,index);      
+      // cv::Point gree( index.y(), index.x() );
+      // std::cout<<"Green: (" << p(0) << ", " << p(1)<<") m. == Cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
+
+      // p = Position(maxX,  -maxY);
+      // _origMap.getIndex(p,index);      
+      // cv::Point blu( index.y(), index.x() );
+      // std::cout<< "Blue (" << p(0) << ", " << p(1)<<") m. == Cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
+
+      // p = Position(-maxX,  -maxY);
+      // _origMap.getIndex(p,index);  
+      // cv::Point re( index.y(), index.x() );
+      // std::cout<<"Red (" << p(0) << ", " << p(1)<<") m. == Cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
+
+      // p = Position(-maxX,  maxY);
+      // _origMap.getIndex(p,index);  
+      // cv::Point yell( index.y(), index.x() );
+      // std::cout<<"Yellow (" << p(0) << ", " << p(1)<<") m. == Cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
+      
+      // cv::circle(image, gree , 20, green, -1);
+      // cv::circle(image, blu , 20, blue, -1);
+      // cv::circle(image, re ,  20, red, -1);
+      // cv::circle(image, yell , 20, yellow, -1);
+
+
+
+
+
+
+
+        // CV: Rotate 90 Degrees Clockwise To get our images to have increasing X to right and increasing Y up
+        cv::transpose(image, image);
+        cv::flip(image, image, 1);
+        cv::imwrite( fileURI, image );
+    
     }
 
 

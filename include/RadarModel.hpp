@@ -1,3 +1,7 @@
+#ifndef RADARMODEL_H
+#define RADARMODEL_H
+
+
 #include <grid_map_core/GridMap.hpp>
 #include "Eigen/Eigen"  // AFTER GRIDMAP!
 
@@ -117,7 +121,9 @@ class RadarModel
     int _numTags;  // number of rfid tags to consider
     GridMap _map;  // active areas. one per phase and power at each frequency
     GridMap _rfid_belief_maps;  // global maps storing belief of each tag
+    GridMap _origMap;
     cv::Mat _imageCV;
+    std::vector<std::pair<double,double>> _tags_coords;
     std::vector<double> _freqs;
     SplineFunction _antenna_gains;
 
@@ -141,8 +147,8 @@ class RadarModel
 
 
     RadarModel(const double nx, const double ny,  const double resolution, const double sigma_power, const double sigma_phase, const double txtPower, const std::vector<double> freqs, const std::vector<std::pair<double,double>> tags_coords, const std::string imageFileURI ) ;
-
-    
+    void PrintMap( std::string savePath);
+    void initRefMap(const std::string imageURI);
     void getImage(std::string layerName, std::string fileURI);
 
     /**
@@ -259,3 +265,7 @@ void PrintProb(std::string fileURI, Eigen::MatrixXf* prob_mat);
 void debugInfo();
 
 }; // end class
+
+
+
+#endif

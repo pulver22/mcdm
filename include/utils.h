@@ -6,6 +6,9 @@
 #include "evaluationrecords.h"
 #include "PathFinding/astar.h"
 #include "newray.h"
+#include <boost/filesystem.hpp>
+#include <fstream>
+#include "RadarModel.hpp"
 
 
 using namespace dummy;
@@ -15,6 +18,7 @@ using namespace dummy;
 class Utilities
 {
 public:
+  Utilities(double w_info_gain, double w_travel_distance, double w_sensing_time, double w_rfid_gain);
   Utilities();
   ~Utilities();
   /**
@@ -230,7 +234,37 @@ public:
                                 dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int* encodedKeyValue, Astar* astar , long* numConfiguration,
                                 double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold);
 
+  void createMultiplePosition(list<Pose> *frontiers, vector<pair<long, long>> *candidatePosition, int range, double FOV);
+
+  void updateMaps(vector<pair<double,double>> *tags_coord, dummy::Map* map, 
+                  Pose* target, double *txtPower, const double *SENSITIVITY, double *freq, 
+                  vector<RFIDGridmap> * RFID_maps_list, 
+                  long *x, long *y, int range, RadarModel *radMod);
+
+  bool updateNavigationGraph(int *count, MCDMFunction *function, vector<pair<string,list<Pose>>> *graph2, Pose *target , dummy::Map *map, 
+                            long *x, long *y, int *orientation, int *range, double *FOV, double *threshold, string *actualPose);
+
+
+  bool forwardMotion(Pose *target, Pose *previous,list<Pose> *frontiers, list<Pose> *nearCandidates, vector<pair<long,long> > *candidatePosition, NewRay *ray, dummy::Map *map, 
+                      long *x, long *y, int *orientation, double *FOV, int *range, vector<pair<string,list<Pose>>> *graph2,
+                      EvaluationRecords *record, MCDMFunction *function, double *threshold, int *count, vector<string> *history, 
+                      list<Pose> *tmp_history, list<Pose> *tabuList, Astar *astar, double *imgresolution, double *travelledDistance,
+                      long *sensedCells, long *newSensedCells, long *totalFreeCells, double *totalScanTime, string *out_log,
+                      long *numConfiguration, string *actualPose, int* encodedKeyValue, double *totalAngle, int *numOfTurning,
+                      double *scanAngle, bool *btMode);
+
+  void findTags(vector<RFIDGridmap> *RFID_maps_list, vector<pair<double, double>> *tags_coord, dummy::Map *map, 
+                string detection_log, string accuracy_log, 
+                int initRange, long numConfiguration);
+
+  void saveRFIDMaps(vector<RFIDGridmap> *RFID_maps_list, string root);
+
+  void getEllipseSize(int range, int X_min, double *major_axis, double *minor_axis);
+
 protected:
+
+Pose invertedInitial, eastInitial, westInitial;
+double w_info_gain, w_travel_distance, w_sensing_time, w_rfid_gain;
 
 };
 
