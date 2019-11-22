@@ -75,6 +75,10 @@ final_mcdm_matrix = np.zeros(shape=(len(param_list), len(param_list)))
 final_wAVG_matrix = np.zeros(shape=(len(param_list), len(param_list)))
 comparison_matrix = np.zeros(shape=(len(param_list), len(param_list)))
 counter = 0
+wAVG_mean_list = []
+wAVG_best_list = []
+mcdm_mean_list = []
+mcdm_best_list = []
 for mcdm in mcdm_list:
     # print("Original: ", mcdm.shape)
     # Keep only [w_info_gain, w_travel_distance, travelledDistance]
@@ -90,6 +94,8 @@ for mcdm in mcdm_list:
     mcdm_matrix = np.reshape(mcdm_matrix, (len(param_list), len(param_list) ))
     # print("Reshaped: ", mcdm_matrix.shape)
     final_mcdm_matrix = final_mcdm_matrix +  mcdm_matrix
+    mcdm_best_list.append(np.min(mcdm_matrix))
+    mcdm_mean_list.append(np.mean(mcdm_matrix))
     # np.savetxt('/tmp/clean_mcdm' + str(counter) + '.txt', mcdm_matrix)
     counter += 1
 # exit(0)
@@ -104,6 +110,8 @@ for wAVG in wAVG_list:
     # Reshape into a 2D matrix
     wAVG_matrix = np.reshape(wAVG_matrix, (len(param_list), len(param_list)))
     final_wAVG_matrix = final_wAVG_matrix + wAVG_matrix
+    wAVG_best_list.append(np.min(wAVG_matrix))
+    wAVG_mean_list.append(np.mean(wAVG_matrix))
 
 
 # Normalize the matrix
@@ -114,8 +122,6 @@ final_wAVG_matrix /= len(wAVG_list)
 #     for j in range(0, len(param_list)):
 #         value = 0 if final_wAVG_matrix[i,j] < final_mcdm_matrix[i,j] else 1
 #         comparison_matrix[i, j] = value
-
-
 comparison_matrix = final_wAVG_matrix - final_mcdm_matrix
 comparison_matrix[comparison_matrix < 0] = -1
 comparison_matrix[comparison_matrix > 0] = 1
@@ -123,20 +129,15 @@ comparison_matrix[comparison_matrix > 0] = 1
 np.savetxt('/tmp/clean_wAVG.txt', final_wAVG_matrix)
 np.savetxt('/tmp/clean_mcdm.txt', final_mcdm_matrix)
 np.savetxt('/tmp/comparison.txt', comparison_matrix)
-# # Remove also the criteria weight
-# wAVG_matrix = np.delete(wAVG_sorted, [0,1], axis=1)
-# mcdm_matrix = np.delete(mcdm_sorted, [0,1], axis=1)
 
-# max_wAVG = np.max(wAVG_matrix[:,0])
-# max_mcdm = np.max(mcdm_matrix[:,0])
-# wAVG_matrix = np.reshape(wAVG_matrix, (-1, 9))
-# mcdm_matrix = np.reshape(mcdm_matrix, (-1, 9))
-# print(final_wAVG_matrix.shape)
-# print(wAVG)
-# print(final_mcdm_matrix.shape)
+# Print some statistics data
+print("[wAVG] Best mean: ", np.min(wAVG_mean_list))
+print("[wAVG] mean[std]: {}[{}]".format(np.mean(wAVG_mean_list), np.std(wAVG_mean_list)))
+print("[wAVG] Top10 - mean[std]: {}[{}]".format(np.mean(wAVG_best_list), np.std(wAVG_best_list)))
+print("[mcdm] Best mean: ", np.min(mcdm_mean_list))
+print("[mcdm] mean[std]: {}[{}]".format(np.mean(mcdm_mean_list), np.std(mcdm_mean_list)))
+print("[mcdm] Top10 - mean[std]: {}[{}]".format(np.mean(mcdm_best_list), np.std(mcdm_best_list)))
 
-# # print("{}, {}".format(max_wAVG, max_mcdm))
-# max_value = max_wAVG if max_wAVG >= max_mcdm else max_mcdm
 
 # Plot the matrix
 fig = plt.figure()
