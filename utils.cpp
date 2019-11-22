@@ -175,7 +175,7 @@ void Utilities::filePutContents(const std::string& name, const std::string& cont
     if (pFile.peek() == std::ifstream::traits_type::eof()){ // file is empty
       // cout << "File does not exist! Create a new one!" << endl;
       outfile.open(name);
-      outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,coverage,numConfiguration,travelledDistance,totalScanTime" << endl;
+      outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,norm_w_info_gain,norm_w_travel_distance,norm_w_sensing_time,norm_w_rfid_gain,coverage,numConfiguration,travelledDistance,totalScanTime" << endl;
     }else{
       // cout << "File exists! Appending data!" << endl;
       outfile.open(name, std::ios_base::app);
