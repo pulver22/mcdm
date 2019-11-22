@@ -143,7 +143,7 @@ print("[mcdm] Top10 - mean[std]: {}[{}]".format(np.mean(mcdm_best_list), np.std(
 fig = plt.figure()
 ax1 = fig.add_subplot(1,3,1)
 ax1.set_aspect('equal')
-plt.imshow(final_wAVG_matrix, interpolation='nearest', cmap=plt.cm.ocean)
+plt.imshow(np.log(final_wAVG_matrix), interpolation='nearest', cmap=plt.cm.ocean)
 plt.colorbar()
 plt.ylabel("w_info_gain")
 plt.xlabel("w_travel_distance")
@@ -157,7 +157,7 @@ plt.title("TravelledDistance [wAVG] \n best:{}({})".format(np.min(final_wAVG_mat
 
 ax2 = fig.add_subplot(1,3,2)
 ax2.set_aspect('equal')
-plt.imshow(final_mcdm_matrix, interpolation='nearest', cmap=plt.cm.ocean)
+plt.imshow(np.log(final_mcdm_matrix), interpolation='nearest', cmap=plt.cm.ocean)
 plt.colorbar()
 plt.ylabel("w_info_gain")
 plt.xlabel("w_travel_distance")
