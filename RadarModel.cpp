@@ -308,7 +308,7 @@ void RadarModel::initRefMap(const std::string imageURI){
         cv::Scalar blue( 255, 0, 0 );      
         cv::Scalar red( 0, 0, 255 );
         cv::Scalar yellow( 0, 255, 255 );      
-
+        cv::Scalar purple( 128, 0, 128 );
 
         fileURI  = savePath + "ref_map.png";
 
@@ -329,41 +329,41 @@ void RadarModel::initRefMap(const std::string imageURI){
             double y =  _tags_coords[i].second;
             grid_map::Position p(x,  y);                    
             _origMap.getIndex(p,index);         
-            std::cout<<"Green: (" << p(0) << ", " << p(1)<<") m. == Cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
+            std::cout<<"Tag: (" << p(0) << ", " << p(1)<<") m. == Cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
                            
             center = cv::Point( index.x(), index.y() );
             //cv::circle( image,center,6,green,-1,8 );
-            cv::circle(image, center , 10, green, -1);
+            cv::circle(image, center , 5, purple, -1);
 
         }
         // map references: ..............................................................
-      // double maxX=  _origMap.getLength().x()/2;
-      // double maxY=  _origMap.getLength().y()/2;
+        double maxX=  _origMap.getLength().x()/2;
+        double maxY=  _origMap.getLength().y()/2;
 
-      // grid_map::Position p(0,  0);
-      // _origMap.getIndex(p,index);      
-      // cv::Point gree( index.y(), index.x() );
-      // std::cout<<"Green: (" << p(0) << ", " << p(1)<<") m. == Cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
+        grid_map::Position p(0,  0);
+        _origMap.getIndex(p,index);      
+        cv::Point gree( index.y(), index.x() );
+        std::cout<<"Green: (" << p(0) << ", " << p(1)<<") m. == Cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
 
-      // p = Position(maxX,  -maxY);
-      // _origMap.getIndex(p,index);      
-      // cv::Point blu( index.y(), index.x() );
-      // std::cout<< "Blue (" << p(0) << ", " << p(1)<<") m. == Cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
+        p = Position(maxX,  -maxY);
+        _origMap.getIndex(p,index);      
+        cv::Point blu( index.y(), index.x() );
+        std::cout<< "Blue (" << p(0) << ", " << p(1)<<") m. == Cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
 
-      // p = Position(-maxX,  -maxY);
-      // _origMap.getIndex(p,index);  
-      // cv::Point re( index.y(), index.x() );
-      // std::cout<<"Red (" << p(0) << ", " << p(1)<<") m. == Cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
+        p = Position(-maxX,  -maxY);
+        _origMap.getIndex(p,index);  
+        cv::Point re( index.y(), index.x() );
+        std::cout<<"Red (" << p(0) << ", " << p(1)<<") m. == Cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
 
-      // p = Position(-maxX,  maxY);
-      // _origMap.getIndex(p,index);  
-      // cv::Point yell( index.y(), index.x() );
-      // std::cout<<"Yellow (" << p(0) << ", " << p(1)<<") m. == Cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
-      
-      // cv::circle(image, gree , 20, green, -1);
-      // cv::circle(image, blu , 20, blue, -1);
-      // cv::circle(image, re ,  20, red, -1);
-      // cv::circle(image, yell , 20, yellow, -1);
+        p = Position(-maxX,  maxY);
+        _origMap.getIndex(p,index);  
+        cv::Point yell( index.y(), index.x() );
+        std::cout<<"Yellow (" << p(0) << ", " << p(1)<<") m. == Cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
+        
+        cv::circle(image, gree , 20, green, -1);
+        cv::circle(image, blu , 20, blue, -1);
+        cv::circle(image, re ,  20, red, -1);
+        cv::circle(image, yell , 20, yellow, -1);
 
 
 
