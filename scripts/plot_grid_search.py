@@ -123,7 +123,7 @@ final_wAVG_matrix /= len(wAVG_list)
 #     for j in range(0, len(param_list)):
 #         value = 0 if final_wAVG_matrix[i,j] < final_mcdm_matrix[i,j] else 1
 #         comparison_matrix[i, j] = value
-comparison_matrix = final_wAVG_matrix - final_mcdm_matrix
+comparison_matrix = np.log(final_wAVG_matrix) - np.log(final_mcdm_matrix)
 comparison_matrix[comparison_matrix < 0] = -1
 comparison_matrix[comparison_matrix > 0] = 1
 # comparison_matrix = (comparison_matrix - np.min(comparison_matrix)) / (np.max(comparison_matrix) - np.min(comparison_matrix))
