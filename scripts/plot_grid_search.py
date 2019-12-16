@@ -4,8 +4,9 @@ from matplotlib import pyplot as plt
 import matplotlib.pylab as pl
 from mpl_toolkits.mplot3d import Axes3D
 
-param_list=[0.0, 0.01, 0.1, 0.5, 1.0, 5.0, 10.0, 50.0, 100.0]
-
+# param_list=[0.0, 0.01, 0.1, 0.5, 1.0, 5.0, 10.0, 50.0, 100.0]
+# param_list=[0.0, 0.005, 0.01, 0.05, 0.1, 0.5, 1.0, 2.5, 5.0, 7.5, 10.0, 25.0, 50.0, 75.0, 100.0]
+param_list=[0.0, 0.0025, 0.005, 0.0075, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1.0, 2.5, 5.0, 7.5, 10.0, 25.0, 50.0, 75.0, 100.0]
 def build_matrix(input_array, max_value):
     max_index = np.max(input_array[:,0])
     matrix_size = int(max_index*100)
@@ -46,27 +47,27 @@ def mjrFormatter(x, pos):
 def mjrFormatter_no_TeX(x, pos):
     return "2^{0}".format(x)
 
-wAVG_r1 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg_r/result_gs_wAVG_r0.csv', skip_header=True, delimiter=',')  
-wAVG_r2 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg_r/result_gs_wAVG_r2.csv', skip_header=True, delimiter=',')  
-wAVG_r3 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg_r/result_gs_wAVG_r3.csv', skip_header=True, delimiter=',')  
-wAVG_r4 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg_r/result_gs_wAVG_r4.csv', skip_header=True, delimiter=',')  
-wAVG_r5 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg_r/result_gs_wAVG_r5.csv', skip_header=True, delimiter=',')  
-wAVG_r6 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg_r/result_gs_wAVG_r6.csv', skip_header=True, delimiter=',')  
-wAVG_r7 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg_r/result_gs_wAVG_r7.csv', skip_header=True, delimiter=',')  
-wAVG_r8 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg_r/result_gs_wAVG_r8.csv', skip_header=True, delimiter=',')  
-wAVG_r9 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg_r/result_gs_wAVG_r9.csv', skip_header=True, delimiter=',')  
-wAVG_r10 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg_r/result_gs_wAVG_r0.csv', skip_header=True, delimiter=',')  
+wAVG_r1 = np.genfromtxt('/media/pulver/PulverHDD/mcdm_experiments/mcdm_wAVG/biggest/result_gs_wAVG_r0.csv', skip_header=True, delimiter=',')  
+wAVG_r2 = np.genfromtxt('/media/pulver/PulverHDD/mcdm_experiments/mcdm_wAVG/biggest/result_gs_wAVG_r2.csv', skip_header=True, delimiter=',')  
+wAVG_r3 = np.genfromtxt('/media/pulver/PulverHDD/mcdm_experiments/mcdm_wAVG/biggest/result_gs_wAVG_r3.csv', skip_header=True, delimiter=',')  
+wAVG_r4 = np.genfromtxt('/media/pulver/PulverHDD/mcdm_experiments/mcdm_wAVG/biggest/result_gs_wAVG_r4.csv', skip_header=True, delimiter=',')  
+wAVG_r5 = np.genfromtxt('/media/pulver/PulverHDD/mcdm_experiments/mcdm_wAVG/biggest/result_gs_wAVG_r5.csv', skip_header=True, delimiter=',')  
+wAVG_r6 = np.genfromtxt('/media/pulver/PulverHDD/mcdm_experiments/mcdm_wAVG/biggest/result_gs_wAVG_r6.csv', skip_header=True, delimiter=',')  
+wAVG_r7 = np.genfromtxt('/media/pulver/PulverHDD/mcdm_experiments/mcdm_wAVG/biggest/result_gs_wAVG_r7.csv', skip_header=True, delimiter=',')  
+wAVG_r8 = np.genfromtxt('/media/pulver/PulverHDD/mcdm_experiments/mcdm_wAVG/biggest/result_gs_wAVG_r8.csv', skip_header=True, delimiter=',')  
+wAVG_r9 = np.genfromtxt('/media/pulver/PulverHDD/mcdm_experiments/mcdm_wAVG/biggest/result_gs_wAVG_r9.csv', skip_header=True, delimiter=',')  
+wAVG_r10 = np.genfromtxt('/media/pulver/PulverHDD/mcdm_experiments/mcdm_wAVG/biggest/result_gs_wAVG_r0.csv', skip_header=True, delimiter=',')  
 
-mcdm_r1 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg_r/result_gs_mcdm_r1.csv', skip_header=True, delimiter=',')  
-mcdm_r2 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg_r/result_gs_mcdm_r2.csv', skip_header=True, delimiter=',')  
-mcdm_r3 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg_r/result_gs_mcdm_r3.csv', skip_header=True, delimiter=',')  
-mcdm_r4 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg_r/result_gs_mcdm_r4.csv', skip_header=True, delimiter=',')  
-mcdm_r5 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg_r/result_gs_mcdm_r5.csv', skip_header=True, delimiter=',')  
-mcdm_r6 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg_r/result_gs_mcdm_r6.csv', skip_header=True, delimiter=',')  
-mcdm_r7 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg_r/result_gs_mcdm_r7.csv', skip_header=True, delimiter=',')  
-mcdm_r8 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg_r/result_gs_mcdm_r8.csv', skip_header=True, delimiter=',')  
-mcdm_r9 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg_r/result_gs_mcdm_r9.csv', skip_header=True, delimiter=',')  
-mcdm_r10 = np.genfromtxt('/home/pulver/Desktop/mcdm_avg_r/result_gs_mcdm_r0.csv', skip_header=True, delimiter=',')  
+mcdm_r1 = np.genfromtxt('/media/pulver/PulverHDD/mcdm_experiments/mcdm_wAVG/biggest/result_gs_mcdm_r1.csv', skip_header=True, delimiter=',')  
+mcdm_r2 = np.genfromtxt('/media/pulver/PulverHDD/mcdm_experiments/mcdm_wAVG/biggest/result_gs_mcdm_r2.csv', skip_header=True, delimiter=',')  
+mcdm_r3 = np.genfromtxt('/media/pulver/PulverHDD/mcdm_experiments/mcdm_wAVG/biggest/result_gs_mcdm_r3.csv', skip_header=True, delimiter=',')  
+mcdm_r4 = np.genfromtxt('/media/pulver/PulverHDD/mcdm_experiments/mcdm_wAVG/biggest/result_gs_mcdm_r4.csv', skip_header=True, delimiter=',')  
+mcdm_r5 = np.genfromtxt('/media/pulver/PulverHDD/mcdm_experiments/mcdm_wAVG/biggest/result_gs_mcdm_r5.csv', skip_header=True, delimiter=',')  
+mcdm_r6 = np.genfromtxt('/media/pulver/PulverHDD/mcdm_experiments/mcdm_wAVG/biggest/result_gs_mcdm_r6.csv', skip_header=True, delimiter=',')  
+mcdm_r7 = np.genfromtxt('/media/pulver/PulverHDD/mcdm_experiments/mcdm_wAVG/biggest/result_gs_mcdm_r7.csv', skip_header=True, delimiter=',')  
+mcdm_r8 = np.genfromtxt('/media/pulver/PulverHDD/mcdm_experiments/mcdm_wAVG/biggest/result_gs_mcdm_r8.csv', skip_header=True, delimiter=',')  
+mcdm_r9 = np.genfromtxt('/media/pulver/PulverHDD/mcdm_experiments/mcdm_wAVG/biggest/result_gs_mcdm_r9.csv', skip_header=True, delimiter=',')  
+mcdm_r10 = np.genfromtxt('/media/pulver/PulverHDD/mcdm_experiments/mcdm_wAVG/biggest/result_gs_mcdm_r0.csv', skip_header=True, delimiter=',')  
 
 mcdm_list = [mcdm_r1, mcdm_r2, mcdm_r3, mcdm_r4, mcdm_r5, mcdm_r6, mcdm_r7, mcdm_r8, mcdm_r9, mcdm_r10]
 wAVG_list = [wAVG_r1, wAVG_r2, wAVG_r3, wAVG_r4, wAVG_r5, wAVG_r6, wAVG_r7, wAVG_r8, wAVG_r9, wAVG_r10]
@@ -75,6 +76,10 @@ final_mcdm_matrix = np.zeros(shape=(len(param_list), len(param_list)))
 final_wAVG_matrix = np.zeros(shape=(len(param_list), len(param_list)))
 comparison_matrix = np.zeros(shape=(len(param_list), len(param_list)))
 counter = 0
+wAVG_mean_list = []
+wAVG_best_list = []
+mcdm_mean_list = []
+mcdm_best_list = []
 for mcdm in mcdm_list:
     # print("Original: ", mcdm.shape)
     # Keep only [w_info_gain, w_travel_distance, travelledDistance]
@@ -90,6 +95,8 @@ for mcdm in mcdm_list:
     mcdm_matrix = np.reshape(mcdm_matrix, (len(param_list), len(param_list) ))
     # print("Reshaped: ", mcdm_matrix.shape)
     final_mcdm_matrix = final_mcdm_matrix +  mcdm_matrix
+    mcdm_best_list.append(np.min(mcdm_matrix))
+    mcdm_mean_list.append(np.mean(mcdm_matrix))
     # np.savetxt('/tmp/clean_mcdm' + str(counter) + '.txt', mcdm_matrix)
     counter += 1
 # exit(0)
@@ -104,6 +111,8 @@ for wAVG in wAVG_list:
     # Reshape into a 2D matrix
     wAVG_matrix = np.reshape(wAVG_matrix, (len(param_list), len(param_list)))
     final_wAVG_matrix = final_wAVG_matrix + wAVG_matrix
+    wAVG_best_list.append(np.min(wAVG_matrix))
+    wAVG_mean_list.append(np.mean(wAVG_matrix))
 
 
 # Normalize the matrix
@@ -114,35 +123,28 @@ final_wAVG_matrix /= len(wAVG_list)
 #     for j in range(0, len(param_list)):
 #         value = 0 if final_wAVG_matrix[i,j] < final_mcdm_matrix[i,j] else 1
 #         comparison_matrix[i, j] = value
-
-
-comparison_matrix = final_wAVG_matrix - final_mcdm_matrix
+comparison_matrix = np.log(final_wAVG_matrix) - np.log(final_mcdm_matrix)
 comparison_matrix[comparison_matrix < 0] = -1
 comparison_matrix[comparison_matrix > 0] = 1
 # comparison_matrix = (comparison_matrix - np.min(comparison_matrix)) / (np.max(comparison_matrix) - np.min(comparison_matrix))
 np.savetxt('/tmp/clean_wAVG.txt', final_wAVG_matrix)
 np.savetxt('/tmp/clean_mcdm.txt', final_mcdm_matrix)
 np.savetxt('/tmp/comparison.txt', comparison_matrix)
-# # Remove also the criteria weight
-# wAVG_matrix = np.delete(wAVG_sorted, [0,1], axis=1)
-# mcdm_matrix = np.delete(mcdm_sorted, [0,1], axis=1)
 
-# max_wAVG = np.max(wAVG_matrix[:,0])
-# max_mcdm = np.max(mcdm_matrix[:,0])
-# wAVG_matrix = np.reshape(wAVG_matrix, (-1, 9))
-# mcdm_matrix = np.reshape(mcdm_matrix, (-1, 9))
-# print(final_wAVG_matrix.shape)
-# print(wAVG)
-# print(final_mcdm_matrix.shape)
+# Print some statistics data
+print("[wAVG] Best mean: ", np.min(wAVG_mean_list))
+print("[wAVG] mean[std]: {}[{}]".format(np.mean(wAVG_mean_list), np.std(wAVG_mean_list)))
+print("[wAVG] Top10 - mean[std]: {}[{}]".format(np.mean(wAVG_best_list), np.std(wAVG_best_list)))
+print("[mcdm] Best mean: ", np.min(mcdm_mean_list))
+print("[mcdm] mean[std]: {}[{}]".format(np.mean(mcdm_mean_list), np.std(mcdm_mean_list)))
+print("[mcdm] Top10 - mean[std]: {}[{}]".format(np.mean(mcdm_best_list), np.std(mcdm_best_list)))
 
-# # print("{}, {}".format(max_wAVG, max_mcdm))
-# max_value = max_wAVG if max_wAVG >= max_mcdm else max_mcdm
 
 # Plot the matrix
 fig = plt.figure()
 ax1 = fig.add_subplot(1,3,1)
 ax1.set_aspect('equal')
-plt.imshow(final_wAVG_matrix, interpolation='nearest', cmap=plt.cm.ocean)
+plt.imshow(np.log(final_wAVG_matrix), interpolation='nearest', cmap=plt.cm.ocean)
 plt.colorbar()
 plt.ylabel("w_info_gain")
 plt.xlabel("w_travel_distance")
@@ -156,7 +158,7 @@ plt.title("TravelledDistance [wAVG] \n best:{}({})".format(np.min(final_wAVG_mat
 
 ax2 = fig.add_subplot(1,3,2)
 ax2.set_aspect('equal')
-plt.imshow(final_mcdm_matrix, interpolation='nearest', cmap=plt.cm.ocean)
+plt.imshow(np.log(final_mcdm_matrix), interpolation='nearest', cmap=plt.cm.ocean)
 plt.colorbar()
 plt.ylabel("w_info_gain")
 plt.xlabel("w_travel_distance")
