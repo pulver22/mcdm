@@ -53,6 +53,17 @@ find_package(OpenCV REQUIRED
   CONFIG
 )
 
+# ............................................................................
+
+add_executable(test_log_model test_log_model.cpp  ${HEADER_FILES})
+
+target_link_libraries(test_log_model lib  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES})
+
+install(TARGETS test_log_model RUNTIME DESTINATION bin)
+
+# ............................................................................
+
 add_executable(grid_map_test grid_map_test.cpp  ${HEADER_FILES})
 
 target_link_libraries(grid_map_test lib  ${catkin_LIBRARIES}
