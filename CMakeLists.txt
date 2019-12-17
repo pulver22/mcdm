@@ -45,6 +45,7 @@ find_package(yaml-cpp REQUIRED)
 include_directories(
   ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIR}
+  ${Boost_INCLUDE_DIRS}
 )
 
 find_package(OpenCV REQUIRED
@@ -53,12 +54,15 @@ find_package(OpenCV REQUIRED
   CONFIG
 )
 
+find_package(Boost REQUIRED COMPONENTS random)
+
+
 # ............................................................................
 
 add_executable(test_log_model test_log_model.cpp  ${HEADER_FILES})
 
 target_link_libraries(test_log_model lib  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES})
+  ${OpenCV_LIBRARIES} ${Boost_LIBRARIES} )
 
 install(TARGETS test_log_model RUNTIME DESTINATION bin)
 
