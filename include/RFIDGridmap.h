@@ -135,6 +135,9 @@ class RFIDGridmap {
     // controls debug prints..
     bool debug_;
 
+    void saveLayerWithCircle( grid_map::GridMap map_, std::string layerName, std::string  fileURI, bool debug, std::string format, double poseX, double poseY);
+    void saveAsWithGroundTruth(std::string  fileURI, double poseX, double poseY);
+
   private:
     grid_map::GridMap  RFIDGridmap_;
     std::string layer_name_;

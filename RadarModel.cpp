@@ -556,7 +556,7 @@ void RadarModel::initRefMap(const std::string imageURI){
       std::cout<<"Which equals to opencv cell ("  << cv_x << ", " << cv_y << ") " << std::endl;
 
       center = cv::Point( cv_x, cv_y );
-      cv::circle(image, center , 5, green, -1);
+      cv::circle(image, center , 5, green, 1);
 
       /// overlay robot position .................................................................................................
       p = grid_map::Position(robot_x, robot_y);                    

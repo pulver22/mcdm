@@ -15,6 +15,10 @@ void RFIDGridmap::saveAs(std::string  fileURI){
 
 };
 
+void RFIDGridmap::saveAsWithGroundTruth(std::string  fileURI, double poseX, double poseY){
+  saveLayerWithCircle(  RFIDGridmap_, layer_name_,  fileURI, debug_,format_,poseX,poseY);
+};
+
 void RFIDGridmap::addEllipse(double likelihood, double poseX, double poseY, double poseHeading, double minX, double maxX){
 
   addEllipse(RFIDGridmap_, layer_name_, likelihood, poseX, poseY, poseHeading, minX,  maxX, debug_);
@@ -278,6 +282,77 @@ void RFIDGridmap::saveLayer( grid_map::GridMap map_, std::string layerName, std:
 
   cv::imwrite( fileURI, imageCVout->image );
 };
+
+void RFIDGridmap::saveLayerWithCircle( grid_map::GridMap map_, std::string layerName, std::string  fileURI, bool debug, std::string format, double poseX, double poseY){
+  double min=INFINITY;
+  double max=-INFINITY;
+  double val;
+  // find max and min
+  for (grid_map::GridMapIterator iterator(map_); !iterator.isPastEnd(); ++iterator) {
+    val = map_.at(layerName, *iterator);
+    if (val<min){
+           min=val;
+    }
+    if (val>max) {
+           max=val;
+    }
+  }
+
+  // and map everything between 0 and 1
+  for (grid_map::GridMapIterator iterator(map_); !iterator.isPastEnd(); ++iterator) {
+    val = (map_.at(layerName, *iterator) - min)/(max-min);
+    if (val < 0.9) val = val - 0.4;
+    val = std::max(0.0, val);
+    map_.at(layerName, *iterator) = val;
+  }
+
+  sensor_msgs::Image imageROSout;
+  GridMapRosConverter::toImage(map_, layerName, "rgb8", imageROSout);
+  
+
+  cv_bridge::CvImagePtr imageCVout;
+  imageCVout=cv_bridge::toCvCopy(imageROSout, "rgb8");
+
+
+      /// overlay tag position .................................................................................................
+        std::cout << " RFID MAP has " <<   map_.getSize()(1) << " cols by " <<  map_.getSize()(0) <<" rows "  <<std::endl;
+        std::cout << " Orig at: (" << map_.getPosition()(0) << ", " << map_.getPosition()(1)<<") m. " <<std::endl;
+        std::cout << " Size: (" << map_.getLength().x() << ", " << map_.getLength().y() <<") m. " <<std::endl;
+
+
+
+
+      grid_map::Index index;            
+      cv::Scalar green( 0, 255, 0 );
+      int _Ncol = imageCVout->image.cols; // radar model total x-range space (cells).
+      int   _Nrow = imageCVout->image.rows; // radar model total y-range space (cells).
+
+      grid_map::Position p(poseX, -poseY);                    
+
+      std::cout<<"Getting position to draw circle: " << std::endl;
+      if (!map_.getIndex(p,index)){  
+          std::cout<<"Position ("  << p(0) << ", " << p(1) << ") is out of map bounds!" <<std::endl;  
+      } else {
+       std::cout<<" Tag at (" << p(0) << ", " << p(1)<<") m. is in cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
+      // cast from gridmap indexes to opencv indexes 
+      int cv_y = (_Nrow-1) - index.x();
+      int cv_x = index.y();
+      std::cout<<" Which equals to opencv cell ("  << cv_x << ", " << cv_y << ") " << std::endl;
+      std::cout<<"......................" << std::endl;
+
+      cv::Point center( cv_x, cv_y );
+      cv::circle(imageCVout->image, center , 8, green, 1);
+
+      } 
+
+      
+
+
+  cv::imwrite( fileURI, imageCVout->image );
+};
+
+
+
 
 double RFIDGridmap::getCell(grid_map::GridMap&  map_, std::string layerName, int i, int j, bool debug){
 

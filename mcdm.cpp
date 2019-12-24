@@ -365,6 +365,7 @@ int main ( int argc, char **argv )
   map.drawRFIDScan();
   map.drawRFIDGridScan(myGrid1);
   utils.saveRFIDMaps(&RFID_maps_list, "/tmp/");
+  utils.saveRFIDMapsWithGroundTruths(&RFID_maps_list, &tags_coord, "/tmp/D");
   
   // cout << "------------------ HISTORY -----------------" << endl;
   // Calculate which cells have been visited only once
@@ -392,4 +393,10 @@ int main ( int argc, char **argv )
 
   cout << "Saving tag distribution maps... "<< endl;
   rm.saveProbMaps("/tmp/");
+
+  //cout << "Saving debug distribution maps... "<< endl;
+  //for each tag:
+  //for (int t = 0; t < tags_coord.size(); t++){
+  //  rm.saveProbMapDebug("/tmp/",t,0,0,0,0);
+  //}
 }

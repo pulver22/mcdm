@@ -627,6 +627,15 @@ void Utilities::saveRFIDMaps(vector<RFIDGridmap> *RFID_maps_list, string root)
   }
 }
 
+void Utilities::saveRFIDMapsWithGroundTruths(vector<RFIDGridmap> *RFID_maps_list, vector<pair<double, double>> *tags_coord, string root)
+{
+  for (int i=0; i < (*RFID_maps_list).size(); i++){
+    std::string path = root + to_string(i+1) + ".pgm";
+    (*RFID_maps_list)[i].saveAsWithGroundTruth(path, (*tags_coord)[i].first,(*tags_coord)[i].second);
+  }
+}
+
+
 void Utilities::getEllipseSize(int X_max, int X_min, double *major_axis, double *minor_axis)
 {
   double focal_length = (X_max - X_min) / 2.0; // (X_max - X_min)/2

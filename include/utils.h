@@ -261,6 +261,8 @@ public:
 
   void getEllipseSize(int range, int X_min, double *major_axis, double *minor_axis);
 
+  void saveRFIDMapsWithGroundTruths(vector<RFIDGridmap> *RFID_maps_list, vector<pair<double, double>> *tags_coord, string root);
+
 protected:
 
 Pose invertedInitial, eastInitial, westInitial;
