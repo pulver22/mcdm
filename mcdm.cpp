@@ -394,9 +394,9 @@ int main ( int argc, char **argv )
   cout << "Saving tag distribution maps... "<< endl;
   rm.saveProbMaps("/tmp/");
 
-  //cout << "Saving debug distribution maps... "<< endl;
-  //for each tag:
-  //for (int t = 0; t < tags_coord.size(); t++){
-  //  rm.saveProbMapDebug("/tmp/",t,0,0,0,0);
-  //}
+  cout << "Saving debug distribution maps... "<< endl;
+  for each tag:
+  for (int t = 0; t < tags_coord.size(); t++){
+   rm.saveProbMapDebug("/tmp/",t,0,0,0,0);
+  }
 }
