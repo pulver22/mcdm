@@ -257,6 +257,7 @@ void RadarModel::initRefMap(const std::string imageURI){
                   if (_rfid_belief_maps.isInside(point)){
                         // get the prob:
                         prob_val = _active_area_maps.at("temp",*iterator);
+                        // cout << prob_val << endl;
 
                         // add value.
                         // TODO: HOW DO WE CHANGE OUR BELIEF? add, multiply...
@@ -312,7 +313,7 @@ void RadarModel::initRefMap(const std::string imageURI){
         // prob distribution maps
         for(int i = 0; i <_numTags; ++i) {
           tagLayerName = getTagLayerName(i);
-          std::cout << " Saving layer [" << tagLayerName << "]" << std::endl ;
+          // std::cout << " Saving layer [" << tagLayerName << "]" << std::endl ;
           fileURI  = savePath + "final_prob_" +tagLayerName + ".png";
           getImage(&_rfid_belief_maps, tagLayerName, fileURI);
           //data_mat = _rfid_belief_maps[tagLayerName];
@@ -645,7 +646,7 @@ void RadarModel::initRefMap(const std::string imageURI){
 
       GridMapCvConverter::toImage<unsigned char, 3>(*gm, layerName, CV_8UC3, minValue, maxValue, image);
       
-      std::cout<<"Layer [" << layerName << "] values range: (" << minValue << ", "<< maxValue << ")" << std::endl;
+      // std::cout<<"Layer [" << layerName << "] values range: (" << minValue << ", "<< maxValue << ")" << std::endl;
 
 /*
       // create a triangle pointing x+

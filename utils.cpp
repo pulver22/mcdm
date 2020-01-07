@@ -622,7 +622,7 @@ void Utilities::findTags(vector<RFIDGridmap> *RFID_maps_list, vector<pair<double
 void Utilities::saveRFIDMaps(vector<RFIDGridmap> *RFID_maps_list, string root)
 {
   for (int i=0; i < (*RFID_maps_list).size(); i++){
-    std::string path = root + to_string(i+1) + ".pgm";
+    std::string path = root + to_string(i) + ".pgm";
     (*RFID_maps_list)[i].saveAs(path);
   }
 }
