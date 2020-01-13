@@ -171,12 +171,15 @@ void RadarModel::initRefMap(const std::string imageURI){
         _rfid_belief_maps.setGeometry(Length(len_x, len_y), _resolution, Position(orig_x, orig_y));
 
         cv::minMaxLoc(_imageCV, &minValue, &maxValue);
+        _free_space_val = maxValue;
         _rfid_belief_maps["ref_map"].setConstant(NAN);
         GridMapCvConverter::addLayerFromImage<unsigned char, 3>(_imageCV, "ref_map", _rfid_belief_maps, minValue, maxValue);
-
-        std::cout << " It has " <<   _rfid_belief_maps.getSize()(1) << " cols by " <<  _rfid_belief_maps.getSize()(0) <<" rows "  <<std::endl;
+        
+        std::cout << " Input map has " <<   _rfid_belief_maps.getSize()(1) << " cols by " <<  _rfid_belief_maps.getSize()(0) <<" rows "  <<std::endl;
         std::cout << " Orig at: (" << orig_x << ", " << orig_y<<") m. " <<std::endl;
         std::cout << " Size: (" << _rfid_belief_maps.getLength().x() << ", " << _rfid_belief_maps.getLength().y() <<") m. " <<std::endl;
+        std::cout << " Values range: (" << minValue << ", " << maxValue <<")   " <<std::endl;
+        std::cout << " Using : (" << maxValue <<") value as free space value  " <<std::endl;
 
         grid_map::Position p;       
         grid_map::Index index;
@@ -217,6 +220,7 @@ void RadarModel::initRefMap(const std::string imageURI){
 }
 
     //So, robot at pr (x,y,orientation) (long, long, int) receives rxPower,phase,freq from tag i . 
+    //TODO: this is a simplistic model that just "ignores" walls: but they do have absortion and reduce received power at their locations...
     void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, double rxPower, double phase, double freq, int i){
       double rel_x, rel_y, prob_val, orientation_rad;
       double glob_x, glob_y;
@@ -255,6 +259,8 @@ void RadarModel::initRefMap(const std::string imageURI){
                   point = Position(glob_x, glob_y);
                   // check if is inside global map
                   if (_rfid_belief_maps.isInside(point)){
+                    // get point value in reference map to check if it's an obstacle:                      
+                      if (_rfid_belief_maps.atPosition("ref_map",point)==_free_space_val){
                         // get the prob:
                         prob_val = _active_area_maps.at("temp",*iterator);
                         // cout << prob_val << endl;
@@ -262,6 +268,9 @@ void RadarModel::initRefMap(const std::string imageURI){
                         // add value.
                         // TODO: HOW DO WE CHANGE OUR BELIEF? add, multiply...
                         _rfid_belief_maps.atPosition(tagLayerName,point)+= 30*prob_val;
+                      } else {
+                        _rfid_belief_maps.atPosition(tagLayerName,point)= 0;
+                      }
                   }
       }
 

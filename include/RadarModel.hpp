@@ -113,7 +113,7 @@ class RadarModel
 
     int _Ncol; // number of rows of reference and rfid belief maps (cells)
     int _Nrow; // number of cols of reference and rfid belief maps (cells)
-    
+    float _free_space_val; // max value stored in reference map, used as free space marker
     double _resolution; // Active areas, reference, and belief maps resolution (m./cell)
     double _txtPower; // transmitted power by RFID reader (dB)
 
