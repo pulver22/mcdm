@@ -34,9 +34,9 @@ int main(int argc, char **argv)
 
 
   std::string mapFileURI = "/home/manolofc/workspace/mcdm/src/mcdm/Images/mfc_test.pgm";
-  double nx = 24;
-  double ny = 12;
-  double resolution = 0.1;
+  double nx = 240;
+  double ny = 120;
+  double resolution = 1;
   double sigma_power = 1;
   double sigma_phase = 1;
   double txtPower = -10;
@@ -146,7 +146,7 @@ int main(int argc, char **argv)
       
       for (int h=0;h<8;h++){
         robot_head = robot_head0 + (2.0*M_PI*h/8);
-        std::cout<<"Robot at (" << robot_x << ", " << robot_y <<") m., (" << (robot_head*180.0/M_PI) << ") deg." << std::endl;
+        // std::cout<<"Robot at (" << robot_x << ", " << robot_y <<") m., (" << (robot_head*180.0/M_PI) << ") deg." << std::endl;
         
         //for each tag:
         for (int t = 0; t < tags_coord.size(); t++){
@@ -158,7 +158,7 @@ int main(int argc, char **argv)
             tag_x =  delta_x * cos(robot_head) + delta_y * sin(robot_head);
             tag_y = -delta_x * sin(robot_head) + delta_y * cos(robot_head);
 
-            std::cout<<"\t- Tag [" << t << "] at position (" << tags_coord[t].first << ", " << tags_coord[t].second << ") m., rel position (" << tag_x << ", " << tag_y << ") m. " <<std::endl;
+            // std::cout<<"\t- Tag [" << t << "] at position (" << tags_coord[t].first << ", " << tags_coord[t].second << ") m., rel position (" << tag_x << ", " << tag_y << ") m. " <<std::endl;
 
             // get expected tag power with friis
             f_i = freqs[distr(generator)]; 
@@ -166,21 +166,26 @@ int main(int argc, char **argv)
 
             // get expected phase from tag
             phase = rm.phaseDifference( tag_x,  tag_y,  f_i);
-            std::cout<<"\tReading at freq (" << f_i/1e6<< " MHz): (" << (rxPower+30) << ") dBm. ( " << phase << ") rads. " << std::endl << std::endl;
+            // std::cout<<"\tReading at freq (" << f_i/1e6<< " MHz): (" << (rxPower+30) << ") dBm. ( " << phase << ") rads. " << std::endl << std::endl;
 
             // add measurement to model
             rm.addMeasurement(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
             //print maps
-            cout  << "Saving tag distribution maps... "<< endl;
+            // std::cout  << "Saving tag distribution maps... "<< endl;
             int lineal_index = (8*(i+1))+(h+1);
-            rm.saveProbMapDebug("/tmp/",t,lineal_index,robot_x,robot_y, robot_head);
+            // rm.saveProbMapDebug("/tmp/",t,lineal_index,robot_x,robot_y, robot_head);
         }
-        std::cout<<"Finished reading. " << std::endl << std::endl;
+        // std::cout<<"Finished reading. " << std::endl << std::endl;
     }
   }
   //print maps
   cout  << "Saving tag distribution maps... "<< endl;
   rm.saveProbMaps("/tmp/");
+  // for each tag:
+  for (int t = 0; t < tags_coord.size(); t++){
+    cout << "---[" << t <<"]----------------" << endl;
+   rm.saveProbMapDebug("/tmp/",t,0,0,0,0);
+  }
   return 0;
 }
 

@@ -729,13 +729,14 @@ std::pair<int, std::pair<int, int>> Map::findTagfromGridMap(RFIDGridmap grid)
 {
   std::pair<int,int> tag(0,0);
   double powerRead = 0;
+  int buffer_size = 3;
   for(int row=0; row < numPathPlanningGridRows; row++)
   {
     for(int col=0; col < numPathPlanningGridCols; col++)
     {
       double tmp_power = 0.0;
-      for (int i = -3; i <= 3; i++){
-        for (int j = -3; j <= 3; j++){
+      for (int i = -buffer_size; i <= buffer_size; i++){
+        for (int j = -buffer_size; j <= buffer_size; j++){
           tmp_power = tmp_power + grid.getCell(row, col); 
         }
       }

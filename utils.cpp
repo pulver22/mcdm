@@ -429,6 +429,7 @@ void Utilities::updateMaps(vector<pair<double,double>> *tags_coord, dummy::Map* 
                             vector<RFIDGridmap> * RFID_maps_list, 
                             long *x, long *y, int range, RadarModel *radMod){
   std::pair<int, int> relTagCoord;
+  // std::cout << "----" << std::endl;
   for (int i = 0; i < tags_coord->size(); i++){
     relTagCoord = map->getRelativeTagCoord((*tags_coord)[i].first, (*tags_coord)[i].second, target->getX(), target->getY());
     // Calculate the received power and phase
@@ -436,13 +437,15 @@ void Utilities::updateMaps(vector<pair<double,double>> *tags_coord, dummy::Map* 
     double phase = radMod->phaseDifference(relTagCoord.first, relTagCoord.second, *freq);    
     // Update the path planning and RFID map
     map->updatePathPlanningGrid ( *x, *y, range, rxPower - *SENSITIVITY);
+    //So, robot at pr (x,y,orientation) (long, long, int) receives rxPower,phase,freq from tag i . 
+    radMod->addMeasurement(*x,*y, target->getOrientation() , rxPower, phase, *freq, i);
+    // std::cout << "    " << rxPower << std::endl;
+    // Moved down after we recast the rxPower
     if (rxPower < *SENSITIVITY){
       rxPower = 0;
     } else rxPower = 1;
     (*RFID_maps_list)[i].addEllipse(rxPower , map->getNumGridRows() - target->getX(),  target->getY(), target->getOrientation(), -1.0, range);
 
-    //So, robot at pr (x,y,orientation) (long, long, int) receives rxPower,phase,freq from tag i . 
-    radMod->addMeasurement(*x,*y, target->getOrientation() , rxPower, phase, *freq, i);
   }
 }
 
@@ -584,37 +587,55 @@ bool Utilities::forwardMotion(Pose *target, Pose *previous, list<Pose> *frontier
 
 void Utilities::findTags(vector<RFIDGridmap> *RFID_maps_list, vector<pair<double, double>> *tags_coord, dummy::Map *map,
                           string detection_log, string accuracy_log, 
-                          int initRange, long numConfiguration)
+                          int initRange, long numConfiguration,
+                          RadarModel *rm)
 {
   // Find the tag
-  std::pair<int, std::pair<int, int>> value_tag;
+  std::pair<int, std::pair<int, int>> value_tag, belief_value_tag;
   int value = 0;
-  std::pair<int, int> tag;
+  std::pair<int, int> tag, belief_tag;
   // FIXME: not accurate, it must not be used
     // tag= map.findTag();
     // cout << "RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
   std::string tags_distance_from_gt;
-  double distance_to_tag = 0;
-  double accuracy = 0;
+  double distance_to_tag, belief_distance_to_tag = 0;
+  double accuracy, belief_accuracy = 0;
   for (int i=0; i < (*RFID_maps_list).size(); i++){
     value_tag = map->findTagfromGridMap((*RFID_maps_list)[i]);
-    value = value_tag.first;
+    belief_value_tag = rm->findTagFromBeliefMap(i);
+    // value = value_tag.first;
     tag = value_tag.second;
+    belief_tag = belief_value_tag.second;
+    belief_tag.first = belief_tag.first;
+    belief_tag.second = belief_tag.second;
     // cout << "[Grid]RFID pose: [" << tag.second << "," << tag.first << "]" << "  ->  GT:[" << tags_coord[i].second << "," << tags_coord[i].first << "]" << endl;
     distance_to_tag = sqrt(pow((*tags_coord)[i].first - tag.first, 2) + pow((*tags_coord)[i].second - tag.second, 2));
+    belief_distance_to_tag = sqrt(pow((*tags_coord)[i].first - belief_tag.first, 2) + pow((*tags_coord)[i].second - belief_tag.second, 2));
     // cout << "Value: " << value << endl;
     // if (value >=2) accuracy = accuracy + 1;
     // cout << "Distance to tag: " << to_string(distance_to_tag) << " cells" << endl;
-    if (distance_to_tag <= 15.0) accuracy = accuracy + 1;
+    cout << "------" << "[" << i << "]------" << endl;
+    cout << "[GT]     Tag: " << to_string((*tags_coord)[i].first) << ", " << to_string((*tags_coord)[i].second) << endl;
+    cout << "[Belief] Tag: " << belief_tag.first << "," << belief_tag.second << endl;
+    cout << "Belief_Distance to tag: " << to_string(belief_distance_to_tag) << " cells" << endl;
+    if (distance_to_tag <= 3.0) accuracy = accuracy + 1;
+    if (belief_distance_to_tag <= 3.0)
+    {
+      belief_accuracy = belief_accuracy + 1;
+      // std::cout << "Tag: " << i << " found" << std::endl;
+    } 
+
     // if (distance_to_tag <= 8.0) {
     //   distance_to_tag = 1;
     // }else distance_to_tag = 0.0;
     tags_distance_from_gt += to_string(distance_to_tag) + ",";
   }
-  cout << "Accuracy: " << to_string(accuracy/10.0) << endl;
+  accuracy = accuracy / (*RFID_maps_list).size();
+  belief_accuracy = belief_accuracy / (*RFID_maps_list).size();
+  cout << "Accuracy: " << to_string(accuracy) << endl;
+  cout << "Belief_Accuracy: " << to_string(belief_accuracy) << endl;
   tags_distance_from_gt += "\n";
   this->filePutContents(detection_log, tags_distance_from_gt, true);
-  accuracy = accuracy / 10.0;
   std::string accuracy_content = to_string(initRange) + "," + to_string(numConfiguration) + "," + to_string(accuracy) + "\n";
   this->filePutContents(accuracy_log, accuracy_content, true);
 }

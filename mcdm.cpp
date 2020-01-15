@@ -119,6 +119,17 @@ int main ( int argc, char **argv )
 
   double absTag10_X = config["tag10X"].as<double>();
   double absTag10_Y = config["tag10Y"].as<double>();
+  // double absTag1_X = 37 * resolution;
+  // double absTag1_Y = 58 * resolution;
+
+  // double absTag2_X = 44 * resolution;
+  // double absTag2_Y = 31 * resolution;
+  
+  // double absTag3_X = 130 * resolution;
+  // double absTag3_Y = 45 * resolution;
+  
+  // double absTag4_X = 150 * resolution;
+  // double absTag4_Y = 108 * resolution;
 
   std::vector<std::pair<double,double>> tags_coord;
   tags_coord.push_back(std::make_pair(absTag1_X, absTag1_Y));
@@ -215,16 +226,19 @@ int main ( int argc, char **argv )
   double minX, maxX, minY, maxY;
 
   // Radar model: 
-  double nx = 6; // radar model active area x-range m.
-  double ny = 4;  // radar model active area y-range m.  
+  double nx = 240*resolution; // radar model active area x-range m.
+  double ny = 120*resolution;  // radar model active area y-range m.  
   double rs = resolution; // radar model grid resolution m./cell :: SAME AS INPUT IMAGE!!!
-  double sigma_power = 10; //dB
-  double sigma_phase = 0.1; //rads
+  double sigma_power = 1; //dB
+  double sigma_phase = 1; //rads
+  txtPower = -10; // NOTE: Added for debug
   std::vector<double> freqs{ freq }; // only 1 freq... noice!
+  // std::vector<double> freqs{ MIN_FREQ_NA,MIN_FREQ_NA+STEP_FREQ_NA,MIN_FREQ_NA+2.0*STEP_FREQ_NA }; 
 
   cout <<"Building radar model." << endl;
   RadarModel rm(nx, ny, rs, sigma_power, sigma_phase, txtPower, freqs, tags_coord, argv[1] );
   cout << "Radar model built." << endl;
+  rm.PrintRefMapWithTags("/tmp/scenario.png");  
 
   long x, y = 0;
   int orientation, range;
@@ -377,7 +391,8 @@ int main ( int argc, char **argv )
 
   utils.findTags(&RFID_maps_list, &tags_coord, &map,
                   detection_log, accuracy_log, 
-                  initRange, numConfiguration);
+                  initRange, numConfiguration,
+                  &rm);
   cout << "-----------------------------------------------------------------"<<endl;
   auto endMCDM = chrono::high_resolution_clock::now();
   content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + "," + to_string(w_rfid_gain) + ","
@@ -397,7 +412,7 @@ int main ( int argc, char **argv )
   cout << "Saving debug distribution maps... "<< endl;
   // for each tag:
   for (int t = 0; t < tags_coord.size(); t++){
-    cout << "---[" << t <<"]----------------" << endl;
+    // cout << "---[" << t <<"]----------------" << endl;
    rm.saveProbMapDebug("/tmp/",t,0,0,0,0);
   }
 }

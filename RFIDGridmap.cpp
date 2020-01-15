@@ -315,9 +315,9 @@ void RFIDGridmap::saveLayerWithCircle( grid_map::GridMap map_, std::string layer
 
 
       /// overlay tag position .................................................................................................
-        std::cout << " RFID MAP has " <<   map_.getSize()(1) << " cols by " <<  map_.getSize()(0) <<" rows "  <<std::endl;
-        std::cout << " Orig at: (" << map_.getPosition()(0) << ", " << map_.getPosition()(1)<<") m. " <<std::endl;
-        std::cout << " Size: (" << map_.getLength().x() << ", " << map_.getLength().y() <<") m. " <<std::endl;
+        // std::cout << " RFID MAP has " <<   map_.getSize()(1) << " cols by " <<  map_.getSize()(0) <<" rows "  <<std::endl;
+        // std::cout << " Orig at: (" << map_.getPosition()(0) << ", " << map_.getPosition()(1)<<") m. " <<std::endl;
+        // std::cout << " Size: (" << map_.getLength().x() << ", " << map_.getLength().y() <<") m. " <<std::endl;
 
 
 
@@ -329,16 +329,16 @@ void RFIDGridmap::saveLayerWithCircle( grid_map::GridMap map_, std::string layer
 
       grid_map::Position p(poseX, -poseY);                    
 
-      std::cout<<"Getting position to draw circle: " << std::endl;
+      // std::cout<<"Getting position to draw circle: " << std::endl;
       if (!map_.getIndex(p,index)){  
-          std::cout<<"Position ("  << p(0) << ", " << p(1) << ") is out of map bounds!" <<std::endl;  
+          // std::cout<<"Position ("  << p(0) << ", " << p(1) << ") is out of map bounds!" <<std::endl;  
       } else {
-       std::cout<<" Tag at (" << p(0) << ", " << p(1)<<") m. is in cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
+      //  std::cout<<" Tag at (" << p(0) << ", " << p(1)<<") m. is in cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
       // cast from gridmap indexes to opencv indexes 
       int cv_y = (_Nrow-1) - index.x();
       int cv_x = index.y();
-      std::cout<<" Which equals to opencv cell ("  << cv_x << ", " << cv_y << ") " << std::endl;
-      std::cout<<"......................" << std::endl;
+      // std::cout<<" Which equals to opencv cell ("  << cv_x << ", " << cv_y << ") " << std::endl;
+      // std::cout<<"......................" << std::endl;
 
       cv::Point center( cv_x, cv_y );
       cv::circle(imageCVout->image, center , 8, green, 1);

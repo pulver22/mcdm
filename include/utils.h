@@ -255,7 +255,8 @@ public:
 
   void findTags(vector<RFIDGridmap> *RFID_maps_list, vector<pair<double, double>> *tags_coord, dummy::Map *map, 
                 string detection_log, string accuracy_log, 
-                int initRange, long numConfiguration);
+                int initRange, long numConfiguration,
+                RadarModel *rm);
 
   void saveRFIDMaps(vector<RFIDGridmap> *RFID_maps_list, string root);
 

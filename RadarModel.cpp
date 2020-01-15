@@ -122,7 +122,7 @@ RadarModel::RadarModel(const double nx, const double ny, const double resolution
               _active_area_maps.add(layerName, rxPw_mat);
               layerName = getPhaseLayerName(freqs[i]);
               _active_area_maps.add(layerName, delay_mat);
-              cout <<"Models for F "<< getLayerName(freqs[i]) << " built" << std::endl;
+              // cout <<"Models for F "<< getLayerName(freqs[i]) << " built" << std::endl;
         }
 
         // rfid beliefs global map: One layer per tag
@@ -183,39 +183,39 @@ void RadarModel::initRefMap(const std::string imageURI){
         grid_map::Position p;       
         grid_map::Index index;
 
-        std::cout<<"\nTesting boundaries: " <<std::endl;
+        // std::cout<<"\nTesting boundaries: " <<std::endl;
         index =grid_map::Index(0,0);
-        std::cout<<"P: Index("  << 0 << ", " << 0 << ") " <<std::endl;
+        // std::cout<<"P: Index("  << 0 << ", " << 0 << ") " <<std::endl;
         if (_rfid_belief_maps.getPosition(index,p)){  
-            std::cout<<"P: Cell("  << index(0) << ", " << index(1) << ") is at (" << p(0) << ", " << p(1)<<") m. " <<std::endl;
+            // std::cout<<"P: Cell("  << index(0) << ", " << index(1) << ") is at (" << p(0) << ", " << p(1)<<") m. " <<std::endl;
         } else {
-          std::cout<<" Cell("  << index(0) << ", " << index(1) << ") is out bounds!" <<std::endl;  
+          // std::cout<<" Cell("  << index(0) << ", " << index(1) << ") is out bounds!" <<std::endl;  
         }
 
         index =grid_map::Index(_Nrow-1,0);
-        std::cout<<"P: Index("  << (_Nrow-1) << ", " << 0 << ") " <<std::endl;
+        // std::cout<<"P: Index("  << (_Nrow-1) << ", " << 0 << ") " <<std::endl;
         if (_rfid_belief_maps.getPosition(index,p)){  
-            std::cout<<"P: Cell("  << index(0) << ", " << index(1) << ") is at (" << p(0) << ", " << p(1)<<") m. " <<std::endl;
+            // std::cout<<"P: Cell("  << index(0) << ", " << index(1) << ") is at (" << p(0) << ", " << p(1)<<") m. " <<std::endl;
         } else {
-          std::cout<<" Cell("  << index(0) << ", " << index(1) << ") is out bounds!" <<std::endl;  
+          // std::cout<<" Cell("  << index(0) << ", " << index(1) << ") is out bounds!" <<std::endl;  
         }
 
         index =grid_map::Index(0,_Ncol-1);
-        std::cout<<"P: Index("  << (0) << ", " << (_Ncol-1) << ") " <<std::endl;
+        // std::cout<<"P: Index("  << (0) << ", " << (_Ncol-1) << ") " <<std::endl;
         if (_rfid_belief_maps.getPosition(index,p)){  
-            std::cout<<"P: Cell("  << index(0) << ", " << index(1) << ") is at (" << p(0) << ", " << p(1)<<") m. " <<std::endl;
+            // std::cout<<"P: Cell("  << index(0) << ", " << index(1) << ") is at (" << p(0) << ", " << p(1)<<") m. " <<std::endl;
         } else {
-          std::cout<<" Cell("  << index(0) << ", " << index(1) << ") is out bounds!" <<std::endl;  
+          // std::cout<<" Cell("  << index(0) << ", " << index(1) << ") is out bounds!" <<std::endl;  
         }
 
         index =grid_map::Index(_Nrow-1,_Ncol-1);
-        std::cout << "P: Index("  << (_Nrow-1) << ", " << (_Ncol-1) << ") " <<std::endl;        
+        // std::cout << "P: Index("  << (_Nrow-1) << ", " << (_Ncol-1) << ") " <<std::endl;        
         if (_rfid_belief_maps.getPosition(index,p)){  
-            std::cout<<"P: Cell("  << index(0) << ", " << index(1) << ") is at (" << p(0) << ", " << p(1)<<") m. " <<std::endl;
+            // std::cout<<"P: Cell("  << index(0) << ", " << index(1) << ") is at (" << p(0) << ", " << p(1)<<") m. " <<std::endl;
         } else {
-          std::cout<<" Cell("  << index(0) << ", " << index(1) << ") is out bounds!" <<std::endl;  
+          // std::cout<<" Cell("  << index(0) << ", " << index(1) << ") is out bounds!" <<std::endl;  
         }
-        std::cout << "............................. " << std::endl << std::endl;        
+        // std::cout << "............................. " << std::endl << std::endl;        
 }
 
     //So, robot at pr (x,y,orientation) (long, long, int) receives rxPower,phase,freq from tag i . 
@@ -263,6 +263,7 @@ void RadarModel::initRefMap(const std::string imageURI){
                         // get the prob:
                         prob_val = _active_area_maps.at("temp",*iterator);
                         // cout << prob_val << endl;
+                        if (prob_val < 1e-07) prob_val = 0;
 
                         // add value.
                         // TODO: HOW DO WE CHANGE OUR BELIEF? add, multiply...
@@ -539,7 +540,7 @@ void RadarModel::initRefMap(const std::string imageURI){
       cv::Mat image;
       const float minValue = _rfid_belief_maps[layerName].minCoeff();
       const float maxValue = _rfid_belief_maps[layerName].maxCoeff();
-
+      
       GridMapCvConverter::toImage<unsigned char, 3>(_rfid_belief_maps, layerName, CV_8UC3, minValue, maxValue, image);
       
       // In order to store a image with ric-coords, we need to flip
@@ -554,15 +555,15 @@ void RadarModel::initRefMap(const std::string imageURI){
       grid_map::Position p(tx,  ty);                    
                       
       if (_rfid_belief_maps.getIndex(p,index)){  
-          std::cout<<"Tag at (" << p(0) << ", " << p(1)<<") m. is in cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
+          // std::cout<<"Tag at (" << p(0) << ", " << p(1)<<") m. is in cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
       } else {
-        std::cout<<" Position ("  << p(0) << ", " << p(1) << ") is out of map bounds!" <<std::endl;  
+        // std::cout<<" Position ("  << p(0) << ", " << p(1) << ") is out of map bounds!" <<std::endl;  
       }
 
       // cast from gridmap indexes to opencv indexes 
       int cv_y = (_Nrow-1) - index.x();
       int cv_x = (_Ncol-1) - index.y();
-      std::cout<<"Which equals to opencv cell ("  << cv_x << ", " << cv_y << ") " << std::endl;
+      // std::cout<<"Which equals to opencv cell ("  << cv_x << ", " << cv_y << ") " << std::endl;
 
       center = cv::Point( cv_x, cv_y );
       cv::circle(image, center , 5, green, 1);
@@ -571,15 +572,15 @@ void RadarModel::initRefMap(const std::string imageURI){
       p = grid_map::Position(robot_x, robot_y);                    
       // robot_head   
       if (_rfid_belief_maps.getIndex(p,index)){  
-          std::cout<<"Robot at (" << p(0) << ", " << p(1)<<") m. is in cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
+          // std::cout<<"Robot at (" << p(0) << ", " << p(1)<<") m. is in cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
       } else {
-        std::cout<<" Position ("  << p(0) << ", " << p(1) << ") is out of map bounds!" <<std::endl;  
+        // std::cout<<" Position ("  << p(0) << ", " << p(1) << ") is out of map bounds!" <<std::endl;  
       }
 
       // cast from gridmap indexes to opencv indexes 
       cv_y = (_Nrow-1) - index.x();
       cv_x = (_Ncol-1) - index.y();
-      std::cout<<"Which equals to opencv cell ("  << cv_x << ", " << cv_y << ") " << std::endl;
+      // std::cout<<"Which equals to opencv cell ("  << cv_x << ", " << cv_y << ") " << std::endl;
 
       center = cv::Point( cv_x, cv_y );
       cv::circle(image, center , 5, red, -1);
@@ -623,7 +624,7 @@ void RadarModel::initRefMap(const std::string imageURI){
             grid_map::Position p(x,  y);                    
                            
         if (_rfid_belief_maps.getIndex(p,index)){  
-            std::cout<<"Tag at (" << p(0) << ", " << p(1)<<") m. is in cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
+            // std::cout<<"Tag at (" << p(0) << ", " << p(1)<<") m. is in cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
         } else {
           std::cout<<" Position ("  << p(0) << ", " << p(1) << ") is out of map bounds!" <<std::endl;  
         }
@@ -632,7 +633,7 @@ void RadarModel::initRefMap(const std::string imageURI){
         // cast from gridmap indexes to opencv indexes 
         int cv_y = (_Nrow-1) - index.x();
         int cv_x = (_Ncol-1) - index.y();
-        std::cout<<"Which equals to opencv cell ("  << cv_x << ", " << cv_y << "): "<< color_list[i%color_list.size()].second << std::endl;
+        // std::cout<<"Which equals to opencv cell ("  << cv_x << ", " << cv_y << "): "<< color_list[i%color_list.size()].second << std::endl;
 
         center = cv::Point( cv_x, cv_y );
         cv::circle(image, center , 5, color_list[i%color_list.size()].first, -1);
@@ -1014,5 +1015,61 @@ void RadarModel::activeAreaFriis(double freq, double txtPower, double sensitivit
 
 }
 
+std::pair<int, std::pair<int, int>> RadarModel::findTagFromBeliefMap(int num_tag){
+  
+  // Access the belief map of every tag
+  std::string layerName = getTagLayerName(num_tag);
+  GridMap::Matrix& grid = _rfid_belief_maps[layerName];
+  
+  std::pair<int,int> tag(0,0);
+  double powerRead = 0;
+  // for(int row=0; row < grid.getLength().x(); row++)
+  // {
+  //   for(int col=0; col < grid.getLength().y(); col++)
+  //   {
 
+  for(GridMapIterator iterator(_rfid_belief_maps); !iterator.isPastEnd(); ++iterator)
+  { 
+      const Index index(*iterator);
+      // For every cell, analyse the surrounding area
+      double tmp_power = 0.0;
+      tmp_power = grid(index(0), index(1));
+      int buffer_size = 3;
+      if (index(0) > buffer_size and index(0) <= _rfid_belief_maps.getLength().x() - buffer_size){
+        if(index(1) > buffer_size and index(1) <= _rfid_belief_maps.getLength().y() - buffer_size){
+          // std::cout << "I: " << index(0) << "," << index(1) << endl;
+          Index submapStartIndex(index(0) - buffer_size, index(1) - buffer_size);
+          Index submapBufferSize(buffer_size, buffer_size);
+          for (grid_map::SubmapIterator sub_iterator(_rfid_belief_maps, submapStartIndex, submapBufferSize); 
+            !sub_iterator.isPastEnd(); ++sub_iterator) {
+            Index sub_index(*sub_iterator);
+            // std::cout << "I: " << sub_index(0) << "," << sub_index(1) << endl;
+            tmp_power = tmp_power + grid(sub_index(0), sub_index(1));
+          }
+        }  
+      }
+      
+      
+      // for (int i = -3; i <= 3; i++){
+      //   for (int j = -3; j <= 3; j++){
+      //     tmp_power = tmp_power + grid.getCell(row, col); 
+      //   }
+      // }
+      // tmp_power = grid.getCell(row, col); 
+      if(tmp_power > powerRead)
+      {
+        powerRead = tmp_power;
+        
+        // Normalise the tag coordinate to follow Ricc's system
+        tag.first  = _rfid_belief_maps.getLength().x() - index(0);
+        tag.second = _rfid_belief_maps.getLength().y() - index(1);
+      }
+
+    // }
+  }
+  std::pair<int, std::pair<int, int>> final_return (powerRead, tag);
+
+  // cout << "Value read: " << powerRead << endl;
+  return final_return;
+}
 
