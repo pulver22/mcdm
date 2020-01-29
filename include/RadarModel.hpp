@@ -238,6 +238,19 @@ double phaseDifference(double tag_x, double tag_y, double freq);
 void activeAreaFriis(double freq, double txtPower, double sensitivity, double distStep, double& minX, double& minY, double& maxX, double& maxY);
 
 
+/**
+ * @param  x             x coord (m.) in map coords of the center
+ * @param  y             y coord (m.) in map coords of the center
+ * @param  orientation   orientation (rad.) in map coords of the center
+ * @param  tag_i         tag we want to read
+ */
+double getTotalWeight(double x, double y, double orientation, int tag_i);
+
+double getTotalWeight(double x, double y, double orientation, double size_x, double size_y, int tag_i);
+
+double getTotalWeight(double x, double y, double orientation, grid_map::SubmapIterator  iterator, int tag_i);
+double getTotalWeight(int tag_i);
+
 void addMeasurement(double x, double y, double orientation, double rxPower, double phase, double freq, int i);
 
 std::string getPowLayerName(double freq_i);
