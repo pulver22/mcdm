@@ -25,7 +25,9 @@ Criterion::Criterion()
 }
 
 Criterion:: Criterion(string name, double weight, bool highGood):
-    name(name), weight(weight),highGood(highGood)
+    name(name), weight(weight),
+    maxValue(std::numeric_limits<double>::min()), minValue(std::numeric_limits<double>::max()),
+    highGood(highGood)
 {
 
 }
@@ -45,11 +47,15 @@ void Criterion::insertEvaluation( Pose &p, double value)
     string pose = record->getEncodedKey(p);
     // std::cout << pose << "," << value << std::endl;
     evaluation.emplace(pose, value);
-
-    if(value >= maxValue)
-	maxValue = value;
-    if(value <= minValue)
+    // cout << maxValue << "," << minValue << endl;
+    if(value >= maxValue){
+        // cout << "max: " << maxValue << endl;
+	    maxValue = value;
+    }
+    if(value <= minValue){
         minValue = value;
+        // cout << "min: " << minValue << endl;
+    }
 
     delete record;
     //pose.clear();

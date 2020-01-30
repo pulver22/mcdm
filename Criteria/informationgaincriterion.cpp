@@ -14,7 +14,7 @@ InformationGainCriterion::~InformationGainCriterion()
 {
 }
 
-double InformationGainCriterion::evaluate(Pose &p, dummy::Map *map)
+double InformationGainCriterion::evaluate(Pose &p, dummy::Map *map, RadarModel *rm)
 {
 
     long px = p.getX();
@@ -24,7 +24,8 @@ double InformationGainCriterion::evaluate(Pose &p, dummy::Map *map)
     int orientation = p.getOrientation();
     int range = p.getRange();
     double angle = p.getFOV();
-/*
+	
+	/*
     // Minimum and maximum coordinations sensed by the laser scan
     int minSensedX, maxSensedX;
     int minSensedY,maxSensedY;
@@ -176,8 +177,9 @@ double InformationGainCriterion::evaluate(Pose &p, dummy::Map *map)
     unExploredMap = sensedArea - occupiedArea;
     //insert in the evaluation record the pair <frontier,values>
     insertEvaluation(p,unExploredMap);
-*/
-    NewRay ray;
+	*/
+    
+	NewRay ray;
     //Map *map2 = &map;
     double unExploredMap=(double)ray.getInformationGain(map,px,py,orientation,angle,range);
     /*

@@ -33,7 +33,7 @@ SensingTimeCriterion::~SensingTimeCriterion()
 
 }
 
-double SensingTimeCriterion::SensingTimeCriterion::evaluate(Pose &p,dummy::Map *map)
+double SensingTimeCriterion::SensingTimeCriterion::evaluate(Pose &p,dummy::Map *map, RadarModel *rm)
 {
   NewRay ray;
   double sensingTime;

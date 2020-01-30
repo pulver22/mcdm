@@ -3,6 +3,7 @@
 #include "Criteria/criterion.h"
 #include "Criteria/weightmatrix.h"
 #include "evaluationrecords.h"
+#include "RadarModel.hpp"
 #include <utility>
 
 /**
@@ -17,8 +18,8 @@ public:
   MCDMFunction(float w_criterion_1, float w_criterion_2, float w_criterion_3, bool use_mcdm);
   MCDMFunction(float w_criterion_1, float w_criterion_2, float w_criterion_3, float w_criterion_4, bool use_mcdm);
   ~MCDMFunction();
-  void evaluateFrontier(Pose& p, dummy::Map* map);
-  EvaluationRecords* evaluateFrontiers(const list< Pose >& frontiers, dummy::Map* map, double threshold);
+  void evaluateFrontier(Pose& p, dummy::Map* map, RadarModel *rm);
+  EvaluationRecords* evaluateFrontiers(const list< Pose >& frontiers, dummy::Map* map, double threshold, RadarModel *rm);
   pair< Pose, double > selectNewPose(EvaluationRecords* evaluationRecords);
   string getEncodedKey(Pose& p, int value);
   EvaluationRecords* evaluateFrontiersVec(const std::vector< Pose >& frontiers,  dummy::Map& map,double threshold);

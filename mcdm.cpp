@@ -247,6 +247,7 @@ int main ( int argc, char **argv )
 
   list<Pose> frontiers, tmp_history;
   bool break_loop;
+  float accumulated_received_power = 0.0;
   do
   {
     // If we are doing "forward" navigation towards cells never visited before
@@ -297,7 +298,7 @@ int main ( int argc, char **argv )
       
       // Push position into the navigation graph
       break_loop = utils.updateNavigationGraph(&count, &function, &graph2, &target, &map, &x, &y,
-                                              &orientation, &range, &FOV, &threshold, &actualPose);
+                                              &orientation, &range, &FOV, &threshold, &actualPose, &rm);
       if (break_loop == true) break;
 
       break_loop = utils.forwardMotion(&target, &previous, &frontiers, &nearCandidates, &candidatePosition, &ray, &map,
@@ -306,7 +307,16 @@ int main ( int argc, char **argv )
                                             &tmp_history, &tabuList, &astar, &imgresolution, &travelledDistance,
                                             &sensedCells, &newSensedCells, &totalFreeCells, &totalScanTime, &out_log, 
                                             &numConfiguration, &actualPose, &encodedKeyValue, &totalAngle, &numOfTurning,
-                                            &scanAngle, &btMode);
+                                            &scanAngle, &btMode, &rm);
+      // calculate the accumulate received power
+      for (int tag_id = 0; tag_id < tags_coord.size(); tag_id++){
+        double tmp_power = rm.getTotalWeight(x, y, orientation, 5,5, tag_id );
+        if (isnan(tmp_power)) tmp_power = SENSITIVITY;
+        accumulated_received_power += tmp_power;
+        cout << "Rx: " << tmp_power << endl;
+      }
+      
+      
       if (break_loop == true) break;
 
     }
@@ -346,7 +356,7 @@ int main ( int argc, char **argv )
       // Remove the current pose from the list of possible candidate cells
       utils.cleanPossibleDestination2 ( &nearCandidates,target );
       // Get the list of the candidate cells with their evaluation
-      EvaluationRecords *record = function.evaluateFrontiers ( nearCandidates, &map, threshold );
+      EvaluationRecords *record = function.evaluateFrontiers ( nearCandidates, &map, threshold, &rm );
 
       // If there are candidate cells
       if ( record->size() != 0 )
@@ -356,7 +366,7 @@ int main ( int argc, char **argv )
                                     &graph2, &map, &function, &tabuList, &history, 
                                     &encodedKeyValue, &astar, &numConfiguration,
                                     &totalAngle, &travelledDistance, &numOfTurning , &scanAngle, 
-                                    &btMode, &threshold);
+                                    &btMode, &threshold, &rm);
       }
       // ... if there are not candidate cells
       else
@@ -374,13 +384,13 @@ int main ( int argc, char **argv )
   // Perform exploration until a certain coverage is achieved
   while ( sensedCells < precision * totalFreeCells );
   // Plotting utilities
-  map.drawVisitedCells ();
-  map.printVisitedCells ( history );
-  map.drawRFIDScan();
-  map.drawRFIDGridScan(myGrid1);
-  utils.saveRFIDMaps(&RFID_maps_list, "/tmp/");
-  utils.saveRFIDMapsWithGroundTruths(&RFID_maps_list, &tags_coord, "/tmp/D");
-  
+  // map.drawVisitedCells ();
+  // map.printVisitedCells ( history );
+  // map.drawRFIDScan();
+  // map.drawRFIDGridScan(myGrid1);
+  // utils.saveRFIDMaps(&RFID_maps_list, "/tmp/");
+  // utils.saveRFIDMapsWithGroundTruths(&RFID_maps_list, &tags_coord, "/tmp/D");
+  cout << "Sensed cells: " << sensedCells << " over " << totalFreeCells << endl;
   // cout << "------------------ HISTORY -----------------" << endl;
   // Calculate which cells have been visited only once
   tmp_history = utils.cleanHistory(&history, &record);
@@ -389,7 +399,8 @@ int main ( int argc, char **argv )
   // cout << "------------------ TABULIST -----------------" << endl;
   utils.calculateDistance(tabuList, &map, &astar );
 
-  utils.findTags(&RFID_maps_list, &tags_coord, &map,
+  utils.findTags(w_info_gain, w_travel_distance, w_sensing_time, w_rfid_gain,
+                  &RFID_maps_list, &tags_coord, &map,
                   detection_log, accuracy_log, 
                   initRange, numConfiguration,
                   &rm);
@@ -404,15 +415,17 @@ int main ( int argc, char **argv )
   double totalTimeMCDM = chrono::duration<double,milli> ( endMCDM -startMCDM ).count();
   cout << "Total time for MCDM algorithm : " << totalTimeMCDM << "ms, " << totalTimeMCDM/1000 <<" s, " <<
           totalTimeMCDM/60000 << " m "<< endl;
+  cout << "Traversed distance: " << travelledDistance << endl;
+  cout << "Accumulated power: " << accumulated_received_power << endl;
 
 
-  cout << "Saving tag distribution maps... "<< endl;
-  rm.saveProbMaps("/tmp/");
+  // cout << "Saving tag distribution maps... "<< endl;
+  // rm.saveProbMaps("/tmp/");
 
-  cout << "Saving debug distribution maps... "<< endl;
-  // for each tag:
-  for (int t = 0; t < tags_coord.size(); t++){
-    // cout << "---[" << t <<"]----------------" << endl;
-   rm.saveProbMapDebug("/tmp/",t,0,0,0,0);
-  }
+  // cout << "Saving debug distribution maps... "<< endl;
+  // // for each tag:
+  // for (int t = 0; t < tags_coord.size(); t++){
+  //   // cout << "---[" << t <<"]----------------" << endl;
+  //  rm.saveProbMapDebug("/tmp/",t,0,0,0,0);
+  // }
 }

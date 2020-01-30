@@ -34,7 +34,7 @@ TravelDistanceCriterion::~TravelDistanceCriterion()
 
 }
 
-double TravelDistanceCriterion::evaluate( Pose &p, dummy::Map *map)
+double TravelDistanceCriterion::evaluate( Pose &p, dummy::Map *map, RadarModel *rm)
 {
     //cout << "travel " << endl;
     Astar astar;

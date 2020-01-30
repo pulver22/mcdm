@@ -90,14 +90,14 @@ add_executable(mcdm_online_exploration mcdm.cpp  ${HEADER_FILES})
 target_link_libraries(mcdm_online_exploration lib  -lboost_unit_test_framework  ${catkin_LIBRARIES}   ${OpenCV_LIBRARIES}  yaml-cpp)
 install(TARGETS mcdm_online_exploration RUNTIME DESTINATION bin)
 
-add_executable(random_walk random_walk.cpp  ${HEADER_FILES})
-target_link_libraries(random_walk lib  -lboost_unit_test_framework  ${catkin_LIBRARIES}   ${OpenCV_LIBRARIES})
-install(TARGETS random_walk RUNTIME DESTINATION bin)
+#add_executable(random_walk random_walk.cpp  ${HEADER_FILES})
+#target_link_libraries(random_walk lib  -lboost_unit_test_framework  ${catkin_LIBRARIES}   ${OpenCV_LIBRARIES})
+#install(TARGETS random_walk RUNTIME DESTINATION bin)
 
 
-add_executable(random_frontier random_frontier.cpp  ${HEADER_FILES})
-target_link_libraries(random_frontier lib  -lboost_unit_test_framework  ${catkin_LIBRARIES}   ${OpenCV_LIBRARIES})
-install(TARGETS random_frontier RUNTIME DESTINATION bin)
+#add_executable(random_frontier random_frontier.cpp  ${HEADER_FILES})
+#target_link_libraries(random_frontier lib  -lboost_unit_test_framework  ${catkin_LIBRARIES}   ${OpenCV_LIBRARIES})
+#install(TARGETS random_frontier RUNTIME DESTINATION bin)
 
 #add_subdirectory(test)
 

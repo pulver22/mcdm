@@ -18,17 +18,17 @@ EvaluationRecords::~EvaluationRecords()
 void EvaluationRecords::putEvaluation(Pose& frontier, double value)
 {
     if(evaluations.empty()){
-	minValue = value;
-	maxValue = value;
+		minValue = value;
+		maxValue = value;
     }
     
     string s =getEncodedKey(frontier);
     evaluations.emplace(s,value);
 
     if(value >= maxValue)
-	maxValue = value;
+		maxValue = value;
     if(value <= minValue)
-	minValue = value;
+		minValue = value;
 
 
 }

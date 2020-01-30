@@ -49,7 +49,7 @@ public:
                              int range, int FOV, double threshold,
                              string actualPose,
                              vector< pair< string, list< Pose > > > *graph2,
-                             MCDMFunction *function);
+                             MCDMFunction *function, RadarModel *rm);
   /**
   * Calculate the time required for performing a scan with the TDLAS sensor
   * @param scanAngle: the angle to scan
@@ -163,7 +163,8 @@ public:
   bool recordContainsCandidates(EvaluationRecords* record, 
                               int* count, Pose* target, Pose* previous, string* actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
                               dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int* encodedKeyValue, Astar* astar , long* numConfiguration,
-                                double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold);
+                                double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold,
+                                RadarModel *rm);
   
   /**
     * What to do when we are doing forward motion and there are no more candidates to explore from the considered position
@@ -204,7 +205,8 @@ public:
   bool recordContainsCandidatesBT(EvaluationRecords* record, 
                                 int* count, Pose* target, Pose* previous, string* actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
                                 dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int* encodedKeyValue, Astar* astar , long* numConfiguration,
-                                double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold);
+                                double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold,
+                                RadarModel *rm);
   
   /**
     * What to do when we are in backtracking and there are no more candidates to explore from the considered position
@@ -242,7 +244,8 @@ public:
                   long *x, long *y, int range, RadarModel *radMod);
 
   bool updateNavigationGraph(int *count, MCDMFunction *function, vector<pair<string,list<Pose>>> *graph2, Pose *target , dummy::Map *map, 
-                            long *x, long *y, int *orientation, int *range, double *FOV, double *threshold, string *actualPose);
+                            long *x, long *y, int *orientation, int *range, double *FOV, double *threshold, string *actualPose,
+                            RadarModel *rm);
 
 
   bool forwardMotion(Pose *target, Pose *previous,list<Pose> *frontiers, list<Pose> *nearCandidates, vector<pair<long,long> > *candidatePosition, NewRay *ray, dummy::Map *map, 
@@ -251,9 +254,10 @@ public:
                       list<Pose> *tmp_history, list<Pose> *tabuList, Astar *astar, double *imgresolution, double *travelledDistance,
                       long *sensedCells, long *newSensedCells, long *totalFreeCells, double *totalScanTime, string *out_log,
                       long *numConfiguration, string *actualPose, int* encodedKeyValue, double *totalAngle, int *numOfTurning,
-                      double *scanAngle, bool *btMode);
+                      double *scanAngle, bool *btMode, RadarModel *rm);
 
-  void findTags(vector<RFIDGridmap> *RFID_maps_list, vector<pair<double, double>> *tags_coord, dummy::Map *map, 
+  void findTags(double w_info_gain, double w_travel_distance,double w_sensing_time,double w_rfid_gain,
+                vector<RFIDGridmap> *RFID_maps_list, vector<pair<double, double>> *tags_coord, dummy::Map *map, 
                 string detection_log, string accuracy_log, 
                 int initRange, long numConfiguration,
                 RadarModel *rm);

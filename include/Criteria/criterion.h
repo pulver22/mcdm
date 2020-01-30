@@ -21,6 +21,7 @@
 #include <string>
 #include "pose.h"
 #include "map.h"
+#include "RadarModel.hpp"
 
 //using namespace import_map;
 using namespace std;
@@ -34,7 +35,7 @@ class Criterion
 	~Criterion();
 
 	//Other methods
-	virtual double evaluate( Pose &p, dummy::Map *map) {};
+	virtual double evaluate( Pose &p, dummy::Map *map, RadarModel *rm) {};
 	double getEvaluation(Pose &p) const;
 	void insertEvaluation(Pose &p, double value);
 	void clean();
@@ -52,7 +53,7 @@ class Criterion
 
   protected:
 	string name;
-	double weight;
+	double weight = 0.0;
 	bool highGood;
 	double maxValue, minValue;
 
