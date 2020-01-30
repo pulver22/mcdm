@@ -132,14 +132,14 @@ list<Pose> Utilities::cleanHistory(vector<string>* history, EvaluationRecords* r
 }
 
 void Utilities::printResult(long newSensedCells, long totalFreeCells, double precision,
-                 long numConfiguration, double travelledDistance,
-                 int numOfTurning, double totalAngle, double totalScanTime)
+                 long numConfiguration, double travelledDistance, int numOfTurning, 
+                 double totalAngle, double totalScanTime, double accumulated_received_power)
 {
   cout << "-----------------------------------------------------------------"<<endl;
   cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
   cout << "Total cell visited :" << numConfiguration <<endl;
   cout << "Total travelled distance (meters): " << travelledDistance << endl;
-  cout << "Total travel time: " << travelledDistance / 0.5 << "s, " << ( travelledDistance/0.5) /60 << " m"<< endl;
+  // cout << "Total travel time: " << travelledDistance / 0.5 << "s, " << ( travelledDistance/0.5) /60 << " m"<< endl;
   cout << "I came back to the original position since i don't have any other candidate position"<< endl;
   cout << "Total exploration time (s): " << travelledDistance / 0.5 << endl;
   cout << "Total number of turning: " << numOfTurning << endl;
@@ -147,6 +147,7 @@ void Utilities::printResult(long newSensedCells, long totalFreeCells, double pre
   cout << "Total time for scanning: " << totalScanTime << endl;
   cout << "Total time for exploration: " << travelledDistance/0.5 + totalScanTime << "s, " <<
                                               ( travelledDistance/0.5 + totalScanTime ) /60 << " m" << endl;
+  cout << "Accumulated Rx power: " << accumulated_received_power << endl;
   if (newSensedCells < precision * totalFreeCells)
   {
     cout << "FINAL: MAP NOT EXPLORED! :(" << endl;
@@ -174,7 +175,7 @@ void Utilities::filePutContents(const std::string& name, const std::string& cont
       // cout << "File does not exist! Create a new one!" << endl;
       outfile.open(name);
       if (name.find("result") != string::npos){
-        outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,norm_w_info_gain,norm_w_travel_distance,norm_w_sensing_time,norm_w_rfid_gain,coverage,numConfiguration,travelledDistance,totalScanTime" << endl;
+        outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,norm_w_info_gain,norm_w_travel_distance,norm_w_sensing_time,norm_w_rfid_gain,coverage,numConfiguration,travelledDistance,totalScanTime,accumulatedRxPower" << endl;
       }
       else if (name.find("coverage") != string::npos){
         outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,norm_w_info_gain,norm_w_travel_distance,norm_w_sensing_time,norm_w_rfid_gain,numConfiguration,increasingCoverage,travelledDistance" << endl;
@@ -505,7 +506,7 @@ bool Utilities::forwardMotion(Pose *target, Pose *previous, list<Pose> *frontier
                               list<Pose> *tmp_history, list<Pose> *tabuList, Astar *astar, double *imgresolution, double *travelledDistance,
                               long *sensedCells, long *newSensedCells, long *totalFreeCells, double *totalScanTime, string *out_log, 
                               long *numConfiguration, string *actualPose, int* encodedKeyValue, double *totalAngle, int *numOfTurning,
-                              double *scanAngle, bool *btMode, RadarModel *rm)
+                              double *scanAngle, bool *btMode, RadarModel *rm, double *accumulated_received_power, double *precision)
 {
   // If there are no new candidate positions from the current pose of the robot
   if ( candidatePosition->size() == 0 )
@@ -550,11 +551,13 @@ bool Utilities::forwardMotion(Pose *target, Pose *previous, list<Pose> *frontier
       {
         *travelledDistance = *travelledDistance/2;
       }
-      // utils.printResult(newSensedCells, totalFreeCells, precision, numConfiguration, travelledDistance, numOfTurning,
-      //     totalAngle, totalScanTime);
+      this->printResult(*newSensedCells, *totalFreeCells, *precision, 
+                        *numConfiguration, *travelledDistance, *numOfTurning,
+                        *totalAngle, *totalScanTime, *accumulated_received_power);
       string content = to_string(this->w_info_gain) + ","  + to_string(this->w_travel_distance) + "," + to_string(this->w_sensing_time) 
                 + "," + to_string(this->w_rfid_gain) + "," + to_string(float(*newSensedCells)/float(*totalFreeCells)) 
-                + "," + to_string(*numConfiguration) + "," + to_string(*travelledDistance) + "," + to_string(*totalScanTime) + "\n";
+                + "," + to_string(*numConfiguration) + "," + to_string(*travelledDistance) + "," + to_string(*totalScanTime) + 
+                + "," + to_string(*accumulated_received_power) + "\n";
       this->filePutContents(*out_log, content, true );
       exit ( 0 );
     }
@@ -567,7 +570,6 @@ bool Utilities::forwardMotion(Pose *target, Pose *previous, list<Pose> *frontier
   {
     // For each candiate position, create many more with different robot orientation
     this->createMultiplePosition(frontiers, candidatePosition, *range, *FOV);
-    
     // Evaluate the frontiers and return a list of <frontier, evaluation> pairs
     record = function->evaluateFrontiers ( *frontiers, map, *threshold, rm );
     *nearCandidates = record->getFrontiers();
@@ -634,8 +636,8 @@ void Utilities::findTags(double w_info_gain, double w_travel_distance,double w_s
     // if (value >=2) accuracy = accuracy + 1;
     // cout << "Distance to tag: " << to_string(distance_to_tag) << " cells" << endl;
     cout << "------" << "[" << i << "]------" << endl;
-    cout << "[GT]     Tag: " << to_string((*tags_coord)[i].first) << ", " << to_string((*tags_coord)[i].second) << endl;
-    cout << "[Belief] Tag: " << belief_tag.first << "," << belief_tag.second << endl;
+    // cout << "[GT]     Tag: " << to_string((*tags_coord)[i].first) << ", " << to_string((*tags_coord)[i].second) << endl;
+    // cout << "[Belief] Tag: " << belief_tag.first << "," << belief_tag.second << endl;
     cout << "Belief_Distance to tag: " << to_string(belief_distance_to_tag) << " cells" << endl;
     if (distance_to_tag <= 4.0) accuracy = accuracy + 1;
     if (belief_distance_to_tag <= 4.0)
@@ -647,7 +649,7 @@ void Utilities::findTags(double w_info_gain, double w_travel_distance,double w_s
     // if (distance_to_tag <= 8.0) {
     //   distance_to_tag = 1;
     // }else distance_to_tag = 0.0;
-    tags_distance_from_gt += to_string(distance_to_tag) + ",";
+    tags_distance_from_gt += to_string(belief_distance_to_tag) + ",";
   }
   accuracy = accuracy / (*RFID_maps_list).size();
   belief_accuracy = belief_accuracy / (*RFID_maps_list).size();

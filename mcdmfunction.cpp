@@ -58,7 +58,6 @@ MCDMFunction::MCDMFunction(float w_criterion_1, float w_criterion_2, float w_cri
   MCDMWeightReader reader;
   //cout << "test" << endl;
   matrix = reader.getMatrix(w_criterion_1, w_criterion_2, w_criterion_3, w_criterion_4);
-  //cout << "test2" << endl;
 
   // get the list of all criteria to be considered
   list<string> listCriteria = matrix->getKnownCriteria();
@@ -128,14 +127,12 @@ MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map *ma
     // cout << "   " << criteria[*it] << endl;
   }
 
-
   //Evaluate the frontiers
   list<Pose>::const_iterator it2;
   for (it2 = frontiers.begin(); it2 != frontiers.end(); it2++) {
     f = *it2;
     evaluateFrontier(f, map, rm);
   }
-
 
   //Normalize the values
   for (vector<Criterion *>::iterator it = activeCriteria.begin(); it != activeCriteria.end(); ++it) {
@@ -188,9 +185,7 @@ MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map *ma
           Criterion *next = (*j);
           names.push_back(next->getName()); // The list of criteria whose evaluation is >= than the one's considered
         }
-
         weight = matrix->getWeight(names);
-
         if (k == activeCriteria.begin()) {
           c = (*k);
           finalValue += c->getEvaluation(f) * weight;

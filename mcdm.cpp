@@ -231,7 +231,7 @@ int main ( int argc, char **argv )
   double rs = resolution; // radar model grid resolution m./cell :: SAME AS INPUT IMAGE!!!
   double sigma_power = 1; //dB
   double sigma_phase = 1; //rads
-  txtPower = -10; // NOTE: Added for debug
+  txtPower = txtPower; // NOTE: Added for debug
   std::vector<double> freqs{ freq }; // only 1 freq... noice!
   // std::vector<double> freqs{ MIN_FREQ_NA,MIN_FREQ_NA+STEP_FREQ_NA,MIN_FREQ_NA+2.0*STEP_FREQ_NA }; 
 
@@ -247,7 +247,7 @@ int main ( int argc, char **argv )
 
   list<Pose> frontiers, tmp_history;
   bool break_loop;
-  float accumulated_received_power = 0.0;
+  double accumulated_received_power = 0.0;
   do
   {
     // If we are doing "forward" navigation towards cells never visited before
@@ -295,25 +295,20 @@ int main ( int argc, char **argv )
       ray.findCandidatePositions ( &map,x,y,orientation,FOV,range );
       vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
       ray.emptyCandidatePositions();
-      
       // Push position into the navigation graph
       break_loop = utils.updateNavigationGraph(&count, &function, &graph2, &target, &map, &x, &y,
                                               &orientation, &range, &FOV, &threshold, &actualPose, &rm);
       if (break_loop == true) break;
-
       break_loop = utils.forwardMotion(&target, &previous, &frontiers, &nearCandidates, &candidatePosition, &ray, &map,
                                             &x, &y, &orientation, &FOV, &range, &graph2,
                                             &record, &function, &threshold, &count, &history,
                                             &tmp_history, &tabuList, &astar, &imgresolution, &travelledDistance,
                                             &sensedCells, &newSensedCells, &totalFreeCells, &totalScanTime, &out_log, 
                                             &numConfiguration, &actualPose, &encodedKeyValue, &totalAngle, &numOfTurning,
-                                            &scanAngle, &btMode, &rm);
+                                            &scanAngle, &btMode, &rm, &accumulated_received_power, &precision);
       // calculate the accumulate received power
       for (int tag_id = 0; tag_id < tags_coord.size(); tag_id++){
-        double tmp_power = rm.getTotalWeight(x, y, orientation, 5,5, tag_id );
-        if (isnan(tmp_power)) tmp_power = SENSITIVITY;
-        accumulated_received_power += tmp_power;
-        cout << "Rx: " << tmp_power << endl;
+        accumulated_received_power += rm.received_power_friis(tags_coord[tag_id].first, tags_coord[tag_id].second, freq, txtPower);
       }
       
       
@@ -390,7 +385,6 @@ int main ( int argc, char **argv )
   // map.drawRFIDGridScan(myGrid1);
   // utils.saveRFIDMaps(&RFID_maps_list, "/tmp/");
   // utils.saveRFIDMapsWithGroundTruths(&RFID_maps_list, &tags_coord, "/tmp/D");
-  cout << "Sensed cells: " << sensedCells << " over " << totalFreeCells << endl;
   // cout << "------------------ HISTORY -----------------" << endl;
   // Calculate which cells have been visited only once
   tmp_history = utils.cleanHistory(&history, &record);
@@ -409,15 +403,16 @@ int main ( int argc, char **argv )
   content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + "," + to_string(w_rfid_gain) + ","
             + to_string(norm_w_info_gain) + ","  + to_string(norm_w_travel_distance) + "," + to_string(norm_w_sensing_time) + "," + to_string(norm_w_rfid_gain) + ","
             + to_string(float(newSensedCells)/float(totalFreeCells)) + "," + to_string(numConfiguration) + ","
-            + to_string(travelledDistance) + "," + to_string(totalScanTime)+ "\n";
+            + to_string(travelledDistance) + "," + to_string(totalScanTime) + "," + to_string(accumulated_received_power)+ "\n";
   utils.filePutContents(out_log, content, true );
 
   double totalTimeMCDM = chrono::duration<double,milli> ( endMCDM -startMCDM ).count();
   cout << "Total time for MCDM algorithm : " << totalTimeMCDM << "ms, " << totalTimeMCDM/1000 <<" s, " <<
           totalTimeMCDM/60000 << " m "<< endl;
-  cout << "Traversed distance: " << travelledDistance << endl;
-  cout << "Accumulated power: " << accumulated_received_power << endl;
 
+  utils.printResult(newSensedCells, totalFreeCells, precision, 
+                    numConfiguration, travelledDistance, numOfTurning,
+                    totalAngle, totalScanTime, accumulated_received_power);
 
   // cout << "Saving tag distribution maps... "<< endl;
   // rm.saveProbMaps("/tmp/");

@@ -10,6 +10,7 @@ using namespace dummy;
 
 RFIDCriterion::RFIDCriterion(double weight)
     : Criterion(RFID_READING, weight, false) {
+      // minValue = 0.0;
     }
 
 RFIDCriterion::~RFIDCriterion() {}
@@ -32,8 +33,11 @@ double RFIDCriterion::evaluate(Pose &p, dummy::Map *map, RadarModel *rm) {
 
   // NOTE: new method using the belief maps
   double RFIDInfoGain = 0.0;
+  double tmp_belief = 0.0;
   for (int tag_id = 0; tag_id < 10; tag_id++){
-    RFIDInfoGain += rm->getTotalWeight(px, py, orientation, 5, 5, tag_id);
+    tmp_belief = rm->getTotalWeight(px, py, orientation, 5, 5, tag_id);
+    if (isnan(tmp_belief)) tmp_belief = 0.0;  // belief outside corridors (into obstacles) is nan
+    RFIDInfoGain += tmp_belief;
   }
   Criterion::insertEvaluation(p, RFIDInfoGain);
   return unExploredMap;

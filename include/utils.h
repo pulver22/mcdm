@@ -118,8 +118,8 @@ public:
   * @paam totalScanTime: total scanning time
   */
   void printResult(long newSensedCells, long totalFreeCells, double precision,
-                   long numConfiguration, double travelledDistance,
-                   int numOfTurning, double totalAngle, double totalScanTime);
+                   long numConfiguration, double travelledDistance, int numOfTurning, 
+                   double totalAngle, double totalScanTime, double accumulated_received_power);
   /**
   * Save on file the exploration results
   * @param name: the output file name
@@ -230,6 +230,8 @@ public:
     * @param scanAngle: angle scanned in the current iteration
     * @param btMode: if doing forward motion or backtracking
     * @param threshold: to cut frontiers
+    * @param rm: is the radar_model
+    * @param accumulated_received_power: the total received power
   */
   bool recordNOTContainsCandidatesBT(EvaluationRecords* record, 
                                 int* count, Pose* target, Pose* previous, string* actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
@@ -254,7 +256,7 @@ public:
                       list<Pose> *tmp_history, list<Pose> *tabuList, Astar *astar, double *imgresolution, double *travelledDistance,
                       long *sensedCells, long *newSensedCells, long *totalFreeCells, double *totalScanTime, string *out_log,
                       long *numConfiguration, string *actualPose, int* encodedKeyValue, double *totalAngle, int *numOfTurning,
-                      double *scanAngle, bool *btMode, RadarModel *rm);
+                      double *scanAngle, bool *btMode, RadarModel *rm, double *accumulated_received_power, double *precision);
 
   void findTags(double w_info_gain, double w_travel_distance,double w_sensing_time,double w_rfid_gain,
                 vector<RFIDGridmap> *RFID_maps_list, vector<pair<double, double>> *tags_coord, dummy::Map *map, 
