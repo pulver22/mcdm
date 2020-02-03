@@ -15,8 +15,8 @@ RFIDCriterion::RFIDCriterion(double weight)
 
 RFIDCriterion::~RFIDCriterion() {}
 
-double RFIDCriterion::evaluate(Pose &p, dummy::Map *map, RadarModel *rm) {
-
+double RFIDCriterion::evaluate(Pose &p, dummy::Map *map, RadarModel *rm, double *batteryTime) 
+{
   float px = p.getX();
   float py = p.getY();
   // float resolution = map.getResolution();

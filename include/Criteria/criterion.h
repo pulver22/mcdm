@@ -35,7 +35,7 @@ class Criterion
 	~Criterion();
 
 	//Other methods
-	virtual double evaluate( Pose &p, dummy::Map *map, RadarModel *rm) {};
+	virtual double evaluate( Pose &p, dummy::Map *map, RadarModel *rm, double *batteryTime) {};
 	double getEvaluation(Pose &p) const;
 	void insertEvaluation(Pose &p, double value);
 	void clean();

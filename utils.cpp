@@ -1,11 +1,13 @@
 #include "utils.h"
+#include "constants.h"
 #include <cstring>
 
-Utilities::Utilities(double w_info_gain, double w_travel_distance, double w_sensing_time, double w_rfid_gain){
+Utilities::Utilities(double w_info_gain, double w_travel_distance, double w_sensing_time, double w_rfid_gain, double w_battery_status){
   this->w_info_gain       = w_info_gain;
   this->w_travel_distance = w_travel_distance;
   this->w_sensing_time    = w_sensing_time;
   this->w_rfid_gain       = w_rfid_gain;
+  this->w_battery_status  = w_battery_status;
 }
 
 Utilities::Utilities(){};
@@ -34,7 +36,7 @@ void Utilities::cleanPossibleDestination2(std::list<Pose> *possibleDestinations,
 }
 
 
-void Utilities::pushInitialPositions ( dummy::Map* map, int x, int y, int orientation, int range, int FOV, double threshold, string actualPose, vector< pair< string, list< Pose > > >* graph2, MCDMFunction *function, RadarModel *rm )
+void Utilities::pushInitialPositions ( dummy::Map* map, int x, int y, int orientation, int range, int FOV, double threshold, string actualPose, vector< pair< string, list< Pose > > >* graph2, MCDMFunction *function, RadarModel *rm , double *batteryTime)
 {
   NewRay ray;
   ray.findCandidatePositions ( map,x,y,orientation ,FOV,range );
@@ -53,7 +55,7 @@ void Utilities::pushInitialPositions ( dummy::Map* map, int x, int y, int orient
     frontiers.push_back ( p3 );
     frontiers.push_back ( p4 );
   }
-  EvaluationRecords *record = function->evaluateFrontiers ( frontiers, map, threshold, rm );
+  EvaluationRecords *record = function->evaluateFrontiers ( frontiers, map, threshold, rm, batteryTime );
   list<Pose>nearCandidates = record->getFrontiers();
   std::pair<string,list<Pose>> pair = make_pair ( actualPose,nearCandidates );
   graph2->push_back ( pair );
@@ -133,7 +135,7 @@ list<Pose> Utilities::cleanHistory(vector<string>* history, EvaluationRecords* r
 
 void Utilities::printResult(long newSensedCells, long totalFreeCells, double precision,
                  long numConfiguration, double travelledDistance, int numOfTurning, 
-                 double totalAngle, double totalScanTime, double accumulated_received_power)
+                 double totalAngle, double totalScanTime, double accumulated_received_power, double *batteryTime)
 {
   cout << "-----------------------------------------------------------------"<<endl;
   cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
@@ -148,6 +150,7 @@ void Utilities::printResult(long newSensedCells, long totalFreeCells, double pre
   cout << "Total time for exploration: " << travelledDistance/0.5 + totalScanTime << "s, " <<
                                               ( travelledDistance/0.5 + totalScanTime ) /60 << " m" << endl;
   cout << "Accumulated Rx power: " << accumulated_received_power << endl;
+  cout << "Final battery level: " << 100*(*batteryTime / MAX_BATTERY) << "%" << endl;
   if (newSensedCells < precision * totalFreeCells)
   {
     cout << "FINAL: MAP NOT EXPLORED! :(" << endl;
@@ -223,7 +226,7 @@ bool Utilities::recordContainsCandidates( EvaluationRecords* record,
                               int* count, Pose* target, Pose* previous, string* actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
                               dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int* encodedKeyValue, Astar* astar , long* numConfiguration,
                               double* totalAngle, double* travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold,
-                              RadarModel *rm)
+                              RadarModel *rm, double *batteryTime)
 {
   // Set the previous pose equal to the current one (represented by target)
   *previous = *target;
@@ -252,7 +255,7 @@ bool Utilities::recordContainsCandidates( EvaluationRecords* record,
       // Remove the current position from possible candidates
       this->cleanPossibleDestination2 ( nearCandidates, *target );
       // Get the list of new candidate position with associated evaluation
-      record = function->evaluateFrontiers ( *nearCandidates, map, *threshold, rm );
+      record = function->evaluateFrontiers ( *nearCandidates, map, *threshold, rm, batteryTime );
       // If there are candidate positions
       if ( record->size() != 0 )
       {
@@ -334,7 +337,7 @@ bool Utilities::recordContainsCandidatesBT(EvaluationRecords* record,
                               int* count, Pose* target, Pose* previous, string* actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
                               dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int* encodedKeyValue, Astar* astar , long* numConfiguration,
                               double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold,
-                              RadarModel *rm)
+                              RadarModel *rm, double *batteryTime)
 {
   // Find the new destination
   std::pair<Pose,double> result = function->selectNewPose ( record );
@@ -362,7 +365,7 @@ bool Utilities::recordContainsCandidatesBT(EvaluationRecords* record,
       // Remove the destination from the candidate list
       this->cleanPossibleDestination2 ( nearCandidates, *target );
       // Get the candidates with their evaluation
-      EvaluationRecords *record = function->evaluateFrontiers ( *nearCandidates, map, *threshold, rm);
+      EvaluationRecords *record = function->evaluateFrontiers ( *nearCandidates, map, *threshold, rm, batteryTime);
       // Select the new destination
       std::pair<Pose,double> result = function->selectNewPose ( record );
       *target = result.first;
@@ -467,7 +470,7 @@ void Utilities::updateMaps(vector<pair<double,double>> *tags_coord, dummy::Map* 
 
 bool Utilities::updateNavigationGraph(int *count, MCDMFunction *function, vector<pair<string,list<Pose>>> *graph2, Pose *target , dummy::Map *map, 
                             long *x, long *y, int *orientation, int *range, double *FOV, double *threshold, string *actualPose,
-                            RadarModel *rm){
+                            RadarModel *rm, double *batteryTime){
   if ( count == 0 )
     {
       this->invertedInitial = this->createFromInitialPose ( *x, *y, *orientation,180, *range, *FOV );
@@ -495,7 +498,7 @@ bool Utilities::updateNavigationGraph(int *count, MCDMFunction *function, vector
       graph2->pop_back();
       *actualPose = function->getEncodedKey ( *target,0 );
       // Add to the graph the initial positions and the candidates from there (calculated inside the function)
-      this->pushInitialPositions ( map, *x, *y, *orientation, *range, *FOV, *threshold, *actualPose, graph2, function, rm );
+      this->pushInitialPositions ( map, *x, *y, *orientation, *range, *FOV, *threshold, *actualPose, graph2, function, rm, batteryTime );
     }
   return false;
 }
@@ -506,7 +509,7 @@ bool Utilities::forwardMotion(Pose *target, Pose *previous, list<Pose> *frontier
                               list<Pose> *tmp_history, list<Pose> *tabuList, Astar *astar, double *imgresolution, double *travelledDistance,
                               long *sensedCells, long *newSensedCells, long *totalFreeCells, double *totalScanTime, string *out_log, 
                               long *numConfiguration, string *actualPose, int* encodedKeyValue, double *totalAngle, int *numOfTurning,
-                              double *scanAngle, bool *btMode, RadarModel *rm, double *accumulated_received_power, double *precision)
+                              double *scanAngle, bool *btMode, RadarModel *rm, double *accumulated_received_power, double *precision, double *batteryTime)
 {
   // If there are no new candidate positions from the current pose of the robot
   if ( candidatePosition->size() == 0 )
@@ -553,7 +556,7 @@ bool Utilities::forwardMotion(Pose *target, Pose *previous, list<Pose> *frontier
       }
       this->printResult(*newSensedCells, *totalFreeCells, *precision, 
                         *numConfiguration, *travelledDistance, *numOfTurning,
-                        *totalAngle, *totalScanTime, *accumulated_received_power);
+                        *totalAngle, *totalScanTime, *accumulated_received_power, batteryTime);
       string content = to_string(this->w_info_gain) + ","  + to_string(this->w_travel_distance) + "," + to_string(this->w_sensing_time) 
                 + "," + to_string(this->w_rfid_gain) + "," + to_string(float(*newSensedCells)/float(*totalFreeCells)) 
                 + "," + to_string(*numConfiguration) + "," + to_string(*travelledDistance) + "," + to_string(*totalScanTime) + 
@@ -571,7 +574,7 @@ bool Utilities::forwardMotion(Pose *target, Pose *previous, list<Pose> *frontier
     // For each candiate position, create many more with different robot orientation
     this->createMultiplePosition(frontiers, candidatePosition, *range, *FOV);
     // Evaluate the frontiers and return a list of <frontier, evaluation> pairs
-    record = function->evaluateFrontiers ( *frontiers, map, *threshold, rm );
+    record = function->evaluateFrontiers ( *frontiers, map, *threshold, rm, batteryTime );
     *nearCandidates = record->getFrontiers();
 
     // If there are candidate positions
@@ -580,7 +583,7 @@ bool Utilities::forwardMotion(Pose *target, Pose *previous, list<Pose> *frontier
       bool break_loop = this->recordContainsCandidates( record, count, target, previous, 
                                 actualPose, nearCandidates, graph2, map, function, tabuList, 
                                 history, encodedKeyValue, astar , numConfiguration, totalAngle,
-                                travelledDistance, numOfTurning , scanAngle, btMode, threshold, rm);
+                                travelledDistance, numOfTurning , scanAngle, btMode, threshold, rm, batteryTime);
       // cout << "Break: " << break_loop << endl;
       if (break_loop == true) return true;
     }

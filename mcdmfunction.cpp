@@ -6,6 +6,7 @@
 #include "Criteria/informationgaincriterion.h"
 #include "Criteria/RFIDCriterion.h"
 #include "Criteria/sensingtimecriterion.h"
+#include "Criteria/batterystatuscriterion.h"
 #include "Criteria/mcdmweightreader.h"
 #include "Criteria/criterioncomparator.h"
 #include <string>
@@ -73,6 +74,33 @@ MCDMFunction::MCDMFunction(float w_criterion_1, float w_criterion_2, float w_cri
 
 }
 
+/* create a list of criteria with name and <encoded_name,weight> pair after reading that from a file
+ */
+MCDMFunction::MCDMFunction(float w_criterion_1, float w_criterion_2, float w_criterion_3, float w_criterion_4, float w_criterion_5, bool use_mcdm) //:
+//criteria(new unordered_map<string, Criterion* >())
+//activeCriteria(new vector<Criterion >() )
+{
+  this->use_mcdm = use_mcdm;
+
+  // Initialization ad-hoc: create a weightmatrix for 3 criteria with predefined weight
+  MCDMWeightReader reader;
+  //cout << "test" << endl;
+  matrix = reader.getMatrix(w_criterion_1, w_criterion_2, w_criterion_3, w_criterion_4, w_criterion_5);
+
+  // get the list of all criteria to be considered
+  list<string> listCriteria = matrix->getKnownCriteria();
+  for (list<string>::iterator it = listCriteria.begin(); it != listCriteria.end(); ++it) {
+    string name = *it;
+    // retrieve the weight of the criterion using the encoded version of the name
+    double weight = matrix->getWeight(matrix->getNameEncoding(name));
+    Criterion *c = createCriterion(name, weight);
+    if (c != NULL) {
+      criteria.emplace(name, c);
+    }
+  }
+
+}
+
 MCDMFunction::~MCDMFunction() {
   //delete matrix;
 
@@ -89,25 +117,27 @@ Criterion *MCDMFunction::createCriterion(string name, double weight) {
     toRet = new TravelDistanceCriterion(weight);
   } else if (name == (RFID_READING)) {
     toRet = new RFIDCriterion(weight);
+  }else if (name == (BATTERY_STATUS)) {
+    toRet = new BatteryStatusCriterion(weight);
   }
   return toRet;
 }
 
 // For a candidate frontier, calculate its evaluation regarding to considered criteria and put it in the evaluation record (through
-//the evaluate method provided by Criterion class)
-void MCDMFunction::evaluateFrontier(Pose &p, dummy::Map *map, RadarModel *rm) {
-
+//the evaluate method provided by Criterion class)rfid
+void MCDMFunction::evaluateFrontier(Pose &p, dummy::Map *map, RadarModel *rm, double *batteryTime) {
 
   for (int i = 0; i < activeCriteria.size(); i++) {
     Criterion *c = activeCriteria.at(i);
-    c->evaluate(p, map, rm);
+    // cout << "Name: " << c->getName() << endl;
+    c->evaluate(p, map, rm, batteryTime);
   }
 }
 
 
 // Scan a list of candidate positions,then apply the choquet fuzzy algorithm
 EvaluationRecords *
-MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map *map, double threshold, RadarModel *rm) {
+MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map *map, double threshold, RadarModel *rm, double *batteryTime) {
 
   Pose f;
   //Clean the last evaluation
@@ -131,7 +161,7 @@ MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map *ma
   list<Pose>::const_iterator it2;
   for (it2 = frontiers.begin(); it2 != frontiers.end(); it2++) {
     f = *it2;
-    evaluateFrontier(f, map, rm);
+    evaluateFrontier(f, map, rm, batteryTime);
   }
 
   //Normalize the values

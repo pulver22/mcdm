@@ -51,26 +51,25 @@ void WeightMatrix::insertSingleCriterion(string name, double weight, bool active
     lastInsertedCriteria++;
     //encode the inserted criterion.
     //The coding of the single criteria is "A" for the first on,m "B" for the second one, "C" for the third...
-    //ldbg << "Criterion Names: " << name << endl;
     char tmp = (char)lastInsertedCriteria;
-    //cout << tmp <<endl;
+    // cout << tmp <<endl;
     stringstream ss;
     ss << tmp;
     string code;
     ss >> code;
 
-    //ldbg << "Criterion Code: " << code << endl;
+    // cout << "Name: " << name << ", Code: " << code << ", weight: " << weight << endl;
     //insert the entry in the mapping table
     std::pair<string,string> pair (name,code);
     mapping.insert(pair);
     std::pair<string,bool> pairActive (code, active);
     activeCriteria.push_back(pairActive);
     if(active)
-	numOfActiveCriteria++;
+	    numOfActiveCriteria++;
     //insert the weight of the single criterion in the first row of the weight matrix
     if (weights->size() > 0)
-	std::pair<string,double> pair(code,weight);
-	(weights->at(0))->emplace(code,weight);
+//	    std::pair<string,double> pair(code,weight);
+	    (weights->at(0))->emplace(code,weight);
 
 	//weights->push_front(code,weight);
     //mutex.unlock();
@@ -129,19 +128,19 @@ double WeightMatrix::getWeight(list<string> criteriaNames)
  */
 double WeightMatrix::getWeight(const string& encoding)
 {
-    //ldbg << "wights length = " << weights->length() << endl;
+    // cout << "weights length = " << weights->size() << endl;
     int card = encoding.length();
     //mutex.lock();
     int numActiveCrit = numOfActiveCriteria;
     //mutex.unlock();
-    //cout << card << " " << numActiveCrit << endl;
+    // cout << card << " " << encoding << " " << numActiveCrit << endl;
     if(card >= numActiveCrit)
         return 1;
     if(card <= 0)
         return 0;
     //mutex.lock();
-    // like a charm!
-    double toRet = (weights->at(card-1))->at(encoding);
+    // like a charm
+    double toRet = (weights->at(card - 1))->at(encoding);
     //cout << toRet <<endl;
     //mutex.unlock();
     return toRet;
@@ -219,7 +218,7 @@ void WeightMatrix::insertCombinationWeight(const string &encoding, double weight
         return;
     if(card <= 0)
         return;
-    //cout << weight << endl;   	correct weights here!!!
+    // cout << "encoding: " << encoding << ",weight: " << weight << endl;  // correct weights here!!!
     //mutex.lock();
     (weights->at(card-1))->emplace(encoding,weight);
     //mutex.unlock();

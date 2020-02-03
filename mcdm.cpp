@@ -6,6 +6,7 @@
 #include "mcdmfunction.h"
 #include "evaluationrecords.h"
 #include "Criteria/traveldistancecriterion.h"
+#include "constants.h"
 //#include "radio_models/propagationModel.cpp"
 # define PI           3.14159265358979323846  /* pi */
 #include <unistd.h>
@@ -55,12 +56,13 @@ int main ( int argc, char **argv )
     cout << "- w_travel_distance: " << argv[15] << " -?" << endl;
     cout << "- w_sensing_time: " << argv[16] << " -?" << endl;
     cout << "- w_rfid_gain: " << argv[17] << " -?" << endl;
-    cout << "- out_log: " << argv[18] << endl;
-    cout << "- coverage_log: " << argv[19] << endl;
-    cout << "- out_log: " << argv[20] << endl;
-    cout << "- ellipse X_min: " << argv[21] << endl;
-    cout << "- accuracy_log: " << argv[22] << endl;
-    cout << "- use_mcdm: " << argv[23] << endl;
+    cout << "- w_battery_status: " << argv[18] << " -?" << endl;
+    cout << "- out_log: " << argv[19] << endl;
+    cout << "- coverage_log: " << argv[20] << endl;
+    cout << "- out_log: " << argv[21] << endl;
+    cout << "- ellipse X_min: " << argv[22] << endl;
+    cout << "- accuracy_log: " << argv[23] << endl;
+    cout << "- use_mcdm: " << argv[24] << endl;
   }
 
 
@@ -173,22 +175,24 @@ int main ( int argc, char **argv )
   double w_travel_distance = atof(argv[15]);
   double w_sensing_time = atof(argv[16]);
   double w_rfid_gain = atof(argv[17]);
-  std::string out_log (argv[18]);
-  std::string coverage_log (argv[19]);
-  std::string detection_log (argv[20]);
-  std::string accuracy_log (argv[22]);
-  bool use_mcdm = bool(atoi(argv[23]));
+  double w_battery_status = atof(argv[18]);
+  std::string out_log (argv[19]);
+  std::string coverage_log (argv[20]);
+  std::string detection_log (argv[21]);
+  std::string accuracy_log (argv[23]);
+  bool use_mcdm = bool(atoi(argv[24]));
   //x,y,orientation,range,FOV
-  double norm_w_info_gain, norm_w_travel_distance, norm_w_sensing_time, norm_w_rfid_gain;
-  double sum_w = w_info_gain + w_travel_distance + w_sensing_time + w_rfid_gain;
+  double norm_w_info_gain, norm_w_travel_distance, norm_w_sensing_time, norm_w_rfid_gain, norm_w_battery_status;
+  double sum_w = w_info_gain + w_travel_distance + w_sensing_time + w_rfid_gain + w_battery_status;
   norm_w_info_gain = w_info_gain / sum_w;
   norm_w_travel_distance = w_travel_distance / sum_w;
   norm_w_sensing_time = w_sensing_time / sum_w;
   norm_w_rfid_gain = w_rfid_gain / sum_w;
+  norm_w_battery_status = w_battery_status / sum_w;
   // cout << "[ " << norm_w_info_gain << ", " << norm_w_travel_distance 
   //       << ", " << norm_w_sensing_time << ", " << norm_w_rfid_gain << " ]" << endl;
-  Utilities utils(norm_w_info_gain, norm_w_travel_distance, norm_w_sensing_time, norm_w_rfid_gain);
-  MCDMFunction function(norm_w_info_gain, norm_w_travel_distance, norm_w_sensing_time, norm_w_rfid_gain, use_mcdm);
+  Utilities utils(norm_w_info_gain, norm_w_travel_distance, norm_w_sensing_time, norm_w_rfid_gain, norm_w_battery_status);
+  MCDMFunction function(norm_w_info_gain, norm_w_travel_distance, norm_w_sensing_time, norm_w_rfid_gain, norm_w_battery_status ,use_mcdm);
   Pose initialPose = Pose ( initX,initY,initOrientation,initRange,initFov );
   Pose invertedInitial = utils.createFromInitialPose ( initX,initY,initOrientation,180,initRange,initFov );
   Pose eastInitial = utils.createFromInitialPose ( initX,initY,initOrientation,90,initRange,initFov );
@@ -248,6 +252,10 @@ int main ( int argc, char **argv )
   list<Pose> frontiers, tmp_history;
   bool break_loop;
   double accumulated_received_power = 0.0;
+  double batteryTime = MAX_BATTERY;
+  double distance = 0.0;
+  double translTime = 0.0;
+  double rotTime = 0.0;
   do
   {
     // If we are doing "forward" navigation towards cells never visited before
@@ -280,7 +288,7 @@ int main ( int argc, char **argv )
       // Perform a scanning operation
       // utils.getEllipseSize(range, atoi ( argv[21] ), &major_axis, &minor_axis);
       double X_max = range;
-      double X_min = atoi ( argv[21] );
+      double X_min = atoi ( argv[22] );
       double focal_length = (X_max - X_min) / 2.0; // (X_max - X_min)/2
       major_axis = focal_length + X_min;  // (focal_length + X_min)
       minor_axis = sqrt(pow(major_axis, 2) - pow(focal_length, 2));
@@ -297,7 +305,7 @@ int main ( int argc, char **argv )
       ray.emptyCandidatePositions();
       // Push position into the navigation graph
       break_loop = utils.updateNavigationGraph(&count, &function, &graph2, &target, &map, &x, &y,
-                                              &orientation, &range, &FOV, &threshold, &actualPose, &rm);
+                                              &orientation, &range, &FOV, &threshold, &actualPose, &rm, &batteryTime);
       if (break_loop == true) break;
       break_loop = utils.forwardMotion(&target, &previous, &frontiers, &nearCandidates, &candidatePosition, &ray, &map,
                                             &x, &y, &orientation, &FOV, &range, &graph2,
@@ -305,7 +313,7 @@ int main ( int argc, char **argv )
                                             &tmp_history, &tabuList, &astar, &imgresolution, &travelledDistance,
                                             &sensedCells, &newSensedCells, &totalFreeCells, &totalScanTime, &out_log, 
                                             &numConfiguration, &actualPose, &encodedKeyValue, &totalAngle, &numOfTurning,
-                                            &scanAngle, &btMode, &rm, &accumulated_received_power, &precision);
+                                            &scanAngle, &btMode, &rm, &accumulated_received_power, &precision, &batteryTime);
       // calculate the accumulate received power
       for (int tag_id = 0; tag_id < tags_coord.size(); tag_id++){
         accumulated_received_power += rm.received_power_friis(tags_coord[tag_id].first, tags_coord[tag_id].second, freq, txtPower);
@@ -329,7 +337,13 @@ int main ( int argc, char **argv )
       // Calculate the distance between the previous robot pose and the next one (target)
       string path = astar.pathFind ( target.getX(), target.getY(), previous.getX(), previous.getY(), &map );
       // Update the overall covered distance
-      travelledDistance = travelledDistance + astar.lengthPath ( path );
+      distance = astar.lengthPath(path);
+      travelledDistance = travelledDistance + distance;
+      numOfTurning = astar.getNumberOfTurning ( path );
+      translTime = distance / TRANSL_SPEED;
+      rotTime = numOfTurning / ROT_SPEED;
+      batteryTime = batteryTime - (translTime + rotTime);
+
       // cout << "BT: " << astar.lengthPath ( path ) << endl;
       // Update the overall number of turnings
       numOfTurning = numOfTurning + astar.getNumberOfTurning ( path );
@@ -351,7 +365,7 @@ int main ( int argc, char **argv )
       // Remove the current pose from the list of possible candidate cells
       utils.cleanPossibleDestination2 ( &nearCandidates,target );
       // Get the list of the candidate cells with their evaluation
-      EvaluationRecords *record = function.evaluateFrontiers ( nearCandidates, &map, threshold, &rm );
+      EvaluationRecords *record = function.evaluateFrontiers ( nearCandidates, &map, threshold, &rm, &batteryTime );
 
       // If there are candidate cells
       if ( record->size() != 0 )
@@ -361,7 +375,7 @@ int main ( int argc, char **argv )
                                     &graph2, &map, &function, &tabuList, &history, 
                                     &encodedKeyValue, &astar, &numConfiguration,
                                     &totalAngle, &travelledDistance, &numOfTurning , &scanAngle, 
-                                    &btMode, &threshold, &rm);
+                                    &btMode, &threshold, &rm, &batteryTime);
       }
       // ... if there are not candidate cells
       else
@@ -412,7 +426,7 @@ int main ( int argc, char **argv )
 
   utils.printResult(newSensedCells, totalFreeCells, precision, 
                     numConfiguration, travelledDistance, numOfTurning,
-                    totalAngle, totalScanTime, accumulated_received_power);
+                    totalAngle, totalScanTime, accumulated_received_power, &batteryTime);
 
   // cout << "Saving tag distribution maps... "<< endl;
   // rm.saveProbMaps("/tmp/");

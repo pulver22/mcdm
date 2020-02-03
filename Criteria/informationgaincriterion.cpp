@@ -14,9 +14,8 @@ InformationGainCriterion::~InformationGainCriterion()
 {
 }
 
-double InformationGainCriterion::evaluate(Pose &p, dummy::Map *map, RadarModel *rm)
+double InformationGainCriterion::evaluate(Pose &p, dummy::Map *map, RadarModel *rm, double *batteryTime)
 {
-
     long px = p.getX();
     long py = p.getY();
     //float resolution = map.getResolution();

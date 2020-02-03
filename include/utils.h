@@ -18,7 +18,7 @@ using namespace dummy;
 class Utilities
 {
 public:
-  Utilities(double w_info_gain, double w_travel_distance, double w_sensing_time, double w_rfid_gain);
+  Utilities(double w_info_gain, double w_travel_distance, double w_sensing_time, double w_rfid_gain, double w_battery_status);
   Utilities();
   ~Utilities();
   /**
@@ -49,7 +49,7 @@ public:
                              int range, int FOV, double threshold,
                              string actualPose,
                              vector< pair< string, list< Pose > > > *graph2,
-                             MCDMFunction *function, RadarModel *rm);
+                             MCDMFunction *function, RadarModel *rm, double *batteryTime);
   /**
   * Calculate the time required for performing a scan with the TDLAS sensor
   * @param scanAngle: the angle to scan
@@ -119,7 +119,7 @@ public:
   */
   void printResult(long newSensedCells, long totalFreeCells, double precision,
                    long numConfiguration, double travelledDistance, int numOfTurning, 
-                   double totalAngle, double totalScanTime, double accumulated_received_power);
+                   double totalAngle, double totalScanTime, double accumulated_received_power, double *batteryTime);
   /**
   * Save on file the exploration results
   * @param name: the output file name
@@ -164,7 +164,7 @@ public:
                               int* count, Pose* target, Pose* previous, string* actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
                               dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int* encodedKeyValue, Astar* astar , long* numConfiguration,
                                 double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold,
-                                RadarModel *rm);
+                                RadarModel *rm, double *batteryTime);
   
   /**
     * What to do when we are doing forward motion and there are no more candidates to explore from the considered position
@@ -206,7 +206,7 @@ public:
                                 int* count, Pose* target, Pose* previous, string* actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
                                 dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int* encodedKeyValue, Astar* astar , long* numConfiguration,
                                 double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold,
-                                RadarModel *rm);
+                                RadarModel *rm, double *batteryTime);
   
   /**
     * What to do when we are in backtracking and there are no more candidates to explore from the considered position
@@ -247,7 +247,7 @@ public:
 
   bool updateNavigationGraph(int *count, MCDMFunction *function, vector<pair<string,list<Pose>>> *graph2, Pose *target , dummy::Map *map, 
                             long *x, long *y, int *orientation, int *range, double *FOV, double *threshold, string *actualPose,
-                            RadarModel *rm);
+                            RadarModel *rm, double *batteryTime);
 
 
   bool forwardMotion(Pose *target, Pose *previous,list<Pose> *frontiers, list<Pose> *nearCandidates, vector<pair<long,long> > *candidatePosition, NewRay *ray, dummy::Map *map, 
@@ -256,7 +256,7 @@ public:
                       list<Pose> *tmp_history, list<Pose> *tabuList, Astar *astar, double *imgresolution, double *travelledDistance,
                       long *sensedCells, long *newSensedCells, long *totalFreeCells, double *totalScanTime, string *out_log,
                       long *numConfiguration, string *actualPose, int* encodedKeyValue, double *totalAngle, int *numOfTurning,
-                      double *scanAngle, bool *btMode, RadarModel *rm, double *accumulated_received_power, double *precision);
+                      double *scanAngle, bool *btMode, RadarModel *rm, double *accumulated_received_power, double *precision, double *batteryTime);
 
   void findTags(double w_info_gain, double w_travel_distance,double w_sensing_time,double w_rfid_gain,
                 vector<RFIDGridmap> *RFID_maps_list, vector<pair<double, double>> *tags_coord, dummy::Map *map, 
@@ -273,7 +273,7 @@ public:
 protected:
 
 Pose invertedInitial, eastInitial, westInitial;
-double w_info_gain, w_travel_distance, w_sensing_time, w_rfid_gain;
+double w_info_gain, w_travel_distance, w_sensing_time, w_rfid_gain, w_battery_status;
 
 };
 

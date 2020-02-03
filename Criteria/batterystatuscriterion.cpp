@@ -15,39 +15,43 @@
  *
  */
 
-#include "Criteria/traveldistancecriterion.h"
+#include "Criteria/batterystatuscriterion.h"
 #include "Criteria/criteriaName.h"
 #include <iostream>
 
 
 
-TravelDistanceCriterion::TravelDistanceCriterion(double weight)
-	: Criterion(TRAVEL_DISTANCE, weight,false)
+
+BatteryStatusCriterion::BatteryStatusCriterion(double weight)
+	: Criterion(BATTERY_STATUS, weight, true)
+{
+}
+
+
+BatteryStatusCriterion::~BatteryStatusCriterion()
 {
 
 }
 
-
-TravelDistanceCriterion::~TravelDistanceCriterion()
-{
-
-}
-
-double TravelDistanceCriterion::evaluate( Pose &p, dummy::Map *map, RadarModel *rm, double *batteryTime)
+double BatteryStatusCriterion::evaluate( Pose &p, dummy::Map *map, RadarModel *rm, double *batteryTime)
 {
     Pose robotPosition = map->getRobotPosition();
     //double distance = robotPosition.getDistance(p);
     string path = this->astar.pathFind(robotPosition.getX(),robotPosition.getY(),p.getX(),p.getY(), map);
-    distance = astar.lengthPath(path);
+    distance = this->astar.lengthPath(path);
+    numOfTurning = this->astar.getNumberOfTurning ( path );
+    translTime = distance / TRANSL_SPEED;
+    rotTime = numOfTurning / ROT_SPEED;
+    timeRequired = translTime + rotTime;
+    remainingBattery = *batteryTime - timeRequired;
     // std::cout << "Distance: " << distance << endl;
     //cout << "alive after calling a*" << endl;
-    Criterion::insertEvaluation(p, distance);
-
-    return distance;
+    Criterion::insertEvaluation(p, remainingBattery);
+    return remainingBattery;
 }
 
 /*
-void TravelDistanceCriterion::insertEvaluation(Pose& p, double value)
+void BatteryStatusCriterion::insertEvaluation(Pose& p, double value)
 {
     cout << "alice" <<endl;
     insertEvaluation(p,value);

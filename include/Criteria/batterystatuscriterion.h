@@ -15,23 +15,35 @@
  *
  */
 
-#ifndef SENSINGTIMECRITERION_H
-#define SENSINGTIMECRITERION_H
+#ifndef BATTERYSTATUSCRITERION_H
+#define BATTERYSTATUSCRITERION_H
 
 #include "criterion.h"
 #include "pose.h"
 #include "map.h"
+#include "PathFinding/astar.h"
+#include "constants.h"
 
-using namespace dummy;
-class SensingTimeCriterion : public Criterion
+//using namespace import_map;
+class BatteryStatusCriterion :  public Criterion
 {
-public:
-SensingTimeCriterion(double weight);
-~SensingTimeCriterion();
-double evaluate( Pose &p, dummy::Map *map, RadarModel *rm, double *batteryTime);
+    public:
+	BatteryStatusCriterion(double weight);
+	~BatteryStatusCriterion();
+	double evaluate( Pose &p, dummy::Map *map, RadarModel *rm, double *batteryTime);
+	//only for testing purpose
+	//void insertEvaluation(Pose &p, double value);
 
-//only for testing purpose
-//void insertEvaluation(Pose &p, double value);
+	protected:
+	Astar astar;
+	double distance = 0.0;
+    double numOfTurning = 0.0;
+	double translTime = 0.0;
+    double rotTime = 0.0;
+    double timeRequired = 0.0;
+    double remainingBattery = 0.0;
 };
 
-#endif // SENSINGTIMECRITERION_H
+
+
+#endif // BATTERYSTATUSCRITERION_H
