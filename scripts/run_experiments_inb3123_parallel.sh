@@ -10,16 +10,17 @@ X=(102 105)
 Y=(97  78)
 
 # MCDM parameters list
-w_info_gain_list=(1 0 0 0.333 0.6 0.428 0.2 0.144 0.2 0.428 0.5 0 0.5)
-w_travel_distance_list=(0 1 0 0.333 0.2 0.428 0.6 0.428 0.2 0.144 0.5 0.5 0)
-w_sensing_time_list=(0 0 1 0.333 0.2 0.144 0.2 0.428 0.6 0.428 0   0.5 0.5)
-w_rfid_gain_list=(0 0 0 0     0   0     0   0     0   0     0   0   0)
+w_info_gain_list=(1  0  0  0  0  0.2  0.6  0.1  0.1  0.1  0.1 )
+w_travel_distance_list=(0  1  0  0  0  0.2  0.1  0.6  0.1  0.1  0.1 )
+w_sensing_time_list=(0  0  1  0  0  0.2  0.1  0.1  0.6  0.1  0.1 )
+w_rfid_gain_list=(0  0  0  1  0  0.2  0.1  0.1  0.1  0.6  0.1 )
+w_battery_status_list=(0  0  0  0  1  0.2  0.1  0.1  0.1  0.1  0.6 )
 
 len_param_list=${#w_info_gain_list[@]}
 
 
 counter=0
-batch_size=15
+batch_size=5
 
 total_runs=${#X[@]}
 counter_run=0
@@ -41,8 +42,9 @@ do
         
         w_info_gain=${w_info_gain_list[$i]}
         w_sensing_time=${w_sensing_time_list[$i]}
-        w_rfid_gain=${w_rfid_gain_list[$i]}
         w_travel_distance=${w_travel_distance_list[$i]}
+        w_rfid_gain=${w_rfid_gain_list[$i]}
+        w_battery_status=${w_battery_status_list[$i]}
         # echo "-->[B] IG: $w_info_gain, TD: $w_travel_distance, ST: $w_sensing_time, RFID: $w_rfid_gain"
         # sum_w=$(echo "$w_info_gain + $w_travel_distance + $w_sensing_time" | bc -l)
         # # Normalize the variable in [0, 1]
@@ -52,8 +54,8 @@ do
         # sum_w=$(($w_info_gain + $w_travel_distance))
         # echo "---> SUM: $sum_w"
         # echo "-->[A] IG: $w_info_gain, TD: $w_travel_distance, ST: $w_sensing_time"
-        echo "Testing : [$w_info_gain , $w_travel_distance, $w_sensing_time, $w_rfid_gain] "
-        ./../build/mcdm_online_exploration ./../Images/inb3123_small.pgm 1 ${X[$counter_run]} ${Y[$counter_run]} 180 6 180 0.999 0 1 ./../config/tag_inb3123_1.yaml 902e6 -10 $w_info_gain $w_travel_distance $w_sensing_time $w_rfid_gain /tmp/result_inb3123_mcdm_r$counter_run.csv /tmp/coverage_inb3123_mcdm_$i_r$counter_run.csv /tmp/distance_inb3123_mcdm_$i_r$counter_run.csv 1 /tmp/accuracy_inb3123_mcdm_r$counter_run.csv $use_mcdm &>/dev/null &
+        echo "Testing : [$w_info_gain , $w_travel_distance, $w_sensing_time, $w_rfid_gain, $w_battery_status] "
+        ./../build/mcdm_online_exploration ./../Images/inb3123_small.pgm 1 ${X[$counter_run]} ${Y[$counter_run]} 180 6 180 0.999 0 1 ./../config/tag_inb3123_1.yaml 902e6 -10 $w_info_gain $w_travel_distance $w_sensing_time $w_rfid_gain $w_battery_status /tmp/result_inb3123_mcdm_r$counter_run.csv /tmp/coverage_inb3123_mcdm_${i}_r${counter_run}.csv /tmp/distance_inb3123_mcdm_${i}_r${counter_run}.csv 1 /tmp/accuracy_inb3123_mcdm_r$counter_run.csv $use_mcdm &>/dev/null &
 # &>/dev/null
         # ./../build/mcdm_online_exploration ./../Images/mfc_test.pgm 1 72 124 180 25 180 0.99 0 1 ./../config/tag_inbeng_3.yaml 902e6 -10 0 0.33 0.66 0 /tmp/result_inbeng.csv /tmp/coverage_mcdm_inbeng.csv /tmp/distance_tag.csv 1 /tmp/accuracy.csv 1 &>/dev/null &
         ((counter++))
@@ -69,6 +71,6 @@ do
         echo ""  # print new line
     done
     ((counter_run++))
-    echo "Increasing the counter"
+    # echo "Increasing the counter"
 done
 echo "Script done"

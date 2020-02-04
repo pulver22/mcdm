@@ -125,19 +125,19 @@ Criterion *MCDMFunction::createCriterion(string name, double weight) {
 
 // For a candidate frontier, calculate its evaluation regarding to considered criteria and put it in the evaluation record (through
 //the evaluate method provided by Criterion class)rfid
-void MCDMFunction::evaluateFrontier(Pose &p, dummy::Map *map, RadarModel *rm, double *batteryTime) {
+void MCDMFunction::evaluateFrontier(Pose &p, dummy::Map *map, RFID_tools *rfid_tools, double *batteryTime) {
 
   for (int i = 0; i < activeCriteria.size(); i++) {
     Criterion *c = activeCriteria.at(i);
     // cout << "Name: " << c->getName() << endl;
-    c->evaluate(p, map, rm, batteryTime);
+    c->evaluate(p, map, rfid_tools, batteryTime);
   }
 }
 
 
 // Scan a list of candidate positions,then apply the choquet fuzzy algorithm
 EvaluationRecords *
-MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map *map, double threshold, RadarModel *rm, double *batteryTime) {
+MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map *map, double threshold, RFID_tools *rfid_tools, double *batteryTime) {
 
   Pose f;
   //Clean the last evaluation
@@ -161,7 +161,7 @@ MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map *ma
   list<Pose>::const_iterator it2;
   for (it2 = frontiers.begin(); it2 != frontiers.end(); it2++) {
     f = *it2;
-    evaluateFrontier(f, map, rm, batteryTime);
+    evaluateFrontier(f, map, rfid_tools, batteryTime);
   }
 
   //Normalize the values

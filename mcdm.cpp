@@ -254,8 +254,15 @@ int main ( int argc, char **argv )
   double accumulated_received_power = 0.0;
   double batteryTime = MAX_BATTERY;
   double distance = 0.0;
+  double tmp_numOfTurning = 0.0;
   double translTime = 0.0;
   double rotTime = 0.0;
+
+  RFID_tools rfid_tools;
+  rfid_tools.rm = rm;
+  rfid_tools.tags_coord = tags_coord;
+  rfid_tools.freq = freq;
+  rfid_tools.txtPower = txtPower;
   do
   {
     // If we are doing "forward" navigation towards cells never visited before
@@ -266,10 +273,12 @@ int main ( int argc, char **argv )
                 + "," + to_string(w_travel_distance)
                 + "," + to_string(w_sensing_time) 
                 + "," + to_string(w_rfid_gain)
+                + "," + to_string(w_battery_status)
                 + "," + to_string(norm_w_info_gain)
                 + "," + to_string(norm_w_travel_distance)
                 + "," + to_string(norm_w_sensing_time)
                 + "," + to_string(norm_w_rfid_gain)
+                + "," + to_string(norm_w_battery_status)
                 + "," + to_string(numConfiguration) 
                 + "," + to_string(100 * float(newSensedCells)/float(totalFreeCells)) 
                 + "," + to_string(travelledDistance) + "\n" ;
@@ -298,14 +307,14 @@ int main ( int argc, char **argv )
       // Update the overall scanning time
       totalScanTime += utils.calculateScanTime ( scanAngle*180/PI );
       // Update bot the PP and the RFID maps
-      utils.updateMaps(&tags_coord, &map, &target, &txtPower, &SENSITIVITY, &freq, &RFID_maps_list, &x, &y, range, &rm);
+      utils.updateMaps(&tags_coord, &map, &target, &txtPower, &SENSITIVITY, &freq, &RFID_maps_list, &x, &y, range, &rfid_tools);
       // Search for new candidate position
       ray.findCandidatePositions ( &map,x,y,orientation,FOV,range );
       vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
       ray.emptyCandidatePositions();
       // Push position into the navigation graph
       break_loop = utils.updateNavigationGraph(&count, &function, &graph2, &target, &map, &x, &y,
-                                              &orientation, &range, &FOV, &threshold, &actualPose, &rm, &batteryTime);
+                                              &orientation, &range, &FOV, &threshold, &actualPose, &rfid_tools, &batteryTime);
       if (break_loop == true) break;
       break_loop = utils.forwardMotion(&target, &previous, &frontiers, &nearCandidates, &candidatePosition, &ray, &map,
                                             &x, &y, &orientation, &FOV, &range, &graph2,
@@ -313,10 +322,10 @@ int main ( int argc, char **argv )
                                             &tmp_history, &tabuList, &astar, &imgresolution, &travelledDistance,
                                             &sensedCells, &newSensedCells, &totalFreeCells, &totalScanTime, &out_log, 
                                             &numConfiguration, &actualPose, &encodedKeyValue, &totalAngle, &numOfTurning,
-                                            &scanAngle, &btMode, &rm, &accumulated_received_power, &precision, &batteryTime);
+                                            &scanAngle, &btMode, &rfid_tools, &accumulated_received_power, &precision, &batteryTime);
       // calculate the accumulate received power
       for (int tag_id = 0; tag_id < tags_coord.size(); tag_id++){
-        accumulated_received_power += rm.received_power_friis(tags_coord[tag_id].first, tags_coord[tag_id].second, freq, txtPower);
+        accumulated_received_power += rfid_tools.rm.received_power_friis(tags_coord[tag_id].first, tags_coord[tag_id].second, freq, txtPower);
       }
       
       
@@ -339,9 +348,9 @@ int main ( int argc, char **argv )
       // Update the overall covered distance
       distance = astar.lengthPath(path);
       travelledDistance = travelledDistance + distance;
-      numOfTurning = astar.getNumberOfTurning ( path );
+      tmp_numOfTurning = astar.getNumberOfTurning ( path );
       translTime = distance / TRANSL_SPEED;
-      rotTime = numOfTurning / ROT_SPEED;
+      rotTime = tmp_numOfTurning / ROT_SPEED;
       batteryTime = batteryTime - (translTime + rotTime);
 
       // cout << "BT: " << astar.lengthPath ( path ) << endl;
@@ -361,11 +370,11 @@ int main ( int argc, char **argv )
       // ...and the overall scan time
       totalScanTime += utils.calculateScanTime ( scanAngle*180/PI );
       // Update bot the PP and the RFID maps
-      utils.updateMaps(&tags_coord, &map, &target, &txtPower, &SENSITIVITY, &freq, &RFID_maps_list, &x, &y, range, &rm);
+      utils.updateMaps(&tags_coord, &map, &target, &txtPower, &SENSITIVITY, &freq, &RFID_maps_list, &x, &y, range, &rfid_tools);
       // Remove the current pose from the list of possible candidate cells
       utils.cleanPossibleDestination2 ( &nearCandidates,target );
       // Get the list of the candidate cells with their evaluation
-      EvaluationRecords *record = function.evaluateFrontiers ( nearCandidates, &map, threshold, &rm, &batteryTime );
+      EvaluationRecords *record = function.evaluateFrontiers ( nearCandidates, &map, threshold, &rfid_tools, &batteryTime );
 
       // If there are candidate cells
       if ( record->size() != 0 )
@@ -375,7 +384,7 @@ int main ( int argc, char **argv )
                                     &graph2, &map, &function, &tabuList, &history, 
                                     &encodedKeyValue, &astar, &numConfiguration,
                                     &totalAngle, &travelledDistance, &numOfTurning , &scanAngle, 
-                                    &btMode, &threshold, &rm, &batteryTime);
+                                    &btMode, &threshold, &rfid_tools, &batteryTime);
       }
       // ... if there are not candidate cells
       else
@@ -407,17 +416,18 @@ int main ( int argc, char **argv )
   // cout << "------------------ TABULIST -----------------" << endl;
   utils.calculateDistance(tabuList, &map, &astar );
 
-  utils.findTags(w_info_gain, w_travel_distance, w_sensing_time, w_rfid_gain,
+  utils.findTags(w_info_gain, w_travel_distance, w_sensing_time, w_rfid_gain, w_battery_status,
                   &RFID_maps_list, &tags_coord, &map,
                   detection_log, accuracy_log, 
                   initRange, numConfiguration,
-                  &rm);
+                  &rfid_tools);
   cout << "-----------------------------------------------------------------"<<endl;
   auto endMCDM = chrono::high_resolution_clock::now();
-  content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + "," + to_string(w_rfid_gain) + ","
-            + to_string(norm_w_info_gain) + ","  + to_string(norm_w_travel_distance) + "," + to_string(norm_w_sensing_time) + "," + to_string(norm_w_rfid_gain) + ","
+  content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + "," + to_string(w_rfid_gain) + "," + to_string(w_battery_status) + ","
+            + to_string(norm_w_info_gain) + ","  + to_string(norm_w_travel_distance) + "," + to_string(norm_w_sensing_time) + "," + to_string(norm_w_rfid_gain) + "," + to_string(norm_w_battery_status) + ","
             + to_string(float(newSensedCells)/float(totalFreeCells)) + "," + to_string(numConfiguration) + ","
-            + to_string(travelledDistance) + "," + to_string(totalScanTime) + "," + to_string(accumulated_received_power)+ "\n";
+            + to_string(travelledDistance) + "," + to_string(totalScanTime) + "," + to_string(accumulated_received_power) + "," 
+            + to_string(100*batteryTime/MAX_BATTERY) + "\n";
   utils.filePutContents(out_log, content, true );
 
   double totalTimeMCDM = chrono::duration<double,milli> ( endMCDM -startMCDM ).count();

@@ -54,7 +54,7 @@ using namespace grid_map;
 //////////////////
 
 
-
+RadarModel::RadarModel(){};
 
 RadarModel::RadarModel(const double nx, const double ny, const double resolution, const double sigma_power, const double sigma_phase, const double txtPower, const std::vector<double> freqs, const std::vector<std::pair<double,double>> tags_coords, const std::string imageFileURI ) {
         _sizeXaa = nx;

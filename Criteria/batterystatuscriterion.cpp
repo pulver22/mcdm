@@ -33,7 +33,7 @@ BatteryStatusCriterion::~BatteryStatusCriterion()
 
 }
 
-double BatteryStatusCriterion::evaluate( Pose &p, dummy::Map *map, RadarModel *rm, double *batteryTime)
+double BatteryStatusCriterion::evaluate( Pose &p, dummy::Map *map, RFID_tools *rfid_toolss, double *batteryTime)
 {
     Pose robotPosition = map->getRobotPosition();
     //double distance = robotPosition.getDistance(p);

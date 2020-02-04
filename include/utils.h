@@ -8,7 +8,7 @@
 #include "newray.h"
 #include <boost/filesystem.hpp>
 #include <fstream>
-#include "RadarModel.hpp"
+#include "constants.h"
 
 
 using namespace dummy;
@@ -49,7 +49,7 @@ public:
                              int range, int FOV, double threshold,
                              string actualPose,
                              vector< pair< string, list< Pose > > > *graph2,
-                             MCDMFunction *function, RadarModel *rm, double *batteryTime);
+                             MCDMFunction *function, RFID_tools *rfid_tools, double *batteryTime);
   /**
   * Calculate the time required for performing a scan with the TDLAS sensor
   * @param scanAngle: the angle to scan
@@ -164,7 +164,7 @@ public:
                               int* count, Pose* target, Pose* previous, string* actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
                               dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int* encodedKeyValue, Astar* astar , long* numConfiguration,
                                 double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold,
-                                RadarModel *rm, double *batteryTime);
+                                RFID_tools *rfid_tools, double *batteryTime);
   
   /**
     * What to do when we are doing forward motion and there are no more candidates to explore from the considered position
@@ -206,7 +206,7 @@ public:
                                 int* count, Pose* target, Pose* previous, string* actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
                                 dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int* encodedKeyValue, Astar* astar , long* numConfiguration,
                                 double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold,
-                                RadarModel *rm, double *batteryTime);
+                                RFID_tools *rfid_tools, double *batteryTime);
   
   /**
     * What to do when we are in backtracking and there are no more candidates to explore from the considered position
@@ -243,11 +243,11 @@ public:
   void updateMaps(vector<pair<double,double>> *tags_coord, dummy::Map* map, 
                   Pose* target, double *txtPower, const double *SENSITIVITY, double *freq, 
                   vector<RFIDGridmap> * RFID_maps_list, 
-                  long *x, long *y, int range, RadarModel *radMod);
+                  long *x, long *y, int range, RFID_tools *rfid_tools);
 
   bool updateNavigationGraph(int *count, MCDMFunction *function, vector<pair<string,list<Pose>>> *graph2, Pose *target , dummy::Map *map, 
                             long *x, long *y, int *orientation, int *range, double *FOV, double *threshold, string *actualPose,
-                            RadarModel *rm, double *batteryTime);
+                            RFID_tools *rfid_tools, double *batteryTime);
 
 
   bool forwardMotion(Pose *target, Pose *previous,list<Pose> *frontiers, list<Pose> *nearCandidates, vector<pair<long,long> > *candidatePosition, NewRay *ray, dummy::Map *map, 
@@ -256,13 +256,13 @@ public:
                       list<Pose> *tmp_history, list<Pose> *tabuList, Astar *astar, double *imgresolution, double *travelledDistance,
                       long *sensedCells, long *newSensedCells, long *totalFreeCells, double *totalScanTime, string *out_log,
                       long *numConfiguration, string *actualPose, int* encodedKeyValue, double *totalAngle, int *numOfTurning,
-                      double *scanAngle, bool *btMode, RadarModel *rm, double *accumulated_received_power, double *precision, double *batteryTime);
+                      double *scanAngle, bool *btMode, RFID_tools *rfid_tools, double *accumulated_received_power, double *precision, double *batteryTime);
 
-  void findTags(double w_info_gain, double w_travel_distance,double w_sensing_time,double w_rfid_gain,
+  void findTags(double w_info_gain, double w_travel_distance, double w_sensing_time, double w_rfid_gain, double w_battery_status,
                 vector<RFIDGridmap> *RFID_maps_list, vector<pair<double, double>> *tags_coord, dummy::Map *map, 
                 string detection_log, string accuracy_log, 
                 int initRange, long numConfiguration,
-                RadarModel *rm);
+                RFID_tools *rfid_tools);
 
   void saveRFIDMaps(vector<RFIDGridmap> *RFID_maps_list, string root);
 

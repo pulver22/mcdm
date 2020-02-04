@@ -14,7 +14,7 @@ InformationGainCriterion::~InformationGainCriterion()
 {
 }
 
-double InformationGainCriterion::evaluate(Pose &p, dummy::Map *map, RadarModel *rm, double *batteryTime)
+double InformationGainCriterion::evaluate(Pose &p, dummy::Map *map, RFID_tools *rfid_tools, double *batteryTime)
 {
     long px = p.getX();
     long py = p.getY();

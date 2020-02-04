@@ -19,8 +19,8 @@ public:
   MCDMFunction(float w_criterion_1, float w_criterion_2, float w_criterion_3, float w_criterion_4, bool use_mcdm);
   MCDMFunction(float w_criterion_1, float w_criterion_2, float w_criterion_3, float w_criterion_4, float w_criterion_5, bool use_mcdm);
   ~MCDMFunction();
-  void evaluateFrontier(Pose& p, dummy::Map* map, RadarModel *rm, double *batteryTime);
-  EvaluationRecords* evaluateFrontiers(const list< Pose >& frontiers, dummy::Map* map, double threshold, RadarModel *rm, double *batteryTime);
+  void evaluateFrontier(Pose& p, dummy::Map* map, RFID_tools *rfid_tools, double *batteryTime);
+  EvaluationRecords* evaluateFrontiers(const list< Pose >& frontiers, dummy::Map* map, double threshold, RFID_tools *rfid_tools, double *batteryTime);
   pair< Pose, double > selectNewPose(EvaluationRecords* evaluationRecords);
   string getEncodedKey(Pose& p, int value);
   EvaluationRecords* evaluateFrontiersVec(const std::vector< Pose >& frontiers,  dummy::Map& map,double threshold);

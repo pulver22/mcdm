@@ -33,7 +33,7 @@ TravelDistanceCriterion::~TravelDistanceCriterion()
 
 }
 
-double TravelDistanceCriterion::evaluate( Pose &p, dummy::Map *map, RadarModel *rm, double *batteryTime)
+double TravelDistanceCriterion::evaluate( Pose &p, dummy::Map *map, RFID_tools *rfid_tools, double *batteryTime)
 {
     Pose robotPosition = map->getRobotPosition();
     //double distance = robotPosition.getDistance(p);

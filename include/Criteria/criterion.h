@@ -22,6 +22,7 @@
 #include "pose.h"
 #include "map.h"
 #include "RadarModel.hpp"
+#include "constants.h"
 
 //using namespace import_map;
 using namespace std;
@@ -35,7 +36,7 @@ class Criterion
 	~Criterion();
 
 	//Other methods
-	virtual double evaluate( Pose &p, dummy::Map *map, RadarModel *rm, double *batteryTime) {};
+	virtual double evaluate( Pose &p, dummy::Map *map, RFID_tools *rfid_tools, double *batteryTime) {};
 	double getEvaluation(Pose &p) const;
 	void insertEvaluation(Pose &p, double value);
 	void clean();

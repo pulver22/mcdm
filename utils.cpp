@@ -1,5 +1,4 @@
 #include "utils.h"
-#include "constants.h"
 #include <cstring>
 
 Utilities::Utilities(double w_info_gain, double w_travel_distance, double w_sensing_time, double w_rfid_gain, double w_battery_status){
@@ -36,7 +35,7 @@ void Utilities::cleanPossibleDestination2(std::list<Pose> *possibleDestinations,
 }
 
 
-void Utilities::pushInitialPositions ( dummy::Map* map, int x, int y, int orientation, int range, int FOV, double threshold, string actualPose, vector< pair< string, list< Pose > > >* graph2, MCDMFunction *function, RadarModel *rm , double *batteryTime)
+void Utilities::pushInitialPositions ( dummy::Map* map, int x, int y, int orientation, int range, int FOV, double threshold, string actualPose, vector< pair< string, list< Pose > > >* graph2, MCDMFunction *function, RFID_tools *rfid_tools , double *batteryTime)
 {
   NewRay ray;
   ray.findCandidatePositions ( map,x,y,orientation ,FOV,range );
@@ -55,7 +54,7 @@ void Utilities::pushInitialPositions ( dummy::Map* map, int x, int y, int orient
     frontiers.push_back ( p3 );
     frontiers.push_back ( p4 );
   }
-  EvaluationRecords *record = function->evaluateFrontiers ( frontiers, map, threshold, rm, batteryTime );
+  EvaluationRecords *record = function->evaluateFrontiers ( frontiers, map, threshold, rfid_tools, batteryTime );
   list<Pose>nearCandidates = record->getFrontiers();
   std::pair<string,list<Pose>> pair = make_pair ( actualPose,nearCandidates );
   graph2->push_back ( pair );
@@ -138,17 +137,17 @@ void Utilities::printResult(long newSensedCells, long totalFreeCells, double pre
                  double totalAngle, double totalScanTime, double accumulated_received_power, double *batteryTime)
 {
   cout << "-----------------------------------------------------------------"<<endl;
-  cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells<< endl;
+  cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells << " ["<< 100*(float)newSensedCells/(float)totalFreeCells << "%]"<< endl;
   cout << "Total cell visited :" << numConfiguration <<endl;
-  cout << "Total travelled distance (meters): " << travelledDistance << endl;
+  cout << "Total travelled distance (cells): " << travelledDistance << endl;
   // cout << "Total travel time: " << travelledDistance / 0.5 << "s, " << ( travelledDistance/0.5) /60 << " m"<< endl;
-  cout << "I came back to the original position since i don't have any other candidate position"<< endl;
-  cout << "Total exploration time (s): " << travelledDistance / 0.5 << endl;
+  // cout << "I came back to the original position since i don't have any other candidate position"<< endl;
+  // cout << "Total exploration time (s): " << travelledDistance / 0.5 << endl;
   cout << "Total number of turning: " << numOfTurning << endl;
-  cout << "Sum of scan angles (radians): " << totalAngle << endl;
-  cout << "Total time for scanning: " << totalScanTime << endl;
-  cout << "Total time for exploration: " << travelledDistance/0.5 + totalScanTime << "s, " <<
-                                              ( travelledDistance/0.5 + totalScanTime ) /60 << " m" << endl;
+  // cout << "Sum of scan angles (radians): " << totalAngle << endl;
+  // cout << "Total time for scanning: " << totalScanTime << endl;
+  // cout << "Total time for exploration: " << travelledDistance/0.5 + totalScanTime << "s, " <<
+  //                                             ( travelledDistance/0.5 + totalScanTime ) /60 << " m" << endl;
   cout << "Accumulated Rx power: " << accumulated_received_power << endl;
   cout << "Final battery level: " << 100*(*batteryTime / MAX_BATTERY) << "%" << endl;
   if (newSensedCells < precision * totalFreeCells)
@@ -178,16 +177,16 @@ void Utilities::filePutContents(const std::string& name, const std::string& cont
       // cout << "File does not exist! Create a new one!" << endl;
       outfile.open(name);
       if (name.find("result") != string::npos){
-        outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,norm_w_info_gain,norm_w_travel_distance,norm_w_sensing_time,norm_w_rfid_gain,coverage,numConfiguration,travelledDistance,totalScanTime,accumulatedRxPower" << endl;
+        outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,w_battery_status,norm_w_info_gain,norm_w_travel_distance,norm_w_sensing_time,norm_w_rfid_gain,norm_w_battery_status,coverage,numConfiguration,travelledDistance,totalScanTime,accumulatedRxPower,batteryStatus" << endl;
       }
       else if (name.find("coverage") != string::npos){
-        outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,norm_w_info_gain,norm_w_travel_distance,norm_w_sensing_time,norm_w_rfid_gain,numConfiguration,increasingCoverage,travelledDistance" << endl;
+        outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,w_battery_status,norm_w_info_gain,norm_w_travel_distance,norm_w_sensing_time,norm_w_rfid_gain,norm_w_battery_status,numConfiguration,increasingCoverage,travelledDistance" << endl;
       }
       else if (name.find("distance") != string::npos){
-        outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,tag1,tag2,tag3,tag4,tag5,tag6,tag7,tag8,tag9,tag10" << endl;
+        outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,w_battery_status,tag1,tag2,tag3,tag4,tag5,tag6,tag7,tag8,tag9,tag10" << endl;
       }
       else if (name.find("accuracy") != string::npos){
-        outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,range,numConfiguration,accuracy" << endl;
+        outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,w_battery_status,range,numConfiguration,accuracy" << endl;
       }
     }else{
       // cout << "File exists! Appending data!" << endl;
@@ -212,7 +211,7 @@ void Utilities::saveCoverage(const std::string& name, const std::string& content
     if (pFile.peek() == std::ifstream::traits_type::eof()){ // file is empty
       // cout << "File does not exist! Create a new one!" << endl;
       outfile.open(name);
-      outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,numConfiguration,incrementalCoverage" << endl;
+      outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,w_battery_status,numConfiguration,incrementalCoverage" << endl;
     }else{
       // cout << "File exists! Appending data!" << endl;
       outfile.open(name, std::ios_base::app);
@@ -226,7 +225,7 @@ bool Utilities::recordContainsCandidates( EvaluationRecords* record,
                               int* count, Pose* target, Pose* previous, string* actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
                               dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int* encodedKeyValue, Astar* astar , long* numConfiguration,
                               double* totalAngle, double* travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold,
-                              RadarModel *rm, double *batteryTime)
+                              RFID_tools *rfid_tools, double *batteryTime)
 {
   // Set the previous pose equal to the current one (represented by target)
   *previous = *target;
@@ -255,7 +254,7 @@ bool Utilities::recordContainsCandidates( EvaluationRecords* record,
       // Remove the current position from possible candidates
       this->cleanPossibleDestination2 ( nearCandidates, *target );
       // Get the list of new candidate position with associated evaluation
-      record = function->evaluateFrontiers ( *nearCandidates, map, *threshold, rm, batteryTime );
+      record = function->evaluateFrontiers ( *nearCandidates, map, *threshold, rfid_tools, batteryTime );
       // If there are candidate positions
       if ( record->size() != 0 )
       {
@@ -337,7 +336,7 @@ bool Utilities::recordContainsCandidatesBT(EvaluationRecords* record,
                               int* count, Pose* target, Pose* previous, string* actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
                               dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int* encodedKeyValue, Astar* astar , long* numConfiguration,
                               double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold,
-                              RadarModel *rm, double *batteryTime)
+                              RFID_tools *rfid_tools, double *batteryTime)
 {
   // Find the new destination
   std::pair<Pose,double> result = function->selectNewPose ( record );
@@ -365,7 +364,7 @@ bool Utilities::recordContainsCandidatesBT(EvaluationRecords* record,
       // Remove the destination from the candidate list
       this->cleanPossibleDestination2 ( nearCandidates, *target );
       // Get the candidates with their evaluation
-      EvaluationRecords *record = function->evaluateFrontiers ( *nearCandidates, map, *threshold, rm, batteryTime);
+      EvaluationRecords *record = function->evaluateFrontiers ( *nearCandidates, map, *threshold, rfid_tools, batteryTime);
       // Select the new destination
       std::pair<Pose,double> result = function->selectNewPose ( record );
       *target = result.first;
@@ -445,18 +444,18 @@ void Utilities::createMultiplePosition(list<Pose> *frontiers, vector<pair<long, 
 void Utilities::updateMaps(vector<pair<double,double>> *tags_coord, dummy::Map* map, 
                             Pose* target, double *txtPower, const double *SENSITIVITY, double *freq, 
                             vector<RFIDGridmap> * RFID_maps_list, 
-                            long *x, long *y, int range, RadarModel *radMod){
+                            long *x, long *y, int range, RFID_tools *rfid_tools){
   std::pair<int, int> relTagCoord;
   // std::cout << "----" << std::endl;
   for (int i = 0; i < tags_coord->size(); i++){
     relTagCoord = map->getRelativeTagCoord((*tags_coord)[i].first, (*tags_coord)[i].second, target->getX(), target->getY());
     // Calculate the received power and phase
-    double rxPower = radMod->received_power_friis(relTagCoord.first, relTagCoord.second, *freq, *txtPower);
-    double phase = radMod->phaseDifference(relTagCoord.first, relTagCoord.second, *freq);    
+    double rxPower = rfid_tools->rm.received_power_friis(relTagCoord.first, relTagCoord.second, *freq, *txtPower);
+    double phase = rfid_tools->rm.phaseDifference(relTagCoord.first, relTagCoord.second, *freq);    
     // Update the path planning and RFID map
     map->updatePathPlanningGrid ( *x, *y, range, rxPower - *SENSITIVITY);
     //So, robot at pr (x,y,orientation) (long, long, int) receives rxPower,phase,freq from tag i . 
-    radMod->addMeasurement(*x,*y, target->getOrientation() , rxPower, phase, *freq, i);
+    rfid_tools->rm.addMeasurement(*x,*y, target->getOrientation() , rxPower, phase, *freq, i);
     // std::cout << "    " << rxPower << std::endl;
     // Moved down after we recast the rxPower
     if (rxPower < *SENSITIVITY){
@@ -470,7 +469,7 @@ void Utilities::updateMaps(vector<pair<double,double>> *tags_coord, dummy::Map* 
 
 bool Utilities::updateNavigationGraph(int *count, MCDMFunction *function, vector<pair<string,list<Pose>>> *graph2, Pose *target , dummy::Map *map, 
                             long *x, long *y, int *orientation, int *range, double *FOV, double *threshold, string *actualPose,
-                            RadarModel *rm, double *batteryTime){
+                            RFID_tools *rfid_tools, double *batteryTime){
   if ( count == 0 )
     {
       this->invertedInitial = this->createFromInitialPose ( *x, *y, *orientation,180, *range, *FOV );
@@ -498,7 +497,7 @@ bool Utilities::updateNavigationGraph(int *count, MCDMFunction *function, vector
       graph2->pop_back();
       *actualPose = function->getEncodedKey ( *target,0 );
       // Add to the graph the initial positions and the candidates from there (calculated inside the function)
-      this->pushInitialPositions ( map, *x, *y, *orientation, *range, *FOV, *threshold, *actualPose, graph2, function, rm, batteryTime );
+      this->pushInitialPositions ( map, *x, *y, *orientation, *range, *FOV, *threshold, *actualPose, graph2, function, rfid_tools, batteryTime );
     }
   return false;
 }
@@ -509,7 +508,7 @@ bool Utilities::forwardMotion(Pose *target, Pose *previous, list<Pose> *frontier
                               list<Pose> *tmp_history, list<Pose> *tabuList, Astar *astar, double *imgresolution, double *travelledDistance,
                               long *sensedCells, long *newSensedCells, long *totalFreeCells, double *totalScanTime, string *out_log, 
                               long *numConfiguration, string *actualPose, int* encodedKeyValue, double *totalAngle, int *numOfTurning,
-                              double *scanAngle, bool *btMode, RadarModel *rm, double *accumulated_received_power, double *precision, double *batteryTime)
+                              double *scanAngle, bool *btMode, RFID_tools *rfid_tools, double *accumulated_received_power, double *precision, double *batteryTime)
 {
   // If there are no new candidate positions from the current pose of the robot
   if ( candidatePosition->size() == 0 )
@@ -558,7 +557,7 @@ bool Utilities::forwardMotion(Pose *target, Pose *previous, list<Pose> *frontier
                         *numConfiguration, *travelledDistance, *numOfTurning,
                         *totalAngle, *totalScanTime, *accumulated_received_power, batteryTime);
       string content = to_string(this->w_info_gain) + ","  + to_string(this->w_travel_distance) + "," + to_string(this->w_sensing_time) 
-                + "," + to_string(this->w_rfid_gain) + "," + to_string(float(*newSensedCells)/float(*totalFreeCells)) 
+                + "," + to_string(this->w_rfid_gain) + "," + to_string(this->w_battery_status) + "," + to_string(float(*newSensedCells)/float(*totalFreeCells)) 
                 + "," + to_string(*numConfiguration) + "," + to_string(*travelledDistance) + "," + to_string(*totalScanTime) + 
                 + "," + to_string(*accumulated_received_power) + "\n";
       this->filePutContents(*out_log, content, true );
@@ -574,7 +573,7 @@ bool Utilities::forwardMotion(Pose *target, Pose *previous, list<Pose> *frontier
     // For each candiate position, create many more with different robot orientation
     this->createMultiplePosition(frontiers, candidatePosition, *range, *FOV);
     // Evaluate the frontiers and return a list of <frontier, evaluation> pairs
-    record = function->evaluateFrontiers ( *frontiers, map, *threshold, rm, batteryTime );
+    record = function->evaluateFrontiers ( *frontiers, map, *threshold, rfid_tools, batteryTime );
     *nearCandidates = record->getFrontiers();
 
     // If there are candidate positions
@@ -583,7 +582,7 @@ bool Utilities::forwardMotion(Pose *target, Pose *previous, list<Pose> *frontier
       bool break_loop = this->recordContainsCandidates( record, count, target, previous, 
                                 actualPose, nearCandidates, graph2, map, function, tabuList, 
                                 history, encodedKeyValue, astar , numConfiguration, totalAngle,
-                                travelledDistance, numOfTurning , scanAngle, btMode, threshold, rm, batteryTime);
+                                travelledDistance, numOfTurning , scanAngle, btMode, threshold, rfid_tools, batteryTime);
       // cout << "Break: " << break_loop << endl;
       if (break_loop == true) return true;
     }
@@ -605,11 +604,11 @@ bool Utilities::forwardMotion(Pose *target, Pose *previous, list<Pose> *frontier
   return false;
 }
 
-void Utilities::findTags(double w_info_gain, double w_travel_distance,double w_sensing_time,double w_rfid_gain,
+void Utilities::findTags(double w_info_gain, double w_travel_distance,double w_sensing_time,double w_rfid_gain, double w_battery_status,
                           vector<RFIDGridmap> *RFID_maps_list, vector<pair<double, double>> *tags_coord, dummy::Map *map,
                           string detection_log, string accuracy_log, 
                           int initRange, long numConfiguration,
-                          RadarModel *rm)
+                          RFID_tools *rfid_tools)
 {
   // Find the tag
   std::pair<int, std::pair<int, int>> value_tag, belief_value_tag;
@@ -618,15 +617,18 @@ void Utilities::findTags(double w_info_gain, double w_travel_distance,double w_s
   // FIXME: not accurate, it must not be used
     // tag= map.findTag();
     // cout << "RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
-  std::string tags_distance_from_gt = to_string(w_rfid_gain) + "," + to_string(w_travel_distance) + "," +
-                                      to_string(w_sensing_time) + "," + to_string(w_rfid_gain) + ",";
+  std::string tags_distance_from_gt = to_string(w_rfid_gain) + "," 
+                                    + to_string(w_travel_distance) + "," 
+                                    + to_string(w_sensing_time) + "," 
+                                    + to_string(w_rfid_gain) + "," 
+                                    + to_string(w_battery_status) + ",";
   std::string accuracy_content;
   accuracy_content.assign(tags_distance_from_gt);
   double distance_to_tag, belief_distance_to_tag = 0;
   double accuracy, belief_accuracy = 0;
   for (int i=0; i < (*RFID_maps_list).size(); i++){
     value_tag = map->findTagfromGridMap((*RFID_maps_list)[i]);
-    belief_value_tag = rm->findTagFromBeliefMap(i);
+    belief_value_tag = rfid_tools->rm.findTagFromBeliefMap(i);
     // value = value_tag.first;
     tag = value_tag.second;
     belief_tag = belief_value_tag.second;
@@ -642,8 +644,8 @@ void Utilities::findTags(double w_info_gain, double w_travel_distance,double w_s
     // cout << "[GT]     Tag: " << to_string((*tags_coord)[i].first) << ", " << to_string((*tags_coord)[i].second) << endl;
     // cout << "[Belief] Tag: " << belief_tag.first << "," << belief_tag.second << endl;
     cout << "Belief_Distance to tag: " << to_string(belief_distance_to_tag) << " cells" << endl;
-    if (distance_to_tag <= 4.0) accuracy = accuracy + 1;
-    if (belief_distance_to_tag <= 4.0)
+    if (distance_to_tag <= 10.0) accuracy = accuracy + 1;
+    if (belief_distance_to_tag <= 10.0)
     {
       belief_accuracy = belief_accuracy + 1;
       // std::cout << "Tag: " << i << " found" << std::endl;

@@ -28,7 +28,7 @@ class TravelDistanceCriterion :  public Criterion
     public:
 	TravelDistanceCriterion(double weight);
 	~TravelDistanceCriterion();
-	double evaluate( Pose &p, dummy::Map *map, RadarModel *rm, double *batteryTime);
+	double evaluate( Pose &p, dummy::Map *map, RFID_tools *rfid_tools, double *batteryTime);
 	//only for testing purpose
 	//void insertEvaluation(Pose &p, double value);
 	protected:

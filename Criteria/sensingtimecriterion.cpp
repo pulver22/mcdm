@@ -33,7 +33,7 @@ SensingTimeCriterion::~SensingTimeCriterion()
 
 }
 
-double SensingTimeCriterion::SensingTimeCriterion::evaluate(Pose &p,dummy::Map *map, RadarModel *rm, double *batteryTime)
+double SensingTimeCriterion::SensingTimeCriterion::evaluate(Pose &p,dummy::Map *map, RFID_tools *rfid_tools, double *batteryTime)
 {
   NewRay ray;
   double sensingTime;

@@ -12,7 +12,7 @@ class InformationGainCriterion : public Criterion
 public:
     InformationGainCriterion(double weight);
     virtual ~InformationGainCriterion();
-    double evaluate( Pose &p, dummy::Map *map, RadarModel *rm, double *batteryTime);
+    double evaluate( Pose &p, dummy::Map *map, RFID_tools *rfid_tools, double *batteryTime);
 private:
     void normalize(long minSensedX, int number);
     int* intersect(int p1x, int p1y, int p2x, int p2y, Pose &p);

@@ -2,6 +2,7 @@
 #define CONSTANTS_H
 
 #include <cmath>
+#include "RadarModel.hpp"
 
 //Battery constants
 #define MAX_BATTERY 1200.0
@@ -10,5 +11,13 @@
 //Velocity constants
 #define TRANSL_SPEED 0.5
 #define ROT_SPEED 0.1
+
+struct RFID_tools {
+  RadarModel rm;
+  std::vector<std::pair<double,double>> tags_coord;
+  double freq;
+  double txtPower;
+};
+
 
 #endif
