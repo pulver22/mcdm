@@ -1,0 +1,52 @@
+mapPath: ./../Images/inb3123_small.pgm
+resolution: 1
+imgResolution: 1
+initX: 97
+initY: 102
+initOrientation: 180
+initFov: 180
+initRange: 6
+precision: 1
+threshold: 0
+RFIDfreq: 865e6
+txtPower: 0
+w_infoGain: 1
+w_travelDistance: 0
+w_sensingTime: 0
+w_rfidGain: 0
+# outLog: /home/pulver/Dropbox/University/PostDoc/MCDM/mcdm/logic_exps/mcdm_vs_avg/inb3123/mcdm_result_inb3123_1.csv
+# coverageLog: /home/pulver/Dropbox/University/PostDoc/MCDM/mcdm/logic_exps/mcdm_vs_avg/inb3123/mcdm_coverage_mcdm_inb3123_0_1.csv
+# detectionLog: /home/pulver/Dropbox/University/PostDoc/MCDM/mcdm/logic_exps/mcdm_vs_avg/inb3123/distance_tag_25r.csv
+# accuracyLog: /home/pulver/Dropbox/University/PostDoc/MCDM/mcdm/logic_exps/mcdm_vs_avg/inb3123/mcdm_ccuracy_25r.csv
+
+
+# When looking at this point in Gimp, you must switch X and Y
+tag1X: 85
+tag1Y: 78
+
+tag2X: 87
+tag2Y: 82
+
+tag3X: 95
+tag3Y: 94
+
+tag4X: 99
+tag4Y: 99
+
+tag5X: 104
+tag5Y: 101
+
+tag6X: 104
+tag6Y: 88
+
+tag7X: 120
+tag7Y: 63
+
+tag8X: 110
+tag8Y: 48
+
+tag9X: 136
+tag9Y: 66
+
+tag10X: 141
+tag10Y: 52

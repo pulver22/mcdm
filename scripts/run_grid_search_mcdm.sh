@@ -41,7 +41,7 @@ do
             # echo "---> SUM: $sum_w"
             # echo "-->[A] IG: $w_info_gain, TD: $w_travel_distance, ST: $w_sensing_time"
             echo "Testing : [$w_info_gain , $w_travel_distance, $w_sensing_time] "
-            ./../build/mcdm_online_exploration ./../Images/inbeng_small_correct.pgm 1 ${X[$counter_run]} ${Y[$counter_run]} 180 9 180 0.999 0 1 ./../config/tag_inbeng_1.yaml 865e6 0 $w_info_gain $w_travel_distance $w_sensing_time $w_rfid_gain /tmp/result_gs_mcdm_r$counter_run.csv /tmp/coverage_gs_mcdm_r$counter_run.csv /tmp/distance_gs_mcdm_r$counter_run.csv 1 /tmp/accuracy_gs_mcdm_r$counter_run.csv $use_mcdm &>/dev/null &
+            ./../build/mcdm_online_exploration ./../Images/inbeng_small_correct.pgm 1 ${X[$counter_run]} ${Y[$counter_run]} 180 9 180 0.99 0 1 ./../config/tag_inbeng_1.yaml 865e6 0 $w_info_gain $w_travel_distance $w_sensing_time $w_rfid_gain /tmp/result_gs_mcdm_r$counter_run.csv /tmp/coverage_gs_mcdm_r$counter_run.csv /tmp/distance_gs_mcdm_r$counter_run.csv 1 /tmp/accuracy_gs_mcdm_r$counter_run.csv $use_mcdm &>/dev/null &
             ((counter++))
             if ((counter%batch_size==0))
             then

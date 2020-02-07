@@ -1,29 +1,31 @@
-tag1X: 75
-tag1Y: 94
+# When looking at this point in Gimp, you must switch X and Y
 
-tag2X: 93
-tag2Y: 80
+tag1X: 74
+tag1Y: 79
 
-tag3X: 114
-tag3Y: 89
+tag2X: 68
+tag2Y: 93
 
-tag4X: 126
-tag4Y: 94
+tag3X: 82
+tag3Y: 80
 
-tag5X: 132
-tag5Y: 105
+tag4X: 84
+tag4Y: 102
 
-tag6X: 77
-tag6Y: 74
+tag5X: 100
+tag5Y: 94
 
-tag7X: 83
-tag7Y: 78
+tag6X: 98
+tag6Y: 104
 
-tag8X: 103
-tag8Y: 86
+tag7X: 113
+tag7Y: 96
 
-tag9X: 92
-tag9Y: 106
+tag8X: 118
+tag8Y: 103
 
-tag10X: 112
-tag10Y: 105
+tag9X: 120
+tag9Y: 103
+
+tag10X: 133
+tag10Y: 99

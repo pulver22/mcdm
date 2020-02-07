@@ -14,7 +14,7 @@ These criteria are combined using the Choquet Fuzzy Integral as aggregation func
 After downloading the repo, you need to run:
 
 ```sh
-$  ./../build/mcdm_online_exploration ./../Images/inbeng_small_correct.pgm 1 72 124 180 26 180 0.999 0 1 ./../config/tag_inbeng_1.yaml 865e6 0 0.5 0.5 0 0 /tmp/result_inbeng.csv /tmp/coverage_mcdm_inbeng.csv /tmp/distance_tag.csv 1 /tmp/accuracy.csv 1
+$  ./../build/mcdm_online_exploration ./../Images/inbeng_small_correct.pgm 1 72 124 180 26 180 0.99 0 1 ./../config/tag_inbeng_1.yaml 865e6 0 0.5 0.5 0 0 /tmp/result_inbeng.csv /tmp/coverage_mcdm_inbeng.csv /tmp/distance_tag.csv 1 /tmp/accuracy.csv 1
 ```
 where:
 - `./../build/mcdm_online_exploration` is the executable file
@@ -24,7 +24,7 @@ where:
 - `180` is the initial orientation of the robot
 - `26` is the sensor range expressed in cells
 - `180` is the maximum scan angle
-- `0.999` means we want the full coverage ( use 0.9X with a lower resolution)
+- `0.99` means we want the full coverage ( use 0.9X with a lower resolution)
 - `0` is the threshold factor for discarding frontiers and speeding up the exploration (us 0.XX for different values)
 - `1` means we use cells of one square meter per size during the navigation
 - `./../config/tag_inbeng_1.yaml` is the file containing the position of 10 RFID tags

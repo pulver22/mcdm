@@ -177,7 +177,7 @@ void Utilities::filePutContents(const std::string& name, const std::string& cont
       // cout << "File does not exist! Create a new one!" << endl;
       outfile.open(name);
       if (name.find("result") != string::npos){
-        outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,w_battery_status,norm_w_info_gain,norm_w_travel_distance,norm_w_sensing_time,norm_w_rfid_gain,norm_w_battery_status,coverage,numConfiguration,travelledDistance,totalScanTime,accumulatedRxPower,batteryStatus" << endl;
+        outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,w_battery_status,norm_w_info_gain,norm_w_travel_distance,norm_w_sensing_time,norm_w_rfid_gain,norm_w_battery_status,coverage,numConfiguration,travelledDistance,totalScanTime,accumulatedRxPower,batteryStatus,accuracy" << endl;
       }
       else if (name.find("coverage") != string::npos){
         outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,w_battery_status,norm_w_info_gain,norm_w_travel_distance,norm_w_sensing_time,norm_w_rfid_gain,norm_w_battery_status,numConfiguration,increasingCoverage,travelledDistance" << endl;
@@ -604,8 +604,7 @@ bool Utilities::forwardMotion(Pose *target, Pose *previous, list<Pose> *frontier
   return false;
 }
 
-void Utilities::findTags(double w_info_gain, double w_travel_distance,double w_sensing_time,double w_rfid_gain, double w_battery_status,
-                          vector<RFIDGridmap> *RFID_maps_list, vector<pair<double, double>> *tags_coord, dummy::Map *map,
+double Utilities::findTags( vector<RFIDGridmap> *RFID_maps_list, vector<pair<double, double>> *tags_coord, dummy::Map *map,
                           string detection_log, string accuracy_log, 
                           int initRange, long numConfiguration,
                           RFID_tools *rfid_tools)
@@ -617,11 +616,11 @@ void Utilities::findTags(double w_info_gain, double w_travel_distance,double w_s
   // FIXME: not accurate, it must not be used
     // tag= map.findTag();
     // cout << "RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
-  std::string tags_distance_from_gt = to_string(w_rfid_gain) + "," 
-                                    + to_string(w_travel_distance) + "," 
-                                    + to_string(w_sensing_time) + "," 
-                                    + to_string(w_rfid_gain) + "," 
-                                    + to_string(w_battery_status) + ",";
+  std::string tags_distance_from_gt = to_string(this->w_info_gain) + "," 
+                                    + to_string(this->w_travel_distance) + "," 
+                                    + to_string(this->w_sensing_time) + "," 
+                                    + to_string(this->w_rfid_gain) + "," 
+                                    + to_string(this->w_battery_status) + ",";
   std::string accuracy_content;
   accuracy_content.assign(tags_distance_from_gt);
   double distance_to_tag, belief_distance_to_tag = 0;
@@ -664,6 +663,7 @@ void Utilities::findTags(double w_info_gain, double w_travel_distance,double w_s
   this->filePutContents(detection_log, tags_distance_from_gt, true);
   accuracy_content += to_string(initRange) + "," + to_string(numConfiguration) + "," + to_string(belief_accuracy) + "\n";
   this->filePutContents(accuracy_log, accuracy_content, true);
+  return belief_accuracy;
 }
 
 void Utilities::saveRFIDMaps(vector<RFIDGridmap> *RFID_maps_list, string root)

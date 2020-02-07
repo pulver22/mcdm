@@ -416,8 +416,7 @@ int main ( int argc, char **argv )
   // cout << "------------------ TABULIST -----------------" << endl;
   utils.calculateDistance(tabuList, &map, &astar );
 
-  utils.findTags(w_info_gain, w_travel_distance, w_sensing_time, w_rfid_gain, w_battery_status,
-                  &RFID_maps_list, &tags_coord, &map,
+  double belief_accuracy = utils.findTags(&RFID_maps_list, &tags_coord, &map,
                   detection_log, accuracy_log, 
                   initRange, numConfiguration,
                   &rfid_tools);
@@ -427,7 +426,7 @@ int main ( int argc, char **argv )
             + to_string(norm_w_info_gain) + ","  + to_string(norm_w_travel_distance) + "," + to_string(norm_w_sensing_time) + "," + to_string(norm_w_rfid_gain) + "," + to_string(norm_w_battery_status) + ","
             + to_string(float(newSensedCells)/float(totalFreeCells)) + "," + to_string(numConfiguration) + ","
             + to_string(travelledDistance) + "," + to_string(totalScanTime) + "," + to_string(accumulated_received_power) + "," 
-            + to_string(100*batteryTime/MAX_BATTERY) + "\n";
+            + to_string(100*batteryTime/MAX_BATTERY) + ", " + to_string(belief_accuracy) + "\n";
   utils.filePutContents(out_log, content, true );
 
   double totalTimeMCDM = chrono::duration<double,milli> ( endMCDM -startMCDM ).count();

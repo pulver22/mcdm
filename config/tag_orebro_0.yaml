@@ -19,32 +19,34 @@ w_rfidGain: 0
 # detectionLog: /home/pulver/Dropbox/University/PostDoc/MCDM/mcdm/logic_exps/mcdm_vs_avg/inb3123/distance_tag_25r.csv
 # accuracyLog: /home/pulver/Dropbox/University/PostDoc/MCDM/mcdm/logic_exps/mcdm_vs_avg/inb3123/mcdm_ccuracy_25r.csv
 
-tag1X: 0
-tag1Y: 0
 
-tag2X: 0
-tag2Y: 0
+# When looking at this point in Gimp, you must switch X and Y
+tag1X: 163
+tag1Y: 31
 
-tag3X: 0
-tag3Y: 0
+tag2X: 160
+tag2Y: 35
 
-tag4X: 0
-tag4Y: 0
+tag3X: 157
+tag3Y: 41
 
-tag5X: 0
-tag5Y: 0
+tag4X: 144
+tag4Y: 47
 
-tag6X: 0
-tag6Y: 0
+tag5X: 140
+tag5Y: 58
 
-tag7X: 0
-tag7Y: 0
+tag6X: 126
+tag6Y: 63
 
-tag8X: 0
-tag8Y: 0
+tag7X: 118
+tag7Y: 64
 
-tag9X: 0
-tag9Y: 0
+tag8X: 118
+tag8Y: 79
 
-tag10X: 0
-tag10Y: 0
+tag9X: 109
+tag9Y: 84
+
+tag10X: 96
+tag10Y: 91

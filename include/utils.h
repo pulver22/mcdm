@@ -258,8 +258,7 @@ public:
                       long *numConfiguration, string *actualPose, int* encodedKeyValue, double *totalAngle, int *numOfTurning,
                       double *scanAngle, bool *btMode, RFID_tools *rfid_tools, double *accumulated_received_power, double *precision, double *batteryTime);
 
-  void findTags(double w_info_gain, double w_travel_distance, double w_sensing_time, double w_rfid_gain, double w_battery_status,
-                vector<RFIDGridmap> *RFID_maps_list, vector<pair<double, double>> *tags_coord, dummy::Map *map, 
+  double findTags(vector<RFIDGridmap> *RFID_maps_list, vector<pair<double, double>> *tags_coord, dummy::Map *map, 
                 string detection_log, string accuracy_log, 
                 int initRange, long numConfiguration,
                 RFID_tools *rfid_tools);

@@ -1,0 +1,10 @@
+echo "INB3123..."
+bash run_experiments_inb3123_parallel.sh
+echo "INBENG..."
+bash run_experiments_inbeng_parallel.sh
+echo "INBATRIUM..."
+bash run_experiments_inbatrium_parallel.sh
+echo "NCFM..."
+bash run_experiments_ncfm_parallel.sh
+echo "OREBRO..."
+bash run_experiments_orebro_parallel.sh

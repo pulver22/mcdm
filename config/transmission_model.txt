@@ -1,4 +1,4 @@
-pulver@threadripper:~/mcdm/build ./../build/mcdm_online_exploration ./../Images/inb3123_small.pgm 1 74 77 180 100 180 0.999 0 1 /home/pulver/mcdm/config/tag_inb3123.yaml 865e6 -10 1 0 0 0 /home/pulver/Desktop/MCDM/variable_ellipse/result_inb3123.csv /home/pulver /tmp/coverage_mcdm_inb_3123_3a.csv /tmp/distance_tag3.csv
+pulver@threadripper:~/mcdm/build ./../build/mcdm_online_exploration ./../Images/inb3123_small.pgm 1 74 77 180 100 180 0.99 0 1 /home/pulver/mcdm/config/tag_inb3123.yaml 865e6 -10 1 0 0 0 /home/pulver/Desktop/MCDM/variable_ellipse/result_inb3123.csv /home/pulver /tmp/coverage_mcdm_inb_3123_3a.csv /tmp/distance_tag3.csv
 imgResolution: 1 clusterSize: 1
 numRows: 200 numCols: 200
 numPathPlanningGridRows: 200, numPathPlanningGridCols: 200
