@@ -88,10 +88,7 @@ int main ( int argc, char **argv )
   double precision = atof ( argv[8] );
   double threshold = atof ( argv[9] );
   // RFID
-  
-  YAML::Node config = YAML::LoadFile(argv[11]);
-  // cout << "2" << endl;
-  
+  YAML::Node config = YAML::LoadFile(argv[11]);  
   double absTag1_X = config["tag1X"].as<double>();
   double absTag1_Y = config["tag1Y"].as<double>();
 
@@ -121,17 +118,6 @@ int main ( int argc, char **argv )
 
   double absTag10_X = config["tag10X"].as<double>();
   double absTag10_Y = config["tag10Y"].as<double>();
-  // double absTag1_X = 37 * resolution;
-  // double absTag1_Y = 58 * resolution;
-
-  // double absTag2_X = 44 * resolution;
-  // double absTag2_Y = 31 * resolution;
-  
-  // double absTag3_X = 130 * resolution;
-  // double absTag3_Y = 45 * resolution;
-  
-  // double absTag4_X = 150 * resolution;
-  // double absTag4_Y = 108 * resolution;
 
   std::vector<std::pair<double,double>> tags_coord;
   tags_coord.push_back(std::make_pair(absTag1_X, absTag1_Y));
@@ -189,11 +175,10 @@ int main ( int argc, char **argv )
   norm_w_sensing_time = w_sensing_time / sum_w;
   norm_w_rfid_gain = w_rfid_gain / sum_w;
   norm_w_battery_status = w_battery_status / sum_w;
-  // cout << "[ " << norm_w_info_gain << ", " << norm_w_travel_distance 
-  //       << ", " << norm_w_sensing_time << ", " << norm_w_rfid_gain << " ]" << endl;
   Utilities utils(norm_w_info_gain, norm_w_travel_distance, norm_w_sensing_time, norm_w_rfid_gain, norm_w_battery_status);
   MCDMFunction function(norm_w_info_gain, norm_w_travel_distance, norm_w_sensing_time, norm_w_rfid_gain, norm_w_battery_status ,use_mcdm);
   Pose initialPose = Pose ( initX,initY,initOrientation,initRange,initFov );
+
   Pose invertedInitial = utils.createFromInitialPose ( initX,initY,initOrientation,180,initRange,initFov );
   Pose eastInitial = utils.createFromInitialPose ( initX,initY,initOrientation,90,initRange,initFov );
   Pose westInitial = utils.createFromInitialPose ( initX,initY,initOrientation,270,initRange,initFov );
@@ -352,11 +337,8 @@ int main ( int argc, char **argv )
       translTime = distance / TRANSL_SPEED;
       rotTime = tmp_numOfTurning / ROT_SPEED;
       batteryTime = batteryTime - (translTime + rotTime);
-
-      // cout << "BT: " << astar.lengthPath ( path ) << endl;
       // Update the overall number of turnings
       numOfTurning = numOfTurning + astar.getNumberOfTurning ( path );
-
       encoding = to_string ( target.getX() ) + to_string ( target.getY() );
       visitedCell.emplace ( encoding,0 );
       // Set the previous cell to be the same of the current one
@@ -400,7 +382,7 @@ int main ( int argc, char **argv )
     }
   }
   // Perform exploration until a certain coverage is achieved
-  while ( sensedCells < precision * totalFreeCells );
+  while ( sensedCells < precision * totalFreeCells and batteryTime > 0.0);
   // Plotting utilities
   // map.drawVisitedCells ();
   // map.printVisitedCells ( history );

@@ -1,8 +1,8 @@
 use_mcdm=1
 
 # List of starting coordinate of the robots
-X=(97  66   54)
-Y=(100 130  140)
+X=(97  81   54)
+Y=(100 116  140)
 
 # Path where to save data (create it if it doesn't exist)
 out_path=/home/pulver/Desktop/mcdm_ral_experiments/orebro
