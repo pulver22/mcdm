@@ -294,6 +294,7 @@ void PrintProb(std::string fileURI, Eigen::MatrixXf* prob_mat);
 
 std::pair<int, std::pair<int, int>>findTagFromBeliefMap(int num_tag);
 
+void normalizeRFIDMap();
 
 void debugInfo();
 
