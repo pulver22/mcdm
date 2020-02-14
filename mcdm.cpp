@@ -36,6 +36,12 @@ int main ( int argc, char **argv )
     cout << "Missing arguments! You provided "<< (argc-1)<< " and you need: "<< arguments << endl;
     return 0;
   } else {
+    cout << "Call: " << endl << "\t" ;
+    for (int i=0; i<argc;i++){
+    cout << argv[i] << " ";  
+    }    
+    cout << endl << endl;  
+
     cout << "Arguments:" << endl;
     cout << "- Map image file: " << argv[1] << endl;
     cout << "- Map image resolution: " << argv[2] << " m./cell?" << endl;

@@ -42,13 +42,12 @@ const double TAG_LOSSES = -4.8;
 const double LOSS_CONSTANT = 147.55;
 // 4*pi/c
 const double PHASE_CONSTANT = 4.192e-8;
+const double C = 299792458.0;
 
 // This comes from the manufacturer. Azimut
 // gain list entries start at -180 degrees to 180 in steps of 15.
 const double ANTENNA_LOSSES_LIST [25] = {  -22.6, -25.2, -25, -20.2, -17.6, -15.6, -14, -11.2, -7.8, -5.2, -2.4, -0.6, 0, -0.6, -2.4, -5.2, -8.8, -12.2, -16.4, -19.2, -20.8, -24.4, -28.2, -24, -22.6};
 const double ANTENNA_ANGLES_LIST [25] = {-180.0, -165.0, -150.0, -135.0, -120.0, -105.0, -90.0, -75.0, -60.0, -45.0, -30.0, -15.0, 0.0, 15.0, 30.0, 45.0, 60.0, 75.0, 90.0, 105.0, 120.0, 135.0, 150.0, 165.0, 180.0};
-
-
 
 
 // M6e RFID reader Specs
@@ -131,6 +130,9 @@ class RadarModel
     std::vector<double> _freqs; // transmission frequencies (Hz.)
     SplineFunction _antenna_gains;  // model for antenna power gain depending on the angle (dB.)
 
+
+
+    std::string _model;
   public:
 
 /**
@@ -150,7 +152,7 @@ class RadarModel
 
 
     RadarModel();
-    RadarModel(const double nx, const double ny,  const double resolution, const double sigma_power, const double sigma_phase, const double txtPower, const std::vector<double> freqs, const std::vector<std::pair<double,double>> tags_coords, const std::string imageFileURI ) ;
+    RadarModel(const double nx, const double ny,  const double resolution, const double sigma_power, const double sigma_phase, const double txtPower, const std::vector<double> freqs, const std::vector<std::pair<double,double>> tags_coords, const std::string imageFileURI, std::string model="gaussian" ) ;
     void PrintMap( std::string savePath);
     void initRefMap(const std::string imageURI);
     void getImage(std::string layerName, std::string fileURI);
@@ -267,16 +269,23 @@ Eigen::MatrixXf  getPhaseProbCond(double ph_i, double f_i);
 Eigen::MatrixXf  getProbCond(std::string layer_i, double x, double sig);
 
 void saveProbMapDebug(std::string savePATH, int tag_num, int step, double robot_x, double robot_y, double robot_head);
-
+void createTempProbLayer(Eigen::MatrixXf prob_mat, double x_m, double y_m, double orientation_deg);
 
 void getImage(GridMap* gm,std::string layerName, std::string fileURI);
 
 void PrintRefMapWithTags(std::string fileURI);
-
+void PrintRecPower(std::string fileURI, double f_i);
 void PrintPowProb(std::string fileURI, double rxPw, double f_i);
+void PrintPhase(std::string fileURI,  double f_i);
 void PrintPhaseProb(std::string fileURI, double phi, double f_i);
 void PrintBothProb(std::string fileURI, double rxPw, double phi, double f_i);
+void overlayRobotPose(double robot_x, double robot_y, double robot_head, cv::Mat& image);
+void overlayRobotPoseT(double robot_x, double robot_y, double robot_head, cv::Mat& image);
+void rotatePoints( cv::Point* points, int npts, int cxi, int cyi, double ang);
+void clearObstacles(cv::Mat& image);
 
+Eigen::MatrixXf  getProbCondG(std::string layer_i, double x, double sig);
+Eigen::MatrixXf  getProbCondLogN(std::string layer_i, double x, double sig);
 
 void PrintProb(std::string fileURI, Eigen::MatrixXf* prob_mat,  double sX, double sY, double res);
 void saveProbMaps(std::string savePath);

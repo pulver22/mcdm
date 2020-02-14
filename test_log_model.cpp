@@ -34,12 +34,12 @@ int main(int argc, char **argv)
 
 
   std::string mapFileURI = "/home/manolofc/workspace/mcdm/src/mcdm/Images/mfc_test.pgm";
-  double nx = 240;
-  double ny = 120;
-  double resolution = 1;
-  double sigma_power = 1;
-  double sigma_phase = 1;
-  double txtPower = -10;
+  double nx = 15;
+  double ny = 15;
+  double resolution = 0.01;
+  double sigma_power = 4;
+  double sigma_phase = 0.2;
+  double txtPower = 0;
   int i = 0;
   cout <<"You provided: (" << argc-1 << ") arguments"<<  std::endl;
 
@@ -84,9 +84,9 @@ int main(int argc, char **argv)
 
   std::vector<std::pair<double,double>> tags_coord;
   tags_coord.push_back(std::make_pair(absTag1_X, absTag1_Y));
-  tags_coord.push_back(std::make_pair(absTag2_X, absTag2_Y));
-  tags_coord.push_back(std::make_pair(absTag3_X, absTag3_Y));
-  tags_coord.push_back(std::make_pair(absTag4_X, absTag4_Y));
+  // tags_coord.push_back(std::make_pair(absTag2_X, absTag2_Y));
+  // tags_coord.push_back(std::make_pair(absTag3_X, absTag3_Y));
+  // tags_coord.push_back(std::make_pair(absTag4_X, absTag4_Y));
   //  ........................................................
   double f_i =  MIN_FREQ_NA; // 902e6 Hertzs
 
@@ -101,8 +101,8 @@ int main(int argc, char **argv)
   } while (f_i<=MAX_FREQ_NA);
   */
 
-  std::vector<double> freqs{ MIN_FREQ_NA,MIN_FREQ_NA+STEP_FREQ_NA,MIN_FREQ_NA+2.0*STEP_FREQ_NA }; 
-
+  // std::vector<double> freqs{ MIN_FREQ_NA,MIN_FREQ_NA+STEP_FREQ_NA,MIN_FREQ_NA+2.0*STEP_FREQ_NA }; 
+  std::vector<double> freqs{ 800e6,920e6  }; 
 
   // later on, we will use this to get random freqs...
   boost::random::uniform_int_distribution<>  distr(0, freqs.size()-1);
@@ -115,11 +115,25 @@ int main(int argc, char **argv)
   cout << "Radar model built." << endl;
 
   // prints reference map with tags
-  rm.PrintRefMapWithTags("/tmp/scenario.png");      
+  rm.PrintRefMapWithTags("/tmp/test/scenario.png");      
   //  - Map goes from 0,0 to (N,M)*resolution in meters
   //  - Rcoods: up-left is 0,0. X increases down, and Y increases Right: swap x and y axes from images as they show on gimp 
 
+  rm.PrintRecPower("/tmp/test/rec_power_f_800.png", 800e6);
+  rm.PrintRecPower("/tmp/test/rec_power_f_920.png", 920e6);
 
+  rm.PrintPowProb("/tmp/test/prob_rec_power_95_f_800.png", -95, 800e6);
+  rm.PrintPowProb("/tmp/test/prob_rec_power_95_f_920.png", -95, 920e6);
+
+  rm.PrintPhase("/tmp/test/phase_f_800.png", 800e6);
+  rm.PrintPhase("/tmp/test/phase_f_920.png", 920e6);
+
+  rm.PrintPhaseProb("/tmp/test/prob_phase_45_f_800.png", 45.0*M_PI/180.0, 800e6);
+  rm.PrintPhaseProb("/tmp/test/prob_phase_45_f_920.png", 45.0*M_PI/180.0, 920e6);
+
+  rm.PrintBothProb("/tmp/test/prob_95db_45deg_f_800.png", -95, 45.0*M_PI/180.0, 800e6);
+  rm.PrintBothProb("/tmp/test/prob_95db_45deg_f_920.png", -95, 45.0*M_PI/180.0, 920e6);
+  
   // simple scenario
   int NumReadings = 10;
   // Unit is meters. We multiply pixels by resolution to get them.
@@ -173,14 +187,14 @@ int main(int argc, char **argv)
             //print maps
             //cout  << "Saving tag distribution maps... "<< endl;
             int lineal_index = (8*(i+1))+(h+1);
-            // rm.saveProbMapDebug("/tmp/",t,lineal_index,robot_x,robot_y, robot_head);
+            rm.saveProbMapDebug("/tmp/test/",t,lineal_index,robot_x,robot_y, robot_head);
         }
         //std::cout<<"Finished reading. " << std::endl << std::endl;
     }
   }
   //print maps
   //cout  << "Saving tag distribution maps... "<< endl;
-  rm.saveProbMaps("/tmp/");
+  rm.saveProbMaps("/tmp/test/");
 
 
   // lets play with the weights

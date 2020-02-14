@@ -456,6 +456,16 @@ void Utilities::updateMaps(vector<pair<double,double>> *tags_coord, dummy::Map* 
     map->updatePathPlanningGrid ( *x, *y, range, rxPower - *SENSITIVITY);
     //So, robot at pr (x,y,orientation) (long, long, int) receives rxPower,phase,freq from tag i . 
     rfid_tools->rm.addMeasurement(*x,*y, target->getOrientation() , rxPower, phase, *freq, i);
+
+    // mfc: dirty trick to plot sequential images of current prob maps
+    // static int lineal_index = 0;
+    // if ( i == 8 ){
+    //   std::cout<<"\t- Tag [" << i << "] at rel position (" << relTagCoord.first << ", " << relTagCoord.second << ") m. " <<std::endl;
+    //   std::cout<<"\t- Reading at freq (" << *freq/1e6<< " MHz): (" << (rxPower+30) << ") dBm. ( " << phase << ") rads. " << std::endl;
+
+    //   rfid_tools->rm.saveProbMapDebug("/tmp/",i,lineal_index++,*x,*y, target->getOrientation());
+    // }
+
     // std::cout << "    " << rxPower << std::endl;
     // Moved down after we recast the rxPower
     if (rxPower < *SENSITIVITY){
