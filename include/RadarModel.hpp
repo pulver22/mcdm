@@ -294,7 +294,10 @@ void PrintProb(std::string fileURI, Eigen::MatrixXf* prob_mat);
 
 std::pair<int, std::pair<int, int>>findTagFromBeliefMap(int num_tag);
 
+void normalizeRFIDLayer(std::string layerName);
 void normalizeRFIDMap();
+void clearObstacleCellsRFIDMap();
+double getNormalizingFactorBayesRFIDActiveArea(double x_m, double y_m, double orientation_rad, string tagLayerName);
 
 void debugInfo();
 

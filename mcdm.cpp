@@ -221,8 +221,8 @@ int main ( int argc, char **argv )
   double minX, maxX, minY, maxY;
 
   // Radar model: 
-  double nx = 240*resolution; // radar model active area x-range m.
-  double ny = 120*resolution;  // radar model active area y-range m.  
+  double nx = 200*resolution; // radar model active area x-range m.
+  double ny = 200*resolution;  // radar model active area y-range m.  
   double rs = resolution; // radar model grid resolution m./cell :: SAME AS INPUT IMAGE!!!
   double sigma_power = 1; //dB
   double sigma_phase = 1; //rads
@@ -429,7 +429,7 @@ int main ( int argc, char **argv )
   // rm.saveProbMaps("/tmp/");
 
   cout << "Saving debug distribution maps... "<< endl;
-  rm.normalizeRFIDMap();
+  // rm.normalizeRFIDMap();
   // for each tag:
   for (int t = 0; t < tags_coord.size(); t++){
     // cout << "---[" << t <<"]----------------" << endl;
