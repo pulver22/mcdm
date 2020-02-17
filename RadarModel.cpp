@@ -272,59 +272,72 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
   // NB: posterior = likelihood * prior / normalizing_factor
   // where normalisizing_factor is a sum over all the grid of likelihood * prior
   bayes_den = getNormalizingFactorBayesRFIDActiveArea(x_m, y_m, orientation_rad, tagLayerName);
+  // if (rxPower == 0){
 
-  // Now we can proceed with the update
-  for (grid_map::GridMapIterator iterator(_active_area_maps); !iterator.isPastEnd(); ++iterator) {
-    // get cell center of the cell in the map frame.            
-    _active_area_maps.getPosition(*iterator, point);                  
-    rel_x = point.x();
-    rel_y = point.y();
+    // cout << bayes_den << endl;
+  // }
 
-    // cast position to global map
-    glob_x =  rel_x * cos(orientation_rad) + rel_y * sin(orientation_rad) + x_m;
-    glob_y = -rel_x * sin(orientation_rad) + rel_y * cos(orientation_rad) + y_m;
+  if (bayes_den != 0.0 and !isnan(bayes_den)){
+        // cout << "Power: " << rxPower << ", Bayes_den: "<< bayes_den << endl;
+    // Now we can proceed with the update
+    for (grid_map::GridMapIterator iterator(_active_area_maps); !iterator.isPastEnd(); ++iterator) {
+      // get cell center of the cell in the map frame.            
+      _active_area_maps.getPosition(*iterator, point);                  
+      rel_x = point.x();
+      rel_y = point.y();
 
-    // cout <<"rel: (" << rel_x << ", " << rel_y << ") " << std::endl;
-    // cout <<"glob: (" << glob_x << ", " << glob_y << ") " << std::endl;
-    // cout <<"........................ " << std::endl;
+      // cast position to global map
+      glob_x =  rel_x * cos(orientation_rad) + rel_y * sin(orientation_rad) + x_m;
+      glob_y = -rel_x * sin(orientation_rad) + rel_y * cos(orientation_rad) + y_m;
 
-    point = Position(glob_x, glob_y);
-    // check if is inside global map
-    if (_rfid_belief_maps.isInside(point)){
-      // get point value in reference map to check if it's an obstacle:                      
-      if (_rfid_belief_maps.atPosition("ref_map",point) == _free_space_val){
-        // get the (measurement) prob :
-        likelihood = _active_area_maps.at("temp",*iterator);  // the measurement
-        prior = _rfid_belief_maps.atPosition(tagLayerName,point);  // the value in the 
-        // Update the belief only if the measurement or the prior is different from 0
-        if (likelihood != 0){
-          // cout << prob_val << endl;
-          // mfc: why are you doing this Ric? Every little counts!                        
-          //if (prob_val < 1e-07) prob_val = 0;
-          // add value.
-          // TODO: BAYES RULE HERE!!
-          // prior = _rfid_belief_maps.atPosition(tagLayerName,point);
-          bayes_num = prior * likelihood;
-          // bayes_den = prior * prob_val + (1-prob_val)*(1-prior);
-          // cout << "prior: " << prior << endl;
-          // cout << "num: " << bayes_num << ", den: " << bayes_den << endl;
-          // cout << "Posterior: " << (bayes_num / bayes_den) << endl;
-          // cout << "----" << endl;
-          // cout << "[Prior]: " << _rfid_belief_maps.atPosition(tagLayerName,point) << endl;
-          _rfid_belief_maps.atPosition(tagLayerName,point) = (bayes_num / bayes_den);
-          // if (_rfid_belief_maps.atPosition(tagLayerName,point) > prior){
-          //   cout << "Belief increased" << endl;
+      // cout <<"rel: (" << rel_x << ", " << rel_y << ") " << std::endl;
+      // cout <<"glob: (" << glob_x << ", " << glob_y << ") " << std::endl;
+      // cout <<"........................ " << std::endl;
+
+      point = Position(glob_x, glob_y);
+      // check if is inside global map
+      if (_rfid_belief_maps.isInside(point)){
+        // get point value in reference map to check if it's an obstacle:                      
+        if (_rfid_belief_maps.atPosition("ref_map",point) == _free_space_val){
+          // get the (measurement) prob :
+          likelihood = _active_area_maps.at("temp",*iterator);  // the measurement
+          prior = _rfid_belief_maps.atPosition(tagLayerName,point);  // the value in the 
+          // Update the belief only if the measurement or the prior is different from 0
+          if (likelihood != 0){
+            // cout << prob_val << endl;
+            // mfc: why are you doing this Ric? Every little counts!                        
+            //if (prob_val < 1e-07) prob_val = 0;
+            // add value.
+            // TODO: BAYES RULE HERE!!
+            // prior = _rfid_belief_maps.atPosition(tagLayerName,point);
+            bayes_num = prior * likelihood;
+            // bayes_den = prior * prob_val + (1-prob_val)*(1-prior);
+            // cout << "prior: " << prior << endl;
+            // cout << "num: " << bayes_num << ", den: " << bayes_den << endl;
+            // cout << "Posterior: " << (bayes_num / bayes_den) << endl;
+            // cout << "----" << endl;
+            // cout << "[Prior]: " << _rfid_belief_maps.atPosition(tagLayerName,point) << endl;
+            _rfid_belief_maps.atPosition(tagLayerName,point) = (bayes_num / bayes_den);
+            // if (_rfid_belief_maps.atPosition(tagLayerName,point) > prior){
+            //   cout << "Belief increased" << endl;
+            }
+            if (i == 0 and _rfid_belief_maps.atPosition(tagLayerName,point) == 0){
+              // cout << "[Prior]: " << prior << endl;
+              // cout << "[Likelihood]: " << likelihood << endl;
+            }
           // }
-          // cout << "[Posterior]: " << _rfid_belief_maps.atPosition(tagLayerName,point) << endl;
+        } else {
+          // this shouldn't be necessary ....
+          _rfid_belief_maps.atPosition(tagLayerName,point) = 0;
         }
-      } else {
-        // this shouldn't be necessary ....
-        _rfid_belief_maps.atPosition(tagLayerName,point) = 0;
       }
     }
   }
-
   normalizeRFIDLayer(tagLayerName);
+  // cout << "["<< i <<"]Sum: " << _rfid_belief_maps[tagLayerName].sum() << endl;
+  // cout << "["<< i <<"]Max: " << _rfid_belief_maps[tagLayerName].maxCoeff() << endl;
+  // cout << "["<< i <<"]Min: " << _rfid_belief_maps[tagLayerName].minCoeff() << endl;
+  // cout << "---" << endl;
   // normalizeRFIDMap();
 
   // python friendly debug:
@@ -715,6 +728,14 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
       cv::Mat image;
       const float minValue = _rfid_belief_maps[layerName].minCoeff();
       const float maxValue = _rfid_belief_maps[layerName].maxCoeff();
+      // float sum = _rfid_belief_maps[layerName].sum();
+      // _rfid_belief_maps[layerName] = _rfid_belief_maps[layerName] / sum;
+      // minValue = _rfid_belief_maps[layerName].minCoeff();
+      // maxValue = _rfid_belief_maps[layerName].maxCoeff();
+      // cout << "max: " << maxValue << endl;
+      // cout << "min: " << minValue << endl;
+      // cout << "sum: " << sum << endl;
+      // cout << "---" << endl;
       // mfc: maxvalue changes, so does what is encoded as black/white and making comparison hard to compare between images ....
       GridMapCvConverter::toImage<unsigned char, 3>(_rfid_belief_maps, layerName, CV_8UC3, minValue, maxValue, image);
       
@@ -1436,9 +1457,15 @@ std::pair<int, std::pair<int, int>> RadarModel::findTagFromBeliefMap(int num_tag
 
 void RadarModel::normalizeRFIDLayer(std::string layerName){
   double totalW = _rfid_belief_maps[layerName].sum();
-    if (totalW > 0){
-      _rfid_belief_maps[layerName] = _rfid_belief_maps[layerName]/totalW;
-    }
+  if (totalW > 0){
+    _rfid_belief_maps[layerName] = _rfid_belief_maps[layerName]/totalW;
+  }
+
+  // double minW = _rfid_belief_maps[layerName].minCoeff();
+  // double maxW = _rfid_belief_maps[layerName].maxCoeff();
+  // _rfid_belief_maps.add("min", minW);
+  // _rfid_belief_maps.add("max", minW);
+  // _rfid_belief_maps[layerName] = (_rfid_belief_maps[layerName] - _rfid_belief_maps["min"])/ (maxW - minW);
 }
 
 void RadarModel::normalizeRFIDMap(){

@@ -221,8 +221,8 @@ int main ( int argc, char **argv )
   double minX, maxX, minY, maxY;
 
   // Radar model: 
-  double nx = 200*resolution; // radar model active area x-range m.
-  double ny = 200*resolution;  // radar model active area y-range m.  
+  double nx = 30*resolution; // radar model active area x-range m.
+  double ny = 30*resolution;  // radar model active area y-range m.  
   double rs = resolution; // radar model grid resolution m./cell :: SAME AS INPUT IMAGE!!!
   double sigma_power = 1; //dB
   double sigma_phase = 1; //rads

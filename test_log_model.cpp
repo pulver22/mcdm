@@ -33,7 +33,7 @@ int main(int argc, char **argv)
   boost::random::mt19937                        generator(rand_dev());
 
 
-  std::string mapFileURI = "/home/manolofc/workspace/mcdm/src/mcdm/Images/mfc_test.pgm";
+  std::string mapFileURI = "/home/pulver/mcdm/Images/mfc_test.pgm";
   double nx = 15;
   double ny = 15;
   double resolution = 0.01;
