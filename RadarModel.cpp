@@ -250,7 +250,7 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
   double glob_x, glob_y;
   Position point;
 
-  double prior, likelihood, bayes_num, bayes_den;
+  double prior, posterior, likelihood, bayes_num, bayes_den;
 
   // cout <<"Position: (" << x_m << " m., " << y_m << " m., " << orientation_deg <<"º) " << std::endl;
   // cout <<"Measurement: Tag ["<< i <<  "]: (" << rxPower << " dB, " << phase << " rad., " << freq/1e6 <<"MHz.) " << std::endl;
@@ -293,7 +293,6 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
       // cout <<"rel: (" << rel_x << ", " << rel_y << ") " << std::endl;
       // cout <<"glob: (" << glob_x << ", " << glob_y << ") " << std::endl;
       // cout <<"........................ " << std::endl;
-
       point = Position(glob_x, glob_y);
       // check if is inside global map
       if (_rfid_belief_maps.isInside(point)){
@@ -317,15 +316,19 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
             // cout << "Posterior: " << (bayes_num / bayes_den) << endl;
             // cout << "----" << endl;
             // cout << "[Prior]: " << _rfid_belief_maps.atPosition(tagLayerName,point) << endl;
-            _rfid_belief_maps.atPosition(tagLayerName,point) = (bayes_num / bayes_den);
+            posterior = bayes_num / bayes_den;
+            // posterior =  bayes_num / (1 - bayes_num);
+            // posterior = likelihood / (1 - likelihood);
+            // posterior = log(posterior);
+            _rfid_belief_maps.atPosition(tagLayerName,point) = abs(posterior);
             // if (_rfid_belief_maps.atPosition(tagLayerName,point) > prior){
             //   cout << "Belief increased" << endl;
-            }
-            if (i == 0 and _rfid_belief_maps.atPosition(tagLayerName,point) == 0){
+            // }
+            // if (i == 0 and _rfid_belief_maps.atPosition(tagLayerName,point) == 0){
               // cout << "[Prior]: " << prior << endl;
               // cout << "[Likelihood]: " << likelihood << endl;
-            }
-          // }
+            // }
+          }
         } else {
           // this shouldn't be necessary ....
           _rfid_belief_maps.atPosition(tagLayerName,point) = 0;
