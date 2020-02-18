@@ -1,4 +1,5 @@
 #include "RadarModel.hpp"
+#include <unsupported/Eigen/SpecialFunctions>
 
 using namespace std;
 using namespace grid_map;
@@ -251,21 +252,29 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
   Position point;
 
   double prior, posterior, likelihood, bayes_num, bayes_den;
+  Eigen::MatrixXf prob_mat;
+  std::string tagLayerName = getTagLayerName(i);
+
 
   // cout <<"Position: (" << x_m << " m., " << y_m << " m., " << orientation_deg <<"º) " << std::endl;
   // cout <<"Measurement: Tag ["<< i <<  "]: (" << rxPower << " dB, " << phase << " rad., " << freq/1e6 <<"MHz.) " << std::endl;
   // cout <<"........................ " << std::endl;
 
   // First we get the Probability distribution associated with ( rxPower,phase,freq) using our defined active area grids
-  Eigen::MatrixXf prob_mat = getPowProbCond(rxPower, freq).cwiseProduct(getPhaseProbCond(phase, freq));
+  if (rxPower > SENSITIVITY){
+    prob_mat = getPowProbCond(rxPower, freq).cwiseProduct(getPhaseProbCond(phase, freq));
+    // cout << "Pos: " << prob_mat.sum() << endl;
+  } else{
+    prob_mat = getNegProb(getPowLayerName(freq), SENSITIVITY, _sigma_power).cwiseProduct(getPhaseProbCond(phase, freq));
+    // cout << "Neg: " << prob_mat.sum() << endl;
+  }
+  
 
   // We store this data matrix in a temporal layer
   createTempProbLayer(prob_mat, x_m, y_m, orientation_deg);
 
   // so we need to translate this matrix to robot pose and orientation
   orientation_rad = -orientation_deg * M_PI/180.0;
-  std::string tagLayerName = getTagLayerName(i);
-
   // We ned to normalise the new probability over the entire grid, so
   // we need to multiple all the priors for all the new measurements
   // and this will be our denominator while applying Bayes
@@ -302,7 +311,7 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
           likelihood = _active_area_maps.at("temp",*iterator);  // the measurement
           prior = _rfid_belief_maps.atPosition(tagLayerName,point);  // the value in the 
           // Update the belief only if the measurement or the prior is different from 0
-          if (likelihood != 0){
+          // if (likelihood != 0){
             // cout << prob_val << endl;
             // mfc: why are you doing this Ric? Every little counts!                        
             //if (prob_val < 1e-07) prob_val = 0;
@@ -320,7 +329,7 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
             // posterior =  bayes_num / (1 - bayes_num);
             // posterior = likelihood / (1 - likelihood);
             // posterior = log(posterior);
-            _rfid_belief_maps.atPosition(tagLayerName,point) = abs(posterior);
+            _rfid_belief_maps.atPosition(tagLayerName,point) = posterior;
             // if (_rfid_belief_maps.atPosition(tagLayerName,point) > prior){
             //   cout << "Belief increased" << endl;
             // }
@@ -328,7 +337,7 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
               // cout << "[Prior]: " << prior << endl;
               // cout << "[Likelihood]: " << likelihood << endl;
             // }
-          }
+          // }
         } else {
           // this shouldn't be necessary ....
           _rfid_belief_maps.atPosition(tagLayerName,point) = 0;
@@ -1530,3 +1539,16 @@ double RadarModel::getNormalizingFactorBayesRFIDActiveArea(double x_m, double y_
   }
   return bayes_den;
 }
+
+Eigen::MatrixXf RadarModel::getNegProb(std::string layer_i, double sensitivity, double sigm){
+ 
+ Eigen::MatrixXf friis_mat = _active_area_maps[layer_i];
+ 
+ // gaussian cdp
+ // cdp(x,mu,sigma) = 0.5 * ( 1 + erf( (x - mu) / (sigma * sqrt(2)) ) 
+ 
+ Eigen::MatrixXf erf_mat = (sensitivity - friis_mat.array()) / (sigm * sqrt(2.0));
+ 
+ erf_mat = 0.5 + 0.5*erf_mat.array().erf();
+ return erf_mat;
+ }

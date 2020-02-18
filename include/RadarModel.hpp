@@ -298,6 +298,7 @@ void normalizeRFIDLayer(std::string layerName);
 void normalizeRFIDMap();
 void clearObstacleCellsRFIDMap();
 double getNormalizingFactorBayesRFIDActiveArea(double x_m, double y_m, double orientation_rad, string tagLayerName);
+Eigen::MatrixXf getNegProb(std::string layer_i, double sensitivity, double sigm);
 
 void debugInfo();
 
