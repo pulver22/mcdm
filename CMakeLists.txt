@@ -38,6 +38,7 @@ if(NOT EIGEN3_FOUND)
   pkg_check_modules(EIGEN3 REQUIRED eigen3)
   set(EIGEN3_INCLUDE_DIR ${EIGEN3_INCLUDE_DIRS})
 endif()
+# find_package (Eigen3 REQUIRED)# NO_MODULE)
 
 
 find_package(yaml-cpp REQUIRED)

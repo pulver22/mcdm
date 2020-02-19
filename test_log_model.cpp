@@ -203,6 +203,11 @@ int main(int argc, char **argv)
   //print maps
   //cout  << "Saving tag distribution maps... "<< endl;
   rm.saveProbMaps("/tmp/test/");
+  // for each tag:
+  for (int t = 0; t < tags_coord.size(); t++){
+    // cout << "---[" << t <<"]----------------" << endl;
+   rm.saveProbMapDebug("/tmp/",t,0,0,0,0);
+  }
 
 
   // lets play with the weights

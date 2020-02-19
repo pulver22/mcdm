@@ -262,10 +262,10 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
 
   // First we get the Probability distribution associated with ( rxPower,phase,freq) using our defined active area grids
   if (rxPower > SENSITIVITY){
-    prob_mat = getPowProbCond(rxPower, freq).cwiseProduct(getPhaseProbCond(phase, freq));
+    prob_mat = getPowProbCond(rxPower, freq);//.cwiseProduct(getPhaseProbCond(phase, freq));
     // cout << "Pos: " << prob_mat.sum() << endl;
   } else{
-    prob_mat = getNegProb(getPowLayerName(freq), SENSITIVITY, _sigma_power).cwiseProduct(getPhaseProbCond(phase, freq));
+    prob_mat = getNegProb(getPowLayerName(freq), SENSITIVITY, _sigma_power);//.cwiseProduct(getPhaseProbCond(phase, freq));
     // cout << "Neg: " << prob_mat.sum() << endl;
   }
   
