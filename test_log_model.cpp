@@ -157,7 +157,9 @@ int main(int argc, char **argv)
   double tag_y, delta_y;
   double phase;
 
-  
+  for (int t = 0; t < tags_coord.size(); t++){
+    rm.saveProbMapDebug("/tmp/test/",t,0,start_x,start_y, robot_head0);
+  }
   // let's do 10 samples from start point and ing a straight line.
   for (int i=0;i<NumReadings;i++){
       // current robot position, map coordinates.
@@ -170,10 +172,7 @@ int main(int argc, char **argv)
         
         //for each tag:
         for (int t = 0; t < tags_coord.size(); t++){
-            //print maps
-            //cout  << "Saving tag distribution maps... "<< endl;
-            int lineal_index = (8*(i+1))+(h+1);
-            rm.saveProbMapDebug("/tmp/test/",t,lineal_index,robot_x,robot_y, robot_head);
+
 
             // get relative robot-tag pose
             // translate
@@ -196,6 +195,10 @@ int main(int argc, char **argv)
 
             // add measurement to model
             rm.addMeasurement(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
+            //print maps
+            //cout  << "Saving tag distribution maps... "<< endl;
+            int lineal_index = (8*(i+1))+(h+1);
+            rm.saveProbMapDebug("/tmp/test/",t,lineal_index,robot_x,robot_y, robot_head);
         }
         //std::cout<<"Finished reading. " << std::endl << std::endl;
     }
@@ -212,7 +215,7 @@ int main(int argc, char **argv)
 
   // lets play with the weights
   double w_i, w_max;
-  double prec = 2;
+  double prec = 3;
   std::cout << std::fixed;
   std::cout << std::setprecision(2);
 

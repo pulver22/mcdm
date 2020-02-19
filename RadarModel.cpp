@@ -1,5 +1,5 @@
 #include "RadarModel.hpp"
-#include <unsupported/Eigen/SpecialFunctions>
+//#include <unsupported/Eigen/SpecialFunctions>
 
 using namespace std;
 using namespace grid_map;
@@ -97,33 +97,30 @@ RadarModel::RadarModel(const double nx, const double ny, const double resolution
               
               Eigen::MatrixXf rxPw_mat = Eigen::MatrixXf(siz(0), siz(1));
               Eigen::MatrixXf delay_mat = Eigen::MatrixXf(siz(0), siz(1));
+              fillFriisMat( &rxPw_mat,  &delay_mat, freqs[i], 0 );
+            
 
-              for (grid_map::GridMapIterator iterator(_active_area_maps); !iterator.isPastEnd(); ++iterator) {
-                  // matrix indexes...
-                  ind = *iterator;
-                  
-                  // get cell center of the cell in the map frame.            
-                  _active_area_maps.getPosition(ind, point);
-                  // that is where the tag is.
-                  tag_x = point.x();
-                  tag_y = point.y();
-
-                  getSphericCoords(tag_x,tag_y, tag_r, tag_h);
-
-                  // PHASE_CONSTANT  === 4*pi/c 
-                  phi = fmod ( PHASE_CONSTANT * _freqs[i] * tag_r, M_PI);
-
-                  rxP = received_power_friis_polar(tag_r, tag_h, _freqs[i], _txtPower, _antenna_gains);
-                  //cout <<"rxPw: ("<< rxP <<")" << std::endl;
-                  rxPw_mat(ind(0),ind(1))  = rxP;                  
-                  delay_mat(ind(0),ind(1))  = phi;                  
-              }
-
-              // we have like an mean values map for each frequency and position with this power and setup ...
+              // we have like an mean power, phase values map for each frequency and position with this power and setup ...
               layerName = getPowLayerName(freqs[i]);
               _active_area_maps.add(layerName, rxPw_mat);
               layerName = getPhaseLayerName(freqs[i]);
               _active_area_maps.add(layerName, delay_mat);
+
+              // // ...................................
+              fillFriisMat( &rxPw_mat,  &delay_mat, freqs[i], 0.5*_resolution );
+              layerName = getPowLayerName(freqs[i])+"_low";
+              _active_area_maps.add(layerName, rxPw_mat);
+              layerName = getPhaseLayerName(freqs[i])+"_low";
+              _active_area_maps.add(layerName, delay_mat);
+
+              fillFriisMat( &rxPw_mat,  &delay_mat, freqs[i], -0.5*_resolution );
+              layerName = getPowLayerName(freqs[i])+"_hig";
+              _active_area_maps.add(layerName, rxPw_mat);
+              layerName = getPhaseLayerName(freqs[i])+"_hig";
+              _active_area_maps.add(layerName, delay_mat);
+              // // ...................................
+              
+
               // cout <<"Models for F "<< getLayerName(freqs[i]) << " built" << std::endl;
         }
 
@@ -165,6 +162,35 @@ RadarModel::RadarModel(const double nx, const double ny, const double resolution
 
 
     }
+
+
+    void RadarModel::fillFriisMat(Eigen::MatrixXf *rxPw_mat, Eigen::MatrixXf *delay_mat, double freq_i, double radius_offset ){
+              Index ind;
+              Position point;
+              double tag_x, tag_y, tag_r, tag_h,phi, rxP;
+
+              for (grid_map::GridMapIterator iterator(_active_area_maps); !iterator.isPastEnd(); ++iterator) {
+                  // matrix indexes...
+                  ind = *iterator;
+                  
+                  // get cell center of the cell in the map frame.            
+                  _active_area_maps.getPosition(ind, point);
+                  // that is where the tag is.
+                  tag_x = point.x();
+                  tag_y = point.y();
+
+                  getSphericCoords(tag_x,tag_y, tag_r, tag_h);
+
+                  // PHASE_CONSTANT  === 4*pi/c 
+                  phi = fmod ( PHASE_CONSTANT * freq_i * tag_r, M_PI);
+
+                  rxP = received_power_friis_polar(tag_r + radius_offset, tag_h,freq_i, _txtPower, _antenna_gains);
+                  //cout <<"rxPw: ("<< rxP <<")" << std::endl;
+                  (*rxPw_mat)(ind(0),ind(1))  = rxP;                  
+                  (*delay_mat)(ind(0),ind(1))  = phi;                  
+              }
+
+            }
 
 
 
@@ -249,12 +275,11 @@ void RadarModel::initRefMap(const std::string imageURI){
 void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, double rxPower, double phase, double freq, int i){
   double rel_x, rel_y, prob_val, orientation_rad;
   double glob_x, glob_y;
-  Position point;
+  Position rel_point, glob_point;
 
   double prior, posterior, likelihood, bayes_num, bayes_den;
   Eigen::MatrixXf prob_mat;
   std::string tagLayerName = getTagLayerName(i);
-
 
   // cout <<"Position: (" << x_m << " m., " << y_m << " m., " << orientation_deg <<"º) " << std::endl;
   // cout <<"Measurement: Tag ["<< i <<  "]: (" << rxPower << " dB, " << phase << " rad., " << freq/1e6 <<"MHz.) " << std::endl;
@@ -263,10 +288,10 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
   // First we get the Probability distribution associated with ( rxPower,phase,freq) using our defined active area grids
   if (rxPower > SENSITIVITY){
     prob_mat = getPowProbCond(rxPower, freq);//.cwiseProduct(getPhaseProbCond(phase, freq));
-    // cout << "Pos: " << prob_mat.sum() << endl;
+    //cout << "Pos: " << prob_mat.sum() << endl;
   } else{
-    prob_mat = getNegProb(getPowLayerName(freq), SENSITIVITY, _sigma_power);//.cwiseProduct(getPhaseProbCond(phase, freq));
-    // cout << "Neg: " << prob_mat.sum() << endl;
+    prob_mat = getNegProb(getPowLayerName(freq), 0.1* SENSITIVITY, _sigma_power);//.cwiseProduct(getPhaseProbCond(phase, freq));
+    //cout << "Neg: " << prob_mat.sum() << endl;
   }
   
 
@@ -274,7 +299,8 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
   createTempProbLayer(prob_mat, x_m, y_m, orientation_deg);
 
   // so we need to translate this matrix to robot pose and orientation
-  orientation_rad = -orientation_deg * M_PI/180.0;
+  
+  orientation_rad = orientation_deg * M_PI/180.0;
   // We ned to normalise the new probability over the entire grid, so
   // we need to multiple all the priors for all the new measurements
   // and this will be our denominator while applying Bayes
@@ -291,25 +317,25 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
     // Now we can proceed with the update
     for (grid_map::GridMapIterator iterator(_active_area_maps); !iterator.isPastEnd(); ++iterator) {
       // get cell center of the cell in the map frame.            
-      _active_area_maps.getPosition(*iterator, point);                  
-      rel_x = point.x();
-      rel_y = point.y();
+      _active_area_maps.getPosition(*iterator, rel_point);                  
+      rel_x = rel_point.x();
+      rel_y = rel_point.y();
 
       // cast position to global map
-      glob_x =  rel_x * cos(orientation_rad) + rel_y * sin(orientation_rad) + x_m;
-      glob_y = -rel_x * sin(orientation_rad) + rel_y * cos(orientation_rad) + y_m;
+      glob_x =  rel_x * cos(orientation_rad) - rel_y * sin(orientation_rad) + x_m;
+      glob_y =  rel_x * sin(orientation_rad) + rel_y * cos(orientation_rad) + y_m;
 
       // cout <<"rel: (" << rel_x << ", " << rel_y << ") " << std::endl;
       // cout <<"glob: (" << glob_x << ", " << glob_y << ") " << std::endl;
       // cout <<"........................ " << std::endl;
-      point = Position(glob_x, glob_y);
+      glob_point = Position(glob_x, glob_y);
       // check if is inside global map
-      if (_rfid_belief_maps.isInside(point)){
+      if (_rfid_belief_maps.isInside(glob_point)){
         // get point value in reference map to check if it's an obstacle:                      
-        if (_rfid_belief_maps.atPosition("ref_map",point) == _free_space_val){
+        if (_rfid_belief_maps.atPosition("ref_map",glob_point) == _free_space_val){
           // get the (measurement) prob :
           likelihood = _active_area_maps.at("temp",*iterator);  // the measurement
-          prior = _rfid_belief_maps.atPosition(tagLayerName,point);  // the value in the 
+          prior = _rfid_belief_maps.atPosition(tagLayerName,glob_point);  // the value in the 
           // Update the belief only if the measurement or the prior is different from 0
           // if (likelihood != 0){
             // cout << prob_val << endl;
@@ -317,7 +343,7 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
             //if (prob_val < 1e-07) prob_val = 0;
             // add value.
             // TODO: BAYES RULE HERE!!
-            // prior = _rfid_belief_maps.atPosition(tagLayerName,point);
+            // prior = _rfid_belief_maps.atPosition(tagLayerName,glob_point);
             bayes_num = prior * likelihood;
             // bayes_den = prior * prob_val + (1-prob_val)*(1-prior);
             // cout << "prior: " << prior << endl;
@@ -329,18 +355,18 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
             // posterior =  bayes_num / (1 - bayes_num);
             // posterior = likelihood / (1 - likelihood);
             // posterior = log(posterior);
-            _rfid_belief_maps.atPosition(tagLayerName,point) = posterior;
-            // if (_rfid_belief_maps.atPosition(tagLayerName,point) > prior){
+            _rfid_belief_maps.atPosition(tagLayerName,glob_point) = posterior;
+            // if (_rfid_belief_maps.atPosition(tagLayerName,glob_point) > prior){
             //   cout << "Belief increased" << endl;
             // }
-            // if (i == 0 and _rfid_belief_maps.atPosition(tagLayerName,point) == 0){
+            // if (i == 0 and _rfid_belief_maps.atPosition(tagLayerName,glob_point) == 0){
               // cout << "[Prior]: " << prior << endl;
               // cout << "[Likelihood]: " << likelihood << endl;
             // }
           // }
         } else {
           // this shouldn't be necessary ....
-          _rfid_belief_maps.atPosition(tagLayerName,point) = 0;
+          _rfid_belief_maps.atPosition(tagLayerName,glob_point) = 0;
         }
       }
     }
@@ -424,7 +450,6 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
 
         
         // Convert to image.
-
         const float minValue = _rfid_belief_maps["ref_map"].minCoeff();
         const float maxValue = _rfid_belief_maps["ref_map"].maxCoeff();
 
@@ -491,7 +516,9 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
 
     Eigen::MatrixXf  RadarModel::getPowProbCond(double rxPw, double f_i){
       std::string layerName = getPowLayerName(f_i);
-      Eigen::MatrixXf ans = getProbCond(layerName, rxPw, _sigma_power);
+      //Eigen::MatrixXf ans = getProbCond(layerName, rxPw, _sigma_power);
+      Eigen::MatrixXf ans = getIntervProb(layerName, rxPw, _sigma_power);
+      
       return ans;
     }
 
@@ -513,15 +540,18 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
 
       // We store this data matrix in a temporal layer
       // Here, boundaries are relative to position (0,0,0º): p1 (nx/2,ny/2) , p2 (-nx/2, ny/2), p3 (-nx/2,-ny/2), p4 (nx/2,-ny/2) 
-      if (_active_area_maps.exists("temp")){
-        // cout << "Layer already exists and must be purged." << endl;
-        _active_area_maps.erase("temp");
-      }
+
+      // mfc no need for this. data is overwritten in the layer ...      
+      // if (_active_area_maps.exists("temp")){
+      //   // cout << "Layer already exists and must be purged." << endl;
+      //   _active_area_maps.erase("temp");
+      // }
+
       _active_area_maps.add("temp", prob_mat);     
 
       // now we remove from this layer probabilities inside obstacle cells
       // so we need to translate this matrix to robot pose and orientation
-      orientation_rad = -orientation_deg * M_PI/180.0;
+      orientation_rad = orientation_deg * M_PI/180.0;
 
       for (grid_map::GridMapIterator iterator(_active_area_maps); !iterator.isPastEnd(); ++iterator) {                  
         // get cell center of the cell in the map frame.            
@@ -530,8 +560,8 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
         rel_y = point.y();
 
         // cast position to global map
-        glob_x =  rel_x * cos(orientation_rad) + rel_y * sin(orientation_rad) + x_m;
-        glob_y = -rel_x * sin(orientation_rad) + rel_y * cos(orientation_rad) + y_m;
+        glob_x =  rel_x * cos(orientation_rad) - rel_y * sin(orientation_rad) + x_m;
+        glob_y =  rel_x * sin(orientation_rad) + rel_y * cos(orientation_rad) + y_m;
 
         // cout <<"rel: (" << rel_x << ", " << rel_y << ") " << std::endl;
         // cout <<"glob: (" << glob_x << ", " << glob_y << ") " << std::endl;
@@ -552,7 +582,7 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
       // cout << "SUM: " << _active_area_maps["temp"].sum() << endl;
       // cout << "max: " << _active_area_maps["temp"].maxCoeff() << endl;
       // cout << "min: " << _active_area_maps["temp"].minCoeff() << endl;
-      // cout << "---" << endl;
+      // cout << "---------------------" << endl;
       // now we renormalize the temp map
       // double totalW = _active_area_maps["temp"].sum();
 
@@ -732,14 +762,41 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
       std::string layerName = getTagLayerName(tag_num);
       // Some color  ...
       cv::Scalar green( 0, 255, 0 );
-      cv::Scalar blue( 255, 0, 0 );
-      cv::Scalar red( 0, 0, 255 );
-      cv::Scalar yellow( 0, 255, 255 );  
       
       // Convert to image.
+      cv::Mat image = rfidBeliefToCVImg(layerName);
+      
+      cv::Point tag_center;
+
+      /// overlay tag position .................................................................................................
+      double tx = _tags_coords[tag_num].first;
+      double ty =  _tags_coords[tag_num].second;
+      tag_center = getPoint( tx, ty );
+      cv::circle(image, tag_center , 5, green, 1);
+
+      /// overlay robot position .................................................................................................
+      overlayRobotPoseT(robot_x, robot_y, robot_head, image);
+
+      /// overlay active map edges   .............................................................................................
+      overlayActiveMapEdges(robot_x, robot_y, robot_head, image);
+
+      /// overlay active map edges   .............................................................................................
+      overlayMapEdges( image);
+
+      // clear out obstacles
+      //clearObstacles(image);
+
+      // and save
+      cv::imwrite( fileURI, image );
+
+
+
+    }
+
+    cv::Mat RadarModel::rfidBeliefToCVImg(std::string layer_i){
       cv::Mat image;
-      const float minValue = _rfid_belief_maps[layerName].minCoeff();
-      const float maxValue = _rfid_belief_maps[layerName].maxCoeff();
+      const float minValue = _rfid_belief_maps[layer_i].minCoeff();
+      const float maxValue = _rfid_belief_maps[layer_i].maxCoeff();
       // float sum = _rfid_belief_maps[layerName].sum();
       // _rfid_belief_maps[layerName] = _rfid_belief_maps[layerName] / sum;
       // minValue = _rfid_belief_maps[layerName].minCoeff();
@@ -749,44 +806,11 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
       // cout << "sum: " << sum << endl;
       // cout << "---" << endl;
       // mfc: maxvalue changes, so does what is encoded as black/white and making comparison hard to compare between images ....
-      GridMapCvConverter::toImage<unsigned char, 3>(_rfid_belief_maps, layerName, CV_8UC3, minValue, maxValue, image);
+      GridMapCvConverter::toImage<unsigned char, 3>(_rfid_belief_maps, layer_i, CV_8UC3, minValue, maxValue, image);
       
       // In order to store a image with ric-coords, we need to flip
       cv::flip(image, image, -1);
-
-      grid_map::Index index;            
-      cv::Point center;
-
-      /// overlay tag position .................................................................................................
-      double tx = _tags_coords[tag_num].first;
-      double ty =  _tags_coords[tag_num].second;
-      grid_map::Position p(tx,  ty);                    
-                      
-      if (_rfid_belief_maps.getIndex(p,index)){  
-          //std::cout<<"Tag at (" << p(0) << ", " << p(1)<<") m. is in cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
-      } else {
-        // std::cout<<" Position ("  << p(0) << ", " << p(1) << ") is out of map bounds!" <<std::endl;  
-      }
-
-      // cast from gridmap indexes to opencv indexes 
-      int cv_y = (_Nrow-1) - index.x();
-      int cv_x = (_Ncol-1) - index.y();
-      //std::cout<<"Which equals to opencv cell ("  << cv_x << ", " << cv_y << ") " << std::endl;
-
-      center = cv::Point( cv_x, cv_y );
-      cv::circle(image, center , 5, green, 1);
-
-      /// overlay robot position .................................................................................................
-      overlayRobotPoseT(robot_x, robot_y, robot_head, image);
-
-
-      // clear out obstacles
-      //clearObstacles(image);
-
-      // and save
-      cv::imwrite( fileURI, image );
-
-
+      return image;
 
     }
 
@@ -802,12 +826,8 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
       cv::Mat result = image.clone().setTo(cv::Scalar(255, 255, 255));
 
       // Convert to image.
-      cv::Mat ref_img;
-      const float minValue = _rfid_belief_maps["ref_map"].minCoeff();
-      const float maxValue = _rfid_belief_maps["ref_map"].maxCoeff();
-      GridMapCvConverter::toImage<unsigned char, 3>(_rfid_belief_maps, "ref_map", CV_8UC3, minValue, maxValue, ref_img);
-      // In order to store a image with ric-coords, we need to flip
-      cv::flip(ref_img, ref_img, -1);
+      cv::Mat ref_img = rfidBeliefToCVImg("ref_map");
+
       uint8_t ref_val ;
       // Copy pixels from background to result image, where pixel in mask is 0.
       for (int x = 0; x < image.size().width; x++){
@@ -851,42 +871,25 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
 
 
     void RadarModel::overlayRobotPoseT(double robot_x, double robot_y, double robot_head, cv::Mat& image){
-      int cv_y, cv_x;
       grid_map::Index index;    
       cv::Point center;              
       grid_map::Position p;
       cv::Point pentag_points[1][5];
 
       cv::Scalar red( 0, 0, 255 );
-      p = grid_map::Position(robot_x, robot_y);                    
-
-      // robot_head   
-      if (_rfid_belief_maps.getIndex(p,index)){  
-          //std::cout<<"Robot at (" << p(0) << ", " << p(1)<<") m. is in cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
-      } else {
-        // std::cout<<" Position ("  << p(0) << ", " << p(1) << ") is out of map bounds!" <<std::endl;  
-      }
-
-      // cast from gridmap indexes to opencv indexes 
-      cv_y = (_Nrow-1) - index.x();
-      cv_x = (_Ncol-1) - index.y();
-      //std::cout<<"Which equals to opencv cell ("  << cv_x << ", " << cv_y << ") " << std::endl;
-
-      center = cv::Point( cv_x, cv_y );
-
-
+      center = getPoint( robot_x, robot_y );  
 
       // create a pentagone pointing x+
 
       int h=4; //pixels?      
 
-      pentag_points[0][0] = cv::Point( cv_x -   h, cv_y - h );
-      pentag_points[0][1] = cv::Point( cv_x +   h, cv_y - h );
-      pentag_points[0][2] = cv::Point( cv_x + 2*h, cv_y     );
-      pentag_points[0][3] = cv::Point( cv_x +   h, cv_y + h );
-      pentag_points[0][4] = cv::Point( cv_x -   h, cv_y + h );
+      pentag_points[0][0] = cv::Point( center.x  - h,  center.y -   h );
+      pentag_points[0][1] = cv::Point( center.x  - h,  center.y +   h );
+      pentag_points[0][2] = cv::Point( center.x     ,  center.y + 2*h );
+      pentag_points[0][3] = cv::Point( center.x  + h,  center.y +   h );
+      pentag_points[0][4] = cv::Point( center.x  + h,  center.y -   h );
       const cv::Point* pts[1] = { pentag_points[0] };
-      rotatePoints(pentag_points[0] ,5,cv_x, cv_y,robot_head );
+      rotatePoints(pentag_points[0] ,5,center.x, center.y, robot_head );
       int npts[] = { 5 };
       cv::fillPoly( image,pts,npts,1,red,8 );
 
@@ -905,8 +908,8 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
           px = points[i].x;
           py = points[i].y;
 
-          offsetx = (cosA * (px - cx)) - (sinA * (py - cy));
-          offsety = (sinA * (px - cx)) + (cosA * (py - cy));
+          offsetx = (cosA * (px - cx)) + (sinA * (py - cy));
+          offsety = -(sinA * (px - cx)) + (cosA * (py - cy));
 
           points[i].x =( (int) offsetx) + cxi;
           points[i].y =( (int) offsety) + cyi;
@@ -916,27 +919,12 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
 
 
     void RadarModel::overlayRobotPose(double robot_x, double robot_y, double robot_head, cv::Mat& image){
-      int cv_y, cv_x;
-      grid_map::Index index;    
-      cv::Point center;              
-      grid_map::Position p;
+      
+      
+      cv::Point center;                    
       
       cv::Scalar red( 0, 0, 255 );
-      p = grid_map::Position(robot_x, robot_y);                    
-
-      // robot_head   
-      if (_rfid_belief_maps.getIndex(p,index)){  
-          //std::cout<<"Robot at (" << p(0) << ", " << p(1)<<") m. is in cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
-      } else {
-        // std::cout<<" Position ("  << p(0) << ", " << p(1) << ") is out of map bounds!" <<std::endl;  
-      }
-
-      // cast from gridmap indexes to opencv indexes 
-      cv_y = (_Nrow-1) - index.x();
-      cv_x = (_Ncol-1) - index.y();
-      //std::cout<<"Which equals to opencv cell ("  << cv_x << ", " << cv_y << ") " << std::endl;
-
-      center = cv::Point( cv_x, cv_y );
+      center = getPoint( robot_x, robot_y );
       cv::circle(image, center , 5, red, -1);
 
     }
@@ -945,48 +933,41 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
       std::vector<std::pair<cv::Scalar,std::string>> color_list;
 
       // Some color  ...
+      cv::Scalar red( 0, 0, 255 );
+      color_list.push_back(std::make_pair(red,"red"));
       cv::Scalar green( 0, 255, 0 );
       color_list.push_back(std::make_pair(green,"green"));
       cv::Scalar blue( 255, 0, 0 );
       color_list.push_back(std::make_pair(blue,"blue"));      
-      cv::Scalar red( 0, 0, 255 );
-      color_list.push_back(std::make_pair(red,"red"));
       cv::Scalar yellow( 0, 255, 255 );  
       color_list.push_back(std::make_pair(yellow,"yellow"));
+      cv::Scalar blueviolet(226,138,43 );  
+      color_list.push_back(std::make_pair(blueviolet,"blueviolet"));
+      cv::Scalar turquoise(224,208,64);
+      color_list.push_back(std::make_pair(turquoise,"turquoise"));
+      cv::Scalar orange(165,0,255);
+      color_list.push_back(std::make_pair(orange,"orange"));
+      cv::Scalar pink(192,203,255);
+      color_list.push_back(std::make_pair(pink,"pink"));
+      cv::Scalar chocolate(105,30,210);
+      color_list.push_back(std::make_pair(chocolate,"chocolate"));
+      cv::Scalar dodgerblue(144,255,30);
+      color_list.push_back(std::make_pair(dodgerblue,"dodgerblue"));
 
       // Convert to image.
-      cv::Mat image;
-      const float minValue = _rfid_belief_maps["ref_map"].minCoeff();
-      const float maxValue = _rfid_belief_maps["ref_map"].maxCoeff();
+      cv::Mat image = rfidBeliefToCVImg("ref_map");
 
-      GridMapCvConverter::toImage<unsigned char, 3>(_rfid_belief_maps, "ref_map", CV_8UC3, minValue, maxValue, image);
-      // this RE-alligns image with our coordinate systems
-      cv::flip(image, image, -1);
-
-      grid_map::Index index;            
       cv::Point center;
 
       for (int i = 0; i < _tags_coords.size(); i++){
             double x = _tags_coords[i].first;
             double y =  _tags_coords[i].second;
-            grid_map::Position p(x,  y);                    
-                           
-        if (_rfid_belief_maps.getIndex(p,index)){  
-            //std::cout<<"Tag at (" << p(0) << ", " << p(1)<<") m. is in cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
-        } else {
-          std::cout<<" Position ("  << p(0) << ", " << p(1) << ") is out of map bounds!" <<std::endl;  
-        }
-
-
-        // cast from gridmap indexes to opencv indexes 
-        int cv_y = (_Nrow-1) - index.x();
-        int cv_x = (_Ncol-1) - index.y();
-        //std::cout<<"Which equals to opencv cell ("  << cv_x << ", " << cv_y << "): "<< color_list[i%color_list.size()].second << std::endl;
-
-        center = cv::Point( cv_x, cv_y );
-        cv::circle(image, center , 5, color_list[i%color_list.size()].first, -1);
+            center = getPoint( x, y );
+            cv::circle(image, center , 5, color_list[i%color_list.size()].first, -1);
 
       }
+      /// overlay active map edges   .............................................................................................
+      overlayMapEdges( image);
 
       cv::imwrite( fileURI, image );
 
@@ -1524,8 +1505,8 @@ double RadarModel::getNormalizingFactorBayesRFIDActiveArea(double x_m, double y_
     rel_x = point.x();
     rel_y = point.y();
     // cast position to global map
-    glob_x =  rel_x * cos(orientation_rad) + rel_y * sin(orientation_rad) + x_m;
-    glob_y = -rel_x * sin(orientation_rad) + rel_y * cos(orientation_rad) + y_m;
+    glob_x =  rel_x * cos(orientation_rad) - rel_y * sin(orientation_rad) + x_m;
+    glob_y =  rel_x * sin(orientation_rad) + rel_y * cos(orientation_rad) + y_m;
     point = Position(glob_x, glob_y);
     // check if is inside global map
     if (_rfid_belief_maps.isInside(point)){
@@ -1540,15 +1521,125 @@ double RadarModel::getNormalizingFactorBayesRFIDActiveArea(double x_m, double y_
   return bayes_den;
 }
 
-Eigen::MatrixXf RadarModel::getNegProb(std::string layer_i, double sensitivity, double sigm){
+Eigen::MatrixXf RadarModel::getNegProb(std::string layer_i, double x, double sigm){
  
  Eigen::MatrixXf friis_mat = _active_area_maps[layer_i];
  
  // gaussian cdp
  // cdp(x,mu,sigma) = 0.5 * ( 1 + erf( (x - mu) / (sigma * sqrt(2)) ) 
  
- Eigen::MatrixXf erf_mat = (sensitivity - friis_mat.array()) / (sigm * sqrt(2.0));
+ Eigen::MatrixXf erf_mat = (x - friis_mat.array()) / (sigm * sqrt(2.0));
  
  erf_mat = 0.5 + 0.5*erf_mat.array().erf();
  return erf_mat;
  }
+
+ Eigen::MatrixXf RadarModel::getIntervProb(std::string layer_i, double x, double sigm){
+      //Size siz = _active_area_maps.getSize();
+
+      // probability of receiving less than X1 in every cell
+      Eigen::MatrixXf x1_mat = getNegProb( layer_i+"_low", x, sigm);
+      //std::cout << "x1_mat: " << x1_mat.sum()/(siz(0)*siz(1)) << endl;
+
+      // probability of receiving less than X2 in every cell
+      Eigen::MatrixXf x2_mat = getNegProb( layer_i+"_hig", x, sigm);
+      //std::cout << "x2_mat: " << x1_mat.sum()/(siz(0)*siz(1)) << endl;
+
+      // probability of receiving between X1 and X2 in every cell
+      Eigen::MatrixXf interv_mat = (x2_mat - x1_mat).array().abs();
+      //std::cout << "Diff: " << interv_mat.sum()/(siz(0)*siz(1)) << endl<< endl;
+
+ 
+ return interv_mat;
+ }
+
+
+
+cv::Point RadarModel::getPoint(double x_m, double y_m){
+  
+    grid_map::Index index;
+      
+    grid_map::Position p(x_m,  y_m);                    
+                      
+    if (_rfid_belief_maps.getIndex(p,index)){  
+          //std::cout<<"Tag at (" << p(0) << ", " << p(1)<<") m. is in cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
+    } else {
+         //std::cout<<" Position ("  << p(0) << ", " << p(1) << ") is out of _rfid_belief_maps bounds!!" <<std::endl;  
+    }
+
+      // cast from gridmap indexes to opencv indexes 
+      int cv_y = (_Nrow-1) - index.x();
+      int cv_x = (_Ncol-1) - index.y();
+      //std::cout<<"Which equals to opencv cell ("  << cv_x << ", " << cv_y << ") " << std::endl;
+
+    return cv::Point( cv_x, cv_y );
+}
+
+     
+void RadarModel::overlayMapEdges( cv::Mat image){      
+      cv::Point square_points[1][4];
+      cv::Scalar red( 0, 255, 255 );
+      int cv_y, cv_x;
+
+      cv_y = (_Nrow-1);
+      cv_x = (_Ncol-1);
+
+
+      square_points[0][0] = cv::Point( 0, 0 );
+      square_points[0][1] = cv::Point( 0, cv_y );
+      square_points[0][2] = cv::Point( cv_x, cv_y );
+      square_points[0][3] = cv::Point( cv_x, 0 );
+
+      const cv::Point* pts[1] = { square_points[0] };
+      int npts[] = { 4 };
+      cv::polylines(image,pts,npts,1, true,red);
+     
+}
+        
+void RadarModel::overlayActiveMapEdges(double robot_x, double robot_y, double robot_head, cv::Mat image){      
+      cv::Point square_points[1][4];
+      cv::Point cvrobot;
+      cv::Scalar red( 0, 0, 255 );
+
+      Length mlen = _active_area_maps.getLength();
+      cvrobot = getPoint(robot_x, robot_y);
+
+      square_points[0][0] = getPoint(robot_x - mlen(0)/2, robot_y - mlen(1)/2);
+      square_points[0][1] = getPoint(robot_x - mlen(0)/2, robot_y + mlen(1)/2);
+      square_points[0][2] = getPoint(robot_x + mlen(0)/2, robot_y + mlen(1)/2);
+      square_points[0][3] = getPoint(robot_x + mlen(0)/2, robot_y - mlen(1)/2);
+      const cv::Point* pts[1] = { square_points[0] };
+      rotatePoints(square_points[0] ,4, cvrobot.x, cvrobot.y,robot_head );
+      int npts[] = { 4 };
+      cv::polylines(image,pts,npts,1, true,red);
+     
+}
+
+
+
+
+
+
+
+// use me to plot a white blob instead of a measurement. Used to check transforms
+void RadarModel::addMeasurement0(double x_m, double y_m, double orientation_deg, double rxPower, double phase, double freq, int i){
+  double rel_x, rel_y, orientation_rad;
+  double glob_x, glob_y;
+  Position rel_point, glob_point;
+  std::string tagLayerName = getTagLayerName(i);
+
+  orientation_rad = orientation_deg * M_PI/180.0;
+
+  for (grid_map::GridMapIterator iterator(_active_area_maps); !iterator.isPastEnd(); ++iterator) {
+      _active_area_maps.getPosition(*iterator, rel_point);                  
+      rel_x = rel_point.x();
+      rel_y = rel_point.y();
+      glob_x =   rel_x * cos(orientation_rad) - rel_y * sin(orientation_rad) + x_m;
+      glob_y =   rel_x * sin(orientation_rad) + rel_y * cos(orientation_rad) + y_m;
+    
+      glob_point = Position(glob_x, glob_y);
+      if (_rfid_belief_maps.isInside(glob_point)){
+            _rfid_belief_maps.atPosition(tagLayerName,glob_point) = 1;
+      }
+    }
+  }

@@ -254,6 +254,8 @@ double getTotalWeight(double x, double y, double orientation, grid_map::SubmapIt
 double getTotalWeight(int tag_i);
 
 void addMeasurement(double x, double y, double orientation, double rxPower, double phase, double freq, int i);
+void addMeasurement0(double x, double y, double orientation, double rxPower, double phase, double freq, int i);
+
 
 std::string getPowLayerName(double freq_i);
 
@@ -270,9 +272,11 @@ Eigen::MatrixXf  getProbCond(std::string layer_i, double x, double sig);
 
 void saveProbMapDebug(std::string savePATH, int tag_num, int step, double robot_x, double robot_y, double robot_head);
 void createTempProbLayer(Eigen::MatrixXf prob_mat, double x_m, double y_m, double orientation_deg);
-
+cv::Mat rfidBeliefToCVImg(std::string layer_i);
 void getImage(GridMap* gm,std::string layerName, std::string fileURI);
 
+Eigen::MatrixXf getIntervProb(std::string layer_i, double x, double sigm);
+void fillFriisMat(Eigen::MatrixXf *rxPw_mat, Eigen::MatrixXf *delay_mat, double freq_i, double offset );
 void PrintRefMapWithTags(std::string fileURI);
 void PrintRecPower(std::string fileURI, double f_i);
 void PrintPowProb(std::string fileURI, double rxPw, double f_i);
@@ -302,6 +306,10 @@ Eigen::MatrixXf getNegProb(std::string layer_i, double sensitivity, double sigm)
 
 void debugInfo();
 
+
+cv::Point getPoint(double x, double y);
+void overlayActiveMapEdges(double robot_x, double robot_y, double robot_head, cv::Mat image);
+void overlayMapEdges( cv::Mat image);
 }; // end class
 
 
