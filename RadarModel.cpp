@@ -274,12 +274,16 @@ void RadarModel::initRefMap(const std::string imageURI){
 //TODO: this is a simplistic model that just "ignores" walls: but they do have absortion and reduce received power at their locations...
 void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, double rxPower, double phase, double freq, int i){
   double rel_x, rel_y, prob_val, orientation_rad;
-  double glob_x, glob_y;
+  double glob_x, glob_y, delt_x, delt_y;
   Position rel_point, glob_point;
+  grid_map::Polygon update_edges;
 
   double prior, posterior, likelihood, bayes_num, bayes_den;
   Eigen::MatrixXf prob_mat;
   std::string tagLayerName = getTagLayerName(i);
+
+
+
 
   // cout <<"Position: (" << x_m << " m., " << y_m << " m., " << orientation_deg <<"º) " << std::endl;
   // cout <<"Measurement: Tag ["<< i <<  "]: (" << rxPower << " dB, " << phase << " rad., " << freq/1e6 <<"MHz.) " << std::endl;
@@ -314,28 +318,20 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
 
   if (bayes_den != 0.0 and !isnan(bayes_den)){
         // cout << "Power: " << rxPower << ", Bayes_den: "<< bayes_den << endl;
+    
     // Now we can proceed with the update
-    for (grid_map::GridMapIterator iterator(_active_area_maps); !iterator.isPastEnd(); ++iterator) {
-      // get cell center of the cell in the map frame.            
-      _active_area_maps.getPosition(*iterator, rel_point);                  
-      rel_x = rel_point.x();
-      rel_y = rel_point.y();
-
-      // cast position to global map
-      glob_x =  rel_x * cos(orientation_rad) - rel_y * sin(orientation_rad) + x_m;
-      glob_y =  rel_x * sin(orientation_rad) + rel_y * cos(orientation_rad) + y_m;
-
-      // cout <<"rel: (" << rel_x << ", " << rel_y << ") " << std::endl;
-      // cout <<"glob: (" << glob_x << ", " << glob_y << ") " << std::endl;
-      // cout <<"........................ " << std::endl;
-      glob_point = Position(glob_x, glob_y);
-      // check if is inside global map
-      if (_rfid_belief_maps.isInside(glob_point)){
-        // get point value in reference map to check if it's an obstacle:                      
-        if (_rfid_belief_maps.atPosition("ref_map",glob_point) == _free_space_val){
+    update_edges = getActiveMapEdges(x_m, y_m, orientation_rad);
+    for (grid_map::PolygonIterator iterator(_rfid_belief_maps, update_edges); !iterator.isPastEnd(); ++iterator){
+          // check if point is an obstacle:                      
+          if (_rfid_belief_maps.at("ref_map",*iterator) == _free_space_val){
+            // get the relative point
+            _rfid_belief_maps.getPosition(*iterator, glob_point);                  
+            rel_point = getRelPoint(glob_point, x_m, y_m, orientation_rad);
+          
           // get the (measurement) prob :
-          likelihood = _active_area_maps.at("temp",*iterator);  // the measurement
-          prior = _rfid_belief_maps.atPosition(tagLayerName,glob_point);  // the value in the 
+          likelihood = _active_area_maps.atPosition("temp",rel_point);  // the measurement
+          prior = _rfid_belief_maps.at(tagLayerName,*iterator);  // the value in the 
+          
           // Update the belief only if the measurement or the prior is different from 0
           // if (likelihood != 0){
             // cout << prob_val << endl;
@@ -343,32 +339,32 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
             //if (prob_val < 1e-07) prob_val = 0;
             // add value.
             // TODO: BAYES RULE HERE!!
-            // prior = _rfid_belief_maps.atPosition(tagLayerName,glob_point);
+            // prior =  _rfid_belief_maps.at(tagLayerName,*iterator);
             bayes_num = prior * likelihood;
             // bayes_den = prior * prob_val + (1-prob_val)*(1-prior);
             // cout << "prior: " << prior << endl;
             // cout << "num: " << bayes_num << ", den: " << bayes_den << endl;
             // cout << "Posterior: " << (bayes_num / bayes_den) << endl;
             // cout << "----" << endl;
-            // cout << "[Prior]: " << _rfid_belief_maps.atPosition(tagLayerName,point) << endl;
+            // cout << "[Prior]: " <<  _rfid_belief_maps.at(tagLayerName,*iterator) << endl;
             posterior = bayes_num / bayes_den;
             // posterior =  bayes_num / (1 - bayes_num);
             // posterior = likelihood / (1 - likelihood);
             // posterior = log(posterior);
-            _rfid_belief_maps.atPosition(tagLayerName,glob_point) = posterior;
-            // if (_rfid_belief_maps.atPosition(tagLayerName,glob_point) > prior){
+            _rfid_belief_maps.at(tagLayerName,*iterator) = posterior;
+            // if (_rfid_belief_maps.at(tagLayerName,*iterator) > prior){
             //   cout << "Belief increased" << endl;
             // }
-            // if (i == 0 and _rfid_belief_maps.atPosition(tagLayerName,glob_point) == 0){
+            // if (i == 0 and _rfid_belief_maps.at(tagLayerName,*iterator) == 0){
               // cout << "[Prior]: " << prior << endl;
               // cout << "[Likelihood]: " << likelihood << endl;
             // }
           // }
         } else {
           // this shouldn't be necessary ....
-          _rfid_belief_maps.atPosition(tagLayerName,glob_point) = 0;
+          _rfid_belief_maps.at(tagLayerName,*iterator) = 0;
         }
-      }
+      
     }
   }
   normalizeRFIDLayer(tagLayerName);
@@ -534,9 +530,9 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
     }
 
     void RadarModel::createTempProbLayer(Eigen::MatrixXf prob_mat, double x_m, double y_m, double orientation_deg) {
-      double rel_x, rel_y, orientation_rad;
-      double glob_x, glob_y;
-      Position point;
+      double orientation_rad;
+      Position rel_point, glob_point;
+      grid_map::Polygon update_edges;
 
       // We store this data matrix in a temporal layer
       // Here, boundaries are relative to position (0,0,0º): p1 (nx/2,ny/2) , p2 (-nx/2, ny/2), p3 (-nx/2,-ny/2), p4 (nx/2,-ny/2) 
@@ -552,30 +548,16 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
       // now we remove from this layer probabilities inside obstacle cells
       // so we need to translate this matrix to robot pose and orientation
       orientation_rad = orientation_deg * M_PI/180.0;
+      update_edges = getActiveMapEdges(x_m, y_m, orientation_rad);
 
-      for (grid_map::GridMapIterator iterator(_active_area_maps); !iterator.isPastEnd(); ++iterator) {                  
-        // get cell center of the cell in the map frame.            
-        _active_area_maps.getPosition(*iterator, point);                  
-        rel_x = point.x();
-        rel_y = point.y();
-
-        // cast position to global map
-        glob_x =  rel_x * cos(orientation_rad) - rel_y * sin(orientation_rad) + x_m;
-        glob_y =  rel_x * sin(orientation_rad) + rel_y * cos(orientation_rad) + y_m;
-
-        // cout <<"rel: (" << rel_x << ", " << rel_y << ") " << std::endl;
-        // cout <<"glob: (" << glob_x << ", " << glob_y << ") " << std::endl;
-        // cout <<"........................ " << std::endl;
-
-        point = Position(glob_x, glob_y);
-        // check if is inside global map
-        if (_rfid_belief_maps.isInside(point)){
-          // get point value in reference map to check if it's an obstacle:                      
-            if (_rfid_belief_maps.atPosition("ref_map",point) != _free_space_val){
+      for (grid_map::PolygonIterator iterator(_rfid_belief_maps, update_edges); !iterator.isPastEnd(); ++iterator){
+          // check if it's an obstacle:                      
+            if (_rfid_belief_maps.at("ref_map",*iterator) != _free_space_val){
+                _rfid_belief_maps.getPosition(*iterator, glob_point);                  
+                rel_point = getRelPoint(glob_point, x_m, y_m, orientation_rad);
               // remove prob in obstacles
-              _active_area_maps.at("temp",*iterator) = 0.0;
+              _active_area_maps.atPosition("temp",rel_point) = 0.0;
             }
-        }
       }
 
 
@@ -1493,30 +1475,21 @@ void RadarModel::clearObstacleCellsRFIDMap(){
 }
 
 double RadarModel::getNormalizingFactorBayesRFIDActiveArea(double x_m, double y_m, double orientation_rad, string tagLayerName){
-  double rel_x, rel_y;
-  double glob_x, glob_y;
-  Position point;
-
+  Position rel_point, glob_point;
+  grid_map::Polygon update_edges;
   double prior, likelihood;
   double bayes_den = 0.0;
-  for (grid_map::GridMapIterator iterator(_active_area_maps); !iterator.isPastEnd(); ++iterator) {                  
-    // get cell center of the cell in the map frame.            
-    _active_area_maps.getPosition(*iterator, point);                  
-    rel_x = point.x();
-    rel_y = point.y();
-    // cast position to global map
-    glob_x =  rel_x * cos(orientation_rad) - rel_y * sin(orientation_rad) + x_m;
-    glob_y =  rel_x * sin(orientation_rad) + rel_y * cos(orientation_rad) + y_m;
-    point = Position(glob_x, glob_y);
-    // check if is inside global map
-    if (_rfid_belief_maps.isInside(point)){
-    // get point value in reference map to check if it's an obstacle:                      
-      if (_rfid_belief_maps.atPosition("ref_map",point)== _free_space_val){
-        likelihood = _active_area_maps.at("temp",*iterator);
-        prior = _rfid_belief_maps.atPosition(tagLayerName,point);
+
+  update_edges = getActiveMapEdges(x_m, y_m, orientation_rad);
+  for (grid_map::PolygonIterator iterator(_rfid_belief_maps, update_edges); !iterator.isPastEnd(); ++iterator){
+      // get point value in reference map to check if it's an obstacle:                      
+      if (_rfid_belief_maps.at("ref_map",*iterator ) == _free_space_val){
+        _rfid_belief_maps.getPosition(*iterator, glob_point);                  
+        rel_point = getRelPoint(glob_point, x_m, y_m, orientation_rad);                  
+        likelihood = _active_area_maps.atPosition("temp",rel_point);
+        prior = _rfid_belief_maps.at(tagLayerName,*iterator);
         bayes_den += likelihood * prior;
       }
-    }
   }
   return bayes_den;
 }
@@ -1556,15 +1529,24 @@ Eigen::MatrixXf RadarModel::getNegProb(std::string layer_i, double x, double sig
 
 
 cv::Point RadarModel::getPoint(double x_m, double y_m){
-  
+    Length mlen = _rfid_belief_maps.getLength();  
+    grid_map::Position orig = _rfid_belief_maps.getPosition();  
+    double min_x = orig(0) - mlen(0)/2 + _resolution; 
+    double max_x = orig(0) + mlen(0)/2 - _resolution; 
+    double min_y = orig(1) - mlen(1)/2 + _resolution; 
+    double max_y = orig(1) + mlen(1)/2 - _resolution; 
+
+
     grid_map::Index index;
       
     grid_map::Position p(x_m,  y_m);                    
                       
-    if (_rfid_belief_maps.getIndex(p,index)){  
-          //std::cout<<"Tag at (" << p(0) << ", " << p(1)<<") m. is in cell("  << index(0) << ", " << index(1) << ")" <<std::endl;
-    } else {
+    if (!_rfid_belief_maps.getIndex(p,index)) {
          //std::cout<<" Position ("  << p(0) << ", " << p(1) << ") is out of _rfid_belief_maps bounds!!" <<std::endl;  
+         x_m = std::min( std::max(x_m, min_x) , max_x);
+         y_m = std::min( std::max(y_m, min_y) , max_y);
+         p = grid_map::Position (x_m,  y_m);
+         _rfid_belief_maps.getIndex(p,index);
     }
 
       // cast from gridmap indexes to opencv indexes 
@@ -1573,6 +1555,27 @@ cv::Point RadarModel::getPoint(double x_m, double y_m){
       //std::cout<<"Which equals to opencv cell ("  << cv_x << ", " << cv_y << ") " << std::endl;
 
     return cv::Point( cv_x, cv_y );
+}
+
+grid_map::Position RadarModel::fromPoint(cv::Point cvp) {
+  grid_map::Position p;
+  int gm_x, gm_y;
+  
+  // cast from opencv indexes to  gridmap indexes
+  gm_x = (_Nrow-1) - cvp.y;
+  gm_y = (_Ncol-1) - cvp.x;
+
+  grid_map::Index index(gm_x,gm_y);
+
+    if (!_rfid_belief_maps.getPosition(index,p)) {
+         //std::cout<<" Index ("  << index(0) << ", " << index(1) << ") is out of _rfid_belief_maps bounds!!" <<std::endl;  
+         gm_x = std::min( std::max(gm_x, 0) , _Nrow-1);
+         gm_y = std::min( std::max(gm_y, 0) , _Ncol-1);
+         index = grid_map::Index(gm_x,gm_y);
+         _rfid_belief_maps.getPosition(index,p);
+    }
+  
+  return p;
 }
 
      
@@ -1618,7 +1621,53 @@ void RadarModel::overlayActiveMapEdges(double robot_x, double robot_y, double ro
 
 
 
+grid_map::Polygon RadarModel::getActiveMapEdges(double robot_x, double robot_y, double robot_head){      
+      Length mlen = _active_area_maps.getLength();
+      grid_map::Polygon polygon;
+            
+      // trying not to replicate code, I'm using the cv points one that works
+      cv::Point cvrobot = getPoint(robot_x, robot_y);
+      cv::Point pts[4];
+      pts[0] = getPoint(robot_x - mlen(0)/2, robot_y - mlen(1)/2);
+      pts[1] = getPoint(robot_x - mlen(0)/2, robot_y + mlen(1)/2);
+      pts[2] = getPoint(robot_x + mlen(0)/2, robot_y + mlen(1)/2);
+      pts[3] = getPoint(robot_x + mlen(0)/2, robot_y - mlen(1)/2);
+      
+      rotatePoints(pts ,4, cvrobot.x, cvrobot.y,robot_head );
 
+      // cast to gridmap points and add to polygon
+      polygon.setFrameId(_rfid_belief_maps.getFrameId());
+      for(int i=0; i<4; i++){
+          polygon.addVertex(fromPoint(pts[i]));
+      }
+
+      return polygon;
+}
+
+
+  Position RadarModel::getRelPoint(Position glob_point, double x_m, double  y_m, double orientation_rad){
+      double rel_x, rel_y;
+      Position rel_point;
+      // we may need these for castings ...
+      Length mlen = _active_area_maps.getLength();  
+      grid_map::Position orig = _active_area_maps.getPosition();  
+      double min_x = orig(0) - mlen(0)/2 + _resolution; 
+      double max_x = orig(0) + mlen(0)/2 - _resolution; 
+      double min_y = orig(1) - mlen(1)/2 + _resolution; 
+      double max_y = orig(1) + mlen(1)/2 - _resolution; 
+
+          rel_x  =  (glob_point.x() - x_m) * cos(orientation_rad) + (glob_point.y() - y_m) * sin(orientation_rad);
+          rel_y  = -(glob_point.x() - x_m) * sin(orientation_rad) + (glob_point.y() - y_m) * cos(orientation_rad);
+          rel_point = Position(rel_x, rel_y );
+                              
+        // because of rounding, we may have to adjust this
+        if (!_active_area_maps.isInside(rel_point)) {
+              rel_x = std::min( std::max(rel_x, min_x) , max_x);
+              rel_y = std::min( std::max(rel_y, min_y) , max_y);
+              rel_point = Position(rel_x, rel_y );
+        }
+        return rel_point;
+}
 
 
 // use me to plot a white blob instead of a measurement. Used to check transforms
@@ -1626,20 +1675,17 @@ void RadarModel::addMeasurement0(double x_m, double y_m, double orientation_deg,
   double rel_x, rel_y, orientation_rad;
   double glob_x, glob_y;
   Position rel_point, glob_point;
+  grid_map::Polygon polygon;
+
   std::string tagLayerName = getTagLayerName(i);
-
+  
   orientation_rad = orientation_deg * M_PI/180.0;
+  
+  polygon = getActiveMapEdges(x_m, y_m, orientation_rad);
 
-  for (grid_map::GridMapIterator iterator(_active_area_maps); !iterator.isPastEnd(); ++iterator) {
-      _active_area_maps.getPosition(*iterator, rel_point);                  
-      rel_x = rel_point.x();
-      rel_y = rel_point.y();
-      glob_x =   rel_x * cos(orientation_rad) - rel_y * sin(orientation_rad) + x_m;
-      glob_y =   rel_x * sin(orientation_rad) + rel_y * cos(orientation_rad) + y_m;
-    
-      glob_point = Position(glob_x, glob_y);
-      if (_rfid_belief_maps.isInside(glob_point)){
-            _rfid_belief_maps.atPosition(tagLayerName,glob_point) = 1;
-      }
+
+  for (grid_map::PolygonIterator iterator(_rfid_belief_maps, polygon); !iterator.isPastEnd(); ++iterator){
+      _rfid_belief_maps.at(tagLayerName,*iterator) = 1;
     }
   }
+

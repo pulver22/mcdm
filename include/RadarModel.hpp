@@ -274,7 +274,7 @@ void saveProbMapDebug(std::string savePATH, int tag_num, int step, double robot_
 void createTempProbLayer(Eigen::MatrixXf prob_mat, double x_m, double y_m, double orientation_deg);
 cv::Mat rfidBeliefToCVImg(std::string layer_i);
 void getImage(GridMap* gm,std::string layerName, std::string fileURI);
-
+Position getRelPoint(Position glob_point, double x_m, double  y_m, double orientation_rad);
 Eigen::MatrixXf getIntervProb(std::string layer_i, double x, double sigm);
 void fillFriisMat(Eigen::MatrixXf *rxPw_mat, Eigen::MatrixXf *delay_mat, double freq_i, double offset );
 void PrintRefMapWithTags(std::string fileURI);
@@ -293,6 +293,9 @@ Eigen::MatrixXf  getProbCondLogN(std::string layer_i, double x, double sig);
 
 void PrintProb(std::string fileURI, Eigen::MatrixXf* prob_mat,  double sX, double sY, double res);
 void saveProbMaps(std::string savePath);
+
+grid_map::Position fromPoint(cv::Point cvp);
+grid_map::Polygon getActiveMapEdges(double robot_x, double robot_y, double robot_head);
 
 void PrintProb(std::string fileURI, Eigen::MatrixXf* prob_mat);
 
