@@ -288,19 +288,36 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
   // cout <<"Position: (" << x_m << " m., " << y_m << " m., " << orientation_deg <<"º) " << std::endl;
   // cout <<"Measurement: Tag ["<< i <<  "]: (" << rxPower << " dB, " << phase << " rad., " << freq/1e6 <<"MHz.) " << std::endl;
   // cout <<"........................ " << std::endl;
-
+  if (i == 0){
+    cout << "=== " << update_count << " ===" << endl;
+    cout << "Power: " << rxPower << endl;
+    update_count ++ ;
+    double distance_from_tag = sqrt(pow((_tags_coords.at(0).first - x_m), 2) + pow((_tags_coords.at(0).second - y_m), 2));
+    cout << "Distance to tag: " << distance_from_tag << endl;
+    double rel_orientation = atan2((_tags_coords.at(0).second - y_m), (_tags_coords.at(0).first - x_m));
+    cout << "Orientation: " << rel_orientation *180.0/M_PI << endl;
+  }
   // First we get the Probability distribution associated with ( rxPower,phase,freq) using our defined active area grids
   if (rxPower > SENSITIVITY){
     prob_mat = getPowProbCond(rxPower, freq);//.cwiseProduct(getPhaseProbCond(phase, freq));
-    //cout << "Pos: " << prob_mat.sum() << endl;
+    if (i == 0){
+      cout << "Pos: " << prob_mat.sum() << endl;  
+    }
   } else{
-    prob_mat = getNegProb(getPowLayerName(freq), 0.1* SENSITIVITY, _sigma_power);//.cwiseProduct(getPhaseProbCond(phase, freq));
-    //cout << "Neg: " << prob_mat.sum() << endl;
+    prob_mat = getNegProb(getPowLayerName(freq), rxPower, _sigma_power);//.cwiseProduct(getPhaseProbCond(phase, freq));
+    if (i == 0){
+      cout << "Neg: " << prob_mat.sum() << endl;
+    }
   }
   
 
   // We store this data matrix in a temporal layer
   createTempProbLayer(prob_mat, x_m, y_m, orientation_deg);
+  if (i == 0){
+    cout << "   AA: " << _active_area_maps["temp"].sum() << endl;
+    cout << "   max: " << _active_area_maps["temp"].maxCoeff() << endl;
+    cout << "   min: " << _active_area_maps["temp"].minCoeff() << endl;
+  }
 
   // so we need to translate this matrix to robot pose and orientation
   
@@ -311,10 +328,9 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
   // NB: posterior = likelihood * prior / normalizing_factor
   // where normalisizing_factor is a sum over all the grid of likelihood * prior
   bayes_den = getNormalizingFactorBayesRFIDActiveArea(x_m, y_m, orientation_rad, tagLayerName);
-  // if (rxPower == 0){
-
-    // cout << bayes_den << endl;
-  // }
+  if (i == 0){
+    cout << "   BD: "<< bayes_den << endl;
+  }
 
   if (bayes_den != 0.0 and !isnan(bayes_den)){
         // cout << "Power: " << rxPower << ", Bayes_den: "<< bayes_den << endl;
@@ -351,7 +367,7 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
             // posterior =  bayes_num / (1 - bayes_num);
             // posterior = likelihood / (1 - likelihood);
             // posterior = log(posterior);
-            _rfid_belief_maps.at(tagLayerName,*iterator) += posterior;
+            _rfid_belief_maps.at(tagLayerName,*iterator) = posterior;
             // if (_rfid_belief_maps.at(tagLayerName,*iterator) > prior){
             //   cout << "Belief increased" << endl;
             // }
@@ -368,9 +384,13 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
     }
   }
   normalizeRFIDLayer(tagLayerName);
-  // cout << "["<< i <<"]Sum: " << _rfid_belief_maps[tagLayerName].sum() << endl;
-  // cout << "["<< i <<"]Max: " << _rfid_belief_maps[tagLayerName].maxCoeff() << endl;
-  // cout << "["<< i <<"]Min: " << _rfid_belief_maps[tagLayerName].minCoeff() << endl;
+  if (i == 0){
+    cout << "["<< i <<"]Sum: " << _rfid_belief_maps[tagLayerName].sum() << endl;
+    cout << "["<< i <<"]Max: " << _rfid_belief_maps[tagLayerName].maxCoeff() << endl;
+    cout << "["<< i <<"]Min: " << _rfid_belief_maps[tagLayerName].minCoeff() << endl;
+  }
+  
+  
   // cout << "---" << endl;
   // normalizeRFIDMap();
 
@@ -512,7 +532,7 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
 
     Eigen::MatrixXf  RadarModel::getPowProbCond(double rxPw, double f_i){
       std::string layerName = getPowLayerName(f_i);
-      //Eigen::MatrixXf ans = getProbCond(layerName, rxPw, _sigma_power);
+      // Eigen::MatrixXf ans = getProbCond(layerName, rxPw, _sigma_power);
       Eigen::MatrixXf ans = getIntervProb(layerName, rxPw, _sigma_power);
       
       return ans;

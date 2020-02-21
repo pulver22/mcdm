@@ -133,6 +133,7 @@ class RadarModel
 
 
     std::string _model;
+    int update_count = 0;
   public:
 
 /**
