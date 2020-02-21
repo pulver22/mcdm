@@ -1687,5 +1687,61 @@ void RadarModel::addMeasurement0(double x_m, double y_m, double orientation_deg,
   for (grid_map::PolygonIterator iterator(_rfid_belief_maps, polygon); !iterator.isPastEnd(); ++iterator){
       _rfid_belief_maps.at(tagLayerName,*iterator) = 1;
     }
-  }
+}
 
+// use me to plot the pdf instead of a bayesian update. Used to check transforms!
+void RadarModel::addMeasurement1(double x_m, double y_m, double orientation_deg, double rxPower, double phase, double freq, int i){
+  double rel_x, rel_y, orientation_rad;
+  double glob_x, glob_y;
+  Position rel_point, glob_point;
+  grid_map::Polygon polygon;
+  Eigen::MatrixXf prob_mat;
+  std::string tagLayerName = getTagLayerName(i);
+  
+  orientation_rad = orientation_deg * M_PI/180.0;
+  
+  if (rxPower>SENSITIVITY){
+    prob_mat = getPowProbCond(rxPower, freq);
+    createTempProbLayer(prob_mat, x_m, y_m, orientation_deg);
+    
+    // normalize bt 0-1
+    prob_mat = prob_mat / prob_mat.maxCoeff();
+
+    polygon = getActiveMapEdges(x_m, y_m, orientation_rad);
+    for (grid_map::PolygonIterator iterator(_rfid_belief_maps, polygon); !iterator.isPastEnd(); ++iterator){
+            if (_rfid_belief_maps.at("ref_map",*iterator) == _free_space_val){
+              // get the relative point
+              _rfid_belief_maps.getPosition(*iterator, glob_point);                  
+              rel_point = getRelPoint(glob_point, x_m, y_m, orientation_rad);            
+              _rfid_belief_maps.at(tagLayerName,*iterator) = _active_area_maps.atPosition("temp",rel_point); 
+            }
+    }
+  }
+}
+
+// use me to plot the pdf instead of a bayesian update. Now without walls!
+void RadarModel::addMeasurement2(double x_m, double y_m, double orientation_deg, double rxPower, double phase, double freq, int i){
+  double rel_x, rel_y, orientation_rad;
+  double glob_x, glob_y;
+  Position rel_point, glob_point;
+  grid_map::Polygon polygon;
+  Eigen::MatrixXf prob_mat;
+  std::string tagLayerName = getTagLayerName(i);
+  
+  orientation_rad = orientation_deg * M_PI/180.0;
+  
+  if (rxPower>SENSITIVITY){
+    prob_mat = getPowProbCond(rxPower, freq);
+    // normalize bt 0-1
+    prob_mat = prob_mat / prob_mat.maxCoeff();
+    _active_area_maps.add("temp", prob_mat);     
+
+    polygon = getActiveMapEdges(x_m, y_m, orientation_rad);
+    for (grid_map::PolygonIterator iterator(_rfid_belief_maps, polygon); !iterator.isPastEnd(); ++iterator){ 
+              // get the relative point
+              _rfid_belief_maps.getPosition(*iterator, glob_point);                  
+              rel_point = getRelPoint(glob_point, x_m, y_m, orientation_rad);            
+              _rfid_belief_maps.at(tagLayerName,*iterator) = _active_area_maps.atPosition("temp",rel_point);    
+    }
+  }
+}
