@@ -256,6 +256,7 @@ double getTotalWeight(int tag_i);
 void addMeasurement(double x, double y, double orientation, double rxPower, double phase, double freq, int i);
 void addMeasurement0(double x, double y, double orientation, double rxPower, double phase, double freq, int i);
 void addMeasurement1(double x, double y, double orientation, double rxPower, double phase, double freq, int i);
+void addMeasurement2(double x, double y, double orientation, double rxPower, double phase, double freq, int i);
 
 
 std::string getPowLayerName(double freq_i);

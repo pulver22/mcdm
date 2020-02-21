@@ -74,6 +74,8 @@ int main(int argc, char **argv)
     cout <<"bayesian";
   } else if (updateMode=='p'){
     cout <<"pdf";
+  } else if (updateMode=='P'){
+    cout <<"pdf-noWalls";
   } else if (updateMode=='w'){
     cout <<"white rec.";
   }   
@@ -207,11 +209,13 @@ int main(int argc, char **argv)
             phase = rm.phaseDifference( tag_x,  tag_y,  f_i);
             //std::cout<<"\tReading at freq (" << f_i/1e6<< " MHz): (" << (rxPower+30) << ") dBm. ( " << phase << ") rads. " << std::endl << std::endl;
 
-            // add measurement to model: addMeasurement0 draws a white rect, addMeasurement1 overlays the pdf
+            // add measurement to model: addMeasurement0 draws a white rect, addMeasurement1 overlays the pdf, addMeasurement2 overlays the pdf but omits walls
             if (updateMode=='b'){
               rm.addMeasurement(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
             } else if (updateMode=='p'){
               rm.addMeasurement1(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
+            } else if (updateMode=='P'){
+              rm.addMeasurement2(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
             } else if (updateMode=='w'){
               rm.addMeasurement0(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
             }            
