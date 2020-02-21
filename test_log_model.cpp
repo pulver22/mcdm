@@ -11,7 +11,7 @@
 
 
 
-const int NARGS = 7;
+const int NARGS = 8;
 
 // quick build:
 // Create build folder and go there
@@ -43,6 +43,7 @@ int main(int argc, char **argv)
   double sigma_phase = 0.2;
   double txtPower = -10;
   int i = 0;
+  char updateMode = 'b'; //w:white rec, p:pdf, b:bayesian
   cout <<"You provided: (" << argc-1 << ") arguments"<<  std::endl;
 
   if (argc > NARGS) {
@@ -53,10 +54,11 @@ int main(int argc, char **argv)
             sigma_power = atof(argv[++i]);
             sigma_phase = atof(argv[++i]);
             txtPower = atof(argv[++i]);
+            updateMode = *argv[++i];
   } else {
       cout <<"DEFAULTS! I will execute call equivalent to:" << std::endl;
       cout << argv[0] << " " << mapFileURI  << " " << nx  << " " << ny  << " " << 
-              resolution  << " " << sigma_power  << " " << sigma_phase  << " " << txtPower <<  std::endl;
+              resolution  << " " << sigma_power  << " " << sigma_phase  << " " << txtPower << " " << updateMode << std::endl;
   }
   cout <<"PARAMETERS: " << std::endl;
   // Radio model  ........................................................
@@ -65,7 +67,19 @@ int main(int argc, char **argv)
   cout <<"\tMap Resolution: ("<< resolution <<") m./cell" << std::endl;
   cout <<"\tPower Noise std: ("<< sigma_power <<")" << std::endl;
   cout <<"\tPhase Noise std: ("<< sigma_phase <<")" << std::endl;
-  cout <<"\tTransmitted power: ("<< txtPower <<") dB." << std::endl << std::endl;
+  cout <<"\tTransmitted power: ("<< txtPower <<") dB." << std::endl;
+  
+  cout <<"\tMap Update Mode: (";
+  if (updateMode=='b'){
+    cout <<"bayesian";
+  } else if (updateMode=='p'){
+    cout <<"pdf";
+  } else if (updateMode=='w'){
+    cout <<"white rec.";
+  }   
+  cout <<  ") " << std::endl;
+  
+  cout << std::endl;
   
   
   // loading tag poses ........................................................
@@ -193,8 +207,16 @@ int main(int argc, char **argv)
             phase = rm.phaseDifference( tag_x,  tag_y,  f_i);
             //std::cout<<"\tReading at freq (" << f_i/1e6<< " MHz): (" << (rxPower+30) << ") dBm. ( " << phase << ") rads. " << std::endl << std::endl;
 
-            // add measurement to model
-            rm.addMeasurement(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
+            // add measurement to model: addMeasurement0 draws a white rect, addMeasurement1 overlays the pdf
+            if (updateMode=='b'){
+              rm.addMeasurement(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
+            } else if (updateMode=='p'){
+              rm.addMeasurement1(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
+            } else if (updateMode=='w'){
+              rm.addMeasurement0(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
+            }            
+            
+
             //print maps
             //cout  << "Saving tag distribution maps... "<< endl;
             int lineal_index = (8*(i+1))+(h+1);
