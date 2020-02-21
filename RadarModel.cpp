@@ -1,5 +1,5 @@
 #include "RadarModel.hpp"
-//#include <unsupported/Eigen/SpecialFunctions>
+#include <unsupported/Eigen/SpecialFunctions>
 
 using namespace std;
 using namespace grid_map;
@@ -351,7 +351,7 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
             // posterior =  bayes_num / (1 - bayes_num);
             // posterior = likelihood / (1 - likelihood);
             // posterior = log(posterior);
-            _rfid_belief_maps.at(tagLayerName,*iterator) = posterior;
+            _rfid_belief_maps.at(tagLayerName,*iterator) += posterior;
             // if (_rfid_belief_maps.at(tagLayerName,*iterator) > prior){
             //   cout << "Belief increased" << endl;
             // }
