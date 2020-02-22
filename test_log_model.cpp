@@ -182,8 +182,8 @@ int main(int argc, char **argv)
       robot_y = start_y + ( (end_y - start_y) * ( i ) / (NumReadings - 1.0) );
       robot_x = start_x + ( (end_x - start_x) * ( i ) / (NumReadings - 1.0) );
       
-      for (int h=0;h<18;h++){
-        robot_head = robot_head0 + (2.0*M_PI*h/18);
+      for (int h=0;h<36;h++){
+        robot_head = robot_head0 + (2.0*M_PI*h/9);
         // std::cout<<"Robot at (" << robot_x << ", " << robot_y <<") m., (" << (robot_head*180.0/M_PI) << ") deg." << std::endl;
         
         //for each tag:

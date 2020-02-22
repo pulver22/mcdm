@@ -303,12 +303,12 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
     if (i == 0){
       cout << "Pos: " << prob_mat.sum() << endl;  
     }
-  } else{
-    prob_mat = getNegProb(getPowLayerName(freq), rxPower, _sigma_power);//.cwiseProduct(getPhaseProbCond(phase, freq));
-    if (i == 0){
-      cout << "Neg: " << prob_mat.sum() << endl;
-    }
-  }
+  // } else{
+  //   prob_mat = getNegProb(getPowLayerName(freq), rxPower, _sigma_power);//.cwiseProduct(getPhaseProbCond(phase, freq));
+  //   if (i == 0){
+  //     cout << "Neg: " << prob_mat.sum() << endl;
+  //   }
+  // }
   
 
   // We store this data matrix in a temporal layer
@@ -384,11 +384,12 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
     }
   }
   normalizeRFIDLayer(tagLayerName);
-  if (i == 0){
-    cout << "["<< i <<"]Sum: " << _rfid_belief_maps[tagLayerName].sum() << endl;
-    cout << "["<< i <<"]Max: " << _rfid_belief_maps[tagLayerName].maxCoeff() << endl;
-    cout << "["<< i <<"]Min: " << _rfid_belief_maps[tagLayerName].minCoeff() << endl;
   }
+  // if (i == 0){
+  //   cout << "["<< i <<"]Sum: " << _rfid_belief_maps[tagLayerName].sum() << endl;
+  //   cout << "["<< i <<"]Max: " << _rfid_belief_maps[tagLayerName].maxCoeff() << endl;
+  //   cout << "["<< i <<"]Min: " << _rfid_belief_maps[tagLayerName].minCoeff() << endl;
+  // }
   
   
   // cout << "---" << endl;
