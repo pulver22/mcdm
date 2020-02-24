@@ -1788,15 +1788,23 @@ void RadarModel::addMeasurement3(double x_m, double y_m, double orientation_deg,
   tagLayerName = getTagLayerName(i);
   Size siz = _rfid_belief_maps.getSize();
   rxPw_mat = Eigen::MatrixXf(siz(0), siz(1));
+  double orientation_rad = orientation_deg * M_PI/180.0;
 
   for (grid_map::GridMapIterator iterator(_rfid_belief_maps); !iterator.isPastEnd(); ++iterator) {
       // matrix indexes...
       ind = *iterator;      
       // get cell center of the cell in the map frame.            
       _rfid_belief_maps.getPosition(ind, glob_point);
-      // that is where the tag is.
+      // that is where the tag is in map coordinates
       tag_x = glob_point.x();
       tag_y = glob_point.y();
+
+      // now get robot - tag relative pose!
+      double delta_x = (tag_x - x_m ); 
+      double  delta_y = (tag_y - y_m);
+      // rotate
+      tag_x =  delta_x * cos(orientation_rad) + delta_y * sin(orientation_rad);
+      tag_y = -delta_x * sin(orientation_rad) + delta_y * cos(orientation_rad);
 
       getSphericCoords(tag_x,tag_y, tag_r, tag_h);
 
