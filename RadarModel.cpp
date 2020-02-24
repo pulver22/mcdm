@@ -1,5 +1,5 @@
 #include "RadarModel.hpp"
-#include <unsupported/Eigen/SpecialFunctions>
+//#include <unsupported/Eigen/SpecialFunctions>
 
 using namespace std;
 using namespace grid_map;
@@ -1765,4 +1765,68 @@ void RadarModel::addMeasurement2(double x_m, double y_m, double orientation_deg,
               _rfid_belief_maps.at(tagLayerName,*iterator) = _active_area_maps.atPosition("temp",rel_point);    
     }
   }
+}
+
+
+
+//So, robot at pr (x,y,orientation) (long, long, int) receives rxPower,phase,freq from tag i . 
+//TODO: this is a simplistic model that just "ignores" walls: but they do have absortion and reduce received power at their locations...
+// this one ignores active areas ....
+void RadarModel::addMeasurement3(double x_m, double y_m, double orientation_deg, double rxPower, double phase, double freq, int i){
+
+
+  //1. obtain rel dist and friis to all points    ..................................................
+  
+  Eigen::MatrixXf rxPw_mat, likl_mat;
+  double tag_x, tag_y, tag_r, tag_h, rxP;
+  double pdf_den;
+  Position glob_point;
+  Index ind;
+
+  std::string tagLayerName;
+
+  tagLayerName = getTagLayerName(i);
+  Size siz = _rfid_belief_maps.getSize();
+  rxPw_mat = Eigen::MatrixXf(siz(0), siz(1));
+
+  for (grid_map::GridMapIterator iterator(_rfid_belief_maps); !iterator.isPastEnd(); ++iterator) {
+      // matrix indexes...
+      ind = *iterator;      
+      // get cell center of the cell in the map frame.            
+      _rfid_belief_maps.getPosition(ind, glob_point);
+      // that is where the tag is.
+      tag_x = glob_point.x();
+      tag_y = glob_point.y();
+
+      getSphericCoords(tag_x,tag_y, tag_r, tag_h);
+
+      rxP = received_power_friis_polar(tag_r, tag_h,freq, _txtPower, _antenna_gains);
+      rxPw_mat(ind(0),ind(1))  = rxP;              
+  }
+  // get pdf to all points: likelihood ..................................................................
+        
+  // gaussian pdf
+  // fddp(x,mu,sigma) = exp( -0.5 * ( (x - mu)/sigma )^2 )   /   (sigma * sqrt(2 pi )) 
+  likl_mat = rxPw_mat;
+  pdf_den = _sigma_power * sqrt( 2.0 * M_PI) ;
+  likl_mat = (rxPower - likl_mat.array())/_sigma_power;
+  likl_mat =  likl_mat.array().pow(2.0);
+  likl_mat = -0.5 * likl_mat;
+  likl_mat = likl_mat.array().exp()/pdf_den;
+  
+  // trick: if obstacles is binary, this would have 1 on free space and 0 in obstacles
+  Eigen::MatrixXf obst_mat = _rfid_belief_maps["ref_map"];
+  obst_mat = obst_mat/_free_space_val;
+
+  // this should remove prob at obstcles
+  likl_mat = likl_mat.cwiseProduct(obst_mat);
+
+  // normalize in this space:
+  double bayes_den = likl_mat.sum();
+  if (bayes_den>0){
+      likl_mat = likl_mat/bayes_den;
+      // now do bayes ...  everywhere
+      _rfid_belief_maps[tagLayerName] = _rfid_belief_maps[tagLayerName].cwiseProduct(likl_mat);
+  }
+  normalizeRFIDLayer(tagLayerName);
 }
