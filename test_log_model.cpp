@@ -78,6 +78,8 @@ int main(int argc, char **argv)
     cout <<"pdf-noWalls";
   } else if (updateMode=='w'){
     cout <<"white rec.";
+  } else if (updateMode=='G'){
+    cout <<"No active areas used";
   }   
   cout <<  ") " << std::endl;
   
@@ -188,8 +190,6 @@ int main(int argc, char **argv)
         
         //for each tag:
         for (int t = 0; t < tags_coord.size(); t++){
-
-
             // get relative robot-tag pose
             // translate
             delta_x = (tags_coord[t].first - robot_x ); 
@@ -218,6 +218,8 @@ int main(int argc, char **argv)
               rm.addMeasurement2(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
             } else if (updateMode=='w'){
               rm.addMeasurement0(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
+            } else if (updateMode=='G'){
+              rm.addMeasurement3(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
             }            
             
 
