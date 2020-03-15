@@ -80,12 +80,37 @@ const double STEP_FREQ_NA = 250e3; // Hertzs
 
 //  ..................................................................
 
+/**
+ * @brief The spline is used to interpolate antenna gain values, 
+ * as we only have the graph 
+ */
 class SplineFunction {
+
       public:
         SplineFunction();
+
+        /**
+         * @brief Construct a new Spline Function Interpolation for antenna gain
+         * 
+         * @param x_vec reference azimuth angle (deg) points
+         * @param y_vec reference gain (db) points
+         */
         SplineFunction(Eigen::VectorXd const &x_vec, Eigen::VectorXd const &y_vec);
 
+        /**
+         * @brief Interpolate gain from angle
+         * 
+         * @param x azimuth angle (rads)
+         * @return double interpolated gain (dB)
+         */
         double interpRad(double x) const;
+
+        /**
+         * @brief Interpolate gain from angle
+         * 
+         * @param x azimuth angle (degs)
+         * @return double interpolated gain (dB)
+         */
         double interpDeg(double x) const;
 
       private:        
@@ -107,22 +132,17 @@ class SplineFunction {
 
 class RadarModel
   {
-    double _sizeXaa; //  x axis size in active area (m.). Related with number of rows
-    double _sizeYaa; //  y axis size in active area (m.). Related with number of cols
-
     int _Ncol; // number of rows of reference and rfid belief maps (cells)
     int _Nrow; // number of cols of reference and rfid belief maps (cells)
     float _free_space_val; // max value stored in reference map, used as free space marker
-    double _resolution; // Active areas, reference, and belief maps resolution (m./cell)
+    double _resolution; // Reference AND belief map resolution (m./cell)
     double _txtPower; // transmitted power by RFID reader (dB)
 
-    // we only model here gaussian noise: flat fadding.
+    // we only model here gaussian noise
     double _sigma_power;  // noise factor
     double _sigma_phase;  // noise factor
     
-    GridMap _active_area_maps;  // active areas. one per phase and power at each frequency.
     GridMap _rfid_belief_maps;  // Prob. beliefs. One layer per tag. Also, one layer with reference map, mostly for tag layout representation.
-    //GridMap _ref_map;  
     
     std::vector<std::pair<double,double>> _tags_coords; // tag locations in reference map coords (m.)
     int _numTags;  // rfid tags to consider
@@ -130,30 +150,57 @@ class RadarModel
     std::vector<double> _freqs; // transmission frequencies (Hz.)
     SplineFunction _antenna_gains;  // model for antenna power gain depending on the angle (dB.)
 
-
-
-    std::string _model;
     int update_count = 0;
   public:
 
-/**
- * @brief Construct a new RadarModel object. 
- *        It is based upon the link budget equation. See D. M. Dobkin, “The RF in RFID: Passive UHF RFID in Practice”, Elsevier, 2007 
- * 
- * @param nx X axis Size (m.)
- * @param ny Y axis Size (m.)
- * @param resolution  internal grid resolution (m./cell)
- * @param sigma Noise factor standard deviation 
- * @param txtPower Transmited Power (dB)
- * @param freqs Freqs to be considered in model (Hz.)
- * TODO We will use a fixed antenna model, Gaussian noise model and will assume tags are isotropic. This may need to be revisited ...
- */
-
-
-
-
+    /**
+     * @brief Construct a new Radar Model object
+     *        It is based upon the link budget equation. See D. M. Dobkin, “The RF in RFID: Passive UHF RFID in Practice”, Elsevier, 2007 
+     * @param resolution   reference map and rfid belief map images resolution in m./cell
+     * @param sigma_power  noise std in log model
+     * @param sigma_phase  noise std in phase
+     * @param txtPower     transmitted power (dB)
+     * @param freqs        frequencies used in transmission
+     * @param tags_coords  tag positions in map coordinates
+     * @param imageFileURI reference map file 
+     *   TODO We will use a fixed antenna model, Gaussian noise model and will assume tags are isotropic. This may need to be revisited ...
+     */
+    RadarModel(const double resolution, const double sigma_power, const double sigma_phase, const double txtPower, const std::vector<double> freqs, const std::vector<std::pair<double,double>> tags_coords, const std::string imageFileURI) ;
+    
     RadarModel();
-    RadarModel(const double nx, const double ny,  const double resolution, const double sigma_power, const double sigma_phase, const double txtPower, const std::vector<double> freqs, const std::vector<std::pair<double,double>> tags_coords, const std::string imageFileURI, std::string model="gaussian" ) ;
+
+    /**
+     * @brief Print scenario map with tags
+     * 
+     * @param fileURI 
+     */
+    void PrintRefMapWithTags(std::string fileURI);
+
+
+    /**
+     * @brief Plots a power distribution
+     * 
+     * @param fileURI save file location
+     * @param f_i frequency to consider in the propagation model
+     */
+    void PrintRecPower(std::string fileURI, double f_i);
+
+    /**
+     * @brief Plots a probability distribution, conditioned to a received power
+     * 
+     * @param fileURI save file location
+     * @param rxPw received power
+     * @param f_i frequency to consider in the propagation model
+     */
+    void PrintPowProb(std::string fileURI, double rxPw, double f_i);
+
+    
+    void PrintPhase(std::string fileURI,  double f_i);
+    void PrintPhaseProb(std::string fileURI, double phi, double f_i);
+    void PrintBothProb(std::string fileURI, double rxPw, double phi, double f_i);
+
+
+
     void PrintMap( std::string savePath);
     void initRefMap(const std::string imageURI);
     void getImage(std::string layerName, std::string fileURI);
@@ -226,21 +273,6 @@ void getSphericCoords(double x, double y, double& r, double& phi);
  */
 double phaseDifference(double tag_x, double tag_y, double freq);
 
-
-/**
- * Get tag detection boundaries for given configuration
- * @param freq        RF signal frequency
- * @param txtPower    Transmitted RF power (dB.)
- * @param sensitivity Minimun power the reader can receive (dB.)
- * @param distStep    distance step for internal power calculations
- * @param minX        minimum X distance where rx power is over sensitivity
- * @param minY        minimum Y distance where rx power is over sensitivity
- * @param maxX        maximum X distance where rx power is over sensitivity
- * @param maxY        maximum Y distance where rx power is over sensitivity
- */
-void activeAreaFriis(double freq, double txtPower, double sensitivity, double distStep, double& minX, double& minY, double& maxX, double& maxY);
-
-
 /**
  * @param  x             x coord (m.) in map coords of the center
  * @param  y             y coord (m.) in map coords of the center
@@ -280,12 +312,7 @@ void getImage(GridMap* gm,std::string layerName, std::string fileURI);
 Position getRelPoint(Position glob_point, double x_m, double  y_m, double orientation_rad);
 Eigen::MatrixXf getIntervProb(std::string layer_i, double x, double sigm);
 void fillFriisMat(Eigen::MatrixXf *rxPw_mat, Eigen::MatrixXf *delay_mat, double freq_i, double offset );
-void PrintRefMapWithTags(std::string fileURI);
-void PrintRecPower(std::string fileURI, double f_i);
-void PrintPowProb(std::string fileURI, double rxPw, double f_i);
-void PrintPhase(std::string fileURI,  double f_i);
-void PrintPhaseProb(std::string fileURI, double phi, double f_i);
-void PrintBothProb(std::string fileURI, double rxPw, double phi, double f_i);
+
 void overlayRobotPose(double robot_x, double robot_y, double robot_head, cv::Mat& image);
 void overlayRobotPoseT(double robot_x, double robot_y, double robot_head, cv::Mat& image);
 void rotatePoints( cv::Point* points, int npts, int cxi, int cyi, double ang);
