@@ -332,7 +332,7 @@ bool Utilities::recordNOTContainsCandidates(vector<pair<string,list<Pose>>>* gra
 }
 
 
-bool Utilities::recordContainsCandidatesBT(EvaluationRecords* record,
+void Utilities::recordContainsCandidatesBT(EvaluationRecords* record,
                               int* count, Pose* target, Pose* previous, string* actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
                               dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int* encodedKeyValue, Astar* astar , long* numConfiguration,
                               double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold,
@@ -395,7 +395,7 @@ bool Utilities::recordContainsCandidatesBT(EvaluationRecords* record,
   }
 }
 
-bool Utilities::recordNOTContainsCandidatesBT(EvaluationRecords* record,
+void Utilities::recordNOTContainsCandidatesBT(EvaluationRecords* record,
                               int* count, Pose* target, Pose* previous, string* actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
                               dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int* encodedKeyValue, Astar* astar , long* numConfiguration,
                               double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold){
@@ -416,7 +416,6 @@ bool Utilities::recordNOTContainsCandidatesBT(EvaluationRecords* record,
 
 void Utilities::createMultiplePosition(list<Pose> *frontiers, vector<pair<long, long>> *candidatePosition, int range, double FOV)
 {
-  // For every candidate position, create 8 pose with a different orientation each and consider them as frontiers
   vector<pair<long,long> >::iterator it = candidatePosition->begin();
   for ( it; it != candidatePosition->end(); it++ )
   {
@@ -512,7 +511,8 @@ bool Utilities::updateNavigationGraph(int *count, MCDMFunction *function, vector
   return false;
 }
 
-bool Utilities::forwardMotion(Pose *target, Pose *previous, list<Pose> *frontiers, list<Pose> *nearCandidates, vector<pair<long,long> > *candidatePosition, NewRay *ray, dummy::Map *map, 
+bool Utilities::forwardMotion(Pose *target, Pose *previous, list<Pose> *frontiers, list<Pose> *nearCandidates, 
+                              vector<pair<long,long> > *candidatePosition, NewRay *ray, dummy::Map *map, 
                               long *x, long *y, int *orientation, double *FOV, int *range, vector<pair<string,list<Pose>>> *graph2,
                               EvaluationRecords *record, MCDMFunction *function, double *threshold, int *count, vector<string> *history, 
                               list<Pose> *tmp_history, list<Pose> *tabuList, Astar *astar, double *imgresolution, double *travelledDistance,
