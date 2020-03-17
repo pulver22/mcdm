@@ -316,6 +316,16 @@ void debugInfo();
 cv::Point getPoint(double x, double y);
 void overlayActiveMapEdges(double robot_x, double robot_y, double robot_head, cv::Mat image);
 void overlayMapEdges( cv::Mat image);
+
+/**
+ * Return the private active area
+ */
+GridMap getActiveAreaMaps();
+
+/**
+ * Return the RFID belief maps
+ */
+GridMap getBeliefMaps();
 }; // end class
 
 

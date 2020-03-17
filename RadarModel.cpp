@@ -1838,3 +1838,11 @@ void RadarModel::addMeasurement3(double x_m, double y_m, double orientation_deg,
   }
   normalizeRFIDLayer(tagLayerName);
 }
+
+GridMap RadarModel::getActiveAreaMaps(){
+  return this->_active_area_maps;
+}
+
+GridMap RadarModel::getBeliefMaps(){
+  return this->_rfid_belief_maps;
+}
