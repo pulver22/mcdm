@@ -1,10 +1,10 @@
 #include "RadarModel.hpp"
-//#include <unsupported/Eigen/SpecialFunctions>
+#include <unsupported/Eigen/SpecialFunctions>
 
 using namespace std;
 using namespace grid_map;
 
-        // The spline is used to interpolate antenna gain values, as we only have the graphs
+
         SplineFunction::SplineFunction()
         {}
 
@@ -17,7 +17,6 @@ using namespace grid_map;
             spline_(Eigen::SplineFitting<Eigen::Spline<double, 1>>::Interpolate(y_vec.transpose(), std::min<int>(x_vec.rows() - 1, 6), scaled_values(x_vec)))  // No more than cubic spline, but accept short vectors.
         { 
 
-            // Uncomment this to see interpolated gain values
             // for(int i=0; i< x_vec.size(); i++){
             //       cout <<"G(" << x_vec[i] << ")= "<< interpDeg(x_vec[i]) << std::endl;
             // } 
@@ -29,7 +28,13 @@ using namespace grid_map;
           double y;
           y = spline_(scaled_value(x))(0);
 
-          // interpolation may produce values bigger and lower than our limits ...          
+
+//          if ((y>y_max) || (y<y_min)){
+//                  cout <<"Angle " << x << " produced gain "<< y << std::endl;
+//          }
+
+          // interpolation may produce values bigger and lower than our limits ...
+          
           y = max(min(y, y_max), y_min );
           return y;
         }
@@ -52,7 +57,7 @@ using namespace grid_map;
 
 RadarModel::RadarModel(){};
 
-RadarModel::RadarModel(const double resolution, const double sigma_power, const double sigma_phase, const double txtPower, const std::vector<double> freqs, const std::vector<std::pair<double,double>> tags_coords, const std::string imageFileURI ) {
+RadarModel::RadarModel(const double nx, const double ny, const double resolution, const double sigma_power, const double sigma_phase, const double txtPower, const std::vector<double> freqs, const std::vector<std::pair<double,double>> tags_coords, const std::string imageFileURI, std::string model ) {
         _model = model;
         _sizeXaa = nx;
         _sizeYaa = ny;
@@ -528,8 +533,8 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
 
     Eigen::MatrixXf  RadarModel::getPowProbCond(double rxPw, double f_i){
       std::string layerName = getPowLayerName(f_i);
-      Eigen::MatrixXf ans = getProbCond(layerName, rxPw, _sigma_power);
-      //Eigen::MatrixXf ans = getIntervProb(layerName, rxPw, _sigma_power);
+      // Eigen::MatrixXf ans = getProbCond(layerName, rxPw, _sigma_power);
+      Eigen::MatrixXf ans = getIntervProb(layerName, rxPw, _sigma_power);
       
       return ans;
     }
@@ -776,14 +781,12 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
       overlayRobotPoseT(robot_x, robot_y, robot_head, image);
 
       /// overlay active map edges   .............................................................................................
-      //overlayActiveMapEdges(robot_x, robot_y, robot_head, image);
-      // not used now
+      overlayActiveMapEdges(robot_x, robot_y, robot_head, image);
 
       /// overlay active map edges   .............................................................................................
-      //overlayMapEdges( image);
-      // not used now
+      overlayMapEdges( image);
 
-      // clear out obstacles: not working
+      // clear out obstacles
       //clearObstacles(image);
 
       // and save
@@ -1289,7 +1292,7 @@ double RadarModel::received_power_friis_polar(double tag_r, double tag_h, double
      double ant1, antL, propL;
      double lambda =  C/freq;
     // otherwise friis approach does not apply
-     if (tag_r>2*lambda){
+     if (tag_r>lambda){
          /*
           SIMPLIFICATION!!! TAG is OMNIDIRECTIONAL
           (a.k.a. don't have tag radiation pattern and
@@ -1332,7 +1335,63 @@ double RadarModel::phaseDifference(double tag_x, double tag_y, double freq) {
 }
 
 
+void RadarModel::activeAreaFriis(double freq, double txtPower, double sensitivity, double distStep, double& minX, double& minY, double& maxX, double& maxY) {
 
+  double currX = 0.0;
+  double currY = 0.0;
+  double currRxPower = txtPower;
+
+  std::cout << "txtPower: " << txtPower << "\n";
+  std::cout << "sensitivity: " << sensitivity << "\n";
+
+  // build spline to interpolate antenna gains;
+  std::vector<double> xVec(ANTENNA_ANGLES_LIST, ANTENNA_ANGLES_LIST + 25);
+  Eigen::VectorXd xvals = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(xVec.data(), xVec.size());
+  std::vector<double> yVec(ANTENNA_LOSSES_LIST, ANTENNA_LOSSES_LIST + 25);
+  Eigen::VectorXd yvals= Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(yVec.data(), yVec.size());
+  SplineFunction antennaGainsModel(xvals, yvals);
+
+  // get max X distance within sensitivity
+  do{
+    currX = currX+distStep;
+    currRxPower = received_power_friis(currX, currY, freq, txtPower, antennaGainsModel);
+  } while(currRxPower>sensitivity);
+  maxX =currX-distStep; // because last iteration should be under sensitivity
+
+  // get min X distance within sensitivity
+  currX = 0.0;
+  currY = 0.0;
+  currRxPower = txtPower;
+
+  do{
+    currX = currX-distStep;
+    currRxPower = received_power_friis(currX, currY, freq, txtPower, antennaGainsModel);
+  } while(currRxPower>sensitivity);
+  minX =currX+distStep; // because last iteration should be under sensitivity
+
+  // get max Y distance within sensitivity
+  currX = 0.0;
+  currY = 0.0;
+  currRxPower = txtPower;
+
+  do{
+    currY = currY+distStep;
+    currRxPower = received_power_friis(currX, currY, freq, txtPower, antennaGainsModel);
+  } while(currRxPower>sensitivity);
+  maxY =currY-distStep; // because last iteration should be under sensitivity
+
+  // get min Y distance within sensitivity
+  currX = 0.0;
+  currY = 0.0;
+  currRxPower = txtPower;
+
+  do{
+    currY = currY-distStep;
+    currRxPower = received_power_friis(currX, currY, freq, txtPower, antennaGainsModel);
+  } while(currRxPower>sensitivity);
+  minY =currY+distStep; // because last iteration should be under sensitivity
+
+}
 
 std::pair<int, std::pair<int, int>> RadarModel::findTagFromBeliefMap(int num_tag){
   

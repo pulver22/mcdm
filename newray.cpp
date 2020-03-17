@@ -12,6 +12,9 @@ NewRay::NewRay()
 {
 }
 
+NewRay::~NewRay()
+{
+}
 
 int NewRay::isCandidate(const dummy::Map *map, long i,long  j)
 {
