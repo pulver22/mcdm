@@ -289,19 +289,19 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
   // cout <<"Measurement: Tag ["<< i <<  "]: (" << rxPower << " dB, " << phase << " rad., " << freq/1e6 <<"MHz.) " << std::endl;
   // cout <<"........................ " << std::endl;
   if (i == 0){
-    cout << "=== " << update_count << " ===" << endl;
-    cout << "Power: " << rxPower << endl;
+    // cout << "=== " << update_count << " ===" << endl;
+    // cout << "Power: " << rxPower << endl;
     update_count ++ ;
     double distance_from_tag = sqrt(pow((_tags_coords.at(0).first - x_m), 2) + pow((_tags_coords.at(0).second - y_m), 2));
-    cout << "Distance to tag: " << distance_from_tag << endl;
+    // cout << "Distance to tag: " << distance_from_tag << endl;
     double rel_orientation = atan2((_tags_coords.at(0).second - y_m), (_tags_coords.at(0).first - x_m));
-    cout << "Orientation: " << rel_orientation *180.0/M_PI << endl;
+    // cout << "Orientation: " << rel_orientation *180.0/M_PI << endl;
   }
   // First we get the Probability distribution associated with ( rxPower,phase,freq) using our defined active area grids
   if (rxPower > SENSITIVITY){
     prob_mat = getPowProbCond(rxPower, freq);//.cwiseProduct(getPhaseProbCond(phase, freq));
     if (i == 0){
-      cout << "Pos: " << prob_mat.sum() << endl;  
+      // cout << "Pos: " << prob_mat.sum() << endl;  
     }
   // } else{
   //   prob_mat = getNegProb(getPowLayerName(freq), rxPower, _sigma_power);//.cwiseProduct(getPhaseProbCond(phase, freq));
@@ -314,9 +314,9 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
   // We store this data matrix in a temporal layer
   createTempProbLayer(prob_mat, x_m, y_m, orientation_deg);
   if (i == 0){
-    cout << "   AA: " << _active_area_maps["temp"].sum() << endl;
-    cout << "   max: " << _active_area_maps["temp"].maxCoeff() << endl;
-    cout << "   min: " << _active_area_maps["temp"].minCoeff() << endl;
+    // cout << "   AA: " << _active_area_maps["temp"].sum() << endl;
+    // cout << "   max: " << _active_area_maps["temp"].maxCoeff() << endl;
+    // cout << "   min: " << _active_area_maps["temp"].minCoeff() << endl;
   }
 
   // so we need to translate this matrix to robot pose and orientation
@@ -329,7 +329,7 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
   // where normalisizing_factor is a sum over all the grid of likelihood * prior
   bayes_den = getNormalizingFactorBayesRFIDActiveArea(x_m, y_m, orientation_rad, tagLayerName);
   if (i == 0){
-    cout << "   BD: "<< bayes_den << endl;
+    // cout << "   BD: "<< bayes_den << endl;
   }
 
   if (bayes_den != 0.0 and !isnan(bayes_den)){
@@ -1845,4 +1845,80 @@ GridMap RadarModel::getActiveAreaMaps(){
 
 GridMap RadarModel::getBeliefMaps(){
   return this->_rfid_belief_maps;
+}
+
+double RadarModel::getTotalEntropy(double x, double y, double orientation,
+                                  double size_x, double size_y, int tag_i) {
+  // TODO: I'm not using the orientation. Maybe it would be better to use a
+  // polygon iterator,
+  //     so we can rotate edges around the center and have a more flexible thing
+
+  // submapStartIndex the start index of the submap, typically top-left index.
+  grid_map::Index submapStartIndex, submapEndIndex, submapBufferSize;
+  grid_map::Position submapStartPosition(x + (size_x / 2), y + (size_y / 2));
+  grid_map::Position submapEndPosition(x - (size_x / 2), y - (size_y / 2));
+
+  if (!_rfid_belief_maps.getIndex(submapStartPosition, submapStartIndex)) {
+    submapStartIndex = grid_map::Index(0, 0);
+    // std::cout<<"Clip start!" << std::endl;
+  }
+
+  if (!_rfid_belief_maps.getIndex(submapEndPosition, submapEndIndex)) {
+    Size siz = _rfid_belief_maps.getSize();
+    submapEndIndex = grid_map::Index(siz(0) - 1, siz(1) - 1);
+    // std::cout<<"Clip end!" << std::endl;
+  }
+
+  submapBufferSize = submapEndIndex - submapStartIndex;
+
+  grid_map::SubmapIterator iterator(_rfid_belief_maps, submapStartIndex,
+                                    submapBufferSize);
+
+  // std::cout<<"\nGet prob.:" << std::endl;
+  // std::cout<<" Centered at Position (" << x << ", " << y << ") m. / Size ("
+  // << size_x << ", " << size_y << ")" << std::endl; std::cout<<" Start pose ("
+  // << submapStartPosition(0) << ", " << submapStartPosition(1) << ") m. to
+  // pose " << submapEndPosition(0) << ", " << submapEndPosition(1) << ") m."<<
+  // std::endl; std::cout<<" Start Cell ("  << submapStartIndex(0) << ", " <<
+  // submapStartIndex(1) << ") to cell("  << submapEndIndex(0) << ", " <<
+  // submapEndIndex(1) << ")"<< std::endl;
+
+  return getTotalEntropy(x, y, orientation, iterator, tag_i);
+}
+
+double RadarModel::getTotalEntropy(double x, double y, double orientation,
+                                  grid_map::SubmapIterator iterator,
+                                  int tag_i) {
+
+  double total_entropy;
+  Position point;
+  double likelihood, neg_likelihood, log2_likelihood, log2_neg_likelihood = 0.0;
+
+  std::string tagLayerName = getTagLayerName(tag_i);
+
+  total_entropy = 0;
+  for (iterator; !iterator.isPastEnd(); ++iterator) {
+    _rfid_belief_maps.getPosition(*iterator, point);
+    // check if is inside global map
+    if (_rfid_belief_maps.isInside(point)) {
+      // We don't add belief from positions considered obstacles...
+      if (_rfid_belief_maps.atPosition("ref_map", point) == _free_space_val) {
+        likelihood = _rfid_belief_maps.atPosition(tagLayerName, point);
+        if (isnan(likelihood)) likelihood = 0.0;
+        neg_likelihood = 1 - likelihood;
+        if (isnan(neg_likelihood)) neg_likelihood = 0.0;
+        
+        log2_likelihood = log2(likelihood);
+        if (isinf(log2_likelihood)) log2_likelihood = 0.0;
+        log2_neg_likelihood = log2(neg_likelihood);
+        if (isinf(log2_neg_likelihood)) log2_neg_likelihood = 0.0;
+        // cout << " l: " << log2_likelihood << endl;
+        // likelihood =
+        // rfid_tools->rm.getBeliefMaps().atPosition(layerName,rel_point);
+        total_entropy += -likelihood * log2_likelihood -
+                        neg_likelihood * log2_neg_likelihood;
+      }
+    }
+  }
+  return total_entropy;
 }
