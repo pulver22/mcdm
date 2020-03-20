@@ -272,7 +272,9 @@ void RadarModel::initRefMap(const std::string imageURI){
 
 //So, robot at pr (x,y,orientation) (long, long, int) receives rxPower,phase,freq from tag i . 
 //TODO: this is a simplistic model that just "ignores" walls: but they do have absortion and reduce received power at their locations...
-void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, double rxPower, double phase, double freq, int i){
+void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, double rxPower, double phase, double freq, int i, bool computeKL){
+  
+  // cout << "computeKL: " << computeKL << endl;
   double rel_x, rel_y, prob_val, orientation_rad;
   double glob_x, glob_y, delt_x, delt_y;
   Position rel_point, glob_point;
@@ -282,42 +284,42 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
   Eigen::MatrixXf prob_mat;
   std::string tagLayerName = getTagLayerName(i);
 
-
+  _rfid_belief_maps.add("kl", 0.0);
 
 
   // cout <<"Position: (" << x_m << " m., " << y_m << " m., " << orientation_deg <<"º) " << std::endl;
   // cout <<"Measurement: Tag ["<< i <<  "]: (" << rxPower << " dB, " << phase << " rad., " << freq/1e6 <<"MHz.) " << std::endl;
   // cout <<"........................ " << std::endl;
-  if (i == 0){
-    // cout << "=== " << update_count << " ===" << endl;
-    // cout << "Power: " << rxPower << endl;
-    update_count ++ ;
-    double distance_from_tag = sqrt(pow((_tags_coords.at(0).first - x_m), 2) + pow((_tags_coords.at(0).second - y_m), 2));
-    // cout << "Distance to tag: " << distance_from_tag << endl;
-    double rel_orientation = atan2((_tags_coords.at(0).second - y_m), (_tags_coords.at(0).first - x_m));
-    // cout << "Orientation: " << rel_orientation *180.0/M_PI << endl;
-  }
+  // if (i == 0){
+  //   // cout << "=== " << update_count << " ===" << endl;
+  //   // cout << "Power: " << rxPower << endl;
+  //   update_count ++ ;
+  //   double distance_from_tag = sqrt(pow((_tags_coords.at(0).first - x_m), 2) + pow((_tags_coords.at(0).second - y_m), 2));
+  //   // cout << "Distance to tag: " << distance_from_tag << endl;
+  //   double rel_orientation = atan2((_tags_coords.at(0).second - y_m), (_tags_coords.at(0).first - x_m));
+  //   // cout << "Orientation: " << rel_orientation *180.0/M_PI << endl;
+  // }
   // First we get the Probability distribution associated with ( rxPower,phase,freq) using our defined active area grids
   if (rxPower > SENSITIVITY){
     prob_mat = getPowProbCond(rxPower, freq);//.cwiseProduct(getPhaseProbCond(phase, freq));
-    if (i == 0){
-      // cout << "Pos: " << prob_mat.sum() << endl;  
-    }
+    // if (i == 0){
+    //   // cout << "Pos: " << prob_mat.sum() << endl;  
+    // }
   // } else{
   //   prob_mat = getNegProb(getPowLayerName(freq), rxPower, _sigma_power);//.cwiseProduct(getPhaseProbCond(phase, freq));
-  //   if (i == 0){
-  //     cout << "Neg: " << prob_mat.sum() << endl;
-  //   }
+  // //   if (i == 0){
+  // //     cout << "Neg: " << prob_mat.sum() << endl;
+  // //   }
   // }
   
 
   // We store this data matrix in a temporal layer
   createTempProbLayer(prob_mat, x_m, y_m, orientation_deg);
-  if (i == 0){
+  // if (i == 0){
     // cout << "   AA: " << _active_area_maps["temp"].sum() << endl;
     // cout << "   max: " << _active_area_maps["temp"].maxCoeff() << endl;
     // cout << "   min: " << _active_area_maps["temp"].minCoeff() << endl;
-  }
+  // }
 
   // so we need to translate this matrix to robot pose and orientation
   
@@ -328,9 +330,9 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
   // NB: posterior = likelihood * prior / normalizing_factor
   // where normalisizing_factor is a sum over all the grid of likelihood * prior
   bayes_den = getNormalizingFactorBayesRFIDActiveArea(x_m, y_m, orientation_rad, tagLayerName);
-  if (i == 0){
+  // if (i == 0){
     // cout << "   BD: "<< bayes_den << endl;
-  }
+  // }
 
   if (bayes_den != 0.0 and !isnan(bayes_den)){
         // cout << "Power: " << rxPower << ", Bayes_den: "<< bayes_den << endl;
@@ -367,7 +369,14 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
             // posterior =  bayes_num / (1 - bayes_num);
             // posterior = likelihood / (1 - likelihood);
             // posterior = log(posterior);
-            _rfid_belief_maps.at(tagLayerName,*iterator) = posterior;
+            if (computeKL == false){
+              _rfid_belief_maps.at(tagLayerName,*iterator) = posterior;
+            }else{
+              _rfid_belief_maps.at("kl",*iterator) = posterior;
+            }
+            
+
+            
             // if (_rfid_belief_maps.at(tagLayerName,*iterator) > prior){
             //   cout << "Belief increased" << endl;
             // }
@@ -1874,15 +1883,6 @@ double RadarModel::getTotalEntropy(double x, double y, double orientation,
   grid_map::SubmapIterator iterator(_rfid_belief_maps, submapStartIndex,
                                     submapBufferSize);
 
-  // std::cout<<"\nGet prob.:" << std::endl;
-  // std::cout<<" Centered at Position (" << x << ", " << y << ") m. / Size ("
-  // << size_x << ", " << size_y << ")" << std::endl; std::cout<<" Start pose ("
-  // << submapStartPosition(0) << ", " << submapStartPosition(1) << ") m. to
-  // pose " << submapEndPosition(0) << ", " << submapEndPosition(1) << ") m."<<
-  // std::endl; std::cout<<" Start Cell ("  << submapStartIndex(0) << ", " <<
-  // submapStartIndex(1) << ") to cell("  << submapEndIndex(0) << ", " <<
-  // submapEndIndex(1) << ")"<< std::endl;
-
   return getTotalEntropy(x, y, orientation, iterator, tag_i);
 }
 
@@ -1921,4 +1921,66 @@ double RadarModel::getTotalEntropy(double x, double y, double orientation,
     }
   }
   return total_entropy;
+}
+
+
+double RadarModel::getTotalKL(double x, double y, double orientation,
+                                  double size_x, double size_y, int tag_i) {
+  // TODO: I'm not using the orientation. Maybe it would be better to use a
+  // polygon iterator,
+  //     so we can rotate edges around the center and have a more flexible thing
+
+  // submapStartIndex the start index of the submap, typically top-left index.
+  grid_map::Index submapStartIndex, submapEndIndex, submapBufferSize;
+  grid_map::Position submapStartPosition(x + (size_x / 2), y + (size_y / 2));
+  grid_map::Position submapEndPosition(x - (size_x / 2), y - (size_y / 2));
+
+  if (!_rfid_belief_maps.getIndex(submapStartPosition, submapStartIndex)) {
+    submapStartIndex = grid_map::Index(0, 0);
+    // std::cout<<"Clip start!" << std::endl;
+  }
+
+  if (!_rfid_belief_maps.getIndex(submapEndPosition, submapEndIndex)) {
+    Size siz = _rfid_belief_maps.getSize();
+    submapEndIndex = grid_map::Index(siz(0) - 1, siz(1) - 1);
+    // std::cout<<"Clip end!" << std::endl;
+  }
+
+  submapBufferSize = submapEndIndex - submapStartIndex;
+
+  grid_map::SubmapIterator iterator(_rfid_belief_maps, submapStartIndex,
+                                    submapBufferSize);
+
+  return getTotalKL(x, y, orientation, iterator, tag_i);
+}
+
+double RadarModel::getTotalKL(double x, double y, double orientation,
+                                  grid_map::SubmapIterator iterator,
+                                  int tag_i) {
+
+  double total_KL, tmp_KL = 0.0;
+  Position point;
+  double prior, posterior = 0.0;
+
+  std::string tagLayerName = getTagLayerName(tag_i);
+
+
+  for (iterator; !iterator.isPastEnd(); ++iterator) {
+    _rfid_belief_maps.getPosition(*iterator, point);
+    // check if is inside global map
+    if (_rfid_belief_maps.isInside(point)) {
+      // We don't add belief from positions considered obstacles...
+      if (_rfid_belief_maps.atPosition("ref_map", point) == _free_space_val) {
+        prior = _rfid_belief_maps.atPosition(tagLayerName, point);
+        posterior = _rfid_belief_maps.atPosition("kl", point);
+        tmp_KL = posterior * log(posterior/prior);
+        if (isnan(tmp_KL)) tmp_KL = 0;
+        total_KL += tmp_KL;
+        // cout << "Prior: " << prior << endl; 
+        // cout << "Posterior: " << posterior << endl;
+        // cout << "totalKL: " << total_KL << endl;
+      }
+    }
+  }
+  return total_KL;
 }

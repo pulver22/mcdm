@@ -211,7 +211,7 @@ int main(int argc, char **argv)
 
             // add measurement to model: addMeasurement0 draws a white rect, addMeasurement1 overlays the pdf, addMeasurement2 overlays the pdf but omits walls
             if (updateMode=='b'){
-              rm.addMeasurement(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
+              rm.addMeasurement(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t, false);
             } else if (updateMode=='p'){
               rm.addMeasurement1(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
             } else if (updateMode=='P'){

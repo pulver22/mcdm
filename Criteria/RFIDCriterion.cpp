@@ -6,7 +6,9 @@
 #include "Criteria/criteriaName.h"
 #include "Eigen/Eigen"
 #include "newray.h"
+#include "utils.h"
 #include <math.h>
+
 using namespace dummy;
 using namespace grid_map;
 
@@ -28,6 +30,9 @@ double RFIDCriterion::evaluate(Pose &p, dummy::Map *map, RFID_tools *rfid_tools,
 
   // 3) Calculate entropy around the cell
   this->RFIDInfoGain = evaluateEntropyOverBelief(p, map, rfid_tools);
+
+  // 4) Calculate the KL divergence between prior and posterior distributions
+  // this->RFIDInfoGain = evaluateKLDivergence(p, map, rfid_tools);
 
   Criterion::insertEvaluation(p, this->RFIDInfoGain);
   return this->RFIDInfoGain;
@@ -53,7 +58,7 @@ double RFIDCriterion::evaluateSumOverBelief(Pose &p, dummy::Map *map,
   double tmp_belief = 0.0;
   int buffer_size = 2;
 
-  for (int tag_id = 0; tag_id < 10; tag_id++) {
+  for (int tag_id = 0; tag_id < rfid_tools->tags_coord.size(); tag_id++) {
     tmp_belief =
         rfid_tools->rm.getTotalWeight(p.getX(), p.getY(), p.getOrientation(),
                                       buffer_size, buffer_size, tag_id);
@@ -71,12 +76,31 @@ double RFIDCriterion::evaluateEntropyOverBelief(Pose &p, dummy::Map *map,
   double entropy_cell = 0.0;
   int buffer_size = 2;
 
-  for (int tag_id = 0; tag_id < 10; tag_id++) {
+  for (int tag_id = 0; tag_id < rfid_tools->tags_coord.size(); tag_id++) {
     entropy_cell =
         rfid_tools->rm.getTotalEntropy(p.getX(), p.getY(), p.getOrientation(),
                                        buffer_size, buffer_size, tag_id);
     RFIDInfoGain += entropy_cell;
   }
 
+  return RFIDInfoGain;
+}
+
+double RFIDCriterion::evaluateKLDivergence(Pose &p, dummy::Map *map,
+                                           RFID_tools *rfid_tools) {
+  float RFIDInfoGain = 0.0;
+  Utilities utils;
+  float KL_div_cell = 0.0;
+  int buffer_size = 2;
+
+  for (int tag_id = 0; tag_id < rfid_tools->tags_coord.size(); tag_id++) {
+    // Calculate the POSTERIOR distribution over the RFID tag position and save
+    // in the "KL" layer of the map
+    utils.computePosteriorBeliefSingleLayer(map, &p, rfid_tools, tag_id);
+    KL_div_cell =
+        rfid_tools->rm.getTotalKL(p.getX(), p.getY(), p.getOrientation(),
+                                  buffer_size, buffer_size, tag_id);
+    RFIDInfoGain += KL_div_cell;
+  }
   return RFIDInfoGain;
 }

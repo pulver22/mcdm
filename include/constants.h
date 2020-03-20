@@ -17,6 +17,8 @@ struct RFID_tools {
   std::vector<std::pair<double,double>> tags_coord;
   double freq;
   double txtPower;
+  double sensitivity;
+  std::vector<RFIDGridmap>* RFID_maps_list;
 };
 
 

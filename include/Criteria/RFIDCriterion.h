@@ -55,6 +55,18 @@ private:
   double evaluateEntropyOverBelief(Pose &p, dummy::Map *map,
                                    RFID_tools *rfid_tools);
 
+    /**
+   * We sum the KL divergence for all cells available in a given submap (5x5) around
+   * the robot for all the belief maps
+   *
+   * @param p: the current pose of the robot
+   * @param map: the reference to the map
+   * @param rfid_tools: various utilities for RFID operation
+   * @return the sum over the map of the entropy a tag is there
+   */
+  double evaluateKLDivergence(Pose &p, dummy::Map *map,
+                                   RFID_tools *rfid_tools);
+
 protected:
   double RFIDInfoGain = 0.0;
   double tmp_belief = 0.0;

@@ -241,27 +241,76 @@ double phaseDifference(double tag_x, double tag_y, double freq);
 void activeAreaFriis(double freq, double txtPower, double sensitivity, double distStep, double& minX, double& minY, double& maxX, double& maxY);
 
 
+
 /**
- * @param  x             x coord (m.) in map coords of the center
- * @param  y             y coord (m.) in map coords of the center
- * @param  orientation   orientation (rad.) in map coords of the center
- * @param  tag_i         tag we want to read
+ * Calculate the sum of the values in a portion of the belief map
+ * 
+ * @param x: x-coord (m.) of the center
+ * @param y: y-coord (m.) of the center
+ * @param orientation: orientation (rad.) in map coords of the center
+ * @param size_x: size-x of the active area 
+ * @param size_y: size-y of the active area
+ * @param tag_i: id of the tag emitting the signal
  */
-double getTotalWeight(double x, double y, double orientation, int tag_i);
 double getTotalWeight(double x, double y, double orientation, double size_x, double size_y, int tag_i);
+/**
+ * Calculate the sum of the values in a portion of the belief map
+ * 
+ * @param x: x-coord (m.) of the center
+ * @param y: y-coord (m.) of the center
+ * @param orientation: orientation (rad.) in map coords of the center
+ * @param iterator: iterator over a submap 
+ * @param tag_i: id of the tag emitting the signal
+ */
 double getTotalWeight(double x, double y, double orientation, grid_map::SubmapIterator  iterator, int tag_i);
+double getTotalWeight(double x, double y, double orientation, int tag_i);
 double getTotalWeight(int tag_i);
 
 /**
- * @param  x             x coord (m.) in map coords of the center
- * @param  y             y coord (m.) in map coords of the center
- * @param  orientation   orientation (rad.) in map coords of the center
- * @param  tag_i         tag we want to read
+ * Calculate the entropy of the tag position over the map
+ * 
+ * @param x: x-coord (m.) of the center
+ * @param y: y-coord (m.) of the center
+ * @param orientation: orientation (rad.) in map coords of the center
+ * @param size_x: size-x of the active area 
+ * @param size_y: size-y of the active area
+ * @param tag_i: id of the tag emitting the signal
  */
-double getTotalEntropy(double x, double y, double orientation, int tag_i);
+double getTotalEntropy(double x, double y, double orientation,  double size_x, double size_y, int tag_i);
+/**
+ * Calculate the entropy of the tag position over the map
+ * 
+ * @param x: x-coord (m.) of the center
+ * @param y: y-coord (m.) of the center
+ * @param orientation: orientation (rad.) in map coords of the center
+ * @param iterator: iterator over a submap 
+ * @param tag_i: id of the tag emitting the signal
+ */
 double getTotalEntropy(double x, double y, double orientation, grid_map::SubmapIterator  iterator, int tag_i);
 
-void addMeasurement(double x, double y, double orientation, double rxPower, double phase, double freq, int i);
+/**
+ * Calculate the KL-divergence between posterior and prior distribution over tags position
+ * 
+ * @param x: x-coord (m.) of the center
+ * @param y: y-coord (m.) of the center
+ * @param orientation: orientation (rad.) in map coords of the center
+ * @param size_x: size-x of the active area 
+ * @param size_y: size-y of the active area
+ * @param tag_i: id of the tag emitting the signal
+ */
+double getTotalKL(double x, double y, double orientation,  double size_x, double size_y, int tag_i);
+/**
+ * Calculate the KL-divergence between posterior and prior distribution over tags position
+ * 
+ * @param x: x-coord (m.) of the center
+ * @param y: y-coord (m.) of the center
+ * @param orientation: orientation (rad.) in map coords of the center
+ * @param iterator: iterator over a submap 
+ * @param tag_i: id of the tag emitting the signal
+ */
+double getTotalKL(double x, double y, double orientation, grid_map::SubmapIterator  iterator, int tag_i);
+
+void addMeasurement(double x, double y, double orientation, double rxPower, double phase, double freq, int i, bool computeKL);
 void addMeasurement0(double x, double y, double orientation, double rxPower, double phase, double freq, int i);
 void addMeasurement1(double x, double y, double orientation, double rxPower, double phase, double freq, int i);
 void addMeasurement2(double x, double y, double orientation, double rxPower, double phase, double freq, int i);

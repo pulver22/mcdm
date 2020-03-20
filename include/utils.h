@@ -270,22 +270,22 @@ public:
   /**
    * Update the navigation map and each tags belief map
    * 
-   * @param tags_coord: list of coordinates for the RFID tags
    * @param map: the object map (with all its levels)
    * @param target: the next destination of the robot
-   * @param txtPower: the transmitted power by the antenna
-   * @param SENSITIVITY: the sensitivity of the antenna
-   * @param freq: the frequency of the signal
-   * @param RFID_maps_list: the list of RFID map (legacy code - ellipse update)
-   * @param x: the current x-coordinate of the robot
-   * @param y: the current y-coordinate of the robot
-   * @param range: the sensor range
    * @param rfid_tools: various utility for RFID related operations
+   * @param computeKL: flag to compute posterior distribution for calculating KL-div
    */
-  void updateMaps(vector<pair<double,double>> *tags_coord, dummy::Map* map, 
-                  Pose* target, double *txtPower, const double *SENSITIVITY, double *freq, 
-                  vector<RFIDGridmap> * RFID_maps_list, 
-                  long *x, long *y, int range, RFID_tools *rfid_tools);
+  void updateMaps(dummy::Map* map, Pose* target, RFID_tools *rfid_tools, bool computeKL);
+
+  /**
+   * Update the navigation map and each tags belief map
+   * 
+   * @param map: the object map (with all its levels)
+   * @param target: the next destination of the robot
+   * @param rfid_tools: various utility for RFID related operations
+   * @param tag_id: the belief map on which computing the posterior
+   */
+  void computePosteriorBeliefSingleLayer(dummy::Map* map, Pose* target, RFID_tools *rfid_tools, int tag_id);
 
   /**
    * Update the navigation graph structure with the current position

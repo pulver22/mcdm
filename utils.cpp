@@ -440,21 +440,19 @@ void Utilities::createMultiplePosition(list<Pose> *frontiers, vector<pair<long, 
 }
 
 
-void Utilities::updateMaps(vector<pair<double,double>> *tags_coord, dummy::Map* map, 
-                            Pose* target, double *txtPower, const double *SENSITIVITY, double *freq, 
-                            vector<RFIDGridmap> * RFID_maps_list, 
-                            long *x, long *y, int range, RFID_tools *rfid_tools){
+void Utilities::updateMaps( dummy::Map* map, Pose* target,
+                            RFID_tools *rfid_tools, bool computeKL=false){
   std::pair<int, int> relTagCoord;
   // std::cout << "----" << std::endl;
-  for (int i = 0; i < tags_coord->size(); i++){
-    relTagCoord = map->getRelativeTagCoord((*tags_coord)[i].first, (*tags_coord)[i].second, target->getX(), target->getY());
+  for (int i = 0; i < rfid_tools->tags_coord.size(); i++){
+    relTagCoord = map->getRelativeTagCoord((rfid_tools->tags_coord)[i].first, (rfid_tools->tags_coord)[i].second, target->getX(), target->getY());
     // Calculate the received power and phase
-    double rxPower = rfid_tools->rm.received_power_friis(relTagCoord.first, relTagCoord.second, *freq, *txtPower);
-    double phase = rfid_tools->rm.phaseDifference(relTagCoord.first, relTagCoord.second, *freq);    
+    double rxPower = rfid_tools->rm.received_power_friis(relTagCoord.first, relTagCoord.second, rfid_tools->freq, rfid_tools->txtPower);
+    double phase = rfid_tools->rm.phaseDifference(relTagCoord.first, relTagCoord.second, rfid_tools->freq);    
     // Update the path planning and RFID map
-    map->updatePathPlanningGrid ( *x, *y, range, rxPower - *SENSITIVITY);
+    map->updatePathPlanningGrid ( target->getX(), target->getY(), target->getRange(), rxPower - rfid_tools->sensitivity);
     //So, robot at pr (x,y,orientation) (long, long, int) receives rxPower,phase,freq from tag i . 
-    rfid_tools->rm.addMeasurement(*x,*y, target->getOrientation() , rxPower, phase, *freq, i);
+    rfid_tools->rm.addMeasurement(target->getX(), target->getY(), target->getOrientation() , rxPower, phase, rfid_tools->freq, i, computeKL);
 
     // mfc: dirty trick to plot sequential images of current prob maps
     // static int lineal_index = 0;
@@ -467,12 +465,25 @@ void Utilities::updateMaps(vector<pair<double,double>> *tags_coord, dummy::Map* 
 
     // std::cout << "    " << rxPower << std::endl;
     // Moved down after we recast the rxPower
-    if (rxPower < *SENSITIVITY){
-      rxPower = 0;
-    } else rxPower = 1;
-    (*RFID_maps_list)[i].addEllipse(rxPower , map->getNumGridRows() - target->getX(),  target->getY(), target->getOrientation(), -1.0, range);
+    // if (rxPower < rfid_tools->sensitivity){
+    //   rxPower = 0;
+    // } else rxPower = 1;
+    // // TODO: this doesn't work anymore (DEPRECATED CODE)
+    // rfid_tools->RFID_maps_list->at(i).addEllipse(rxPower , map->getNumGridRows() - target->getX(),  target->getY(), target->getOrientation(), -1.0, target->getRange());
 
   }
+}
+
+void Utilities::computePosteriorBeliefSingleLayer( dummy::Map* map, Pose* target,
+                            RFID_tools *rfid_tools, int tag_id){
+  std::pair<int, int> relTagCoord;
+  // std::cout << "----" << std::endl;  
+  relTagCoord = map->getRelativeTagCoord((rfid_tools->tags_coord)[tag_id].first, (rfid_tools->tags_coord)[tag_id].second, target->getX(), target->getY());
+  // Calculate the received power and phase
+  double rxPower = rfid_tools->rm.received_power_friis(relTagCoord.first, relTagCoord.second, rfid_tools->freq, rfid_tools->txtPower);
+  double phase = rfid_tools->rm.phaseDifference(relTagCoord.first, relTagCoord.second, rfid_tools->freq);    
+  //So, robot at pr (x,y,orientation) (long, long, int) receives rxPower,phase,freq from tag i . 
+  rfid_tools->rm.addMeasurement(target->getX(), target->getY(), target->getOrientation() , rxPower, phase, rfid_tools->freq, tag_id, true);
 }
 
 

@@ -254,12 +254,14 @@ int main ( int argc, char **argv )
   rfid_tools.tags_coord = tags_coord;
   rfid_tools.freq = freq;
   rfid_tools.txtPower = txtPower;
+  rfid_tools.sensitivity = SENSITIVITY;
+  rfid_tools.RFID_maps_list = &RFID_maps_list;
   do
   {
+    cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells << " ["<< 100*(float)newSensedCells/(float)totalFreeCells << "%]"<< endl;
     // If we are doing "forward" navigation towards cells never visited before
     if ( btMode == false )
     {
-
       content = to_string(w_info_gain) 
                 + "," + to_string(w_travel_distance)
                 + "," + to_string(w_sensing_time) 
@@ -298,7 +300,7 @@ int main ( int argc, char **argv )
       // Update the overall scanning time
       totalScanTime += utils.calculateScanTime ( scanAngle*180/PI );
       // Update bot the PP and the RFID maps
-      utils.updateMaps(&tags_coord, &map, &target, &txtPower, &SENSITIVITY, &freq, &RFID_maps_list, &x, &y, range, &rfid_tools);
+      utils.updateMaps(&map, &target, &rfid_tools, false);
       // Search for new candidate position
       ray.findCandidatePositions ( &map,x,y,orientation,FOV,range );
       vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
@@ -358,7 +360,7 @@ int main ( int argc, char **argv )
       // ...and the overall scan time
       totalScanTime += utils.calculateScanTime ( scanAngle*180/PI );
       // Update bot the PP and the RFID maps
-      utils.updateMaps(&tags_coord, &map, &target, &txtPower, &SENSITIVITY, &freq, &RFID_maps_list, &x, &y, range, &rfid_tools);
+      utils.updateMaps(&map, &target, &rfid_tools, false);
       // Remove the current pose from the list of possible candidate cells
       utils.cleanPossibleDestination2 ( &nearCandidates,target );
       // Get the list of the candidate cells with their evaluation
