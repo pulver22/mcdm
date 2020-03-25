@@ -284,8 +284,9 @@ public:
    * @param target: the next destination of the robot
    * @param rfid_tools: various utility for RFID related operations
    * @param tag_id: the belief map on which computing the posterior
+   * @param len_update: the size of the submap to use for computing the posterior
    */
-  void computePosteriorBeliefSingleLayer(dummy::Map* map, Pose* target, RFID_tools *rfid_tools, int tag_id);
+  void computePosteriorBeliefSingleLayer(dummy::Map* map, Pose* target, RFID_tools *rfid_tools, int tag_id, double len_update);
 
   /**
    * Update the navigation graph structure with the current position
@@ -407,6 +408,7 @@ protected:
 
 Pose invertedInitial, eastInitial, westInitial;
 double w_info_gain, w_travel_distance, w_sensing_time, w_rfid_gain, w_battery_status;
+int count_ = 0;
 
 };
 

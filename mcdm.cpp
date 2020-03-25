@@ -222,12 +222,12 @@ int main ( int argc, char **argv )
 
   // Radar model: 
   double nx = 200*resolution; // radar model active area x-range m.
-  double ny = 200*resolution;  // radar model active area y-range m.  
+  double ny = 120*resolution;  // radar model active area y-range m.  
   double rs = resolution; // radar model grid resolution m./cell :: SAME AS INPUT IMAGE!!!
   double sigma_power = 1; //dB
   double sigma_phase = 1; //rads
   txtPower = txtPower; // NOTE: Added for debug
-  std::vector<double> freqs{ freq }; // only 1 freq... noice!
+  std::vector<double> freqs{ freq }; // only 1 freq... nice!
   // std::vector<double> freqs{ MIN_FREQ_NA,MIN_FREQ_NA+STEP_FREQ_NA,MIN_FREQ_NA+2.0*STEP_FREQ_NA }; 
 
   cout <<"Building radar model." << endl;
@@ -250,7 +250,7 @@ int main ( int argc, char **argv )
   double rotTime = 0.0;
 
   RFID_tools rfid_tools;
-  rfid_tools.rm = rm;
+  rfid_tools.rm = &rm;
   rfid_tools.tags_coord = tags_coord;
   rfid_tools.freq = freq;
   rfid_tools.txtPower = txtPower;
@@ -301,6 +301,9 @@ int main ( int argc, char **argv )
       totalScanTime += utils.calculateScanTime ( scanAngle*180/PI );
       // Update bot the PP and the RFID maps
       utils.updateMaps(&map, &target, &rfid_tools, false);
+      
+        rfid_tools.rm->saveProbMapDebug("/tmp/test/",0,count,x,y,-orientation*M_PI/180);
+      
       // Search for new candidate position
       ray.findCandidatePositions ( &map,x,y,orientation,FOV,range );
       vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
@@ -318,7 +321,7 @@ int main ( int argc, char **argv )
                                             &scanAngle, &btMode, &rfid_tools, &accumulated_received_power, &precision, &batteryTime);
       // calculate the accumulate received power
       for (int tag_id = 0; tag_id < tags_coord.size(); tag_id++){
-        accumulated_received_power += rfid_tools.rm.received_power_friis(tags_coord[tag_id].first, tags_coord[tag_id].second, freq, txtPower);
+        accumulated_received_power += rfid_tools.rm->received_power_friis(tags_coord[tag_id].first, tags_coord[tag_id].second, freq, txtPower);
       }
       
       
@@ -428,13 +431,14 @@ int main ( int argc, char **argv )
                     totalAngle, totalScanTime, accumulated_received_power, &batteryTime);
 
   // cout << "Saving tag distribution maps... "<< endl;
-  rm.saveProbMaps("/tmp/");
+  rfid_tools.rm->saveProbMaps("/tmp/");
 
   cout << "Saving debug distribution maps... "<< endl;
   // rm.normalizeRFIDMap();
   // for each tag:
+
   for (int t = 0; t < tags_coord.size(); t++){
     // cout << "---[" << t <<"]----------------" << endl;
-   rm.saveProbMapDebug("/tmp/",t,0,0,0,0);
+    rfid_tools.rm->saveProbMapDebug("/tmp/",t,count,x,y,orientation);
   }
 }

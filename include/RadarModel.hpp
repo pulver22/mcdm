@@ -31,6 +31,9 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+#include "pose.h"
+#include "data_struct.h"
+
 using namespace std;
 using namespace grid_map;
 
@@ -123,6 +126,7 @@ class RadarModel
     GridMap _active_area_maps;  // active areas. one per phase and power at each frequency.
     GridMap _rfid_belief_maps;  // Prob. beliefs. One layer per tag. Also, one layer with reference map, mostly for tag layout representation.
     //GridMap _ref_map;  
+    GridMap _tmp_rfid_c_map;
     
     std::vector<std::pair<double,double>> _tags_coords; // tag locations in reference map coords (m.)
     int _numTags;  // rfid tags to consider
@@ -310,11 +314,14 @@ double getTotalKL(double x, double y, double orientation,  double size_x, double
  */
 double getTotalKL(double x, double y, double orientation, grid_map::SubmapIterator  iterator, int tag_i);
 
-void addMeasurement(double x, double y, double orientation, double rxPower, double phase, double freq, int i, bool computeKL);
+void addMeasurement(double x, double y, double orientation, double rxPower, double phase, double freq, int i);
 void addMeasurement0(double x, double y, double orientation, double rxPower, double phase, double freq, int i);
 void addMeasurement1(double x, double y, double orientation, double rxPower, double phase, double freq, int i);
 void addMeasurement2(double x, double y, double orientation, double rxPower, double phase, double freq, int i);
 void addMeasurement3(double x_m, double y_m, double orientation_deg, double rxPower, double phase, double freq, int i);
+
+
+void addTmpMeasurementRFIDCriterion(double x, double y, double orientation, double rxPower, double phase, double freq, int i, double len_update);
 
 std::string getPowLayerName(double freq_i);
 
@@ -329,11 +336,17 @@ Eigen::MatrixXf getPowProbCond(double rxPw, double f_i);
 Eigen::MatrixXf  getPhaseProbCond(double ph_i, double f_i);
 Eigen::MatrixXf  getProbCond(std::string layer_i, double x, double sig);
 
+Eigen::MatrixXf getPowProbCondRFIDCriterion(double rxPw, double f_i);
+Eigen::MatrixXf getIntervProbRFIDCriterion( double x, double sigm, double len_update);
+Eigen::MatrixXf getNegProbRFIDCriterion( double sensitivity, double sigm);
+
 void saveProbMapDebug(std::string savePATH, int tag_num, int step, double robot_x, double robot_y, double robot_head);
 void createTempProbLayer(Eigen::MatrixXf prob_mat, double x_m, double y_m, double orientation_deg);
+void createTempProbLayerRFIDCriterion(Eigen::MatrixXf prob_mat, double x_m, double y_m, double orientation_deg, double len_update);
 cv::Mat rfidBeliefToCVImg(std::string layer_i);
 void getImage(GridMap* gm,std::string layerName, std::string fileURI);
 Position getRelPoint(Position glob_point, double x_m, double  y_m, double orientation_rad);
+Position getSubMapRelPoint(Position glob_point, double x_m, double  y_m, double orientation_rad, double len);
 Eigen::MatrixXf getIntervProb(std::string layer_i, double x, double sigm);
 void fillFriisMat(Eigen::MatrixXf *rxPw_mat, Eigen::MatrixXf *delay_mat, double freq_i, double offset );
 void PrintRefMapWithTags(std::string fileURI);
@@ -355,6 +368,7 @@ void saveProbMaps(std::string savePath);
 
 grid_map::Position fromPoint(cv::Point cvp);
 grid_map::Polygon getActiveMapEdges(double robot_x, double robot_y, double robot_head);
+grid_map::Polygon getSubMapEdges(double robot_x, double robot_y, double robot_head, double len);
 
 void PrintProb(std::string fileURI, Eigen::MatrixXf* prob_mat);
 
@@ -364,6 +378,7 @@ void normalizeRFIDLayer(std::string layerName);
 void normalizeRFIDMap();
 void clearObstacleCellsRFIDMap();
 double getNormalizingFactorBayesRFIDActiveArea(double x_m, double y_m, double orientation_rad, string tagLayerName);
+double getNormalizingFactorBayesFullMap(double x_m, double y_m, double orientation_rad, string tagLayerName);
 Eigen::MatrixXf getNegProb(std::string layer_i, double sensitivity, double sigm);
 
 void debugInfo();
@@ -382,8 +397,14 @@ GridMap getActiveAreaMaps();
  * Return the RFID belief maps
  */
 GridMap getBeliefMaps();
+
+/**
+ * Return the value used for identifying free cells
+ */
+float getFreeSpaceVal();
+
+void cutPowerBasedObstacleDistribution(double* rxPower, Pose* target, std::pair<int, int> relTagCoord);
+
 }; // end class
-
-
 
 #endif

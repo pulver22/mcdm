@@ -242,7 +242,7 @@ bool Utilities::recordContainsCandidates( EvaluationRecords* record,
                               tabuList, history, *encodedKeyValue, astar, numConfiguration, totalAngle, 
                               travelledDistance, numOfTurning, *scanAngle);
   }
-  // ...otherwise, if the seleced cell has already been visited
+  // ...otherwise, if the selected cell has already been visited
   else
   {
     // If the graph is empty, stop the navigation
@@ -353,7 +353,7 @@ void Utilities::recordContainsCandidatesBT(EvaluationRecords* record,
     nearCandidates->clear();
     // cout << "[BT-MODE4] Go back to previous positions in the graph" << endl;
   }
-  // ... otherwise, if the cells has already been visisted
+  // ... otherwise, if the cells has already been visited
   else
   {
     // If there are other candidates
@@ -447,43 +447,33 @@ void Utilities::updateMaps( dummy::Map* map, Pose* target,
   for (int i = 0; i < rfid_tools->tags_coord.size(); i++){
     relTagCoord = map->getRelativeTagCoord((rfid_tools->tags_coord)[i].first, (rfid_tools->tags_coord)[i].second, target->getX(), target->getY());
     // Calculate the received power and phase
-    double rxPower = rfid_tools->rm.received_power_friis(relTagCoord.first, relTagCoord.second, rfid_tools->freq, rfid_tools->txtPower);
-    double phase = rfid_tools->rm.phaseDifference(relTagCoord.first, relTagCoord.second, rfid_tools->freq);    
+    double rxPower = rfid_tools->rm->received_power_friis(relTagCoord.first, relTagCoord.second, rfid_tools->freq, rfid_tools->txtPower);
+    double phase = rfid_tools->rm->phaseDifference(relTagCoord.first, relTagCoord.second, rfid_tools->freq);    
+
+    // Check if there is line of sight between antenna and tag
+    // cout << "B: " << rxPower << endl;
+    // rfid_tools->rm->cutPowerBasedObstacleDistribution(&rxPower, target, relTagCoord);
+    // cout << "A: " << rxPower << endl;
     // Update the path planning and RFID map
     map->updatePathPlanningGrid ( target->getX(), target->getY(), target->getRange(), rxPower - rfid_tools->sensitivity);
     //So, robot at pr (x,y,orientation) (long, long, int) receives rxPower,phase,freq from tag i . 
-    rfid_tools->rm.addMeasurement(target->getX(), target->getY(), target->getOrientation() , rxPower, phase, rfid_tools->freq, i, computeKL);
-
-    // mfc: dirty trick to plot sequential images of current prob maps
-    // static int lineal_index = 0;
-    // if ( i == 8 ){
-    //   std::cout<<"\t- Tag [" << i << "] at rel position (" << relTagCoord.first << ", " << relTagCoord.second << ") m. " <<std::endl;
-    //   std::cout<<"\t- Reading at freq (" << *freq/1e6<< " MHz): (" << (rxPower+30) << ") dBm. ( " << phase << ") rads. " << std::endl;
-
-    //   rfid_tools->rm.saveProbMapDebug("/tmp/",i,lineal_index++,*x,*y, target->getOrientation());
-    // }
-
-    // std::cout << "    " << rxPower << std::endl;
-    // Moved down after we recast the rxPower
-    // if (rxPower < rfid_tools->sensitivity){
-    //   rxPower = 0;
-    // } else rxPower = 1;
-    // // TODO: this doesn't work anymore (DEPRECATED CODE)
-    // rfid_tools->RFID_maps_list->at(i).addEllipse(rxPower , map->getNumGridRows() - target->getX(),  target->getY(), target->getOrientation(), -1.0, target->getRange());
-
+    // rfid_tools->rm->addMeasurement(target->getX(), target->getY(), target->getOrientation() , rxPower, phase, rfid_tools->freq, i);
+    // cout << target->getX() << " " << target->getY() << " " << target->getOrientation() << endl;
+    rfid_tools->rm->addMeasurement3(target->getX(), target->getY(), target->getOrientation() , rxPower, phase, rfid_tools->freq, i);
+    // cout << "---" << endl;   
   }
 }
 
 void Utilities::computePosteriorBeliefSingleLayer( dummy::Map* map, Pose* target,
-                            RFID_tools *rfid_tools, int tag_id){
+                            RFID_tools *rfid_tools, int tag_id, double len_update){
   std::pair<int, int> relTagCoord;
   // std::cout << "----" << std::endl;  
   relTagCoord = map->getRelativeTagCoord((rfid_tools->tags_coord)[tag_id].first, (rfid_tools->tags_coord)[tag_id].second, target->getX(), target->getY());
   // Calculate the received power and phase
-  double rxPower = rfid_tools->rm.received_power_friis(relTagCoord.first, relTagCoord.second, rfid_tools->freq, rfid_tools->txtPower);
-  double phase = rfid_tools->rm.phaseDifference(relTagCoord.first, relTagCoord.second, rfid_tools->freq);    
+  double rxPower = rfid_tools->rm->received_power_friis(relTagCoord.first, relTagCoord.second, rfid_tools->freq, rfid_tools->txtPower);
+  double phase = rfid_tools->rm->phaseDifference(relTagCoord.first, relTagCoord.second, rfid_tools->freq);    
   //So, robot at pr (x,y,orientation) (long, long, int) receives rxPower,phase,freq from tag i . 
-  rfid_tools->rm.addMeasurement(target->getX(), target->getY(), target->getOrientation() , rxPower, phase, rfid_tools->freq, tag_id, true);
+  rfid_tools->rm->addTmpMeasurementRFIDCriterion(target->getX(), target->getY(), target->getOrientation() , rxPower, phase, rfid_tools->freq, tag_id, len_update);
 }
 
 
@@ -495,7 +485,7 @@ bool Utilities::updateNavigationGraph(int *count, MCDMFunction *function, vector
       this->invertedInitial = this->createFromInitialPose ( *x, *y, *orientation,180, *range, *FOV );
       this->eastInitial     = this->createFromInitialPose ( *x, *y, *orientation,90, *range, *FOV );
       this->westInitial     = this->createFromInitialPose ( *x, *y, *orientation,270, *range, *FOV );
-      // Calculate other three pose given the strating one
+      // Calculate other three pose given the starting one
       string invertedPose = function->getEncodedKey ( invertedInitial,0 );
       string eastPose     = function->getEncodedKey ( eastInitial,0 );
       string westPose     = function->getEncodedKey ( westInitial,0 );
@@ -591,7 +581,7 @@ bool Utilities::forwardMotion(Pose *target, Pose *previous, list<Pose> *frontier
   //... otherwise, if there are further candidate new position from the current pose of the robot
   else
   {
-    // For each candiate position, create many more with different robot orientation
+    // For each candidate position, create many more with different robot orientation
     this->createMultiplePosition(frontiers, candidatePosition, *range, *FOV);
     // Evaluate the frontiers and return a list of <frontier, evaluation> pairs
     record = function->evaluateFrontiers ( *frontiers, map, *threshold, rfid_tools, batteryTime );
@@ -648,7 +638,7 @@ double Utilities::findTags( vector<RFIDGridmap> *RFID_maps_list, vector<pair<dou
   double accuracy, belief_accuracy = 0;
   for (int i=0; i < (*RFID_maps_list).size(); i++){
     value_tag = map->findTagfromGridMap((*RFID_maps_list)[i]);
-    belief_value_tag = rfid_tools->rm.findTagFromBeliefMap(i);
+    belief_value_tag = rfid_tools->rm->findTagFromBeliefMap(i);
     // value = value_tag.first;
     tag = value_tag.second;
     belief_tag = belief_value_tag.second;

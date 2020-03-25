@@ -207,7 +207,7 @@ int main ( int argc, char **argv )
   double rotTime = 0.0;
 
   RFID_tools rfid_tools;
-  rfid_tools.rm = rm;
+  rfid_tools.rm = &rm;
   rfid_tools.tags_coord = tags_coord;
   rfid_tools.freq = freq;
   rfid_tools.txtPower = txtPower;
@@ -265,7 +265,7 @@ int main ( int argc, char **argv )
       utils.updateMaps(&map, &target, &rfid_tools, false);
       // Calculate the accumulated received power
       for (int tag_id = 0; tag_id < tags_coord.size(); tag_id++){
-        accumulated_received_power += rfid_tools.rm.received_power_friis(tags_coord[tag_id].first, tags_coord[tag_id].second, freq, txtPower);
+        accumulated_received_power += rfid_tools.rm->received_power_friis(tags_coord[tag_id].first, tags_coord[tag_id].second, freq, txtPower);
       }
       // Find new random destination
       nextRandomPosition = map.getRandomFreeCell();

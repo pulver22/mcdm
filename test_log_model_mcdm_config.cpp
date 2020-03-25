@@ -39,8 +39,8 @@ int main(int argc, char **argv)
   std::string mapFileURI = "/home/pulver/mcdm/Images/mfc_test.pgm";
   double nx = 10;
   double ny = 10;
-  double resolution = 0.1;
-  double sigma_power = 60;
+  double resolution = 1;
+  double sigma_power = 40;
   double sigma_phase = 0.2;
   double txtPower = -10;
   int i = 0;
@@ -92,20 +92,20 @@ int main(int argc, char **argv)
   // 0,0 is at upper left of the map, with X increasing down and Y increasing right.
 
   //green
-  double absTag1_X = 37 * resolution;
-  double absTag1_Y = 58 * resolution;
+  double absTag1_X = 137 * resolution;
+  double absTag1_Y = 73 * resolution;
 
   //red
-  double absTag2_X = 44 * resolution;
-  double absTag2_Y = 31 * resolution;
+  double absTag2_X = 128 * resolution;
+  double absTag2_Y = 78 * resolution;
   
   // blue
-  double absTag3_X = 130 * resolution;
-  double absTag3_Y = 45 * resolution;
+  double absTag3_X = 113 * resolution;
+  double absTag3_Y = 78 * resolution;
   
   // yellow
-  double absTag4_X = 150 * resolution;
-  double absTag4_Y = 108 * resolution;
+  double absTag4_X = 108 * resolution;
+  double absTag4_Y = 54 * resolution;
 
   std::vector<std::pair<double,double>> tags_coord;
   tags_coord.push_back(std::make_pair(absTag1_X, absTag1_Y));
@@ -162,9 +162,9 @@ int main(int argc, char **argv)
   // simple scenario
   int NumReadings = 50;
   // Unit is meters. We multiply pixels by resolution to get them.
-  double start_x = 40 * resolution;
+  double start_x = 41 * resolution;
   double start_y = 55 * resolution;
-  double end_x = 150 * resolution;
+  double end_x = 137 * resolution;
   double end_y = 75 * resolution;
   
   double robot_y;
@@ -185,8 +185,8 @@ int main(int argc, char **argv)
       robot_y = start_y + ( (end_y - start_y) * ( i ) / (NumReadings - 1.0) );
       robot_x = start_x + ( (end_x - start_x) * ( i ) / (NumReadings - 1.0) );
       
-      for (int h=0;h<36;h++){
-        robot_head = robot_head0 + (2.0*M_PI*h/9);
+      for (int h=0;h<18;h++){
+        robot_head = robot_head0 + (2.0*M_PI*h/18);
         // std::cout<<"Robot at (" << robot_x << ", " << robot_y <<") m., (" << (robot_head*180.0/M_PI) << ") deg." << std::endl;
         
         //for each tag:
@@ -216,8 +216,9 @@ int main(int argc, char **argv)
             // Cut the received power if there are obstacles on the way
             // cout << "B: " << rxPower << endl;
             // cout << "R: [" << robot_pose.getX() << "," << robot_pose.getY() << "], T: [" << relTagCoord.first << "," << relTagCoord.second << "]" << endl;
-            // rm.cutPowerBasedObstacleDistribution(&rxPower, &robot_pose, relTagCoord);
+            rm.cutPowerBasedObstacleDistribution(&rxPower, &robot_pose, relTagCoord);
             // cout << "A: " << rxPower << endl;
+            cout << robot_x << " " << robot_y << " " << robot_head << endl;
             // add measurement to model: addMeasurement0 draws a white rect, addMeasurement1 overlays the pdf, addMeasurement2 overlays the pdf but omits walls
             if (updateMode=='b'){
               rm.addMeasurement(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
@@ -252,7 +253,7 @@ int main(int argc, char **argv)
 
   // lets play with the weights
   double w_i, w_max;
-  double prec = 3;
+  double prec = 10;
   std::cout << std::fixed;
   std::cout << std::setprecision(2);
 

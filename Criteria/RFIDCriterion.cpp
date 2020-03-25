@@ -60,7 +60,7 @@ double RFIDCriterion::evaluateSumOverBelief(Pose &p, dummy::Map *map,
 
   for (int tag_id = 0; tag_id < rfid_tools->tags_coord.size(); tag_id++) {
     tmp_belief =
-        rfid_tools->rm.getTotalWeight(p.getX(), p.getY(), p.getOrientation(),
+        rfid_tools->rm->getTotalWeight(p.getX(), p.getY(), p.getOrientation(),
                                       buffer_size, buffer_size, tag_id);
     if (isnan(tmp_belief))
       tmp_belief = 0.0; // belief outside corridors (into obstacles) is nan
@@ -78,7 +78,7 @@ double RFIDCriterion::evaluateEntropyOverBelief(Pose &p, dummy::Map *map,
 
   for (int tag_id = 0; tag_id < rfid_tools->tags_coord.size(); tag_id++) {
     entropy_cell =
-        rfid_tools->rm.getTotalEntropy(p.getX(), p.getY(), p.getOrientation(),
+        rfid_tools->rm->getTotalEntropy(p.getX(), p.getY(), p.getOrientation(),
                                        buffer_size, buffer_size, tag_id);
     RFIDInfoGain += entropy_cell;
   }
@@ -96,9 +96,9 @@ double RFIDCriterion::evaluateKLDivergence(Pose &p, dummy::Map *map,
   for (int tag_id = 0; tag_id < rfid_tools->tags_coord.size(); tag_id++) {
     // Calculate the POSTERIOR distribution over the RFID tag position and save
     // in the "KL" layer of the map
-    utils.computePosteriorBeliefSingleLayer(map, &p, rfid_tools, tag_id);
+    utils.computePosteriorBeliefSingleLayer(map, &p, rfid_tools, tag_id, buffer_size);
     KL_div_cell =
-        rfid_tools->rm.getTotalKL(p.getX(), p.getY(), p.getOrientation(),
+        rfid_tools->rm->getTotalKL(p.getX(), p.getY(), p.getOrientation(),
                                   buffer_size, buffer_size, tag_id);
     RFIDInfoGain += KL_div_cell;
   }
