@@ -7,10 +7,6 @@
 #include <boost/nondet_random.hpp>
 
 
-
-
-
-
 const int NARGS = 5;
 
 // quick build:
@@ -21,12 +17,13 @@ const int NARGS = 5;
 
 
 /*
-
+// Create animations ...
 ffmpeg -r 10 -f image2 -s 1920x1080 -start_number 009 -i T0_S%03d_tempMap.png -vcodec libx264 -crf 25  -pix_fmt yuv420p test0.mp4
 ffmpeg -r 10 -f image2 -s 1920x1080 -start_number 009 -i T1_S%03d_tempMap.png -vcodec libx264 -crf 25  -pix_fmt yuv420p test1.mp4
 ffmpeg -r 10 -f image2 -s 1920x1080 -start_number 009 -i T2_S%03d_tempMap.png -vcodec libx264 -crf 25  -pix_fmt yuv420p test2.mp4
 ffmpeg -r 10 -f image2 -s 1920x1080 -start_number 009 -i T3_S%03d_tempMap.png -vcodec libx264 -crf 25  -pix_fmt yuv420p test3.mp4
 
+// gimp coords to RIC coords
 ./mcdm/Images/mfc_test.pgm
 120 p x 200 p (gimp) == 200 p x 120 p (ric) 
 
@@ -201,20 +198,8 @@ int main(int argc, char **argv)
             phase = rm.phaseDifference( tag_x,  tag_y,  f_i);
             //std::cout<<"\tReading at freq (" << f_i/1e6<< " MHz): (" << (rxPower+30) << ") dBm. ( " << phase << ") rads. " << std::endl << std::endl;
 
-            // add measurement to model: addMeasurement0 draws a white rect, addMeasurement1 overlays the pdf, addMeasurement2 overlays the pdf but omits walls
-            if (updateMode=='b'){
-              rm.addMeasurement(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
-            } else if (updateMode=='p'){
-              rm.addMeasurement1(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
-            } else if (updateMode=='P'){
-              rm.addMeasurement2(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
-            } else if (updateMode=='w'){
-              rm.addMeasurement0(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
-            } else if (updateMode=='G'){
-              rm.addMeasurement3(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
-            }            
+            rm.addMeasurement(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
             
-
             //print maps
             //cout  << "Saving tag distribution maps... "<< endl;
             int lineal_index = (8*(i+1))+(h+1);

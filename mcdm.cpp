@@ -231,7 +231,7 @@ int main ( int argc, char **argv )
   // std::vector<double> freqs{ MIN_FREQ_NA,MIN_FREQ_NA+STEP_FREQ_NA,MIN_FREQ_NA+2.0*STEP_FREQ_NA }; 
 
   cout <<"Building radar model." << endl;
-  RadarModel rm(nx, ny, rs, sigma_power, sigma_phase, txtPower, freqs, tags_coord, argv[1] );
+  RadarModel rm(rs, sigma_power, sigma_phase, txtPower, freqs, tags_coord, argv[1] );
   cout << "Radar model built." << endl;
   rm.PrintRefMapWithTags("/tmp/scenario.png");  
 

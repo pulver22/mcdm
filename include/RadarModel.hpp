@@ -3,17 +3,12 @@
 
 
 #include <grid_map_core/GridMap.hpp>
+#include "grid_map_core/iterators/GridMapIterator.hpp"
+#include "grid_map_cv/grid_map_cv.hpp"
+
 #include "Eigen/Eigen"  // AFTER GRIDMAP!
-
-
-
 #include <Eigen/Core>
 #include <unsupported/Eigen/Splines>
-
-
-#include "grid_map_core/iterators/GridMapIterator.hpp"
-#include <iostream>
-#include <string>
 
 // Math
 #include <math.h>
@@ -21,10 +16,9 @@
 #include <iostream>
 #include <vector>
 
+// other
 #include <iomanip>
-
-
-#include "grid_map_cv/grid_map_cv.hpp"
+#include <string>
 
 // OpenCV
 #include <cv_bridge/cv_bridge.h>
@@ -150,7 +144,6 @@ class RadarModel
     std::vector<double> _freqs; // transmission frequencies (Hz.)
     SplineFunction _antenna_gains;  // model for antenna power gain depending on the angle (dB.)
 
-    int update_count = 0;
   public:
 
     /**
@@ -273,6 +266,9 @@ void getSphericCoords(double x, double y, double& r, double& phi);
  */
 double phaseDifference(double tag_x, double tag_y, double freq);
 
+Eigen::MatrixXf getFriisMat(double x_m, double y_m, double orientation_deg, double freq);
+Eigen::MatrixXf getPhaseMat(double x_m, double y_m, double orientation_deg, double freq);
+Eigen::MatrixXf getProbCond(Eigen::MatrixXf X_mat, double x, double sig);
 /**
  * @param  x             x coord (m.) in map coords of the center
  * @param  y             y coord (m.) in map coords of the center
@@ -300,7 +296,7 @@ std::string getTagLayerName(int tag_num);
 
 double received_power_friis_polar(double tag_r, double tag_h, double freq, double txtPower, SplineFunction antennaGainsModel);
 
-void getImageDebug(std::string layerName, std::string fileURI);
+void getImageDebug(GridMap* gm, std::string layerName, std::string fileURI);
 Eigen::MatrixXf getPowProbCond(double rxPw, double f_i);
 Eigen::MatrixXf  getPhaseProbCond(double ph_i, double f_i);
 Eigen::MatrixXf  getProbCond(std::string layer_i, double x, double sig);
