@@ -204,39 +204,27 @@ Eigen::MatrixXf  RadarModel::getProbCond(Eigen::MatrixXf X_mat, double x, double
 Eigen::MatrixXf RadarModel::getFriisMat(double x_m, double y_m, double orientation_deg, double freq){
   
   Eigen::MatrixXf rxPw_mat;
-  double tag_x, tag_y, tag_r, tag_h, rxP;
+  double tag_x, tag_y, rxP;
   Position glob_point;
   Index ind;
 
   Size siz = _rfid_belief_maps.getSize();
   rxPw_mat = Eigen::MatrixXf(siz(0), siz(1));
   double orientation_rad = orientation_deg * M_PI/180.0;
-  int count_obs_cell = 0;
-  double wall_losses = 0;
+
   // Obtain rel dist and friis to all points 
   // MFC: can I turn this iteration into matrix operations?
   for (grid_map::GridMapIterator iterator(_rfid_belief_maps); !iterator.isPastEnd(); ++iterator) {
       // matrix indexes...
-      ind = *iterator;      
-      count_obs_cell = 0;
+      ind = *iterator;            
       // get cell center of the cell in the map frame.            
       _rfid_belief_maps.getPosition(ind, glob_point);
       // that is where the tag supposedly is in map coordinates
       tag_x = glob_point.x();
       tag_y = glob_point.y();
 
-      // now get robot - tag relative pose!
-      double delta_x = (tag_x - x_m ); 
-      double  delta_y = (tag_y - y_m);
-
-      // rotate
-      tag_x =  delta_x * cos(orientation_rad) + delta_y * sin(orientation_rad);
-      tag_y = -delta_x * sin(orientation_rad) + delta_y * cos(orientation_rad);
-
-      getSphericCoords(tag_x,tag_y, tag_r, tag_h);
-
-      rxP = received_power_friis_polar(tag_r, tag_h,freq, _txtPower, _antenna_gains);
-      rxPw_mat(ind(0),ind(1))  = rxP - wall_losses;              
+      rxP = received_power_friis_with_obstacles(x_m, y_m, orientation_rad, tag_x, tag_y, 0, freq);
+      rxPw_mat(ind(0),ind(1))  = rxP;              
   }
   return rxPw_mat;
 
@@ -882,19 +870,61 @@ float RadarModel::sign(float x){
   return 0.0;
 }
 
-// IF WE WANT TO INCLUDE WALLS, IT SHOULD BE IN THE FRIIS EQUATIONS.
+double RadarModel::received_power_friis_with_obstacles(double antenna_x, double antenna_y, double antenna_h,
+                                                       double tag_x, double tag_y, double tag_h,
+                                                       double freq){
+  return received_power_friis_with_obstacles( antenna_x,  antenna_y,  antenna_h,
+                                                        tag_x,  tag_y, tag_h,
+                                                        freq, _txtPower, _antenna_gains);
+                                                       }
 
-      //MFC: we could add here a raytracing from (x_m,y_m) to (tag_x,tag_y) and check for obstacles.
-      // Index robot_ind;
-      // _rfid_belief_maps.getIndex(Position( x_m,  y_m), robot_ind);
-      
-      // for (grid_map::LineIterator iterator(_rfid_belief_maps, ind, robot_ind); !iterator.isPastEnd(); ++iterator) {
-      //     if (( _rfid_belief_maps.at("ref_map", *iterator) != _free_space_val  )){
-      //       count_obs_cell++;
-      //     } 
-      // }
-      // // each "wall" adds around 3dB losses. A wall is ~15cm thick, then each cell adds  3 * resolution / 0.15 dB losses
-      // wall_losses = 20.0 * _resolution * count_obs_cell;
+double RadarModel::received_power_friis_with_obstacles(double antenna_x, double antenna_y, double antenna_h,
+                                                       double tag_x, double tag_y, double tag_h,
+                                                       double freq, double txtPower, SplineFunction antennaGainsModel){
+  
+  double rel_tag_x,rel_tag_y, rel_tag_r, rel_tag_h,rxP,wall_losses, delta_x, delta_y ;
+  int count_obs_cell;
+
+  //Get robot - tag relative pose
+  delta_x = (tag_x - antenna_x); 
+  delta_y = (tag_y - antenna_y);
+
+  // rotate
+  rel_tag_x =  delta_x * cos(antenna_h) + delta_y * sin(antenna_h);
+  rel_tag_y = -delta_x * sin(antenna_h) + delta_y * cos(antenna_h);
+
+  getSphericCoords(rel_tag_x,rel_tag_y, rel_tag_r, rel_tag_h);
+
+  rxP = received_power_friis_polar(rel_tag_r, rel_tag_h,freq, txtPower, antennaGainsModel);
+
+  if (rxP>SENSITIVITY){
+    // Check if there is line of sight between antenna and tag
+    Index antenna_index;
+    Index tag_index;
+    _rfid_belief_maps.getIndex(Position( antenna_x,  antenna_y), antenna_index);
+    _rfid_belief_maps.getIndex(Position( tag_x,  tag_y), tag_index);
+
+    count_obs_cell = 0;
+    wall_losses = 0;
+
+    for (grid_map::LineIterator iterator(_rfid_belief_maps, antenna_index, tag_index); !iterator.isPastEnd(); ++iterator) {
+      if (( _rfid_belief_maps.at("ref_map", *iterator) != _free_space_val  )){
+        count_obs_cell++;
+      }
+    }
+
+    // Each "wall" adds around 3dB losses. A wall is ~15cm thick, then each cell adds  3 * resolution / 0.15 dB losses
+    wall_losses = 20.0 * _resolution * count_obs_cell;
+
+    rxP = rxP - wall_losses; 
+  } 
+
+  if (rxP<SENSITIVITY){
+    rxP = SENSITIVITY;
+  }
+
+  return rxP;
+}
 
 double RadarModel::received_power_friis(double tag_x, double tag_y, double freq, double txtPower) {
      double rxPower = txtPower;
@@ -959,8 +989,6 @@ double RadarModel::received_power_friis_polar(double tag_r, double tag_h, double
 
     return rxPower;
 }
-
-
 
 double RadarModel::phaseDifference(double tag_x, double tag_y, double freq) {
   double phi;
@@ -1082,30 +1110,31 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
   Eigen::MatrixXf rxPw_mat, likl_mat;
   std::string tagLayerName;
 
-  tagLayerName = getTagLayerName(i);
-  Size siz = _rfid_belief_maps.getSize();
-  rxPw_mat = Eigen::MatrixXf(siz(0), siz(1));
-  
-  // get the expected power at each point
-  rxPw_mat = getFriisMat(x_m, y_m, orientation_deg, freq);
+  //if (rxPower>SENSITIVITY){
+    tagLayerName = getTagLayerName(i);
+    Size siz = _rfid_belief_maps.getSize();
+    rxPw_mat = Eigen::MatrixXf(siz(0), siz(1));
+    
+    // get the expected power at each point
+    rxPw_mat = getFriisMat(x_m, y_m, orientation_deg, freq);
 
-  // get the likelihood of the received power at each point
-  likl_mat = getProbCond(rxPw_mat, rxPower, _sigma_power);
+    // get the likelihood of the received power at each point
+    likl_mat = getProbCond(rxPw_mat, rxPower, _sigma_power);
 
-  // trick: if obstacles is binary, this would have 1 on free space and 0 in obstacles
-  Eigen::MatrixXf obst_mat = _rfid_belief_maps["ref_map"];
-  obst_mat = obst_mat/_free_space_val;
+    // Where X_mat is < than SENSITIVITY, the tag wont be... prob 0
+    //likl_mat = (likl_mat.array()<=SENSITIVITY).select(0,likl_mat);
 
-  // this should remove prob at obstcles
-  likl_mat = likl_mat.cwiseProduct(obst_mat);
-
-  // normalize in this space:
-  double bayes_den = likl_mat.sum();
-  if (bayes_den>0){
-      likl_mat = likl_mat/bayes_den;
-      // now do bayes ...  everywhere
-      _rfid_belief_maps[tagLayerName] = _rfid_belief_maps[tagLayerName].cwiseProduct(likl_mat);
-  }
-  normalizeRFIDLayer(tagLayerName);
-
+    // this should remove prob at obstcles
+    Eigen::MatrixXf obst_mat = _rfid_belief_maps["ref_map"];
+    likl_mat = (obst_mat.array()==_free_space_val).select(likl_mat,0); 
+    
+    // normalize in this space:
+    double bayes_den = likl_mat.sum();
+    if (bayes_den>0){
+        likl_mat = likl_mat/bayes_den;
+        // now do bayes ...  everywhere
+        _rfid_belief_maps[tagLayerName] = _rfid_belief_maps[tagLayerName].cwiseProduct(likl_mat);
+    }
+    normalizeRFIDLayer(tagLayerName);
+  //}
 }

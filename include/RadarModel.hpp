@@ -169,7 +169,13 @@ class RadarModel
      */
     void PrintRefMapWithTags(std::string fileURI);
 
+    double received_power_friis_with_obstacles(double antenna_x, double antenna_y, double antenna_h,
+                                                       double tag_x, double tag_y, double tag_h,
+                                                       double freq, double txtPower, SplineFunction antennaGainsModel);
 
+    double received_power_friis_with_obstacles(double antenna_x, double antenna_y, double antenna_h,
+                                                       double tag_x, double tag_y, double tag_h,
+                                                       double freq);                                                       
     /**
      * @brief Plots a power distribution
      * 
