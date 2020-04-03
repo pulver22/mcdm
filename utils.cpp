@@ -450,7 +450,12 @@ void Utilities::updateMaps(vector<pair<double,double>> *tags_coord, dummy::Map* 
   for (int i = 0; i < tags_coord->size(); i++){
     relTagCoord = map->getRelativeTagCoord((*tags_coord)[i].first, (*tags_coord)[i].second, target->getX(), target->getY());
     // Calculate the received power and phase
-    double rxPower = rfid_tools->rm.received_power_friis(relTagCoord.first, relTagCoord.second, *freq, *txtPower);
+
+    // mfc prev
+    //double rxPower = rfid_tools->rm.received_power_friis(relTagCoord.first, relTagCoord.second, *freq, *txtPower);
+    double rxPower = rfid_tools->rm.received_power_friis_with_obstacles(target->getX(), target->getY(), target->getOrientation() * 3.141592/180.0, (*tags_coord)[i].first, (*tags_coord)[i].second , 0, *freq);
+    //mfc: the above gets the received power between a robot in "target" in METERS and tags_coord[i] in METERS. I'm assuming orientation is in deg.
+
     double phase = rfid_tools->rm.phaseDifference(relTagCoord.first, relTagCoord.second, *freq);    
     // Update the path planning and RFID map
     map->updatePathPlanningGrid ( *x, *y, range, rxPower - *SENSITIVITY);

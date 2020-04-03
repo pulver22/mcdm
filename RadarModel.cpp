@@ -4,6 +4,8 @@
 using namespace std;
 using namespace grid_map;
 
+// http://eigen.tuxfamily.org/dox/AsciiQuickReference.txt
+
 //////////////////  SPLINE FUNCTIONS   //////////////////
 
 // The spline is used to interpolate antenna gain values, as we only have the graphs
@@ -241,7 +243,7 @@ Eigen::MatrixXf RadarModel::getPhaseMat(double x_m, double y_m, double orientati
   rxPh_mat = Eigen::MatrixXf(siz(0), siz(1));
   double orientation_rad = orientation_deg * M_PI/180.0;
 
-  // Obtain rel dist and friis to all points 
+  // Obtain rel dist and to all points 
   // MFC: can I turn this iteration into matrix operations?
   for (grid_map::GridMapIterator iterator(_rfid_belief_maps); !iterator.isPastEnd(); ++iterator) {
       // matrix indexes...
@@ -876,7 +878,7 @@ double RadarModel::received_power_friis_with_obstacles(double antenna_x, double 
   return received_power_friis_with_obstacles( antenna_x,  antenna_y,  antenna_h,
                                                         tag_x,  tag_y, tag_h,
                                                         freq, _txtPower, _antenna_gains);
-                                                       }
+}
 
 double RadarModel::received_power_friis_with_obstacles(double antenna_x, double antenna_y, double antenna_h,
                                                        double tag_x, double tag_y, double tag_h,
@@ -926,33 +928,6 @@ double RadarModel::received_power_friis_with_obstacles(double antenna_x, double 
   return rxP;
 }
 
-double RadarModel::received_power_friis(double tag_x, double tag_y, double freq, double txtPower) {
-     double rxPower = txtPower;
-     // build spline to interpolate antenna gains;
-     std::vector<double> xVec(ANTENNA_ANGLES_LIST, ANTENNA_ANGLES_LIST + 25);
-     Eigen::VectorXd xvals = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(xVec.data(), xVec.size());
-     std::vector<double> yVec(ANTENNA_LOSSES_LIST, ANTENNA_LOSSES_LIST + 25);
-     Eigen::VectorXd yvals= Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(yVec.data(), yVec.size());
-     SplineFunction antennaGainsModel(xvals, yvals);
-
-     rxPower = received_power_friis(tag_x, tag_y, freq, txtPower, antennaGainsModel);
-     
-     return rxPower;
-}
-
-double RadarModel::received_power_friis(double tag_x, double tag_y, double freq, double txtPower, SplineFunction antennaGainsModel) {
-     double rxPower = txtPower;
-     double phi;
-     double r;
-     // todo: use a threshold instead of exact value
-     if (!((tag_x==0) && (tag_y==0))){
-         getSphericCoords(tag_x,tag_y, r, phi);
-
-         rxPower = received_power_friis_polar(r, phi, freq, txtPower, antennaGainsModel);
-     }
-     
-     return rxPower;
-}
 
 double RadarModel::received_power_friis_polar(double tag_r, double tag_h, double freq, double txtPower, SplineFunction antennaGainsModel) {
     double rxPower = txtPower;
@@ -1110,31 +1085,31 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
   Eigen::MatrixXf rxPw_mat, likl_mat;
   std::string tagLayerName;
 
-  //if (rxPower>SENSITIVITY){
-    tagLayerName = getTagLayerName(i);
-    Size siz = _rfid_belief_maps.getSize();
-    rxPw_mat = Eigen::MatrixXf(siz(0), siz(1));
-    
-    // get the expected power at each point
-    rxPw_mat = getFriisMat(x_m, y_m, orientation_deg, freq);
 
-    // get the likelihood of the received power at each point
-    likl_mat = getProbCond(rxPw_mat, rxPower, _sigma_power);
+  tagLayerName = getTagLayerName(i);
+  Size siz = _rfid_belief_maps.getSize();
+  rxPw_mat = Eigen::MatrixXf(siz(0), siz(1));
+  
+  // get the expected power at each point
+  rxPw_mat = getFriisMat(x_m, y_m, orientation_deg, freq);
 
-    // Where X_mat is < than SENSITIVITY, the tag wont be... prob 0
-    //likl_mat = (likl_mat.array()<=SENSITIVITY).select(0,likl_mat);
+  // get the likelihood of the received power at each point
+  likl_mat = getProbCond(rxPw_mat, rxPower, _sigma_power);
 
-    // this should remove prob at obstcles
-    Eigen::MatrixXf obst_mat = _rfid_belief_maps["ref_map"];
-    likl_mat = (obst_mat.array()==_free_space_val).select(likl_mat,0); 
-    
-    // normalize in this space:
-    double bayes_den = likl_mat.sum();
-    if (bayes_den>0){
-        likl_mat = likl_mat/bayes_den;
-        // now do bayes ...  everywhere
-        _rfid_belief_maps[tagLayerName] = _rfid_belief_maps[tagLayerName].cwiseProduct(likl_mat);
-    }
-    normalizeRFIDLayer(tagLayerName);
-  //}
+  // Where X_mat is < than SENSITIVITY, the tag wont be... prob 0
+  //likl_mat = (likl_mat.array()<=SENSITIVITY).select(0,likl_mat);
+
+  // this should remove prob at obstcles
+  Eigen::MatrixXf obst_mat = _rfid_belief_maps["ref_map"];
+  likl_mat = (obst_mat.array()==_free_space_val).select(likl_mat,0); 
+  
+  // normalize in this space:
+  double bayes_den = likl_mat.sum();
+  if (bayes_den>0){
+      likl_mat = likl_mat/bayes_den;
+      // now do bayes ...  everywhere
+      _rfid_belief_maps[tagLayerName] = _rfid_belief_maps[tagLayerName].cwiseProduct(likl_mat);
+  }
+  normalizeRFIDLayer(tagLayerName);
+
 }

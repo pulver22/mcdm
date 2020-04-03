@@ -19,10 +19,15 @@ const int NARGS = 5;
 
 /*
 // Create animations ...
+
 ffmpeg -r 10 -f image2 -s 1920x1080 -start_number 009 -i T0_S%03d_tempMap.png -vcodec libx264 -crf 25  -pix_fmt yuv420p test0.mp4
+
 ffmpeg -r 10 -f image2 -s 1920x1080 -start_number 009 -i T1_S%03d_tempMap.png -vcodec libx264 -crf 25  -pix_fmt yuv420p test1.mp4
+
 ffmpeg -r 10 -f image2 -s 1920x1080 -start_number 009 -i T2_S%03d_tempMap.png -vcodec libx264 -crf 25  -pix_fmt yuv420p test2.mp4
+
 ffmpeg -r 10 -f image2 -s 1920x1080 -start_number 009 -i T3_S%03d_tempMap.png -vcodec libx264 -crf 25  -pix_fmt yuv420p test3.mp4
+
 
 // gimp coords to RIC coords
 ./mcdm/Images/mfc_test.pgm
@@ -268,9 +273,7 @@ int num_ops = 0;
 
   std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
   std::cout << num_ops << " measurements took " 
-                      << std::chrono::duration_cast<std::chrono::minutes>(end - begin).count() << "[min]" << std::endl 
-                      << std::chrono::duration_cast<std::chrono::seconds>(end - begin).count() << "[sec]" << std::endl 
-                      << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[msec]" << std::endl 
+                      << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " [msecs]" << std::endl 
                       << std::endl;
                       
   //print maps

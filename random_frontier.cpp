@@ -270,7 +270,11 @@ int main ( int argc, char **argv )
       ray.emptyCandidatePositions();
       // Calculate the accumulated received power
       for (int tag_id = 0; tag_id < tags_coord.size(); tag_id++){
-        accumulated_received_power += rfid_tools.rm.received_power_friis(tags_coord[tag_id].first, tags_coord[tag_id].second, freq, txtPower);
+        // mfc: previous
+        //double rx_power = rfid_tools.rm.received_power_friis(tags_coord[tag_id].first, tags_coord[tag_id].second, freq, txtPower);
+        double rx_power = rfid_tools.rm.received_power_friis_with_obstacles(target.getX(), target.getY(), target.getOrientation() * PI/180.0,tags_coord[tag_id].first, tags_coord[tag_id].second, 0, freq);
+        //mfc: the above gets the received power between a robot in "target" in METERS and tags_coord[i] in METERS. I'm assuming orientation is in deg.
+        accumulated_received_power += rx_power;
       }
       // If the exploration just started
       if ( count == 0 )

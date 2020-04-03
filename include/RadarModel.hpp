@@ -247,23 +247,6 @@ float sign(float x);
 void getSphericCoords(double x, double y, double& r, double& phi);
 
 /**
- * Get received power from an OMNIDIRECTIONAL tag,
- * given its relative position to antenna.
- * We assume antenna at 0,0,0, facing X coordinate.
- * See http://www.antenna-theory.com/basics/friis.php
- * Sensitivity is -85 dBm / -115 dB
- *
- * @param  tag_x       Tag x coord (m.) with respect to antenna
- * @param  tag_y       Tag y coord (m.) with respect to antenna
- * @param  freq        Transmission frequency (Hertzs)
- * @param  txtPower    Transmitted power (dB)
- * @return             Received power (dB)
- */
- double received_power_friis(double tag_x, double tag_y, double freq, double txtPower);
- 
- double received_power_friis(double tag_x, double tag_y, double freq, double txtPower, SplineFunction antennaGainsModel);
-
-/**
  * Received signal estimated phase difference with pi ambiguity
  * @param  tag_x       Tag x coord (m.) with respect to antenna
  * @param  tag_y       Tag y coord (m.) with respect to antenna
@@ -300,6 +283,21 @@ std::string getPhaseLayerName(double freq_i);
 
 std::string getTagLayerName(int tag_num);
 
+
+/**
+ * Get received power from an OMNIDIRECTIONAL tag,
+ * given its relative position to antenna.
+ * We assume antenna at 0,0,0, facing X coordinate.
+ * See http://www.antenna-theory.com/basics/friis.php
+ * Sensitivity is -85 dBm / -115 dB
+ *
+ * @param  tag_r       Tag r coord (m.) with respect to antenna
+ * @param  tag_h       Tag h coord (rad.) with respect to antenna
+ * @param  freq        Transmission frequency (Hertzs)
+ * @param  txtPower    Transmitted power (dB)
+ * @param antennaGainsModel   Antena Gain model
+ * @return             Received power (dB)
+ */
 double received_power_friis_polar(double tag_r, double tag_h, double freq, double txtPower, SplineFunction antennaGainsModel);
 
 void getImageDebug(GridMap* gm, std::string layerName, std::string fileURI);
