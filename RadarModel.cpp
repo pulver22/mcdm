@@ -211,12 +211,14 @@ Eigen::MatrixXf RadarModel::getFriisMat(double x_m, double y_m, double orientati
   Size siz = _rfid_belief_maps.getSize();
   rxPw_mat = Eigen::MatrixXf(siz(0), siz(1));
   double orientation_rad = orientation_deg * M_PI/180.0;
-
+  int count_obs_cell = 0;
+  double wall_losses = 0;
   // Obtain rel dist and friis to all points 
   // MFC: can I turn this iteration into matrix operations?
   for (grid_map::GridMapIterator iterator(_rfid_belief_maps); !iterator.isPastEnd(); ++iterator) {
       // matrix indexes...
       ind = *iterator;      
+      count_obs_cell = 0;
       // get cell center of the cell in the map frame.            
       _rfid_belief_maps.getPosition(ind, glob_point);
       // that is where the tag supposedly is in map coordinates
@@ -226,6 +228,7 @@ Eigen::MatrixXf RadarModel::getFriisMat(double x_m, double y_m, double orientati
       // now get robot - tag relative pose!
       double delta_x = (tag_x - x_m ); 
       double  delta_y = (tag_y - y_m);
+
       // rotate
       tag_x =  delta_x * cos(orientation_rad) + delta_y * sin(orientation_rad);
       tag_y = -delta_x * sin(orientation_rad) + delta_y * cos(orientation_rad);
@@ -233,7 +236,7 @@ Eigen::MatrixXf RadarModel::getFriisMat(double x_m, double y_m, double orientati
       getSphericCoords(tag_x,tag_y, tag_r, tag_h);
 
       rxP = received_power_friis_polar(tag_r, tag_h,freq, _txtPower, _antenna_gains);
-      rxPw_mat(ind(0),ind(1))  = rxP;              
+      rxPw_mat(ind(0),ind(1))  = rxP - wall_losses;              
   }
   return rxPw_mat;
 
@@ -879,6 +882,20 @@ float RadarModel::sign(float x){
   return 0.0;
 }
 
+// IF WE WANT TO INCLUDE WALLS, IT SHOULD BE IN THE FRIIS EQUATIONS.
+
+      //MFC: we could add here a raytracing from (x_m,y_m) to (tag_x,tag_y) and check for obstacles.
+      // Index robot_ind;
+      // _rfid_belief_maps.getIndex(Position( x_m,  y_m), robot_ind);
+      
+      // for (grid_map::LineIterator iterator(_rfid_belief_maps, ind, robot_ind); !iterator.isPastEnd(); ++iterator) {
+      //     if (( _rfid_belief_maps.at("ref_map", *iterator) != _free_space_val  )){
+      //       count_obs_cell++;
+      //     } 
+      // }
+      // // each "wall" adds around 3dB losses. A wall is ~15cm thick, then each cell adds  3 * resolution / 0.15 dB losses
+      // wall_losses = 20.0 * _resolution * count_obs_cell;
+
 double RadarModel::received_power_friis(double tag_x, double tag_y, double freq, double txtPower) {
      double rxPower = txtPower;
      // build spline to interpolate antenna gains;
@@ -942,6 +959,8 @@ double RadarModel::received_power_friis_polar(double tag_r, double tag_h, double
 
     return rxPower;
 }
+
+
 
 double RadarModel::phaseDifference(double tag_x, double tag_y, double freq) {
   double phi;

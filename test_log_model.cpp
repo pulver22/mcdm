@@ -5,6 +5,7 @@
 #include <vector>
 #include <boost/random.hpp>
 #include <boost/nondet_random.hpp>
+#include <chrono>
 
 
 const int NARGS = 5;
@@ -192,14 +193,21 @@ int main(int argc, char **argv)
 
             // get expected tag power with friis
             f_i = freqs[distr(generator)]; 
+            std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
             rxPower = rm.received_power_friis( tag_x, tag_y, f_i, txtPower);
+
 
             // get expected phase from tag
             phase = rm.phaseDifference( tag_x,  tag_y,  f_i);
-            //std::cout<<"\tReading at freq (" << f_i/1e6<< " MHz): (" << (rxPower+30) << ") dBm. ( " << phase << ") rads. " << std::endl << std::endl;
+            std::cout<<"\tReading at freq (" << f_i/1e6<< " MHz): (" << (rxPower+30) << ") dBm. ( " << phase << ") rads. " << std::endl << std::endl;
 
             rm.addMeasurement(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
-            
+
+            std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+            std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()/1000.0 << "[ms]" << std::endl << std::endl;
+
+
             //print maps
             //cout  << "Saving tag distribution maps... "<< endl;
             int lineal_index = (8*(i+1))+(h+1);
