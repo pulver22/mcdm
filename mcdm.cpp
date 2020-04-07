@@ -250,7 +250,7 @@ int main ( int argc, char **argv )
   double rotTime = 0.0;
 
   RFID_tools rfid_tools;
-  rfid_tools.rm = rm;
+  rfid_tools.rm = &rm;
   rfid_tools.tags_coord = tags_coord;
   rfid_tools.freq = freq;
   rfid_tools.txtPower = txtPower;
@@ -299,6 +299,7 @@ int main ( int argc, char **argv )
       totalScanTime += utils.calculateScanTime ( scanAngle*180/PI );
       // Update bot the PP and the RFID maps
       utils.updateMaps(&tags_coord, &map, &target, &txtPower, &SENSITIVITY, &freq, &RFID_maps_list, &x, &y, range, &rfid_tools);
+        rfid_tools.rm->saveProbMapDebug("/tmp/test/",0,count,x,y,-orientation*M_PI/180);
       // Search for new candidate position
       ray.findCandidatePositions ( &map,x,y,orientation,FOV,range );
       vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
@@ -317,8 +318,8 @@ int main ( int argc, char **argv )
       // calculate the accumulate received power
       for (int tag_id = 0; tag_id < tags_coord.size(); tag_id++){
         // mfc: previous
-        //double rx_power = rfid_tools.rm.received_power_friis(tags_coord[tag_id].first, tags_coord[tag_id].second, freq, txtPower);
-        double rx_power = rfid_tools.rm.received_power_friis_with_obstacles(target.getX(), target.getY(), target.getOrientation() * PI/180.0,tags_coord[tag_id].first, tags_coord[tag_id].second, 0, freq);
+        //double rx_power = rfid_tools.rm->received_power_friis(tags_coord[tag_id].first, tags_coord[tag_id].second, freq, txtPower);
+        double rx_power = rfid_tools.rm->received_power_friis_with_obstacles(target.getX(), target.getY(), target.getOrientation() * PI/180.0,tags_coord[tag_id].first, tags_coord[tag_id].second, 0, freq);
         //mfc: the above gets the received power between a robot in "target" in METERS and tags_coord[i] in METERS. I'm assuming orientation is in deg.
         accumulated_received_power += rx_power;
       }
@@ -433,7 +434,7 @@ int main ( int argc, char **argv )
   rm.saveProbMaps("/tmp/");
 
   cout << "Saving debug distribution maps... "<< endl;
-  // rm.normalizeRFIDMap();
+  // rm->normalizeRFIDMap();
   // for each tag:
   for (int t = 0; t < tags_coord.size(); t++){
     // cout << "---[" << t <<"]----------------" << endl;

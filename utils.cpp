@@ -452,15 +452,15 @@ void Utilities::updateMaps(vector<pair<double,double>> *tags_coord, dummy::Map* 
     // Calculate the received power and phase
 
     // mfc prev
-    //double rxPower = rfid_tools->rm.received_power_friis(relTagCoord.first, relTagCoord.second, *freq, *txtPower);
-    double rxPower = rfid_tools->rm.received_power_friis_with_obstacles(target->getX(), target->getY(), target->getOrientation() * 3.141592/180.0, (*tags_coord)[i].first, (*tags_coord)[i].second , 0, *freq);
+    //double rxPower = rfid_tools->rm->received_power_friis(relTagCoord.first, relTagCoord.second, *freq, *txtPower);
+    double rxPower = rfid_tools->rm->received_power_friis_with_obstacles(target->getX(), target->getY(), target->getOrientation() * 3.141592/180.0, (*tags_coord)[i].first, (*tags_coord)[i].second , 0, *freq);
     //mfc: the above gets the received power between a robot in "target" in METERS and tags_coord[i] in METERS. I'm assuming orientation is in deg.
 
-    double phase = rfid_tools->rm.phaseDifference(relTagCoord.first, relTagCoord.second, *freq);    
+    double phase = rfid_tools->rm->phaseDifference(relTagCoord.first, relTagCoord.second, *freq);    
     // Update the path planning and RFID map
     map->updatePathPlanningGrid ( *x, *y, range, rxPower - *SENSITIVITY);
     //So, robot at pr (x,y,orientation) (long, long, int) receives rxPower,phase,freq from tag i . 
-    rfid_tools->rm.addMeasurement(*x,*y, target->getOrientation() , rxPower, phase, *freq, i);
+    rfid_tools->rm->addMeasurement(*x,*y, target->getOrientation() , rxPower, phase, *freq, i);
 
     // mfc: dirty trick to plot sequential images of current prob maps
     // static int lineal_index = 0;
@@ -468,7 +468,7 @@ void Utilities::updateMaps(vector<pair<double,double>> *tags_coord, dummy::Map* 
     //   std::cout<<"\t- Tag [" << i << "] at rel position (" << relTagCoord.first << ", " << relTagCoord.second << ") m. " <<std::endl;
     //   std::cout<<"\t- Reading at freq (" << *freq/1e6<< " MHz): (" << (rxPower+30) << ") dBm. ( " << phase << ") rads. " << std::endl;
 
-    //   rfid_tools->rm.saveProbMapDebug("/tmp/",i,lineal_index++,*x,*y, target->getOrientation());
+    //   rfid_tools->rm->saveProbMapDebug("/tmp/",i,lineal_index++,*x,*y, target->getOrientation());
     // }
 
     // std::cout << "    " << rxPower << std::endl;
@@ -642,7 +642,7 @@ double Utilities::findTags( vector<RFIDGridmap> *RFID_maps_list, vector<pair<dou
   double accuracy, belief_accuracy = 0;
   for (int i=0; i < (*RFID_maps_list).size(); i++){
     value_tag = map->findTagfromGridMap((*RFID_maps_list)[i]);
-    belief_value_tag = rfid_tools->rm.findTagFromBeliefMap(i);
+    belief_value_tag = rfid_tools->rm->findTagFromBeliefMap(i);
     // value = value_tag.first;
     tag = value_tag.second;
     belief_tag = belief_value_tag.second;
