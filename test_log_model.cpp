@@ -8,8 +8,7 @@
 #include <chrono>
 
 
-
-const int NARGS = 8;
+const int NARGS = 5;
 
 // quick build:
 // Create build folder and go there
@@ -30,7 +29,6 @@ ffmpeg -r 10 -f image2 -s 1920x1080 -start_number 009 -i T2_S%03d_tempMap.png -v
 ffmpeg -r 10 -f image2 -s 1920x1080 -start_number 009 -i T3_S%03d_tempMap.png -vcodec libx264 -crf 25  -pix_fmt yuv420p test3.mp4
 
 
-
 // gimp coords to RIC coords
 ./mcdm/Images/mfc_test.pgm
 120 p x 200 p (gimp) == 200 p x 120 p (ric) 
@@ -45,56 +43,32 @@ int main(int argc, char **argv)
 
 
   std::string mapFileURI = "/home/pulver/mcdm/Images/mfc_test.pgm";
-  double nx = 10;
-  double ny = 10;
   double resolution = 0.1;
-  double sigma_power = 60;
+  double sigma_power = 4;
   double sigma_phase = 0.2;
   double txtPower = -10;
   int i = 0;
-  char updateMode = 'G'; //w:white rec, p:pdf, b:bayesian
   cout <<"You provided: (" << argc-1 << ") arguments"<<  std::endl;
 
   if (argc > NARGS) {
             mapFileURI = argv[++i];
-            nx = atoi(argv[++i]);
-            ny = atoi(argv[++i]);
             resolution = atof(argv[++i]);
             sigma_power = atof(argv[++i]);
             sigma_phase = atof(argv[++i]);
             txtPower = atof(argv[++i]);
-            updateMode = *argv[++i];
   } else {
       cout <<"DEFAULTS! I will execute call equivalent to:" << std::endl;
-      cout << argv[0] << " " << mapFileURI  << " " << nx  << " " << ny  << " " << 
-              resolution  << " " << sigma_power  << " " << sigma_phase  << " " << txtPower << " " << updateMode << std::endl;
+      cout << argv[0]      << " " << mapFileURI   << " " << resolution  << " " 
+           << sigma_power  << " " << sigma_phase  << " " << txtPower    << " " << std::endl;
   }
   cout <<"PARAMETERS: " << std::endl;
   // Radio model  ........................................................
   cout <<"\tReference Map file: ["<< mapFileURI <<"]" << std::endl;
-  cout <<"\tRadar Active area: ("<< nx <<","<< ny <<") m." << std::endl;
   cout <<"\tMap Resolution: ("<< resolution <<") m./cell" << std::endl;
   cout <<"\tPower Noise std: ("<< sigma_power <<")" << std::endl;
   cout <<"\tPhase Noise std: ("<< sigma_phase <<")" << std::endl;
   cout <<"\tTransmitted power: ("<< txtPower <<") dB." << std::endl;
-  
-  cout <<"\tMap Update Mode: (";
-  if (updateMode=='b'){
-    cout <<"bayesian";
-  } else if (updateMode=='p'){
-    cout <<"pdf";
-  } else if (updateMode=='P'){
-    cout <<"pdf-noWalls";
-  } else if (updateMode=='w'){
-    cout <<"white rec.";
-  } else if (updateMode=='G'){
-    cout <<"No active areas used";
-  }   
-  cout <<  ") " << std::endl;
-  
-  cout << std::endl;
-  
-  
+    
   // loading tag poses ........................................................
   // Unit is meters. We multiply pixels by resolution to get them.
   // 0,0 is at upper left of the map, with X increasing down and Y increasing right.
@@ -103,11 +77,11 @@ int main(int argc, char **argv)
   double absTag1_X = 37 * resolution;
   double absTag1_Y = 58 * resolution;
 
-  //red
+  //blue
   double absTag2_X = 44 * resolution;
   double absTag2_Y = 31 * resolution;
   
-  // blue
+  // red
   double absTag3_X = 130 * resolution;
   double absTag3_Y = 45 * resolution;
   
@@ -144,7 +118,7 @@ int main(int argc, char **argv)
 
 
   cout <<"Building radar model." << endl;
-  RadarModel rm(nx, ny, resolution, sigma_power, sigma_phase, txtPower, freqs, tags_coord, mapFileURI );
+  RadarModel rm(resolution, sigma_power, sigma_phase, txtPower, freqs, tags_coord, mapFileURI);
   cout << "Radar model built." << endl;
 
   // prints reference map with tags
@@ -158,6 +132,18 @@ int main(int argc, char **argv)
   //rm.PrintPowProb("/tmp/test/prob_rec_power_95_f_800.png", -95, 800e6);
   //rm.PrintPowProb("/tmp/test/prob_rec_power_95_f_920.png", -95, 920e6);
 
+  // Draw different probabilities distribution
+  // std::string fileURI = "/tmp/test/prob_rec_power_";
+  // char buffer [50];
+  // int n;
+
+  // for (double rxPi=txtPower;rxPi>SENSITIVITY;rxPi = rxPi-5.0){
+  //     n=sprintf (buffer, "%d", (int) abs(rxPi));
+  //     fileURI += std::string(buffer)+ "_f_920.png";
+  //     rm.PrintPowProb(fileURI, rxPi, 920e6);
+  //     fileURI = "/tmp/test/prob_rec_power_";
+  // }
+  
   //rm.PrintPhase("/tmp/test/phase_f_800.png", 800e6);
   //rm.PrintPhase("/tmp/test/phase_f_920.png", 920e6);
 
@@ -257,7 +243,6 @@ int num_ops = 0;
             // translate
             delta_x = (tags_coord[t].first - robot_x ); 
             delta_y = (tags_coord[t].second - robot_y);
-            // cout << "[Dx, Dy] : [" << delta_x << "," << delta_y << "]" << endl;
             // rotate
             tag_x =  delta_x * cos(robot_head) + delta_y * sin(robot_head);
             tag_y = -delta_x * sin(robot_head) + delta_y * cos(robot_head);

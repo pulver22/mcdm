@@ -300,8 +300,8 @@ int main ( int argc, char **argv )
       // Update the overall scanning time
       totalScanTime += utils.calculateScanTime ( scanAngle*180/PI );
       // Update bot the PP and the RFID maps
-      utils.updateMaps(&tags_coord, &map, &target, &txtPower, &SENSITIVITY, &freq, &RFID_maps_list, &x, &y, range, &rfid_tools);
-        rfid_tools.rm->saveProbMapDebug("/tmp/test/",0,count,x,y,-orientation*M_PI/180);
+      utils.updateMaps(&map, &target, &rfid_tools, false);
+        // rfid_tools.rm->saveProbMapDebug("/tmp/test/",0,count,x,y,-orientation*M_PI/180);
       // Search for new candidate position
       ray.findCandidatePositions ( &map,x,y,orientation,FOV,range );
       vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
