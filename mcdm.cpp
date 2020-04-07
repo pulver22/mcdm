@@ -222,12 +222,12 @@ int main ( int argc, char **argv )
 
   // Radar model: 
   double nx = 200*resolution; // radar model active area x-range m.
-  double ny = 200*resolution;  // radar model active area y-range m.  
+  double ny = 120*resolution;  // radar model active area y-range m.  
   double rs = resolution; // radar model grid resolution m./cell :: SAME AS INPUT IMAGE!!!
   double sigma_power = 1; //dB
   double sigma_phase = 1; //rads
   txtPower = txtPower; // NOTE: Added for debug
-  std::vector<double> freqs{ freq }; // only 1 freq... noice!
+  std::vector<double> freqs{ freq }; // only 1 freq... nice!
   // std::vector<double> freqs{ MIN_FREQ_NA,MIN_FREQ_NA+STEP_FREQ_NA,MIN_FREQ_NA+2.0*STEP_FREQ_NA }; 
 
   cout <<"Building radar model." << endl;
@@ -254,12 +254,14 @@ int main ( int argc, char **argv )
   rfid_tools.tags_coord = tags_coord;
   rfid_tools.freq = freq;
   rfid_tools.txtPower = txtPower;
+  rfid_tools.sensitivity = SENSITIVITY;
+  rfid_tools.RFID_maps_list = &RFID_maps_list;
   do
   {
+    cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells << " ["<< 100*(float)newSensedCells/(float)totalFreeCells << "%]"<< endl;
     // If we are doing "forward" navigation towards cells never visited before
     if ( btMode == false )
     {
-
       content = to_string(w_info_gain) 
                 + "," + to_string(w_travel_distance)
                 + "," + to_string(w_sensing_time) 
@@ -363,7 +365,7 @@ int main ( int argc, char **argv )
       // ...and the overall scan time
       totalScanTime += utils.calculateScanTime ( scanAngle*180/PI );
       // Update bot the PP and the RFID maps
-      utils.updateMaps(&tags_coord, &map, &target, &txtPower, &SENSITIVITY, &freq, &RFID_maps_list, &x, &y, range, &rfid_tools);
+      utils.updateMaps(&map, &target, &rfid_tools, false);
       // Remove the current pose from the list of possible candidate cells
       utils.cleanPossibleDestination2 ( &nearCandidates,target );
       // Get the list of the candidate cells with their evaluation
@@ -431,13 +433,14 @@ int main ( int argc, char **argv )
                     totalAngle, totalScanTime, accumulated_received_power, &batteryTime);
 
   // cout << "Saving tag distribution maps... "<< endl;
-  rm.saveProbMaps("/tmp/");
+  rfid_tools.rm->saveProbMaps("/tmp/");
 
   cout << "Saving debug distribution maps... "<< endl;
   // rm->normalizeRFIDMap();
   // for each tag:
+
   for (int t = 0; t < tags_coord.size(); t++){
     // cout << "---[" << t <<"]----------------" << endl;
-   rm.saveProbMapDebug("/tmp/",t,0,0,0,0);
+    rfid_tools.rm->saveProbMapDebug("/tmp/",t,count,x,y,orientation);
   }
 }

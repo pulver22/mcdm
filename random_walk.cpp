@@ -211,7 +211,9 @@ int main ( int argc, char **argv )
   rfid_tools.rm = &rm;
   rfid_tools.tags_coord = tags_coord;
   rfid_tools.freq = freq;
-  rfid_tools.txtPower = txtPower; 
+  rfid_tools.txtPower = txtPower;
+  rfid_tools.sensitivity = SENSITIVITY;
+  rfid_tools.RFID_maps_list = &RFID_maps_list;
 
   do
   {
@@ -261,7 +263,7 @@ int main ( int argc, char **argv )
       // Update the overall scanning time
       totalScanTime += utils.calculateScanTime ( scanAngle*180/PI );
       // Update bot the PP and the RFID maps
-      utils.updateMaps(&tags_coord, &map, &target, &txtPower, &SENSITIVITY, &freq, &RFID_maps_list, &x, &y, range, &rfid_tools);
+      utils.updateMaps(&map, &target, &rfid_tools, false);
       // Calculate the accumulated received power
       for (int tag_id = 0; tag_id < tags_coord.size(); tag_id++){
         // mfc: previous

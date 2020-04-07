@@ -19,11 +19,8 @@
 using namespace std;
 using namespace dummy;
 
-/* create a list of criteria with name and <encoded_name,weight> pair after reading that from a file
- */
-MCDMFunction::MCDMFunction(float w_criterion_1, float w_criterion_2, float w_criterion_3, bool use_mcdm) //:
-//criteria(new unordered_map<string, Criterion* >())
-//activeCriteria(new vector<Criterion >() )
+
+MCDMFunction::MCDMFunction(float w_criterion_1, float w_criterion_2, float w_criterion_3, bool use_mcdm)
 {
   this->use_mcdm = use_mcdm;
   // Initialization ad-hoc: create a weightmatrix for 3 criteria with predefined weight
@@ -47,11 +44,7 @@ MCDMFunction::MCDMFunction(float w_criterion_1, float w_criterion_2, float w_cri
 }
 
 
-/* create a list of criteria with name and <encoded_name,weight> pair after reading that from a file
- */
-MCDMFunction::MCDMFunction(float w_criterion_1, float w_criterion_2, float w_criterion_3, float w_criterion_4, bool use_mcdm) //:
-//criteria(new unordered_map<string, Criterion* >())
-//activeCriteria(new vector<Criterion >() )
+MCDMFunction::MCDMFunction(float w_criterion_1, float w_criterion_2, float w_criterion_3, float w_criterion_4, bool use_mcdm)
 {
   this->use_mcdm = use_mcdm;
 
@@ -74,11 +67,7 @@ MCDMFunction::MCDMFunction(float w_criterion_1, float w_criterion_2, float w_cri
 
 }
 
-/* create a list of criteria with name and <encoded_name,weight> pair after reading that from a file
- */
-MCDMFunction::MCDMFunction(float w_criterion_1, float w_criterion_2, float w_criterion_3, float w_criterion_4, float w_criterion_5, bool use_mcdm) //:
-//criteria(new unordered_map<string, Criterion* >())
-//activeCriteria(new vector<Criterion >() )
+MCDMFunction::MCDMFunction(float w_criterion_1, float w_criterion_2, float w_criterion_3, float w_criterion_4, float w_criterion_5, bool use_mcdm)
 {
   this->use_mcdm = use_mcdm;
 

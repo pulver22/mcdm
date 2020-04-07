@@ -53,3 +53,15 @@ mcdm_online_exploration
 *.cbp
 
 .vscode/settings.json
+
+*.aux
+
+*.fdb_latexmk
+
+*.fls
+
+*.log
+
+*.pdf
+
+*.gz

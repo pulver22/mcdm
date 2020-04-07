@@ -1,5 +1,5 @@
 #include "RadarModel.hpp"
-//#include <unsupported/Eigen/SpecialFunctions>
+#include <unsupported/Eigen/SpecialFunctions>
 
 using namespace std;
 using namespace grid_map;
@@ -34,6 +34,7 @@ double SplineFunction::interpDeg(double x) const {
 double SplineFunction::interpRad(double x) const {
     return interpDeg(x*180.0/M_PI); 
 }
+
 
 // Helpers to scale X values down to [0, 1]
 double SplineFunction::scaled_value(double x) const {
@@ -965,6 +966,7 @@ double RadarModel::received_power_friis_polar(double tag_r, double tag_h, double
     return rxPower;
 }
 
+
 double RadarModel::phaseDifference(double tag_x, double tag_y, double freq) {
   double phi;
   double r;
@@ -975,6 +977,7 @@ double RadarModel::phaseDifference(double tag_x, double tag_y, double freq) {
   return phase;
 
 }
+
 
 std::pair<int, std::pair<int, int>> RadarModel::findTagFromBeliefMap(int num_tag){
   
@@ -1076,12 +1079,12 @@ void RadarModel::clearObstacleCellsRFIDMap(){
   }
 }
 
+
 ///////////////  ADD MEASUREMENT METHOD ////////////////////////////////////////
 
 //So, robot at pr (x,y,orientation) (long, long, int) receives rxPower,phase,freq from tag i . 
 //TODO: this is a simplistic model that just "ignores" walls: but they do have absortion and reduce received power at their locations...
 void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, double rxPower, double phase, double freq, int i){
-
   Eigen::MatrixXf rxPw_mat, likl_mat;
   std::string tagLayerName;
 
@@ -1102,14 +1105,19 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
   // this should remove prob at obstcles
   Eigen::MatrixXf obst_mat = _rfid_belief_maps["ref_map"];
   likl_mat = (obst_mat.array()==_free_space_val).select(likl_mat,0); 
-  
   // normalize in this space:
   double bayes_den = likl_mat.sum();
+  // _rfid_belief_maps.add("temp", 0.0);
+  // _rfid_belief_maps["temp"] = likl_mat;
+  // double bayes_den = getNormalizingFactorBayesFullMap(x_m, y_m, orientation_rad, tagLayerName);
+  
   if (bayes_den>0){
       likl_mat = likl_mat/bayes_den;
       // now do bayes ...  everywhere
       _rfid_belief_maps[tagLayerName] = _rfid_belief_maps[tagLayerName].cwiseProduct(likl_mat);
+      // Normalise
+      // _rfid_belief_maps[tagLayerName] = _rfid_belief_maps[tagLayerName]/bayes_den;
   }
   normalizeRFIDLayer(tagLayerName);
-
 }
+
