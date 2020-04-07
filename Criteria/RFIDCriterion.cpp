@@ -77,8 +77,9 @@ double RFIDCriterion::evaluateEntropyOverBelief(Pose &p, dummy::Map *map,
 
   for (int tag_id = 0; tag_id < rfid_tools->tags_coord.size(); tag_id++) {
     entropy_cell =
-        rfid_tools->rm->getTotalEntropy(p.getX(), p.getY(), p.getOrientation(),
-                                       buffer_size, buffer_size, tag_id);
+        // rfid_tools->rm->getTotalEntropy(p.getX(), p.getY(), p.getOrientation(),
+        //                                buffer_size, buffer_size, tag_id);
+        rfid_tools->rm->getTotalEntropyEllipse(p, p.getRange(), -1.0, tag_id);
     RFIDInfoGain += entropy_cell;
   }
 

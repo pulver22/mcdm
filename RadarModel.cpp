@@ -1224,12 +1224,79 @@ double RadarModel::getTotalEntropy(double x, double y, double orientation,
 
   grid_map::SubmapIterator iterator(_rfid_belief_maps, submapStartIndex,
                                     submapBufferSize);
-
   return getTotalEntropy(x, y, orientation, iterator, tag_i);
 }
 
 double RadarModel::getTotalEntropy(double x, double y, double orientation,
                                    grid_map::SubmapIterator iterator,
+                                   int tag_i) {
+
+  double total_entropy;
+  Position point;
+  double likelihood, neg_likelihood, log2_likelihood, log2_neg_likelihood = 0.0;
+
+  std::string tagLayerName = getTagLayerName(tag_i);
+
+  total_entropy = 0;
+  for (iterator; !iterator.isPastEnd(); ++iterator) {
+    _rfid_belief_maps.getPosition(*iterator, point);
+    // check if is inside global map
+    if (_rfid_belief_maps.isInside(point)) {
+      // We don't add belief from positions considered obstacles...
+      if (_rfid_belief_maps.atPosition("ref_map", point) == _free_space_val) {
+        likelihood = _rfid_belief_maps.atPosition(tagLayerName, point);
+        if (isnan(likelihood))
+          likelihood = 0.0;
+        neg_likelihood = 1 - likelihood;
+        if (isnan(neg_likelihood))
+          neg_likelihood = 0.0;
+
+        log2_likelihood = log2(likelihood);
+        if (isinf(log2_likelihood))
+          log2_likelihood = 0.0;
+        log2_neg_likelihood = log2(neg_likelihood);
+        if (isinf(log2_neg_likelihood))
+          log2_neg_likelihood = 0.0;
+        // cout << " l: " << log2_likelihood << endl;
+        // likelihood =
+        // rfid_tools->rm.getBeliefMaps().atPosition(layerName,rel_point);
+        total_entropy += -likelihood * log2_likelihood -
+                         neg_likelihood * log2_neg_likelihood;
+      }
+    }
+  }
+  return total_entropy;
+}
+
+double RadarModel::getTotalEntropyEllipse(Pose target, double maxX, double minX, int tag_i){
+                                     //1.-  Get elipsoid iterator.
+  // Antenna is at one of the focus of the ellipse with center at antennaX, antennaY, tilted antennaHeading .
+  // http://www.softschools.com/math/calculus/finding_the_foci_of_an_ellipse/
+  // if a is mayor axis and b is minor axis
+  // a-c= minX
+  // a+c= maxX
+  // a = (maxX + minX)/2
+  // c  = maxX/2 + minX
+  // b  = sqrt(a^2-c^2)
+
+  // mirror y axis!!!!
+  double antennaX = _Nrow - target.getX();
+  double antennaY = -target.getY();
+  double antennaHeading= -target.getOrientation();
+
+  double a =  (abs(maxX) + abs(minX))/2.0;
+  double c =  (abs(maxX) - abs(minX))/2;
+  double b = sqrt((a*a)-(c*c));
+  double xc = antennaX + (c*cos(antennaHeading));
+  double yc = antennaY + (c*sin(antennaHeading));
+
+  Position center(xc, yc); // meters
+  Length length(2*a, 2*b);
+  grid_map::EllipseIterator el_iterator(_rfid_belief_maps, center, length, antennaHeading);
+  return getTotalEntropyEllipse(target, el_iterator, tag_i);
+}
+
+double RadarModel::getTotalEntropyEllipse(Pose target, grid_map::EllipseIterator iterator,
                                    int tag_i) {
 
   double total_entropy;
