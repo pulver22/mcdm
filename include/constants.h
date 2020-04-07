@@ -13,7 +13,7 @@
 #define ROT_SPEED 0.1
 
 struct RFID_tools {
-  RadarModel* rm;
+  RadarModel *rm;
   std::vector<std::pair<double,double>> tags_coord;
   double freq;
   double txtPower;

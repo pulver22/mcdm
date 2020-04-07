@@ -46,7 +46,6 @@ double RFIDCriterion::evaluateUniformEllipse(Pose &p, dummy::Map *map) {
   float orientation = p.getOrientation();
   int range = p.getRange();
   double angle = p.getFOV();
-
   double unExploredMap = 0.0;
   NewRay ray;
   return (double)ray.getInformationGain(map, px, py, orientation, angle, range);

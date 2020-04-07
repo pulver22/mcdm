@@ -190,7 +190,8 @@ int main ( int argc, char **argv )
   // std::vector<double> freqs{ MIN_FREQ_NA,MIN_FREQ_NA+STEP_FREQ_NA,MIN_FREQ_NA+2.0*STEP_FREQ_NA }; 
 
   cout <<"Building radar model." << endl;
-  RadarModel rm(nx, ny, rs, sigma_power, sigma_phase, txtPower, freqs, tags_coord, argv[1] );
+  RadarModel rm(rs, sigma_power, sigma_phase, txtPower, freqs, tags_coord, argv[1] );
+  //RadarModel rm(nx, ny, rs, sigma_power, sigma_phase, txtPower, freqs, tags_coord, argv[1] );
   cout << "Radar model built." << endl;
   rm.PrintRefMapWithTags("/tmp/scenario.png"); 
 
@@ -265,7 +266,11 @@ int main ( int argc, char **argv )
       utils.updateMaps(&map, &target, &rfid_tools, false);
       // Calculate the accumulated received power
       for (int tag_id = 0; tag_id < tags_coord.size(); tag_id++){
-        accumulated_received_power += rfid_tools.rm->received_power_friis(tags_coord[tag_id].first, tags_coord[tag_id].second, freq, txtPower);
+        // mfc: previous
+        //double rx_power = rfid_tools.rm->received_power_friis(tags_coord[tag_id].first, tags_coord[tag_id].second, freq, txtPower);
+        double rx_power = rfid_tools.rm->received_power_friis_with_obstacles(target.getX(), target.getY(), target.getOrientation() * PI/180.0,tags_coord[tag_id].first, tags_coord[tag_id].second, 0, freq);
+        //mfc: the above gets the received power between a robot in "target" in METERS and tags_coord[i] in METERS. I'm assuming orientation is in deg.
+        accumulated_received_power += rx_power;        
       }
       // Find new random destination
       nextRandomPosition = map.getRandomFreeCell();

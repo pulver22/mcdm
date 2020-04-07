@@ -3,17 +3,12 @@
 
 
 #include <grid_map_core/GridMap.hpp>
+#include "grid_map_core/iterators/GridMapIterator.hpp"
+#include "grid_map_cv/grid_map_cv.hpp"
+
 #include "Eigen/Eigen"  // AFTER GRIDMAP!
-
-
-
 #include <Eigen/Core>
 #include <unsupported/Eigen/Splines>
-
-
-#include "grid_map_core/iterators/GridMapIterator.hpp"
-#include <iostream>
-#include <string>
 
 // Math
 #include <math.h>
@@ -21,10 +16,9 @@
 #include <iostream>
 #include <vector>
 
+// other
 #include <iomanip>
-
-
-#include "grid_map_cv/grid_map_cv.hpp"
+#include <string>
 
 // OpenCV
 #include <cv_bridge/cv_bridge.h>
@@ -134,24 +128,31 @@ class RadarModel
     std::vector<double> _freqs; // transmission frequencies (Hz.)
     SplineFunction _antenna_gains;  // model for antenna power gain depending on the angle (dB.)
 
-
-
-    std::string _model;
-    int update_count = 0;
   public:
 
-/**
- * @brief Construct a new RadarModel object. 
- *        It is based upon the link budget equation. See D. M. Dobkin, “The RF in RFID: Passive UHF RFID in Practice”, Elsevier, 2007 
- * 
- * @param nx X axis Size (m.)
- * @param ny Y axis Size (m.)
- * @param resolution  internal grid resolution (m./cell)
- * @param sigma Noise factor standard deviation 
- * @param txtPower Transmited Power (dB)
- * @param freqs Freqs to be considered in model (Hz.)
- * TODO We will use a fixed antenna model, Gaussian noise model and will assume tags are isotropic. This may need to be revisited ...
- */
+    double received_power_friis_with_obstacles(double antenna_x, double antenna_y, double antenna_h,
+                                                       double tag_x, double tag_y, double tag_h,
+                                                       double freq, double txtPower, SplineFunction antennaGainsModel);
+
+    double received_power_friis_with_obstacles(double antenna_x, double antenna_y, double antenna_h,
+                                                       double tag_x, double tag_y, double tag_h,
+                                                       double freq);                                                       
+    /**
+     * @brief Plots a power distribution
+     * 
+     * @param fileURI save file location
+     * @param f_i frequency to consider in the propagation model
+     */
+    void PrintRecPower(std::string fileURI, double f_i);
+
+    /**
+     * @brief Plots a probability distribution, conditioned to a received power
+     * 
+     * @param fileURI save file location
+     * @param rxPw received power
+     * @param f_i frequency to consider in the propagation model
+     */
+    void PrintPowProb(std::string fileURI, double rxPw, double f_i);
 
 
 
@@ -205,23 +206,6 @@ float sign(float x);
 void getSphericCoords(double x, double y, double& r, double& phi);
 
 /**
- * Get received power from an OMNIDIRECTIONAL tag,
- * given its relative position to antenna.
- * We assume antenna at 0,0,0, facing X coordinate.
- * See http://www.antenna-theory.com/basics/friis.php
- * Sensitivity is -85 dBm / -115 dB
- *
- * @param  tag_x       Tag x coord (m.) with respect to antenna
- * @param  tag_y       Tag y coord (m.) with respect to antenna
- * @param  freq        Transmission frequency (Hertzs)
- * @param  txtPower    Transmitted power (dB)
- * @return             Received power (dB)
- */
- double received_power_friis(double tag_x, double tag_y, double freq, double txtPower);
- 
- double received_power_friis(double tag_x, double tag_y, double freq, double txtPower, SplineFunction antennaGainsModel);
-
-/**
  * Received signal estimated phase difference with pi ambiguity
  * @param  tag_x       Tag x coord (m.) with respect to antenna
  * @param  tag_y       Tag y coord (m.) with respect to antenna
@@ -230,6 +214,9 @@ void getSphericCoords(double x, double y, double& r, double& phi);
  */
 double phaseDifference(double tag_x, double tag_y, double freq);
 
+Eigen::MatrixXf getFriisMat(double x_m, double y_m, double orientation_deg, double freq);
+Eigen::MatrixXf getPhaseMat(double x_m, double y_m, double orientation_deg, double freq);
+Eigen::MatrixXf getProbCond(Eigen::MatrixXf X_mat, double x, double sig);
 
 /**
  * Get tag detection boundaries for given configuration
@@ -329,9 +316,24 @@ std::string getPhaseLayerName(double freq_i);
 
 std::string getTagLayerName(int tag_num);
 
+
+/**
+ * Get received power from an OMNIDIRECTIONAL tag,
+ * given its relative position to antenna.
+ * We assume antenna at 0,0,0, facing X coordinate.
+ * See http://www.antenna-theory.com/basics/friis.php
+ * Sensitivity is -85 dBm / -115 dB
+ *
+ * @param  tag_r       Tag r coord (m.) with respect to antenna
+ * @param  tag_h       Tag h coord (rad.) with respect to antenna
+ * @param  freq        Transmission frequency (Hertzs)
+ * @param  txtPower    Transmitted power (dB)
+ * @param antennaGainsModel   Antena Gain model
+ * @return             Received power (dB)
+ */
 double received_power_friis_polar(double tag_r, double tag_h, double freq, double txtPower, SplineFunction antennaGainsModel);
 
-void getImageDebug(std::string layerName, std::string fileURI);
+void getImageDebug(GridMap* gm, std::string layerName, std::string fileURI);
 Eigen::MatrixXf getPowProbCond(double rxPw, double f_i);
 Eigen::MatrixXf  getPhaseProbCond(double ph_i, double f_i);
 Eigen::MatrixXf  getProbCond(std::string layer_i, double x, double sig);
