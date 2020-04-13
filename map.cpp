@@ -6,13 +6,7 @@ using namespace std;
 
 namespace dummy{
 
-/**
- * @brief Map::Map constructor
- * @param infile: the path used for reading the map
- * @param fileURI: map file absolute path and filename
- * @param resolution: the resolution of the map
- * @param imgresolution: the resolution for building the planningGrid
- */
+
 Map::Map(std::ifstream& infile, double resolution, double imgresolution)
 {
 
@@ -22,18 +16,10 @@ Map::Map(std::ifstream& infile, double resolution, double imgresolution)
   Map::createNewMap();
 }
 
-/**
- * @brief Map::Map empty constructore
- */
 Map::Map()
 {
-
 }
 
-/**
- * @brief Map::createMap create a monodimensional vector containing the map
- * @param infile: the path for reading the map
- */
 void Map::createMap(std::ifstream& infile)
 {
   long row = 0, col = 0;
@@ -141,12 +127,6 @@ void Map::createMap(std::ifstream& infile)
   }
 }
 
-
-
-/**
- * @brief Map::createGrid create the map as a monodimension vector with 0 and 1
- * @param resolution: the size of the cell's side
- */
 void Map::createGrid(double resolution)
 {
   //cluster cells into grid
@@ -179,10 +159,6 @@ void Map::createGrid(double resolution)
 
 }
 
-/**
- * @brief Map::createNewMap save on disk an image representing the map of
- * the environment and a list of free cells in the map
- */
 void Map::createNewMap()
 {
   std::ofstream imgNew("/home/pulver/Desktop/MCDM/input_map.pgm", ios::out);
@@ -214,11 +190,6 @@ void Map::createNewMap()
   txt.close();
 }
 
-/**
- * Map::createPathPlanningGrid Create the gridmap for path planning and for radio sensing (both are identical)
- * @param  resolution: the size of the side of a cell
- * @return          nothing
- */
 void Map::createPathPlanningGrid(double resolution)
 {
   //cluster cells into grid
@@ -257,7 +228,6 @@ void Map::createPathPlanningGrid(double resolution)
 
 
 }
-
 
 void Map::updatePathPlanningGrid(int posX, int posY, int rangeInMeters, double power)
 {
@@ -307,79 +277,41 @@ void Map::updatePathPlanningGrid(int posX, int posY, int rangeInMeters, double p
 
 }
 
-
-
-/**
- * @brief Map::getPathPlanningGridValue get the current value of a cell in the planning grid
- * @param i: the x-position(row) in the planning grid
- * @param j: the y-position(column) in the planning grid
- * @return the value in that cell value: 0 -> unscanned free cell, 1 -> obstacle cell, 2 -> scanned free cell)
- */
 int Map::getPathPlanningGridValue(long i,long j) const
 {
   return pathPlanningGrid[i*numPathPlanningGridCols + j];
 }
 
-/**
- * @brief Map::setPathPlanningGridValue assign a value to a cell in the planning grid
- * @param value:  0 -> unscanned free cell, 1 -> obstacle cell, 2 -> scanned free cell
- * @param i: the x-position(row) of the cell in the planning grid
- * @param j: the y-position(column) of the cell in the planning grid
- */
 void Map::setPathPlanningGridValue(int value, int i, int j)
 {
   pathPlanningGrid[i*numPathPlanningGridCols + j] = value;
 }
 
-/**
- * @brief Map::setRFIDGridValue: update the grid cell summing the current value with a new reading
- * @param power: the sensed power by the antenna
- * @param i: the x-position in the grid
- * @param j: the y-position in the grid
- */
 void Map::setRFIDGridValue(float power, int i, int j)
 {
   //  cout << "-----" << endl;
-//  if( power < 0) power = 0;
-//    cout << RFIDGrid[i * numPathPlanningGridCols + j] << endl;
+  //  if( power < 0) power = 0;
+  //    cout << RFIDGrid[i * numPathPlanningGridCols + j] << endl;
   RFIDGrid[i * numPathPlanningGridCols + j] += power;
-//    cout << RFIDGrid[i * numPathPlanningGridCols + j] << endl;
+  //    cout << RFIDGrid[i * numPathPlanningGridCols + j] << endl;
 }
 
-/**
- * @brief Map::getPathPlanningNumCols get the number of columns in the planning grid
- * @return
- */
 int Map::getPathPlanningNumCols() const
 {
   return numPathPlanningGridCols;
 }
 
-/**
- * @brief Map::getPathPlanningNumRows get the number of rows in the planning grid
- * @return
- */
 int Map::getPathPlanningNumRows() const
 {
   return numPathPlanningGridRows;
 }
 
-/**
- * @brief Map::getGridToPathGridScale get the scale(ratio) between the cell size
- * in the grid and in that used for planning
- * @return the scale value
- */
 int Map::getGridToPathGridScale() const
 {
   return gridToPathGridScale;
 }
 
-/**
- * @brief Map::setGridValue set a value for a cell in the Grid
- * @param value: 0 -> unscanned free cell, 1 -> obstacle cell, 2 -> scanned free cell
- * @param i: the x-position(row) in the grid
- * @param j: the y-position(column) in the grid
- */
+
 void Map::setGridValue(int value, long i, long j)
 {
   if(value == 0 || value == 1 || value == 2)
@@ -394,10 +326,6 @@ void Map::addEdgePoint(int x, int y)
   edgePoints.push_back(pair);
 }
 
-/**
- * @brief Map::getMap2D create a 2D map from a vector one
- * @return the 2D map
- */
 std::vector<vector<long> > Map::getMap2D(){
   vector<vector<long> > map2D;
 
@@ -413,108 +341,58 @@ std::vector<vector<long> > Map::getMap2D(){
 
 }
 
-//various getters
-/**
- * @brief Map::getGridValue get the value associated with one cell of the grid
- * @param i: the x-position in the grid
- * @param j: the y-position in the grid
- * @return the associated value with that cell
- */
 int Map::getGridValue(long i,long j) const
 {
   return grid[i*numGridCols + j];
 }
 
-/**
- * @brief Map::getRFIDGridValue get the value(power) associated with one cell of the RFIDgrid
- * @param i: the x-position in the RFID grid
- * @param j: the y-position in the RFID grid
- * @return the associated value with that cell
- */
+
 int Map::getRFIDGridValue(long i,long j) const
 {
   return RFIDGrid[i * numPathPlanningGridCols + j];
 }
 
-/**
- * @brief Map::getMapValue get the value of one cell of the map
- * @param i: the x-position in the map
- * @param j: the y-position in the map
- * @return the value associated with that cell
- */
 long Map::getMapValue(long i, long j)
 {
   return map[i*numCols + j];
 }
 
-/**
- * @brief Map::getNumRows get the number of columns of the grid
- * @return the number of columns of the grid
- */
 long Map::getNumGridCols() const
 {
   return numGridCols;
 }
 
-/**
- * @brief Map::getNumRows get the number of rows of the grid
- * @return the number of rows of the grid
- */
 long Map::getNumGridRows() const
 {
   return numGridRows;
 }
 
-/**
- * @brief Map::getNumRows get the number of columns of the map
- * @return the number of columns of the map
- */
+
 long Map::getNumCols()
 {
   return numCols;
 }
 
-/**
- * @brief Map::getNumRows get the number of rows of the map
- * @return the number of rows of the map
- */
 long Map::getNumRows()
 {
   return numRows;
 }
 
-/**
- * @brief dummy::Map::getGridValue get the value of a cell in the gridmap
- * @param i: the index of the cell
- * @return the value contained in the cell
- */
 long dummy::Map::getGridValue(long i) const
 {
   return Map::grid[i];
 }
 
-/**
- * @brief Map::getRobotPosition get the current pose of the robot
- * @return the current pose of the robot
- */
 Pose Map::getRobotPosition()
 {
   return currentPose;
 }
 
-/**
- * @brief Map::setCurrentPose set the pose of the robot in the map
- * @param p the current pose of the robot
- */
 void Map::setCurrentPose(Pose& p)
 {
   currentPose = p;
 }
 
-/**
- * @brief Map::getTotalFreeCells calculate the number of free cells in the map
- * @return the number of free cells
- */
 long Map::getTotalFreeCells(){
 
   totalFreeCells = numGridCols * numGridRows;
@@ -530,15 +408,10 @@ long Map::getTotalFreeCells(){
   return totalFreeCells;
 }
 
-/** * @brief Map::decreaseFreeCells decrease the number of the cells that still must be covered
- */
 void Map::decreaseFreeCells(){
   this->totalFreeCells--;
 }
 
-/**
- * @brief Map::drawVisitedCells save on disk an image of the map
- */
 void Map::drawVisitedCells()
 {
   std::ofstream resultMap("/home/pulver/Desktop/MCDM/result_free_cells.pgm", ios::out);
@@ -569,10 +442,6 @@ void Map::drawVisitedCells()
 
 }
 
-/**
- * @brief Map::drawRFIDScan save on disk an image representing the scanned environment. Lighter zone represents
- * higher probability for the presence of the RFID tag
- */
 void Map::drawRFIDScan()
 {
   std::ofstream resultMap("/home/pulver/Desktop/MCDM/rfid_result.pgm", ios::out);
@@ -586,7 +455,7 @@ void Map::drawRFIDScan()
       for(long col = 0; col < columns; ++col)
       {
           int value = getRFIDGridValue(row, col);
-//      cout << value << endl;
+  //      cout << value << endl;
           value = std::min(value, 255);
           value = std::max(value, 0);
           resultMap << value  << " ";
@@ -596,10 +465,6 @@ void Map::drawRFIDScan()
   resultMap.close();
 }
 
-/**
- * @brief Map::drawRFIDScan save on disk an image representing the scanned environment. Lighter zone represents
- * higher probability for the presence of the RFID tag
- */
 void Map::drawRFIDGridScan(RFIDGridmap grid)
 {
   std::ofstream resultMap("/home/pulver/Desktop/MCDM/rfid_grid_scan.pgm", ios::out);
@@ -613,7 +478,7 @@ void Map::drawRFIDGridScan(RFIDGridmap grid)
     for(long col = 0; col < columns; ++col)
     {
       int value = static_cast<int>(grid.getCell(row, col));
-//     cout << value << endl;
+  //     cout << value << endl;
       value = std::min(value, 255);
       value = std::max(value, 0);
       if (value <= 200) value = std::max(value - 100, 0);
@@ -623,10 +488,7 @@ void Map::drawRFIDGridScan(RFIDGridmap grid)
 
   resultMap.close();
 }
-/**
- * @brief Map::printVisitedCells save on disk the list of all the cells visited by the robot
- * @param history: the list of visited cells
- */
+
 void Map::printVisitedCells(vector< string >& history)
 {
   std::ofstream txt("/home/pulver/Desktop/MCDM/finalResult.txt");
@@ -671,21 +533,13 @@ void Map::printVisitedCells(vector< string >& history)
 
 }
 
-/**
- * @brief Map::getRelativeTagCoord calculate the relative position of the RFID tag wrt the antenna
- * @param absTagX: absolute x-position of the RFID tag
- * @param absTagY: absolute x-position of the RFID tag
- * @param antennaX: absolute x-position of the antenna
- * @param antennaY: absolute y-position of the antenna
- * @return a pair containing the relative position of the tag to the antenna
- */
 std::pair<int, int> Map::getRelativeTagCoord(int absTagX, int absTagY, int antennaX, int antennaY)
 {
-//  cout << "TAG = [" << absTagX << "," << absTagY <<"] -- ANTENNA = [" << antennaX << "," << antennaY << "]" << endl;
+  //  cout << "TAG = [" << absTagX << "," << absTagY <<"] -- ANTENNA = [" << antennaX << "," << antennaY << "]" << endl;
   std::pair<int, int> relTagCoord;
   relTagCoord.first = std::abs(absTagX - antennaX);
   relTagCoord.second = std::abs(absTagY - antennaY);
-//  cout << "RELTAG = [" << relTagCoord.first << "," << relTagCoord.second << "]" << endl;
+  //  cout << "RELTAG = [" << relTagCoord.first << "," << relTagCoord.second << "]" << endl;
   return relTagCoord;
 }
 
@@ -694,6 +548,7 @@ std::pair<int, int> Map::findTag()
 {
   std::pair<int,int> tag(0,0);
   double powerRead = 0.0;
+  int value = 0;
   for(long row = 0; row < numPathPlanningGridRows; row++)
   {
     for(long col = 0; col < numPathPlanningGridCols ; col++)
@@ -703,7 +558,7 @@ std::pair<int, int> Map::findTag()
       double local_power = 0.0;
       for (int i = -5; i <= 5; i++){
         for (int j = -5; j <= 5; j++){
-          int value = (getRFIDGridValue(row + i, col + j));
+          value = (getRFIDGridValue(row + i, col + j));
           // cout << value << endl;
           // value = std::min(value, 255);
           // value = std::max(value, 0);
@@ -749,13 +604,13 @@ std::pair<int, std::pair<int, int>> Map::findTagfromGridMap(RFIDGridmap grid)
         tag.second = col;
       }
 
-//       if(grid.getCell(row, col) > powerRead)
-//       {
-//         powerRead = getRFIDGridValue(row, col);
-// //        cout << "Value read: " << powerRead << endl;
-//         tag.first = row;
-//         tag.second = col;
-//       }
+  //       if(grid.getCell(row, col) > powerRead)
+  //       {
+  //         powerRead = getRFIDGridValue(row, col);
+  // //        cout << "Value read: " << powerRead << endl;
+  //         tag.first = row;
+  //         tag.second = col;
+  //       }
     }
   }
   std::pair<int, std::pair<int, int>> final_return (powerRead, tag);

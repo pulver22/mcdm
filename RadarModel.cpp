@@ -1,8 +1,6 @@
 #include "RadarModel.hpp"
-//#include <unsupported/Eigen/SpecialFunctions>
 
-using namespace std;
-using namespace grid_map;
+
 
 // http://eigen.tuxfamily.org/dox/AsciiQuickReference.txt
 
@@ -95,8 +93,8 @@ RadarModel::RadarModel(const double resolution, const double sigma_power, const 
             _rfid_belief_maps.at("X",*iterator) = point.x();
             _rfid_belief_maps.at("Y",*iterator) = point.y();
         }
-
-    }
+}
+    
 void RadarModel::initRefMap(const std::string imageURI){
         std::cout<<"\nIniting Ref map."  <<std::endl;
 
@@ -266,9 +264,6 @@ Eigen::MatrixXf RadarModel::getFriisMatSlow(double x_m, double y_m, double orien
 
 }
 
-
-
-
 Eigen::MatrixXf RadarModel::getFriisMatFast(double x_m, double y_m, double orientation_deg, double freq){
   // https://eigen.tuxfamily.org/dox/AsciiQuickReference.txt
   // https://github.com/ANYbotics/grid_map
@@ -412,8 +407,6 @@ Eigen::MatrixXf RadarModel::getPhaseMat(double x_m, double y_m, double orientati
 }
 
 void RadarModel::getImage(std::string layerName, std::string fileURI){
-    //std::cout << "Still running at line: " << __LINE__<< std::endl;
-
     getImage(&_rfid_belief_maps, layerName, fileURI);
 }
 
@@ -630,15 +623,11 @@ void RadarModel::PrintRecPower(std::string fileURI, double f_i){
 
 void RadarModel::PrintRecPower(std::string fileURI,double x_m, double y_m, double orientation_deg,  double f_i){
     // create a copy of the average values
-    //std::cout << "Still running at line: " << __LINE__<< std::endl;
     Eigen::MatrixXf av_mat = getFriisMat(x_m, y_m, orientation_deg, f_i);
-
-    //std::cout << "Still running at line: " << __LINE__<< std::endl;
     PrintProb(fileURI, &av_mat);
-    //std::cout << "Still running at line: " << __LINE__<< std::endl;
 }
 
-void RadarModel::PrintPhase(std::string fileURI,  double f_i){            
+void RadarModel::PrintPhase(std::string fileURI,  double f_i){
     PrintPhase(fileURI, 0,0,0, f_i);    
 }
 
@@ -902,7 +891,6 @@ void RadarModel::saveProbMapDebug(std::string savePATH, int tag_num, int step, d
   //   fileURI += std::string(buffer) +"_rxPower_S";
   //   n=sprintf (buffer, "%03d", step);
   //   fileURI += std::string(buffer)+ ".png";
-
   //   cv::imwrite( fileURI, image );
   // }
 }
@@ -1115,6 +1103,7 @@ double RadarModel::received_power_friis_polar(double tag_r, double tag_h, double
     return rxPower;
 }
 
+
 double RadarModel::phaseDifference(double tag_x, double tag_y, double freq) {
   double phi;
   double r;
@@ -1125,6 +1114,7 @@ double RadarModel::phaseDifference(double tag_x, double tag_y, double freq) {
   return phase;
 
 }
+
 
 std::pair<int, std::pair<int, int>> RadarModel::findTagFromBeliefMap(int num_tag){
   
@@ -1226,12 +1216,12 @@ void RadarModel::clearObstacleCellsRFIDMap(){
   }
 }
 
+
 ///////////////  ADD MEASUREMENT METHOD ////////////////////////////////////////
 
 //So, robot at pr (x,y,orientation) (long, long, int) receives rxPower,phase,freq from tag i . 
-//TODO: this is a simplistic model that just "ignores" walls: but they do have absortion and reduce received power at their locations...
+//NOW WITH WALLS.....
 void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, double rxPower, double phase, double freq, int i){
-
   Eigen::MatrixXf rxPw_mat, likl_mat;
   std::string tagLayerName;
 
@@ -1252,58 +1242,18 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg, 
   // this should remove prob at obstcles
   Eigen::MatrixXf obst_mat = _rfid_belief_maps["ref_map"];
   likl_mat = (obst_mat.array()==_free_space_val).select(likl_mat,0); 
-  
   // normalize in this space:
   double bayes_den = likl_mat.sum();
+  // _rfid_belief_maps.add("temp", 0.0);
+  // _rfid_belief_maps["temp"] = likl_mat;
+  // double bayes_den = getNormalizingFactorBayesFullMap(x_m, y_m, orientation_rad, tagLayerName);
+  
   if (bayes_den>0){
       likl_mat = likl_mat/bayes_den;
       // now do bayes ...  everywhere
       _rfid_belief_maps[tagLayerName] = _rfid_belief_maps[tagLayerName].cwiseProduct(likl_mat);
+      // Normalise
+      // _rfid_belief_maps[tagLayerName] = _rfid_belief_maps[tagLayerName]/bayes_den;
   }
   normalizeRFIDLayer(tagLayerName);
-
-}
-
-
-// Adapted from
-// https://gitlab.math.ethz.ch/NumCSE/NumCSE/blob/3c723d06ffacab3dc45726ad0a95e33987dc35aa/Utils/meshgrid.hpp
-
-//! Generates a mesh, just like Matlab's meshgrid
-//  Template specialization for column vectors (Eigen::VectorXd)
-//  in : x, y column vectors 
-//       X, Y matrices, used to save the mesh
-template <typename Scalar>
-void RadarModel::meshgrid(const Eigen::Matrix<Scalar, -1, 1>& x, 
-              const Eigen::Matrix<Scalar, -1, 1>& y,
-              Eigen::Matrix<Scalar, -1, -1>& X,
-              Eigen::Matrix<Scalar, -1, -1>& Y) {
-  const long nx = x.size(), ny = y.size();
-  X.resize(ny, nx);
-  Y.resize(ny, nx);
-  for (long i = 0; i < ny; ++i) {
-    X.row(i) = x.transpose();
-  }
-
-  // 
-  // for (long j = 0; j < nx; ++j) {
-  //   Y.col(j) = y;
-  // }
-  for (long j = 0; j < nx; ++j) {
-    Y.col(j) = y.reverse();
-  }
-}
-
-
-//! Generates a mesh, just like Matlab's meshgrid
-//  Template specialization for row vectors (Eigen::RowVectorXd)
-//  in : x, y row vectors 
-//       X, Y matrices, used to save the mesh
-template <typename Scalar>
-void RadarModel::meshgrid(const Eigen::Matrix<Scalar, 1, -1>& x, 
-              const Eigen::Matrix<Scalar, 1, -1>& y,
-              Eigen::Matrix<Scalar, -1, -1>& X,
-              Eigen::Matrix<Scalar, -1, -1>& Y) {
-  Eigen::Matrix<Scalar, -1, 1> xt = x.transpose(),
-                               yt = y.transpose();
-  meshgrid(xt, yt, X, Y);
 }

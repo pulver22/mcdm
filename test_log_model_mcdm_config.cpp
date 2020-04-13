@@ -5,7 +5,10 @@
 #include <vector>
 #include <boost/random.hpp>
 #include <boost/nondet_random.hpp>
-#include <chrono>
+#include "pose.h"
+
+
+
 
 
 
@@ -19,19 +22,8 @@ const int NARGS = 8;
 
 
 /*
-// Create animations ...
+ffmpeg -r 20 -f image2 -s 1920x1080 -start_number 009 -i T3_S%03d_tempMap.png -vcodec libx264 -crf 25  -pix_fmt yuv420p test3.mp4
 
-ffmpeg -r 10 -f image2 -s 1920x1080 -start_number 009 -i T0_S%03d_tempMap.png -vcodec libx264 -crf 25  -pix_fmt yuv420p test0.mp4
-
-ffmpeg -r 10 -f image2 -s 1920x1080 -start_number 009 -i T1_S%03d_tempMap.png -vcodec libx264 -crf 25  -pix_fmt yuv420p test1.mp4
-
-ffmpeg -r 10 -f image2 -s 1920x1080 -start_number 009 -i T2_S%03d_tempMap.png -vcodec libx264 -crf 25  -pix_fmt yuv420p test2.mp4
-
-ffmpeg -r 10 -f image2 -s 1920x1080 -start_number 009 -i T3_S%03d_tempMap.png -vcodec libx264 -crf 25  -pix_fmt yuv420p test3.mp4
-
-
-
-// gimp coords to RIC coords
 ./mcdm/Images/mfc_test.pgm
 120 p x 200 p (gimp) == 200 p x 120 p (ric) 
 
@@ -47,8 +39,8 @@ int main(int argc, char **argv)
   std::string mapFileURI = "/home/pulver/mcdm/Images/mfc_test.pgm";
   double nx = 10;
   double ny = 10;
-  double resolution = 0.1;
-  double sigma_power = 60;
+  double resolution = 1;
+  double sigma_power = 40;
   double sigma_phase = 0.2;
   double txtPower = -10;
   int i = 0;
@@ -68,6 +60,7 @@ int main(int argc, char **argv)
       cout <<"DEFAULTS! I will execute call equivalent to:" << std::endl;
       cout << argv[0] << " " << mapFileURI  << " " << nx  << " " << ny  << " " << 
               resolution  << " " << sigma_power  << " " << sigma_phase  << " " << txtPower << " " << updateMode << std::endl;
+
   }
   cout <<"PARAMETERS: " << std::endl;
   // Radio model  ........................................................
@@ -90,7 +83,7 @@ int main(int argc, char **argv)
   } else if (updateMode=='G'){
     cout <<"No active areas used";
   }   
-  cout <<  ") " << std::endl;
+  cout <<  ") BUT NOT USED ANYMORE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
   
   cout << std::endl;
   
@@ -100,20 +93,20 @@ int main(int argc, char **argv)
   // 0,0 is at upper left of the map, with X increasing down and Y increasing right.
 
   //green
-  double absTag1_X = 37 * resolution;
-  double absTag1_Y = 58 * resolution;
+  double absTag1_X = 137 * resolution;
+  double absTag1_Y = 73 * resolution;
 
   //red
-  double absTag2_X = 44 * resolution;
-  double absTag2_Y = 31 * resolution;
+  double absTag2_X = 128 * resolution;
+  double absTag2_Y = 78 * resolution;
   
   // blue
-  double absTag3_X = 130 * resolution;
-  double absTag3_Y = 45 * resolution;
+  double absTag3_X = 113 * resolution;
+  double absTag3_Y = 78 * resolution;
   
   // yellow
-  double absTag4_X = 150 * resolution;
-  double absTag4_Y =  80 * resolution;
+  double absTag4_X = 108 * resolution;
+  double absTag4_Y = 54 * resolution;
 
   std::vector<std::pair<double,double>> tags_coord;
   tags_coord.push_back(std::make_pair(absTag1_X, absTag1_Y));
@@ -168,12 +161,12 @@ int main(int argc, char **argv)
   //rm.PrintBothProb("/tmp/test/prob_95db_45deg_f_920.png", -95, 45.0*M_PI/180.0, 920e6);
   
   // simple scenario
-  int NumReadings;
+  int NumReadings = 50;
   // Unit is meters. We multiply pixels by resolution to get them.
-  double start_x = 125 * resolution;
-  double start_y = 65 * resolution;
-  double end_x = 127 * resolution;
-  double end_y = 46 * resolution;
+  double start_x = 41 * resolution;
+  double start_y = 55 * resolution;
+  double end_x = 137 * resolution;
+  double end_y = 75 * resolution;
   
   double robot_y;
   double robot_x;
@@ -187,68 +180,14 @@ int main(int argc, char **argv)
   for (int t = 0; t < tags_coord.size(); t++){
     rm.saveProbMapDebug("/tmp/test/",t,0,start_x,start_y, robot_head0);
   }
-
-  // build sampling poses
-  std::vector<std::pair<double,double>> robot_poses;
-  // 5 samples from start point and ing a straight line.
-  NumReadings = 5;
+  // let's do 10 samples from start point and ing a straight line.
   for (int i=0;i<NumReadings;i++){
-      // current robot position, map coordinates.   
-      robot_x = start_x + ( (end_x - start_x) * ( i ) / (NumReadings - 1.0) );
+      // current robot position, map coordinates.
       robot_y = start_y + ( (end_y - start_y) * ( i ) / (NumReadings - 1.0) );
-      robot_poses.push_back(std::make_pair(robot_x, robot_y));
-  }
-
-  // other 10.
-  NumReadings = 10;
-  start_x = end_x;
-  start_y = end_y;
-  end_x = 45 * resolution;
-  end_y = 32 * resolution;
-  for (int i=0;i<NumReadings;i++){
-      // current robot position, map coordinates.   
       robot_x = start_x + ( (end_x - start_x) * ( i ) / (NumReadings - 1.0) );
-      robot_y = start_y + ( (end_y - start_y) * ( i ) / (NumReadings - 1.0) );
-      robot_poses.push_back(std::make_pair(robot_x, robot_y));
-  }
-
-  // other 5.
-  NumReadings = 5;
-  start_x = end_x;
-  start_y = end_y;
-  end_x = 40 * resolution;
-  end_y = 55 * resolution;
-  for (int i=0;i<NumReadings;i++){
-      // current robot position, map coordinates.   
-      robot_x = start_x + ( (end_x - start_x) * ( i ) / (NumReadings - 1.0) );
-      robot_y = start_y + ( (end_y - start_y) * ( i ) / (NumReadings - 1.0) );
-      robot_poses.push_back(std::make_pair(robot_x, robot_y));
-  }
-
-  // other 10.
-  NumReadings = 10;
-  start_x = end_x;
-  start_y = end_y;
-  end_x = 125 * resolution;
-  end_y = 75 * resolution;
-  for (int i=0;i<NumReadings;i++){
-      // current robot position, map coordinates.   
-      robot_x = start_x + ( (end_x - start_x) * ( i ) / (NumReadings - 1.0) );
-      robot_y = start_y + ( (end_y - start_y) * ( i ) / (NumReadings - 1.0) );
-      robot_poses.push_back(std::make_pair(robot_x, robot_y));
-  }
-
-
-std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-int num_ops = 0;
-  // let's do the path ...
- for (int i = 0; i < robot_poses.size(); i++){
-        robot_x = robot_poses[i].first;
-        robot_y =  robot_poses[i].second;
-
-      // 8 orientations at each pose
-      for (int h=0;h<9;h++){
-        robot_head = robot_head0 + (2.0*M_PI* h/9);
+      
+      for (int h=0;h<18;h++){
+        robot_head = robot_head0 + (2.0*M_PI*h/18);
         // std::cout<<"Robot at (" << robot_x << ", " << robot_y <<") m., (" << (robot_head*180.0/M_PI) << ") deg." << std::endl;
         
         //for each tag:
@@ -266,16 +205,26 @@ int num_ops = 0;
             // std::cout<<"\t\t  rel position (" << tag_x << ", " << tag_y << ") m. " <<std::endl;
 
             // get expected tag power with friis
-            f_i = freqs[distr(generator)]; 
-            
+            f_i = freqs[distr(generator)];             
             rxPower = rm.received_power_friis_with_obstacles(robot_x, robot_y, robot_head, tags_coord[t].first , tags_coord[t].second, 0, f_i);
-            num_ops++;
 
             // get expected phase from tag
             phase = rm.phaseDifference( tag_x,  tag_y,  f_i);
             //std::cout<<"\tReading at freq (" << f_i/1e6<< " MHz): (" << (rxPower+30) << ") dBm. ( " << phase << ") rads. " << std::endl << std::endl;
 
+            Pose robot_pose = Pose(robot_x, robot_y, robot_head, 15, 180);
+            std::pair<int, int> relTagCoord(absTag3_X, absTag3_Y);
+            // Cut the received power if there are obstacles on the way
+            // cout << "B: " << rxPower << endl;
+            // cout << "R: [" << robot_pose.getX() << "," << robot_pose.getY() << "], T: [" << relTagCoord.first << "," << relTagCoord.second << "]" << endl;
+            // MFC NOT NEEDED ANYMORE
+            //rm.cutPowerBasedObstacleDistribution(&rxPower, &robot_pose, relTagCoord);
+
+            // cout << "A: " << rxPower << endl;
+            cout << robot_x << " " << robot_y << " " << robot_head << endl;
+
             rm.addMeasurement(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
+            
 
             //print maps
             //cout  << "Saving tag distribution maps... "<< endl;
@@ -285,13 +234,6 @@ int num_ops = 0;
         //std::cout<<"Finished reading. " << std::endl << std::endl;
     }
   }
-
-  std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-  std::chrono::duration<double> time_span =  std::chrono::duration_cast<std::chrono::duration<double>>(end - begin);
-  std::cout << num_ops << " measurements took " 
-                      << time_span.count() << " [secs]" << std::endl 
-                      << std::endl;
-                      
   //print maps
   //cout  << "Saving tag distribution maps... "<< endl;
   rm.saveProbMaps("/tmp/test/");
@@ -304,7 +246,7 @@ int num_ops = 0;
 
   // lets play with the weights
   double w_i, w_max;
-  double prec = 3;
+  double prec = 10;
   std::cout << std::fixed;
   std::cout << std::setprecision(2);
 
