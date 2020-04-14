@@ -32,7 +32,8 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-#include "pose.h"
+// mfc: NO. Do not mix different functionalities in different modules.
+//#include "pose.h"
 //#include "data_struct.h"
 
 using namespace std;
