@@ -272,8 +272,9 @@ int num_ops = 0;
   }
 
   std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+  std::chrono::duration<double> time_span =  std::chrono::duration_cast<std::chrono::duration<double>>(end - begin);
   std::cout << num_ops << " measurements took " 
-                      << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " [msecs]" << std::endl 
+                      << time_span.count() << " [secs]" << std::endl 
                       << std::endl;
                       
   //print maps

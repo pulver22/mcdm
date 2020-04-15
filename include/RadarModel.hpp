@@ -7,10 +7,13 @@
 
 #include "Eigen/Eigen" // AFTER GRIDMAP!
 #include <Eigen/Core>
+#include <Eigen/Dense>
 #include <unsupported/Eigen/Splines>
 
 // Math
 #include <cmath>
+#include <algorithm>
+#include <functional>
 #include <iostream>
 #include <math.h>
 #include <vector>
@@ -28,6 +31,9 @@
 
 using namespace std;
 using namespace grid_map;
+using namespace std::placeholders;
+using Eigen::MatrixXf;
+
 
 // constants ..................................................................
 // We mostly use UPM frog 3D.
@@ -228,7 +234,6 @@ public:
    */
   std::string getLayerName(double freq_i);
   /////////////////////
-
   /**
    * returns a range vector FROM start TO stop (included) in step increments
    * @param  start min Value in vector

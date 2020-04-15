@@ -37,6 +37,10 @@ double SplineFunction::interpRad(double x) const {
   return interpDeg(x * 180.0 / M_PI);
 }
 
+float SplineFunction::interpRadf(float x) const {
+    return (float) interpDeg(( (double) x) *180.0/M_PI); 
+}
+
 // Helpers to scale X values down to [0, 1]
 double SplineFunction::scaled_value(double x) const {
   return (x - x_min) / (x_max - x_min);
@@ -52,43 +56,52 @@ SplineFunction::scaled_values(Eigen::VectorXd const &x_vec) const {
 
 RadarModel::RadarModel(){};
 
-RadarModel::RadarModel(const double resolution, const double sigma_power,
-                       const double sigma_phase, const double txtPower,
-                       const std::vector<double> freqs,
-                       const std::vector<std::pair<double, double>> tags_coords,
-                       const std::string imageFileURI) {
-  _sigma_power = sigma_power;
-  _sigma_phase = sigma_phase;
-  _txtPower = txtPower;
-  _freqs = freqs;
-  _resolution = resolution;
-  _tags_coords = tags_coords;
-  _numTags = tags_coords.size();
+RadarModel::RadarModel(const double resolution, const double sigma_power, const double sigma_phase, const double txtPower, const std::vector<double> freqs, const std::vector<std::pair<double,double>> tags_coords, const std::string imageFileURI ) {
+        _sigma_power = sigma_power;
+        _sigma_phase = sigma_phase;
+        _txtPower = txtPower;
+        _freqs = freqs;
+        _resolution = resolution;
+        _tags_coords = tags_coords;
+        _numTags =  tags_coords.size();
 
-  initRefMap(imageFileURI);
+        initRefMap(imageFileURI);
 
-  // build spline to interpolate antenna gains;
-  std::vector<double> xVec(ANTENNA_ANGLES_LIST, ANTENNA_ANGLES_LIST + 25);
-  Eigen::VectorXd xvals =
-      Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(xVec.data(), xVec.size());
-  std::vector<double> yVec(ANTENNA_LOSSES_LIST, ANTENNA_LOSSES_LIST + 25);
-  Eigen::VectorXd yvals =
-      Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(yVec.data(), yVec.size());
+        // build spline to interpolate antenna gains;
+        std::vector<double> xVec(ANTENNA_ANGLES_LIST, ANTENNA_ANGLES_LIST + 25);
+        Eigen::VectorXd xvals = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(xVec.data(), xVec.size());
+        std::vector<double> yVec(ANTENNA_LOSSES_LIST, ANTENNA_LOSSES_LIST + 25);
+        Eigen::VectorXd yvals= Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(yVec.data(), yVec.size());
+        
+        _antenna_gains= SplineFunction(xvals, yvals);
+      
+        // rfid beliefs global map: One layer per tag
+        std::string layerName;
+        for(int i = 0; i <_numTags; ++i) {
+           layerName = getTagLayerName(i);
+           _rfid_belief_maps.add(layerName, 0.5);  // the cells need to have a uniform distribution at the beginning
+        }
+        clearObstacleCellsRFIDMap();
+        normalizeRFIDMap();
+        debugInfo();
 
-  _antenna_gains = SplineFunction(xvals, yvals);
+        // mesh grid layers
+        _rfid_belief_maps.add("X", 0);  
+        _rfid_belief_maps.add("Y", 0);  
+        Position point;
+        Index ind;
+        for (grid_map::GridMapIterator iterator(_rfid_belief_maps); !iterator.isPastEnd(); ++iterator) {
+            // matrix indexes...
+            ind = *iterator;
+            // get cell center of the cell in the map frame.            
+            _rfid_belief_maps.getPosition(ind, point);
+            // that is where the tag supposedly is in map coordinates
+            _rfid_belief_maps.at("X",*iterator) = point.x();
+            _rfid_belief_maps.at("Y",*iterator) = point.y();
+        }
 
-  // rfid beliefs global map: One layer per tag
-  std::string layerName;
-  for (int i = 0; i < _numTags; ++i) {
-    layerName = getTagLayerName(i);
-    _rfid_belief_maps.add(
-        layerName,
-        0.5); // the cells need to have a uniform distribution at the beginning
-  }
-  clearObstacleCellsRFIDMap();
-  normalizeRFIDMap();
-  debugInfo();
-}
+    }
+
 
 void RadarModel::initRefMap(const std::string imageURI) {
   std::cout << "\nIniting Ref map." << std::endl;
@@ -207,39 +220,50 @@ void RadarModel::saveProbMaps(std::string savePath) {
 
 //////////////////////////  GETTERS
 ///////////////////////////////////////////////////////
+Eigen::MatrixXf  RadarModel::getPowProbCond(double rxPw,  double f_i){
+  return getPowProbCond( rxPw,  0,  0,  0,  f_i);
+}
 
-Eigen::MatrixXf RadarModel::getPowProbCond(double rxPw, double f_i) {
-  Eigen::MatrixXf PW_mat = getFriisMat(0, 0, 0, f_i);
+Eigen::MatrixXf  RadarModel::getPowProbCond(double rxPw, double x_m, double y_m, double orientation_deg, double f_i){
+  Eigen::MatrixXf PW_mat = getFriisMat(x_m,y_m,orientation_deg, f_i);
   Eigen::MatrixXf ans = getProbCond(PW_mat, rxPw, _sigma_power);
-
   return ans;
 }
 
-Eigen::MatrixXf RadarModel::getPhaseProbCond(double ph_i, double f_i) {
-  Eigen::MatrixXf PH_mat = getPhaseMat(0, 0, 0, f_i);
-  Eigen::MatrixXf ans = getProbCond(PH_mat, ph_i, _sigma_phase);
 
-  return ans;
+Eigen::MatrixXf  RadarModel::getPhaseProbCond(double rxPw,  double f_i){
+  return getPhaseProbCond( rxPw,  0,  0,  0,  f_i);
 }
 
-Eigen::MatrixXf RadarModel::getProbCond(Eigen::MatrixXf X_mat, double x,
-                                        double sig) {
+Eigen::MatrixXf  RadarModel::getPhaseProbCond(double ph_i, double x_m, double y_m, double orientation_deg, double f_i){
+    Eigen::MatrixXf PH_mat = getPhaseMat(x_m,y_m,orientation_deg, f_i);
+    Eigen::MatrixXf ans = getProbCond(PH_mat, ph_i, _sigma_phase);
+    
+    return ans;
+} 
 
+Eigen::MatrixXf  RadarModel::getProbCond(Eigen::MatrixXf X_mat, double x, double sig){
+      
   Eigen::MatrixXf likl_mat;
-
+  
   // gaussian pdf
-  // fddp(x,mu,sigma) = exp( -0.5 * ( (x - mu)/sigma )^2 )   /   (sigma * sqrt(2
-  // pi ))
-  likl_mat = (x - X_mat.array()) / _sigma_power;
-  likl_mat = -0.5 * (likl_mat.array().pow(2.0));
-  likl_mat = likl_mat.array().exp() / (_sigma_power * sqrt(2.0 * M_PI));
+  // fddp(x,mu,sigma) = exp( -0.5 * ( (x - mu)/sigma )^2 )   /   (sigma * sqrt(2 pi )) 
+  likl_mat = ( x - X_mat.array() ) /_sigma_power;
+  likl_mat = -0.5 * ( likl_mat.array().pow(2.0) );
+  likl_mat = likl_mat.array().exp() / ( _sigma_power * sqrt( 2.0 * M_PI ) ) ;
 
   return likl_mat;
 }
 
-Eigen::MatrixXf RadarModel::getFriisMat(double x_m, double y_m,
-                                        double orientation_deg, double freq) {
+Eigen::MatrixXf RadarModel::getFriisMat(double x_m, double y_m, double orientation_deg, double freq){
+  if (useFast)
+    return getFriisMatFast(x_m, y_m, orientation_deg, freq);
+  else
+    return getFriisMatSlow(x_m, y_m, orientation_deg, freq);
+}
 
+
+Eigen::MatrixXf RadarModel::getFriisMatSlow(double x_m, double y_m, double orientation_deg, double freq){
   Eigen::MatrixXf rxPw_mat;
   double tag_x, tag_y, rxP;
   Position glob_point;
@@ -268,9 +292,111 @@ Eigen::MatrixXf RadarModel::getFriisMat(double x_m, double y_m,
   return rxPw_mat;
 }
 
-Eigen::MatrixXf RadarModel::getPhaseMat(double x_m, double y_m,
-                                        double orientation_deg, double freq) {
+Eigen::MatrixXf RadarModel::getFriisMatFast(double x_m, double y_m, double orientation_deg, double freq){
+  // https://eigen.tuxfamily.org/dox/AsciiQuickReference.txt
+  // https://github.com/ANYbotics/grid_map
 
+
+  Eigen::MatrixXf X, Y, R, A, propL, antL,totalLoss, rxPower;
+  Eigen::VectorXf x,y;
+  Index i00,i0M,iNM,iN0, iRobot;
+  double lambda =  C/freq;
+  double orientation_rad = orientation_deg * M_PI/180.0;
+  
+  // rotate and translate
+  Eigen::MatrixXf X0 = _rfid_belief_maps["X"];
+  Eigen::MatrixXf Y0 = _rfid_belief_maps["Y"];
+  
+  double cA =cos(orientation_rad);
+  double sA =sin(orientation_rad);
+
+  X =   ( X0 * cA + Y0 * sA).array() - (x_m*cA + y_m*sA);
+  Y =   (-X0 * sA + Y0 * cA).array() + (x_m*sA - y_m*cA);  
+
+  // create R,Ang matrixes
+  R = (X.array().square() + Y.array().square()).array().sqrt();
+  A = Y.binaryExpr(X, std::ptr_fun(atan2f)).array();
+
+  // 1. Create a friis losses propagation matrix without taking obstacles        
+  auto funtor = std::bind(&SplineFunction::interpRadf, _antenna_gains, _1) ;
+  antL =  TAG_LOSSES + A.unaryExpr( funtor ).array();   
+  propL = LOSS_CONSTANT - (20.0 * (R * freq).array().log10()).array() ;
+
+  // signal goes from antenna to tag and comes back again, so we double the losses
+  totalLoss =  2.0*antL + 2.0*propL ;
+  
+  rxPower = totalLoss.array() + _txtPower;
+  // this should remove points where friis is not applicable
+  rxPower = (R.array()>2.0*lambda).select(rxPower,_txtPower); 
+  
+  //2. Create a NaN filled matrix for obstacles loses
+  _rfid_belief_maps.add("obst_losses",NAN);
+
+  // iterate over four lines to fill obst_losses layer ...................  
+  // line 1: (0,0) to (0,M)
+  i00 =grid_map::Index(0,0);
+  i0M =grid_map::Index(0,_Ncol-1);
+  _rfid_belief_maps.getIndex(Position( x_m, y_m), iRobot);
+  addLossesTillEdgeLine(i00, i0M, iRobot );
+
+  // line 2: (0,M) to (N,M)
+  iNM =grid_map::Index(_Nrow-1,_Ncol-1);
+  addLossesTillEdgeLine(i0M, iNM, iRobot );
+
+  // line 3: (N,M) to (N,0)
+  iN0 =grid_map::Index(_Nrow-1,0);
+  addLossesTillEdgeLine(iNM, iN0, iRobot );
+
+  // line 4: (N,0) to (0,0)
+  addLossesTillEdgeLine(iN0, i00, iRobot );
+
+  // And finally add obstacle losses and propagation losses  
+  rxPower = rxPower   - _rfid_belief_maps.get("obst_losses");
+  //std::cout << "Still running at line: " << __LINE__<< std::endl;
+
+  // this should remove points where received power is too low
+  rxPower = (rxPower.array()>SENSITIVITY).select(rxPower,SENSITIVITY); 
+
+  // mfc trick used to see temp matrixes as images
+  //_rfid_belief_maps.add("obst_losses",rxPower);
+  return rxPower;
+
+}
+
+void RadarModel::addLossesTillEdgeLine(Index edge_index_start,   Index edge_index_end,   Index antenna_index){
+  Index edge_index;
+  
+  double obst_loss_ray, obst_cell_inc;
+
+  // Each "wall" adds around 3dB losses. A wall is ~15cm thick, then each cell adds  (3 * resolution / 0.15) dB losses
+  obst_cell_inc = 20.0 * _resolution; // db 
+
+  // move along the map edge defined by those two indexes
+  for (grid_map::LineIterator edge_iterator(_rfid_belief_maps, edge_index_start, edge_index_end); !edge_iterator.isPastEnd(); ++edge_iterator) {
+    edge_index = *edge_iterator; 
+    //  - initializate cummulated losses to 0.
+    obst_loss_ray = 0;
+
+    //Now iterate from xm,ym to the point xi,yi in the edge
+    for (grid_map::LineIterator loss_ray_iterator(_rfid_belief_maps, antenna_index, edge_index); !loss_ray_iterator.isPastEnd(); ++loss_ray_iterator) {
+
+      // if the cell is obstacle, add L to cummulated_L
+      if (( _rfid_belief_maps.at("ref_map", *loss_ray_iterator) != _free_space_val  )){
+        obst_loss_ray += obst_cell_inc;
+      }
+
+      // obstacles losses in cell is cummulated_L. Avoid multiple edits   
+      if (( _rfid_belief_maps.at("obst_losses", *loss_ray_iterator) != NAN  )){
+        _rfid_belief_maps.at("obst_losses", *loss_ray_iterator) = obst_loss_ray; 
+      }      
+
+    }
+  }
+
+}
+
+Eigen::MatrixXf RadarModel::getPhaseMat(double x_m, double y_m, double orientation_deg, double freq){
+  
   Eigen::MatrixXf rxPh_mat;
   double tag_x, tag_y, tag_r, tag_h, rxPh;
   Position glob_point;
@@ -308,25 +434,16 @@ Eigen::MatrixXf RadarModel::getPhaseMat(double x_m, double y_m,
   return rxPh_mat;
 }
 
-void RadarModel::getImage(std::string layerName, std::string fileURI) {
-  getImage(&_rfid_belief_maps, layerName, fileURI);
+void RadarModel::getImage(std::string layerName, std::string fileURI){
+    //std::cout << "Still running at line: " << __LINE__<< std::endl;
+
+    getImage(&_rfid_belief_maps, layerName, fileURI);
 }
 
-void RadarModel::getImage(GridMap *gm, std::string layerName,
-                          std::string fileURI) {
-
+void RadarModel::getImage(GridMap* gm,std::string layerName, std::string fileURI){
   // Convert to image.
-  cv::Mat image;
-  const float minValue = (*gm)[layerName].minCoeff();
-  const float maxValue = (*gm)[layerName].maxCoeff();
-
-  GridMapCvConverter::toImage<unsigned char, 3>(*gm, layerName, CV_8UC3,
-                                                minValue, maxValue, image);
-
-  // In order to store a image with ric-coords, we need to flip
-  cv::flip(image, image, -1);
-
-  cv::imwrite(fileURI, image);
+  cv::Mat image = layerToImage(gm, layerName);
+  cv::imwrite( fileURI, image );
 }
 
 double RadarModel::getTotalWeight(int tag_i) {
@@ -402,18 +519,13 @@ void RadarModel::getImageDebug(GridMap *gm, std::string layerName,
   // plots circles in the edges of the corresponding layer
 
   // Convert to image.
-  cv::Mat image;
-  const float minValue = (*gm)[layerName].minCoeff();
-  const float maxValue = (*gm)[layerName].maxCoeff();
-
-  GridMapCvConverter::toImage<unsigned char, 3>((*gm), layerName, CV_8UC3,
-                                                minValue, maxValue, image);
-
-  cv::Scalar green(0, 255, 0);
-  cv::Scalar blue(255, 0, 0);
-  cv::Scalar red(0, 0, 255);
-  cv::Scalar yellow(0, 255, 255);
-
+  cv::Mat image = layerToImage(gm, layerName);
+  
+  cv::Scalar green( 0, 255, 0 );
+  cv::Scalar blue( 255, 0, 0 );      
+  cv::Scalar red( 0, 0, 255 );
+  cv::Scalar yellow( 0, 255, 255 );
+  
   grid_map::Index index;
 
   double maxX = (*gm).getLength().x() / 2;
@@ -550,33 +662,56 @@ void RadarModel::getSphericCoords(double x, double y, double &r, double &phi) {
 //////////////////////////  Print and visualization
 ///////////////////////////////////////////////////////
 
-void RadarModel::PrintRecPower(std::string fileURI, double f_i) {
+
+void RadarModel::PrintRecPower(std::string fileURI, double f_i){
+  PrintRecPower(fileURI, 0,0,0,  f_i);
+}
+
+void RadarModel::PrintRecPower(std::string fileURI,double x_m, double y_m, double orientation_deg,  double f_i){
   // create a copy of the average values
-  Eigen::MatrixXf av_mat = getFriisMat(0, 0, 0, f_i);
+  //std::cout << "Still running at line: " << __LINE__<< std::endl;
+  Eigen::MatrixXf av_mat = getFriisMat(x_m, y_m, orientation_deg, f_i);
+
+  //std::cout << "Still running at line: " << __LINE__<< std::endl;
+  PrintProb(fileURI, &av_mat);
+  //std::cout << "Still running at line: " << __LINE__<< std::endl;
+}
+
+void RadarModel::PrintPhase(std::string fileURI,  double f_i){            
+  PrintPhase(fileURI, 0,0,0, f_i);    
+}
+
+void RadarModel::PrintPhase(std::string fileURI,double x_m, double y_m, double orientation_deg,  double f_i){        
+  // create a copy of the average values
+  Eigen::MatrixXf av_mat = getPhaseMat(x_m, y_m, orientation_deg, f_i);
   PrintProb(fileURI, &av_mat);
 }
 
-void RadarModel::PrintPhase(std::string fileURI, double f_i) {
-  // create a copy of the average values
-  Eigen::MatrixXf av_mat = getPhaseMat(0, 0, 0, f_i);
-  PrintProb(fileURI, &av_mat);
-}
-
-void RadarModel::PrintPowProb(std::string fileURI, double rxPw, double f_i) {
-  Eigen::MatrixXf prob_mat = getPowProbCond(rxPw, f_i);
+void RadarModel::PrintPowProb(std::string fileURI, double rxPw, double x_m, double y_m, double orientation_deg, double f_i){
+  Eigen::MatrixXf prob_mat = getPowProbCond(rxPw, x_m, y_m, orientation_deg, f_i);
   PrintProb(fileURI, &prob_mat);
 }
 
-void RadarModel::PrintPhaseProb(std::string fileURI, double phi, double f_i) {
-  Eigen::MatrixXf prob_mat = getPhaseProbCond(phi, f_i);
+void RadarModel::PrintPowProb(std::string fileURI, double rxPw, double f_i){
+  PrintPowProb(fileURI, rxPw, 0,0,0, f_i);
+}
+
+void RadarModel::PrintPhaseProb(std::string fileURI, double phi, double f_i){
+  PrintPhaseProb(fileURI, phi, 0, 0, 0, f_i);
+}
+
+void RadarModel::PrintPhaseProb(std::string fileURI, double phi, double x_m, double y_m, double orientation_deg, double f_i){
+  Eigen::MatrixXf prob_mat = getPhaseProbCond(phi, x_m, y_m, orientation_deg, f_i);
   PrintProb(fileURI, &prob_mat);
 }
 
-void RadarModel::PrintBothProb(std::string fileURI, double rxPw, double phi,
-                               double f_i) {
-  Eigen::MatrixXf prob_mat =
-      getPowProbCond(rxPw, f_i).cwiseProduct(getPhaseProbCond(phi, f_i));
-  prob_mat = prob_mat / prob_mat.sum();
+void RadarModel::PrintBothProb(std::string fileURI, double rxPw, double phi, double f_i){
+  PrintBothProb(fileURI, rxPw, phi, 0,0,0, f_i);
+}
+
+void RadarModel::PrintBothProb(std::string fileURI, double rxPw, double phi, double x_m, double y_m, double orientation_deg, double f_i){
+  Eigen::MatrixXf prob_mat = getPowProbCond(rxPw, x_m, y_m, orientation_deg, f_i).cwiseProduct(getPhaseProbCond(phi, x_m, y_m, orientation_deg, f_i));
+  prob_mat = prob_mat/prob_mat.sum();
   PrintProb(fileURI, &prob_mat);
 }
 
@@ -584,21 +719,10 @@ void RadarModel::PrintProb(std::string fileURI, Eigen::MatrixXf *prob_mat) {
   PrintProb(fileURI, prob_mat, prob_mat->rows(), prob_mat->cols(), _resolution);
 }
 
-void RadarModel::PrintProb(std::string fileURI, Eigen::MatrixXf *prob_mat,
-                           double sX, double sY, double res) {
-  GridMap tempMap;
+void RadarModel::PrintProb(std::string fileURI, Eigen::MatrixXf* prob_mat, double sX, double sY, double res){
+  GridMap tempMap;      
   tempMap.setGeometry(Length(sX, sY), res);
   tempMap.add("res", *prob_mat);
-
-  float minValue = tempMap["res"].minCoeff();
-  float maxValue = tempMap["res"].maxCoeff();
-
-  // cout <<"_________________________________________" << std::endl;
-  // cout <<"FILE = '"     << fileURI   << "'" << std::endl;
-  // cout <<"MinVal = " << minValue  << "" << std::endl;
-  // cout <<"MaxVal = " << maxValue  << "" << std::endl;
-  // cout <<"_________________________________________" << std::endl;
-
   getImage(&tempMap, "res", fileURI);
 }
 
@@ -719,24 +843,15 @@ void RadarModel::rotatePoints(cv::Point *points, int npts, int cxi, int cyi,
   }
 }
 
-cv::Mat RadarModel::rfidBeliefToCVImg(std::string layer_i) {
-  cv::Mat image;
-  const float minValue = _rfid_belief_maps[layer_i].minCoeff();
-  const float maxValue = _rfid_belief_maps[layer_i].maxCoeff();
-  // float sum = _rfid_belief_maps[layerName].sum();
-  // _rfid_belief_maps[layerName] = _rfid_belief_maps[layerName] / sum;
-  // minValue = _rfid_belief_maps[layerName].minCoeff();
-  // maxValue = _rfid_belief_maps[layerName].maxCoeff();
-  // cout << "max: " << maxValue << endl;
-  // cout << "min: " << minValue << endl;
-  // cout << "sum: " << sum << endl;
-  // cout << "---" << endl;
-  // mfc: maxvalue changes, so does what is encoded as black/white and making
-  // comparison hard to compare between images ....
-  GridMapCvConverter::toImage<unsigned char, 3>(
-      _rfid_belief_maps, layer_i, CV_8UC3, minValue, maxValue, image);
+cv::Mat RadarModel::rfidBeliefToCVImg(std::string layer_i){
+  return layerToImage(&_rfid_belief_maps,layer_i);
+}
 
-  // In order to store a image with ric-coords, we need to flip
+cv::Mat  RadarModel::layerToImage(GridMap* gm,std::string layerName){
+  cv::Mat image;
+  const float minValue = (*gm)[layerName].minCoeff();
+  const float maxValue = (*gm)[layerName].maxCoeff();
+  GridMapCvConverter::toImage<unsigned char, 3>(*gm, layerName, CV_8UC3, minValue, maxValue, image);  
   cv::flip(image, image, -1);
   return image;
 }
@@ -762,6 +877,7 @@ grid_map::Position RadarModel::fromPoint(cv::Point cvp) {
 
   return p;
 }
+
 //////////////////////////// Other functions ////////////////////////////
 
 void RadarModel::debugInfo() {
@@ -813,7 +929,25 @@ void RadarModel::saveProbMapDebug(std::string savePATH, int tag_num, int step,
   overlayRobotPoseT(robot_x, robot_y, robot_head, image);
 
   // and save
-  cv::imwrite(fileURI, image);
+  cv::imwrite( fileURI, image );
+
+  // mfc trick used to see temp matrixes as images
+  // add on ......................................................................................................
+  // if (_rfid_belief_maps.exists("obst_losses")){
+  //   image = rfidBeliefToCVImg("obst_losses");
+  //   // overlay tag position 
+  //   cv::circle(image, tag_center , 5, green, 1);
+  //   // overlay robot position 
+  //   overlayRobotPoseT(robot_x, robot_y, robot_head, image);
+    
+  //   fileURI = savePATH + "T";
+  //   n=sprintf (buffer, "%01d", tag_num);
+  //   fileURI += std::string(buffer) +"_rxPower_S";
+  //   n=sprintf (buffer, "%03d", step);
+  //   fileURI += std::string(buffer)+ ".png";
+
+  //   cv::imwrite( fileURI, image );
+  // }
 }
 
 void RadarModel::clearObstacles(cv::Mat &image) {
@@ -1366,6 +1500,48 @@ double RadarModel::getTotalKL(double x, double y, double orientation,
   return getTotalKL(x, y, orientation, iterator, tag_i);
 }
 
+// Adapted from
+// https://gitlab.math.ethz.ch/NumCSE/NumCSE/blob/3c723d06ffacab3dc45726ad0a95e33987dc35aa/Utils/meshgrid.hpp
+
+//! Generates a mesh, just like Matlab's meshgrid
+//  Template specialization for column vectors (Eigen::VectorXd)
+//  in : x, y column vectors 
+//       X, Y matrices, used to save the mesh
+template <typename Scalar>
+void RadarModel::meshgrid(const Eigen::Matrix<Scalar, -1, 1>& x, 
+              const Eigen::Matrix<Scalar, -1, 1>& y,
+              Eigen::Matrix<Scalar, -1, -1>& X,
+              Eigen::Matrix<Scalar, -1, -1>& Y) {
+  const long nx = x.size(), ny = y.size();
+  X.resize(ny, nx);
+  Y.resize(ny, nx);
+  for (long i = 0; i < ny; ++i) {
+    X.row(i) = x.transpose();
+  }
+
+  // 
+  // for (long j = 0; j < nx; ++j) {
+  //   Y.col(j) = y;
+  // }
+  for (long j = 0; j < nx; ++j) {
+    Y.col(j) = y.reverse();
+  }
+}
+
+
+//! Generates a mesh, just like Matlab's meshgrid
+//  Template specialization for row vectors (Eigen::RowVectorXd)
+//  in : x, y row vectors 
+//       X, Y matrices, used to save the mesh
+template <typename Scalar>
+void RadarModel::meshgrid(const Eigen::Matrix<Scalar, 1, -1>& x, 
+              const Eigen::Matrix<Scalar, 1, -1>& y,
+              Eigen::Matrix<Scalar, -1, -1>& X,
+              Eigen::Matrix<Scalar, -1, -1>& Y) {
+  Eigen::Matrix<Scalar, -1, 1> xt = x.transpose(),
+                               yt = y.transpose();
+  meshgrid(xt, yt, X, Y);
+}
 double RadarModel::getTotalKL(double x, double y, double orientation,
                               grid_map::SubmapIterator iterator, int tag_i) {
 
