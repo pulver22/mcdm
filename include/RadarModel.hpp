@@ -11,8 +11,8 @@
 #include <unsupported/Eigen/Splines>
 
 // Math
-#include <cmath>
 #include <algorithm>
+#include <cmath>
 #include <functional>
 #include <iostream>
 #include <math.h>
@@ -33,7 +33,6 @@ using namespace std;
 using namespace grid_map;
 using namespace std::placeholders;
 using Eigen::MatrixXf;
-
 
 // constants ..................................................................
 // We mostly use UPM frog 3D.
@@ -110,6 +109,7 @@ public:
    * @return double interpolated gain (dB)
    */
   double interpRad(double x) const;
+  float interpRadf(float x) const;
 
   /**
    * @brief Interpolate gain from angle
@@ -278,6 +278,9 @@ public:
 
   Eigen::MatrixXf getFriisMat(double x_m, double y_m, double orientation_deg,
                               double freq);
+  Eigen::MatrixXf getFriisMatFast(double x_m, double y_m,
+                                  double orientation_deg, double freq);
+
   Eigen::MatrixXf getPhaseMat(double x_m, double y_m, double orientation_deg,
                               double freq);
   Eigen::MatrixXf getProbCond(Eigen::MatrixXf X_mat, double x, double sig);
@@ -466,6 +469,42 @@ public:
                                    double robot_head, double len);
   // Position getSubMapRelPoint(Position glob_point, double x_m, double  y_m,
   // double orientation_rad, double len);
+
+  template <typename Scalar>
+  void meshgrid(const Eigen::Matrix<Scalar, -1, 1> &x,
+                const Eigen::Matrix<Scalar, -1, 1> &y,
+                Eigen::Matrix<Scalar, -1, -1> &X,
+                Eigen::Matrix<Scalar, -1, -1> &Y);
+
+  template <typename Scalar>
+  void meshgrid(const Eigen::Matrix<Scalar, 1, -1> &x,
+                const Eigen::Matrix<Scalar, 1, -1> &y,
+                Eigen::Matrix<Scalar, -1, -1> &X,
+                Eigen::Matrix<Scalar, -1, -1> &Y);
+
+  void addLossesTillEdgeLine(grid_map::Index edge_index_start,
+                             grid_map::Index edge_index_end,
+                             grid_map::Index antenna_index);
+  bool useFast = true;
+  Eigen::MatrixXf getFriisMatSlow(double x_m, double y_m,
+                                  double orientation_deg, double freq);
+  Eigen::MatrixXf getPhaseProbCond(double ph_i, double x_m, double y_m,
+                                   double orientation_deg, double f_i);
+  Eigen::MatrixXf getPowProbCond(double rxPw, double x_m, double y_m,
+                                 double orientation_deg, double f_i);
+
+  void PrintRecPower(std::string fileURI, double x_m, double y_m,
+                     double orientation_deg, double f_i);
+  void PrintPhase(std::string fileURI, double x_m, double y_m,
+                  double orientation_deg, double f_i);
+  void PrintPowProb(std::string fileURI, double rxPw, double x_m, double y_m,
+                    double orientation_deg, double f_i);
+  void PrintPhaseProb(std::string fileURI, double phi, double x_m, double y_m,
+                      double orientation_deg, double f_i);
+  void PrintBothProb(std::string fileURI, double rxPw, double phi, double x_m,
+                     double y_m, double orientation_deg, double f_i);
+  cv::Mat layerToImage(GridMap *gm, std::string layerName);
+
 }; // end class
 
 #endif
