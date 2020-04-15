@@ -67,6 +67,7 @@ target_link_libraries(test_log_model lib  ${catkin_LIBRARIES}
 
 install(TARGETS test_log_model RUNTIME DESTINATION bin)
 
+
 # ............................................................................
 
 add_executable(grid_map_test grid_map_test.cpp  ${HEADER_FILES})

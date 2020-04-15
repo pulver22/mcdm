@@ -4,19 +4,41 @@
 
 #include "Criteria/RFIDCriterion.h"
 #include "Criteria/criteriaName.h"
+#include "Eigen/Eigen"
 #include "newray.h"
+#include "utils.h"
 #include <math.h>
+
 using namespace dummy;
+using namespace grid_map;
 
 RFIDCriterion::RFIDCriterion(double weight)
-    : Criterion(RFID_READING, weight, false) {
-      // minValue = 0.0;
-    }
+    : Criterion(RFID_READING, weight, true) {
+  // minValue = 0.0;
+}
 
 RFIDCriterion::~RFIDCriterion() {}
 
-double RFIDCriterion::evaluate(Pose &p, dummy::Map *map, RFID_tools *rfid_tools, double *batteryTime) 
-{
+double RFIDCriterion::evaluate(Pose &p, dummy::Map *map, RFID_tools *rfid_tools,
+                               double *batteryTime) {
+
+  // 1) Use a uniform ellipse (DEPRECATED: identical to infoGain)
+  // this->RFIDInfoGain = evaluateUniformEllipse(p, map);
+
+  // 2) Sum all the likelihood around the cells
+  // this->RFIDInfoGain = evaluateSumOverBelief(p, map, rfid_tools);
+
+  // 3) Calculate entropy around the cell
+  this->RFIDInfoGain = evaluateEntropyOverBelief(p, map, rfid_tools);
+
+  // 4) Calculate the KL divergence between prior and posterior distributions
+  // this->RFIDInfoGain = evaluateKLDivergence(p, map, rfid_tools);
+
+  Criterion::insertEvaluation(p, this->RFIDInfoGain);
+  return this->RFIDInfoGain;
+}
+
+double RFIDCriterion::evaluateUniformEllipse(Pose &p, dummy::Map *map) {
   float px = p.getX();
   float py = p.getY();
   // float resolution = map.getResolution();
@@ -24,32 +46,61 @@ double RFIDCriterion::evaluate(Pose &p, dummy::Map *map, RFID_tools *rfid_tools,
   float orientation = p.getOrientation();
   int range = p.getRange();
   double angle = p.getFOV();
-  
-  // 1) method using the ellipse map leading to results identical to informationGain
-  // NOTE: ABANDONED
-  // double unExploredMap = 0.0;
-  // NewRay ray;
-  //Map *map2 = &map;
-  //   unExploredMap=(double)ray.getInformationGain(map,px,py,orientation,angle,range);
-  // //  unExploredMap = map->getRFIDReading(px, py, orientation, angle, range); // TODO: re-enable when method add
-  //   Criterion::insertEvaluation(p, unExploredMap);
+  double unExploredMap = 0.0;
+  NewRay ray;
+  return (double)ray.getInformationGain(map, px, py, orientation, angle, range);
+}
 
-  // 2) method using the belief maps
-  // We sum all the pixels intensity (belief) for all the belief maps available
-  // in a given area 5x5 around the robot
-  this->RFIDInfoGain = 0.0;
-  for (int tag_id = 0; tag_id < 10; tag_id++){
-    this->tmp_belief = rfid_tools->rm.getTotalWeight(px, py, orientation, 5, 5, tag_id);
-    if (isnan(tmp_belief)) this->tmp_belief = 0.0;  // belief outside corridors (into obstacles) is nan
-    this->RFIDInfoGain += this->tmp_belief;
+double RFIDCriterion::evaluateSumOverBelief(Pose &p, dummy::Map *map,
+                                            RFID_tools *rfid_tools) {
+  double RFIDInfoGain = 0.0;
+  double tmp_belief = 0.0;
+  int buffer_size = 2;
+
+  for (int tag_id = 0; tag_id < rfid_tools->tags_coord.size(); tag_id++) {
+    tmp_belief =
+        rfid_tools->rm->getTotalWeight(p.getX(), p.getY(), p.getOrientation(),
+                                      buffer_size, buffer_size, tag_id);
+    if (isnan(tmp_belief))
+      tmp_belief = 0.0; // belief outside corridors (into obstacles) is nan
+    RFIDInfoGain += tmp_belief;
   }
 
-  // 3) method using the total received power from all the tags in a given position 
-  // double accumulated_received_power = 0.0;
-  // for (int tag_id = 0; tag_id < 10; tag_id++){
-  //   accumulated_received_power += rfid_tools->rm.received_power_friis(rfid_tools->tags_coord[tag_id].first, rfid_tools->tags_coord[tag_id].second, rfid_tools->freq, rfid_tools->txtPower);
-  // }
+  return RFIDInfoGain;
+}
 
-  Criterion::insertEvaluation(p, this->RFIDInfoGain);
-  return this->RFIDInfoGain;
+double RFIDCriterion::evaluateEntropyOverBelief(Pose &p, dummy::Map *map,
+                                                RFID_tools *rfid_tools) {
+  float RFIDInfoGain = 0.0;
+  double entropy_cell = 0.0;
+  int buffer_size = 2;
+
+  for (int tag_id = 0; tag_id < rfid_tools->tags_coord.size(); tag_id++) {
+    entropy_cell =
+        // rfid_tools->rm->getTotalEntropy(p.getX(), p.getY(), p.getOrientation(),
+        //                                buffer_size, buffer_size, tag_id);
+        rfid_tools->rm->getTotalEntropyEllipse(p, p.getRange(), -1.0, tag_id);
+    RFIDInfoGain += entropy_cell;
+  }
+
+  return RFIDInfoGain;
+}
+
+double RFIDCriterion::evaluateKLDivergence(Pose &p, dummy::Map *map,
+                                           RFID_tools *rfid_tools) {
+  float RFIDInfoGain = 0.0;
+  Utilities utils;
+  float KL_div_cell = 0.0;
+  int buffer_size = 2;
+
+  for (int tag_id = 0; tag_id < rfid_tools->tags_coord.size(); tag_id++) {
+    // Calculate the POSTERIOR distribution over the RFID tag position and save
+    // in the "KL" layer of the map
+    utils.computePosteriorBeliefSingleLayer(map, &p, rfid_tools, tag_id, buffer_size);
+    KL_div_cell =
+        rfid_tools->rm->getTotalKL(p.getX(), p.getY(), p.getOrientation(),
+                                  buffer_size, buffer_size, tag_id);
+    RFIDInfoGain += KL_div_cell;
+  }
+  return RFIDInfoGain;
 }

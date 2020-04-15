@@ -208,10 +208,12 @@ int main ( int argc, char **argv )
   double rotTime = 0.0;
 
   RFID_tools rfid_tools;
-  rfid_tools.rm = rm;
+  rfid_tools.rm = &rm;
   rfid_tools.tags_coord = tags_coord;
   rfid_tools.freq = freq;
-  rfid_tools.txtPower = txtPower; 
+  rfid_tools.txtPower = txtPower;
+  rfid_tools.sensitivity = SENSITIVITY;
+  rfid_tools.RFID_maps_list = &RFID_maps_list;
 
   do
   {
@@ -261,12 +263,12 @@ int main ( int argc, char **argv )
       // Update the overall scanning time
       totalScanTime += utils.calculateScanTime ( scanAngle*180/PI );
       // Update bot the PP and the RFID maps
-      utils.updateMaps(&tags_coord, &map, &target, &txtPower, &SENSITIVITY, &freq, &RFID_maps_list, &x, &y, range, &rfid_tools);
+      utils.updateMaps(&map, &target, &rfid_tools, false);
       // Calculate the accumulated received power
       for (int tag_id = 0; tag_id < tags_coord.size(); tag_id++){
         // mfc: previous
-        //double rx_power = rfid_tools.rm.received_power_friis(tags_coord[tag_id].first, tags_coord[tag_id].second, freq, txtPower);
-        double rx_power = rfid_tools.rm.received_power_friis_with_obstacles(target.getX(), target.getY(), target.getOrientation() * PI/180.0,tags_coord[tag_id].first, tags_coord[tag_id].second, 0, freq);
+        //double rx_power = rfid_tools.rm->received_power_friis(tags_coord[tag_id].first, tags_coord[tag_id].second, freq, txtPower);
+        double rx_power = rfid_tools.rm->received_power_friis_with_obstacles(target.getX(), target.getY(), target.getOrientation() * PI/180.0,tags_coord[tag_id].first, tags_coord[tag_id].second, 0, freq);
         //mfc: the above gets the received power between a robot in "target" in METERS and tags_coord[i] in METERS. I'm assuming orientation is in deg.
         accumulated_received_power += rx_power;        
       }
