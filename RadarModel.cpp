@@ -1414,9 +1414,9 @@ double RadarModel::getTotalEntropyEllipse(Pose target, double maxX, double minX,
   // b  = sqrt(a^2-c^2)
 
   // mirror y axis!!!!
-  double antennaX = _Nrow - target.getX();
-  double antennaY = -target.getY();
-  double antennaHeading= -target.getOrientation();
+  double antennaX = target.getX();
+  double antennaY = target.getY();
+  double antennaHeading = target.getOrientation() * 3.14/180;
 
   double a =  (abs(maxX) + abs(minX))/2.0;
   double c =  (abs(maxX) - abs(minX))/2;
@@ -1468,6 +1468,39 @@ double RadarModel::getTotalEntropyEllipse(Pose target, grid_map::EllipseIterator
     }
   }
   return total_entropy;
+}
+
+void RadarModel::printEllipse(double x, double y, double orient_rad, double maxX, double minX){
+  std::string fileURI;
+
+  cout << "[ELLIPSE] x: " << x << ", y: " << y << ", orient_rad: " << orient_rad << endl;
+
+  double a =  (abs(maxX) + abs(minX))/2.0;
+  double c =  (abs(maxX) - abs(minX))/2;
+  double b = sqrt((a*a)-(c*c));
+  double xc = x + (c*cos(orient_rad));
+  double yc = y + (c*sin(orient_rad));
+
+ 
+
+  Position center(xc, yc);
+  Length length(2*a, 2*b);
+  grid_map::EllipseIterator iterator(_rfid_belief_maps, center, length, orient_rad);
+
+ 
+
+  _rfid_belief_maps.add("ellipse_test", 0);  
+
+ 
+
+  for (iterator; !iterator.isPastEnd(); ++iterator) {
+   _rfid_belief_maps.at("ellipse_test",*iterator) = 1;
+  }
+
+ 
+
+  fileURI = "/tmp/testEllipse.png";
+  getImage(&_rfid_belief_maps, "ellipse_test", fileURI);
 }
 
 double RadarModel::getTotalKL(double x, double y, double orientation,

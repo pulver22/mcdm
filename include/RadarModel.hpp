@@ -457,6 +457,8 @@ public:
   double getTotalEntropyEllipse(Pose target, grid_map::EllipseIterator iterator,
                                 int tag_i);
 
+  void printEllipse(double x, double y, double orient_rad, double maxX, double minX);
+
   void addTmpMeasurementRFIDCriterion(double x, double y, double orientation,
                                       double rxPower, double phase, double freq,
                                       int i, double len_update);
