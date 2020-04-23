@@ -5,7 +5,7 @@
 #include "RadarModel.hpp"
 
 //Battery constants
-#define MAX_BATTERY 1200.0
+#define MAX_BATTERY 10000.0
 #define BATTERY_ONE_PERCENT MAX_BATTERY/100
 
 //Velocity constants

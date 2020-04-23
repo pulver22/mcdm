@@ -33,42 +33,42 @@ int main ( int argc, char **argv )
 
   int arguments = 23;
   if (argc<=arguments){
-    cout << "Missing arguments! You provided "<< (argc-1)<< " and you need: "<< arguments << endl;
+    std::cout << "Missing arguments! You provided "<< (argc-1)<< " and you need: "<< arguments << endl;
     return 0;
   } else {
-    cout << "Call: " << endl << "\t" ;
+    std::cout << "Call: " << endl << "\t" ;
     for (int i=0; i<argc;i++){
-    cout << argv[i] << " ";  
+    std::cout << argv[i] << " ";  
     }    
-    cout << endl << endl;  
+    std::cout << endl << endl;  
 
-    cout << "Arguments:" << endl;
-    cout << "- Map image file: " << argv[1] << endl;
-    cout << "- Map image resolution: " << argv[2] << " m./cell?" << endl;
-    cout << "- initial Y-position of the robot in map frame: " << argv[3] << " cell?" << endl;
-    cout << "- initial X-position of the robot in map frame: " << argv[4] << " cell?" << endl;
-    cout << "- initial orientation of the robot in map frame: " << argv[5] << " (deg?) in steps of 15 degs?" << endl;
-    cout << "- initRange: " << argv[6] << " cells?" << endl;
-    cout << "- initial FOV of the robot sensor: " << argv[7] << " degs?" << endl;
-    cout << "- precision: " << argv[8] << " -?" << endl;
-    cout << "- threshold: " << argv[9] << " -?" << endl;
+    std::cout << "Arguments:" << endl;
+    std::cout << "- Map image file: " << argv[1] << endl;
+    std::cout << "- Map image resolution: " << argv[2] << " m./cell?" << endl;
+    std::cout << "- initial Y-position of the robot in map frame: " << argv[3] << " cell?" << endl;
+    std::cout << "- initial X-position of the robot in map frame: " << argv[4] << " cell?" << endl;
+    std::cout << "- initial orientation of the robot in map frame: " << argv[5] << " (deg?) in steps of 15 degs?" << endl;
+    std::cout << "- initRange: " << argv[6] << " cells?" << endl;
+    std::cout << "- initial FOV of the robot sensor: " << argv[7] << " degs?" << endl;
+    std::cout << "- precision: " << argv[8] << " -?" << endl;
+    std::cout << "- threshold: " << argv[9] << " -?" << endl;
 
-    cout << "- resolution to use for the planningGrid and RFIDGrid: " << argv[10] << " m./cell?" << endl;
-    cout << "- YAML file with tag locations: " << argv[11] << endl;
-    cout << "- freq: " << argv[12] << " Hertzs" << endl;
-    cout << "- txtPower: " << argv[13] << " dBs" << endl;
+    std::cout << "- resolution to use for the planningGrid and RFIDGrid: " << argv[10] << " m./cell?" << endl;
+    std::cout << "- YAML file with tag locations: " << argv[11] << endl;
+    std::cout << "- freq: " << argv[12] << " Hertzs" << endl;
+    std::cout << "- txtPower: " << argv[13] << " dBs" << endl;
 
-    cout << "- w_info_gain: " << argv[14] << " -?" << endl;
-    cout << "- w_travel_distance: " << argv[15] << " -?" << endl;
-    cout << "- w_sensing_time: " << argv[16] << " -?" << endl;
-    cout << "- w_rfid_gain: " << argv[17] << " -?" << endl;
-    cout << "- w_battery_status: " << argv[18] << " -?" << endl;
-    cout << "- out_log: " << argv[19] << endl;
-    cout << "- coverage_log: " << argv[20] << endl;
-    cout << "- out_log: " << argv[21] << endl;
-    cout << "- ellipse X_min: " << argv[22] << endl;
-    cout << "- accuracy_log: " << argv[23] << endl;
-    cout << "- use_mcdm: " << argv[24] << endl;
+    std::cout << "- w_info_gain: " << argv[14] << " -?" << endl;
+    std::cout << "- w_travel_distance: " << argv[15] << " -?" << endl;
+    std::cout << "- w_sensing_time: " << argv[16] << " -?" << endl;
+    std::cout << "- w_rfid_gain: " << argv[17] << " -?" << endl;
+    std::cout << "- w_battery_status: " << argv[18] << " -?" << endl;
+    std::cout << "- out_log: " << argv[19] << endl;
+    std::cout << "- coverage_log: " << argv[20] << endl;
+    std::cout << "- out_log: " << argv[21] << endl;
+    std::cout << "- ellipse X_min: " << argv[22] << endl;
+    std::cout << "- accuracy_log: " << argv[23] << endl;
+    std::cout << "- use_mcdm: " << argv[24] << endl;
   }
 
 
@@ -81,12 +81,12 @@ int main ( int argc, char **argv )
   double imgresolution = atof ( argv[10] );  // the resolution to use for the planningGrid and RFIDGrid
   dummy::Map map = dummy::Map ( infile,resolution, imgresolution );
   
-  // cout << "Map dimension: " << map.getNumGridCols() << " : "<<  map.getNumGridRows() << endl;
+  // std::cout << "Map dimension: " << map.getNumGridCols() << " : "<<  map.getNumGridRows() << endl;
   int gridToPathGridScale = map.getGridToPathGridScale();
   // i switched x and y because the map's orientation inside and outside programs are different
   long initX = static_cast<long>( atoi ( argv[4] ) *imgresolution );  // initial X-position of the robot in map frame
   long initY = static_cast<long>( atoi ( argv[3] ) *imgresolution );  // initial Y-position of the robot in map frame
-  // std::cout << "initX: " << initX << " initY: " << initY << std::endl;
+  // std::std::cout << "initX: " << initX << " initY: " << initY << std::endl;
   int initOrientation = atoi ( argv[5] );  // initial orientation of the robot in map frame
   double initFov = atoi ( argv[7] );  // initial FOV of the robot sensor
   initFov = initFov * PI /180;
@@ -230,9 +230,9 @@ int main ( int argc, char **argv )
   std::vector<double> freqs{ freq }; // only 1 freq... nice!
   // std::vector<double> freqs{ MIN_FREQ_NA,MIN_FREQ_NA+STEP_FREQ_NA,MIN_FREQ_NA+2.0*STEP_FREQ_NA }; 
 
-  cout <<"Building radar model." << endl;
+  std::cout <<"Building radar model." << endl;
   RadarModel rm(rs, sigma_power, sigma_phase, txtPower, freqs, tags_coord, argv[1] );
-  cout << "Radar model built." << endl;
+  std::cout << "Radar model built." << endl;
   rm.PrintRefMapWithTags("/tmp/scenario.png");  
 
   long x, y = 0;
@@ -258,10 +258,12 @@ int main ( int argc, char **argv )
   rfid_tools.RFID_maps_list = &RFID_maps_list;
   do
   {
-    cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells << " ["<< 100*(float)newSensedCells/(float)totalFreeCells << "%]"<< endl;
+    std::cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells << " ["<< 100*(float)newSensedCells/(float)totalFreeCells << "%] - Battery: " << to_string(100*batteryTime/MAX_BATTERY) << endl;
+    // if (graph2.size() == 1 and count > 1) break;
     // If we are doing "forward" navigation towards cells never visited before
     if ( btMode == false )
     {
+      std::cout <<"   Graph: " << graph2.size() << endl;
       content = to_string(w_info_gain) 
                 + "," + to_string(w_travel_distance)
                 + "," + to_string(w_sensing_time) 
@@ -283,6 +285,21 @@ int main ( int argc, char **argv )
       FOV = target.getFOV();
       actualPose = function.getEncodedKey ( target,0 );
       map.setCurrentPose ( target );
+
+      //NOTE; calculate path and turnings between actual position and goal
+      // Calculate the distance between the previous robot pose and the next one (target)
+      // string path = astar.pathFind ( target.getX(), target.getY(), previous.getX(), previous.getY(), &map );
+      // // Update the overall covered distance
+      // distance = astar.lengthPath(path);
+      // travelledDistance = travelledDistance + distance;
+      // tmp_numOfTurning = astar.getNumberOfTurning ( path );
+      // // translTime = distance / TRANSL_SPEED;
+      // // rotTime = tmp_numOfTurning / ROT_SPEED;
+      // // // NOTE: in backtracking we are not phisically moving
+      // // batteryTime = batteryTime - (translTime + rotTime);  
+      // // Update the overall number of turnings
+      // numOfTurning = numOfTurning + astar.getNumberOfTurning ( path );
+
       encoding = to_string ( target.getX() ) + to_string ( target.getY() );
       visitedCell.emplace ( encoding,0 );
       // Get the sensing time required for scanning
@@ -317,6 +334,7 @@ int main ( int argc, char **argv )
                                             &sensedCells, &newSensedCells, &totalFreeCells, &totalScanTime, &out_log, 
                                             &numConfiguration, &actualPose, &encodedKeyValue, &totalAngle, &numOfTurning,
                                             &scanAngle, &btMode, &rfid_tools, &accumulated_received_power, &precision, &batteryTime);
+      // cout << "break_loop: " << break_loop << endl;                                      
       // calculate the accumulate received power
       for (int tag_id = 0; tag_id < tags_coord.size(); tag_id++){
         // mfc: previous
@@ -325,14 +343,18 @@ int main ( int argc, char **argv )
         //mfc: the above gets the received power between a robot in "target" in METERS and tags_coord[i] in METERS. I'm assuming orientation is in deg.
         accumulated_received_power += rx_power;
       }
-      
+      // cout << "here" << endl;
       
       if (break_loop == true) break;
 
     }
     // ... otherwise, if we are doing backtracking
     else
-    {
+    { 
+      std::cout << "   Graph: " << graph2.size() << endl;
+      cout << "   nearCandidates: " << nearCandidates.size() << endl;
+      // if (graph2.size() == 1) break;
+
       x = target.getX();
       y = target.getY();
       orientation = target.getOrientation();
@@ -342,16 +364,17 @@ int main ( int argc, char **argv )
       map.setCurrentPose ( target );
       //NOTE; calculate path and turnings between actual position and goal
       // Calculate the distance between the previous robot pose and the next one (target)
-      string path = astar.pathFind ( target.getX(), target.getY(), previous.getX(), previous.getY(), &map );
+      // string path = astar.pathFind ( target.getX(), target.getY(), previous.getX(), previous.getY(), &map );
       // Update the overall covered distance
-      distance = astar.lengthPath(path);
-      travelledDistance = travelledDistance + distance;
-      tmp_numOfTurning = astar.getNumberOfTurning ( path );
-      translTime = distance / TRANSL_SPEED;
-      rotTime = tmp_numOfTurning / ROT_SPEED;
-      batteryTime = batteryTime - (translTime + rotTime);
+      // distance = astar.lengthPath(path);
+      // travelledDistance = travelledDistance + distance;
+      // tmp_numOfTurning = astar.getNumberOfTurning ( path );
+      // translTime = distance / TRANSL_SPEED;
+      // rotTime = tmp_numOfTurning / ROT_SPEED;
+      // NOTE: in backtracking we are not phisically moving
+      // batteryTime = batteryTime - (translTime + rotTime);  
       // Update the overall number of turnings
-      numOfTurning = numOfTurning + astar.getNumberOfTurning ( path );
+      // numOfTurning = numOfTurning + astar.getNumberOfTurning ( path );
       encoding = to_string ( target.getX() ) + to_string ( target.getY() );
       visitedCell.emplace ( encoding,0 );
       // Set the previous cell to be the same of the current one
@@ -365,12 +388,15 @@ int main ( int argc, char **argv )
       // ...and the overall scan time
       totalScanTime += utils.calculateScanTime ( scanAngle*180/PI );
       // Update bot the PP and the RFID maps
-      utils.updateMaps(&map, &target, &rfid_tools, false);
+      // std::cout << "Here" << endl;
+      // utils.updateMaps(&map, &target, &rfid_tools, false);
+      // std::cout << "Here" << endl;
       // Remove the current pose from the list of possible candidate cells
       utils.cleanPossibleDestination2 ( &nearCandidates,target );
       // Get the list of the candidate cells with their evaluation
+      // TODO: nearCandidates seems to be empty
       EvaluationRecords *record = function.evaluateFrontiers ( nearCandidates, &map, threshold, &rfid_tools, &batteryTime );
-
+      std::cout << "   record: " << record->size() << endl;
       // If there are candidate cells
       if ( record->size() != 0 )
       {
@@ -389,13 +415,14 @@ int main ( int argc, char **argv )
                                     &graph2, &map, &function, &tabuList, &history, 
                                     &encodedKeyValue, &astar, &numConfiguration,
                                     &totalAngle, &travelledDistance, &numOfTurning , &scanAngle, 
-                                    &btMode, &threshold);
+                                    &btMode, &threshold, &batteryTime);
       }
       delete record;
     }
   }
   // Perform exploration until a certain coverage is achieved
   while ( sensedCells < precision * totalFreeCells and batteryTime > 0.0);
+  // cout << "Out" << endl;
   // Plotting utilities
   // map.drawVisitedCells ();
   // map.printVisitedCells ( history );
@@ -403,19 +430,22 @@ int main ( int argc, char **argv )
   // map.drawRFIDGridScan(myGrid1);
   // utils.saveRFIDMaps(&RFID_maps_list, "/tmp/");
   // utils.saveRFIDMapsWithGroundTruths(&RFID_maps_list, &tags_coord, "/tmp/D");
-  // cout << "------------------ HISTORY -----------------" << endl;
+  // std::cout << "------------------ HISTORY -----------------" << endl;
   // Calculate which cells have been visited only once
   tmp_history = utils.cleanHistory(&history, &record);
+  // cout << "1" << endl;
   utils.calculateDistance(tmp_history, &map, &astar );
+  // cout << "2" << endl;
 
-  // cout << "------------------ TABULIST -----------------" << endl;
+  // std::cout << "------------------ TABULIST -----------------" << endl;
   utils.calculateDistance(tabuList, &map, &astar );
+  // cout << "3" << endl;
 
   double belief_accuracy = utils.findTags(&RFID_maps_list, &tags_coord, &map,
                   detection_log, accuracy_log, 
                   initRange, numConfiguration,
                   &rfid_tools);
-  cout << "-----------------------------------------------------------------"<<endl;
+  std::cout << "-----------------------------------------------------------------"<<endl;
   auto endMCDM = chrono::high_resolution_clock::now();
   content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + "," + to_string(w_rfid_gain) + "," + to_string(w_battery_status) + ","
             + to_string(norm_w_info_gain) + ","  + to_string(norm_w_travel_distance) + "," + to_string(norm_w_sensing_time) + "," + to_string(norm_w_rfid_gain) + "," + to_string(norm_w_battery_status) + ","
@@ -425,22 +455,22 @@ int main ( int argc, char **argv )
   utils.filePutContents(out_log, content, true );
 
   double totalTimeMCDM = chrono::duration<double,milli> ( endMCDM -startMCDM ).count();
-  cout << "Total time for MCDM algorithm : " << totalTimeMCDM << "ms, " << totalTimeMCDM/1000 <<" s, " <<
+  std::cout << "Total time for MCDM algorithm : " << totalTimeMCDM << "ms, " << totalTimeMCDM/1000 <<" s, " <<
           totalTimeMCDM/60000 << " m "<< endl;
 
   utils.printResult(newSensedCells, totalFreeCells, precision, 
                     numConfiguration, travelledDistance, numOfTurning,
                     totalAngle, totalScanTime, accumulated_received_power, &batteryTime);
 
-  // cout << "Saving tag distribution maps... "<< endl;
+  // std::cout << "Saving tag distribution maps... "<< endl;
   rfid_tools.rm->saveProbMaps("/tmp/");
 
-  cout << "Saving debug distribution maps... "<< endl;
+  std::cout << "Saving debug distribution maps... "<< endl;
   // rm->normalizeRFIDMap();
   // for each tag:
 
   for (int t = 0; t < tags_coord.size(); t++){
-    // cout << "---[" << t <<"]----------------" << endl;
+    // std::cout << "---[" << t <<"]----------------" << endl;
     rfid_tools.rm->saveProbMapDebug("/tmp/",t,count,x,y,orientation);
   }
 }

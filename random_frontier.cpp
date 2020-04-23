@@ -413,7 +413,7 @@ int main ( int argc, char **argv )
             // Add it to the list of visited cells as first-view
             encodedKeyValue = 1;
             utils.updatePathMetrics(&count, &target, &previous, actualPose, &nearCandidates, &graph2, &map, &function,
-                &tabuList, &history, encodedKeyValue, &astar, &numConfiguration, &totalAngle, &travelledDistance, &numOfTurning, scanAngle);
+                &tabuList, &history, encodedKeyValue, &astar, &numConfiguration, &totalAngle, &travelledDistance, &numOfTurning, scanAngle, &batteryTime);
           }
           // ...otherwise, if the seleced cell has already been visited
           else
@@ -437,7 +437,7 @@ int main ( int argc, char **argv )
                 // target = result.first;
                 encodedKeyValue = 1;
                 utils.updatePathMetrics(&count, &target, &previous, actualPose, &nearCandidates, &graph2, &map, &function,
-                                  &tabuList, &history, encodedKeyValue, &astar, &numConfiguration, &totalAngle, &travelledDistance, &numOfTurning, scanAngle);
+                &tabuList, &history, encodedKeyValue, &astar, &numConfiguration, &totalAngle, &travelledDistance, &numOfTurning, scanAngle, &batteryTime);
                 // Set that we are now in backtracking
                 btMode = true;
               }
@@ -580,7 +580,7 @@ int main ( int argc, char **argv )
           // Add it to the list of visited cells as first-view
           encodedKeyValue = 1;
           utils.updatePathMetrics(&count, &target, &previous, actualPose, &nearCandidates, &graph2, &map, &function,
-                            &tabuList, &history, encodedKeyValue, &astar, &numConfiguration, &totalAngle, &travelledDistance, &numOfTurning, scanAngle);
+                &tabuList, &history, encodedKeyValue, &astar, &numConfiguration, &totalAngle, &travelledDistance, &numOfTurning, scanAngle, &batteryTime);
           // Leave the backtracking branch
           btMode = false;
           nearCandidates.clear();
@@ -606,7 +606,7 @@ int main ( int argc, char **argv )
             // Add it to the list of visited cells as first-view
             encodedKeyValue = 1;
             utils.updatePathMetrics(&count, &target, &previous, actualPose, &nearCandidates, &graph2, &map, &function,
-                              &tabuList, &history, encodedKeyValue, &astar, &numConfiguration, &totalAngle, &travelledDistance, &numOfTurning, scanAngle);
+                &tabuList, &history, encodedKeyValue, &astar, &numConfiguration, &totalAngle, &travelledDistance, &numOfTurning, scanAngle, &batteryTime);
           }
           // ...otherwise, if there are no more candidates
           else
@@ -620,7 +620,7 @@ int main ( int argc, char **argv )
             // Add it to the history of cell as already more than once
             encodedKeyValue = 2;
             utils.updatePathMetrics(&count, &target, &previous, actualPose, &nearCandidates, &graph2, &map, &function,
-                              &tabuList, &history, encodedKeyValue, &astar, &numConfiguration, &totalAngle, &travelledDistance, &numOfTurning, scanAngle);
+                &tabuList, &history, encodedKeyValue, &astar, &numConfiguration, &totalAngle, &travelledDistance, &numOfTurning, scanAngle, &batteryTime);
             // Leave backtracking
             btMode = false;
             // Clear candidate list
@@ -640,7 +640,7 @@ int main ( int argc, char **argv )
         // Add it in history as cell visited more than once
         encodedKeyValue = 2;
         utils.updatePathMetrics(&count, &target, &previous, actualPose, &nearCandidates, &graph2, &map, &function,
-                          &tabuList, &history, encodedKeyValue, &astar, &numConfiguration, &totalAngle, &travelledDistance, &numOfTurning, scanAngle);
+                &tabuList, &history, encodedKeyValue, &astar, &numConfiguration, &totalAngle, &travelledDistance, &numOfTurning, scanAngle, &batteryTime);
         // Leave backtracking
         btMode = false;
         // cout << "[BT-MODE3] Go back to previous positions in the graph" << endl;

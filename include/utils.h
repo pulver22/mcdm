@@ -104,13 +104,15 @@ public:
    * @param travelledDistance: length traversed by the robot so far
    * @param numOfTurning: number of rotation of 45 deg performed by the robot so far
    * @param scanAngle: angle scanned in the current iteration
+   * @param batteryTime: remaining battery for the robot
   */
   void updatePathMetrics(int* count, Pose* target, Pose* previous, string actualPose,
                          list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
                          dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList,
                          vector<string>* history, int encodedKeyValue, Astar* astar ,
                          long* numConfiguration, double* totalAngle,
-                         double * travelledDistance, int* numOfTurning , double scanAngle);
+                         double * travelledDistance, int* numOfTurning , double scanAngle,
+                         double* batteryTime);
   /**
    * Get the list of Pose assumed only once along the traversed path
    *
@@ -251,11 +253,12 @@ public:
    * @param threshold: to cut frontiers
    * @param rm: is the radar_model
    * @param accumulated_received_power: the total received power
+   * @param batteryTime: the remaining battery time for the robot
    */
   void recordNOTContainsCandidatesBT(EvaluationRecords* record, 
                                 int* count, Pose* target, Pose* previous, string* actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
                                 dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int* encodedKeyValue, Astar* astar , long* numConfiguration,
-                                double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold);
+                                double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold, double* batteryTime);
 
   /**
    * For every candidate position, create 8 pose with a different orientation each and consider them as frontiers
