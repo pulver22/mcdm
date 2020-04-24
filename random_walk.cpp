@@ -202,6 +202,7 @@ int main ( int argc, char **argv )
 
   double accumulated_received_power = 0.0;
   double batteryTime = MAX_BATTERY;
+  double batteryPercentage = 100;
   double distance = 0.0;
   double tmp_numOfTurning = 0.0;
   double translTime = 0.0;
@@ -282,10 +283,11 @@ int main ( int argc, char **argv )
       // Add target to history and tabulist
       history.push_back(function.getEncodedKey(target, 1));
       tabuList.push_back(target);
+      batteryPercentage = utils.calculateRemainingBatteryPercentage(tabuList, &map, &astar);
 
   }
   // Perform exploration until a certain coverage is achieved
-  while ( sensedCells < precision * totalFreeCells and batteryTime > 0.0 );
+  while ( sensedCells < precision * totalFreeCells and batteryPercentage > 0.0 );
   // Plotting utilities
   // map.drawVisitedCells ();
   // map.printVisitedCells ( history );
@@ -303,7 +305,7 @@ int main ( int argc, char **argv )
 
   // cout << "------------------ TABULIST -----------------" << endl;
   travelledDistance = utils.calculateDistance(tabuList, &map, &astar );
-  double batteryPercentage = utils.calculateRemainingBatteryPercentage(tabuList, &map, &astar);
+  batteryPercentage = utils.calculateRemainingBatteryPercentage(tabuList, &map, &astar);
 
   double belief_accuracy = utils.findTags(&RFID_maps_list, &tags_coord, &map,
                   detection_log, accuracy_log, 
