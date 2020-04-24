@@ -660,11 +660,12 @@ int main ( int argc, char **argv )
   // cout << "Num configuration: " << numConfiguration << endl;
   // cout << "Travelled distance calculated during the algorithm: " << travelledDistance << endl;
  
-  tmp_history = utils.cleanHistory(&history, &record);
-  utils.calculateDistance(tmp_history, &map, &astar );
+  // tmp_history = utils.cleanHistory(&history, &record);
+  // utils.calculateDistance(tmp_history, &map, &astar );
 
   // cout << "------------------ TABULIST -----------------" << endl;
-  utils.calculateDistance(tabuList, &map, &astar );
+  travelledDistance =  utils.calculateDistance(tabuList, &map, &astar );
+  double batteryPercentage = utils.calculateRemainingBatteryPercentage(tabuList, &map, &astar);
 
   double belief_accuracy = utils.findTags(&RFID_maps_list, &tags_coord, &map,
                   detection_log, accuracy_log, 
@@ -676,7 +677,7 @@ int main ( int argc, char **argv )
             + to_string(norm_w_info_gain) + ","  + to_string(norm_w_travel_distance) + "," + to_string(norm_w_sensing_time) + "," + to_string(norm_w_rfid_gain) + "," + to_string(norm_w_battery_status) + ","
             + to_string(float(newSensedCells)/float(totalFreeCells)) + "," + to_string(numConfiguration) + ","
             + to_string(travelledDistance) + "," + to_string(totalScanTime) + "," + to_string(accumulated_received_power) + "," 
-            + to_string(100*batteryTime/MAX_BATTERY) + ", " + to_string(belief_accuracy) + "\n";
+            + to_string(batteryPercentage) + ", " + to_string(belief_accuracy) + "\n";
   utils.filePutContents(out_log, content, true );
 
   double totalTimeMCDM = chrono::duration<double,milli> ( endMCDM -startMCDM ).count();
@@ -685,7 +686,7 @@ int main ( int argc, char **argv )
 
   utils.printResult(newSensedCells, totalFreeCells, precision, 
                     numConfiguration, travelledDistance, numOfTurning,
-                    totalAngle, totalScanTime, accumulated_received_power, &batteryTime);
+                    totalAngle, totalScanTime, accumulated_received_power, &batteryPercentage);
 
 }
 
