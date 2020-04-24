@@ -75,28 +75,57 @@ Pose Utilities::createFromInitialPose ( int x, int y, int orientation, int varia
 }
 
 
-void Utilities::calculateDistance(list<Pose> history, dummy::Map* map, Astar* astar)
+double Utilities::calculateDistance(list<Pose> history, dummy::Map* map, Astar* astar)
 {
     // std::list<Pose>::iterator it = history.begin();
     double travelledDistance = 0;
     int numOfTurning = 0;
-    cout << "len: " << history.size() << endl;
+    // std::cout << "len: " << history.size() << endl;
     // Calculate the overall path connecting these cells
     for (auto it = history.begin(); it != prev ( history.end(),1 ); it++ )
     {
         std::list<Pose>::iterator it2 = next ( it,1 );
-        // cout << it->getX() << " " << it->getY() << " : " << it2->getX() << " " << it2->getY() << endl;
-        // cout << "1" << endl;
+        // std::cout << it->getX() << " " << it->getY() << " : " << it2->getX() << " " << it2->getY() << endl;
+        // std::cout << "1" << endl;
         string path = astar->pathFind ( ( *it2 ).getX(), ( *it2 ).getY(), ( *it ).getX(), ( *it ).getY(), map );
-        // cout << "2" << endl;
+        // std::cout << "2" << endl;
         travelledDistance +=  astar->lengthPath ( path );
-        // cout << "3" << endl;
+        // std::cout << "3" << endl;
         numOfTurning += astar->getNumberOfTurning ( path );
-        // cout << "4" << endl;
+        // std::cout << "4" << endl;
     }
-    cout << "Number of cells: " << history.size() << endl;
-    cout << "Num of Turning: " << numOfTurning << endl;
-    cout << "Travelled distance (cells): " << travelledDistance << endl;
+    // std::cout << "Number of cells: " << history.size() << endl;
+    // std::cout << "Num of Turning: " << numOfTurning << endl;
+    // std::cout << "Travelled distance (cells): " << travelledDistance << endl;
+  return travelledDistance;
+}
+
+
+double Utilities::calculateRemainingBatteryPercentage(list<Pose> history, dummy::Map* map, Astar* astar)
+{
+    // std::list<Pose>::iterator it = history.begin();
+    double distance, tmp_numOfTurning, translTime, rotTime = 0;
+    double batteryTime = MAX_BATTERY;
+    // std::cout << "len: " << history.size() << endl;
+    // Calculate the overall path connecting these cells
+    for (auto it = history.begin(); it != prev ( history.end(),1 ); it++ )
+    {
+        std::list<Pose>::iterator it2 = next ( it,1 );
+        // std::cout << it->getX() << " " << it->getY() << " : " << it2->getX() << " " << it2->getY() << endl;
+        // std::cout << "1" << endl;
+        string path = astar->pathFind ( ( *it2 ).getX(), ( *it2 ).getY(), ( *it ).getX(), ( *it ).getY(), map );
+        // // Update the distance counting
+        distance = astar->lengthPath(path);
+        tmp_numOfTurning = astar->getNumberOfTurning ( path );
+        translTime = distance / TRANSL_SPEED;
+        rotTime = tmp_numOfTurning / ROT_SPEED;
+        // NOTE: in backtracking we are not phisically moving
+        batteryTime -= (translTime + rotTime);  
+            // std::cout << "4" << endl;
+    }
+    batteryTime = 100*batteryTime/MAX_BATTERY;
+    // std::cout << "Remaining battery: " << to_string(batteryTime) << endl;
+  return batteryTime;
 }
 
 void Utilities::updatePathMetrics(int* count, Pose* target, Pose* previous, string actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
@@ -104,7 +133,7 @@ void Utilities::updatePathMetrics(int* count, Pose* target, Pose* previous, stri
     double* totalAngle, double* travelledDistance, int* numOfTurning , double scanAngle, double *batteryTime)
 {
   // Add it to the list of visited cells as first-view
-  history->push_back ( function->getEncodedKey ( *target, encodedKeyValue ) );
+  // history->push_back ( function->getEncodedKey ( *target, encodedKeyValue ) );
   for (auto it = tabuList->begin(); it != tabuList->end(); it++){
     this->cleanPossibleDestination2 ( nearCandidates, *it);
   }
@@ -116,12 +145,11 @@ void Utilities::updatePathMetrics(int* count, Pose* target, Pose* previous, stri
   // NOTE: if we are in backtracking there is no reason to add a cell already present (it will only make increase the graph)
   if (encodedKeyValue != 2) {
     // Add it to the list of visited cells from which acting
+    history->push_back ( function->getEncodedKey ( *target, encodedKeyValue ) );
     tabuList->push_back ( *target );
     graph2->push_back ( pair );
     // Calculate the path from the previous robot pose to the current one
-    cout << "b" << endl;
     string path = astar->pathFind ( target->getX(), target->getY(), previous->getX(), previous->getY(), map );
-    cout << "a" << endl;
     // // Update the distance counting
     double distance = astar->lengthPath(path);
     double tmp_numOfTurning = astar->getNumberOfTurning ( path );
@@ -158,29 +186,29 @@ void Utilities::printResult(long newSensedCells, long totalFreeCells, double pre
                  long numConfiguration, double travelledDistance, int numOfTurning, 
                  double totalAngle, double totalScanTime, double accumulated_received_power, double *batteryTime)
 {
-  cout << "-----------------------------------------------------------------"<<endl;
-  cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells << " ["<< 100*(float)newSensedCells/(float)totalFreeCells << "%]"<< endl;
-  cout << "Total cell visited :" << numConfiguration <<endl;
-  cout << "Total travelled distance (cells): " << travelledDistance << endl;
-  // cout << "Total travel time: " << travelledDistance / 0.5 << "s, " << ( travelledDistance/0.5) /60 << " m"<< endl;
-  // cout << "I came back to the original position since i don't have any other candidate position"<< endl;
-  // cout << "Total exploration time (s): " << travelledDistance / 0.5 << endl;
-  cout << "Total number of turning: " << numOfTurning << endl;
-  // cout << "Sum of scan angles (radians): " << totalAngle << endl;
-  // cout << "Total time for scanning: " << totalScanTime << endl;
-  // cout << "Total time for exploration: " << travelledDistance/0.5 + totalScanTime << "s, " <<
+  std::cout << "-----------------------------------------------------------------"<<endl;
+  std::cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells << " ["<< 100*(float)newSensedCells/(float)totalFreeCells << "%]"<< endl;
+  std::cout << "Total cell visited :" << numConfiguration <<endl;
+  std::cout << "Total travelled distance (cells): " << travelledDistance << endl;
+  // std::cout << "Total travel time: " << travelledDistance / 0.5 << "s, " << ( travelledDistance/0.5) /60 << " m"<< endl;
+  // std::cout << "I came back to the original position since i don't have any other candidate position"<< endl;
+  // std::cout << "Total exploration time (s): " << travelledDistance / 0.5 << endl;
+  std::cout << "Total number of turning: " << numOfTurning << endl;
+  // std::cout << "Sum of scan angles (radians): " << totalAngle << endl;
+  // std::cout << "Total time for scanning: " << totalScanTime << endl;
+  // std::cout << "Total time for exploration: " << travelledDistance/0.5 + totalScanTime << "s, " <<
   //                                             ( travelledDistance/0.5 + totalScanTime ) /60 << " m" << endl;
-  cout << "Accumulated Rx power: " << accumulated_received_power << endl;
-  cout << "Final battery level: " << 100*(*batteryTime / MAX_BATTERY) << "%" << endl;
+  std::cout << "Accumulated Rx power: " << accumulated_received_power << endl;
+  std::cout << "Final battery level: " << *batteryTime << "%" << endl;
   if (newSensedCells < precision * totalFreeCells)
   {
-    cout << "FINAL: MAP NOT EXPLORED! :(" << endl;
+    std::cout << "FINAL: MAP NOT EXPLORED! :(" << endl;
   } else
   {
-    cout << "FINAL: MAP EXPLORED!" << endl;
+    std::cout << "FINAL: MAP EXPLORED!" << endl;
   }
 
-  cout << "-----------------------------------------------------------------"<<endl;
+  std::cout << "-----------------------------------------------------------------"<<endl;
 }
 
 // Usage example: filePutContents("./yourfile.txt", "content", true);
@@ -188,15 +216,15 @@ void Utilities::filePutContents(const std::string& name, const std::string& cont
   std::ofstream outfile;
   std::ifstream pFile(name);
   if (outfile.fail()){
-    cout << "Error while opening the stream." << endl;
-    // cout << "File does not exist! Create a new one!" << endl;
+    std::cout << "Error while opening the stream." << endl;
+    // std::cout << "File does not exist! Create a new one!" << endl;
     // outfile.open(name);
     // outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,coverage,numConfiguration,travelledDistance,totalScanTime";
   }
   else
   {
     if (pFile.peek() == std::ifstream::traits_type::eof()){ // file is empty
-      // cout << "File does not exist! Create a new one!" << endl;
+      // std::cout << "File does not exist! Create a new one!" << endl;
       outfile.open(name);
       if (name.find("result") != string::npos){
         outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,w_battery_status,norm_w_info_gain,norm_w_travel_distance,norm_w_sensing_time,norm_w_rfid_gain,norm_w_battery_status,coverage,numConfiguration,travelledDistance,totalScanTime,accumulatedRxPower,batteryStatus,accuracy" << endl;
@@ -211,7 +239,7 @@ void Utilities::filePutContents(const std::string& name, const std::string& cont
         outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,w_battery_status,range,numConfiguration,accuracy" << endl;
       }
     }else{
-      // cout << "File exists! Appending data!" << endl;
+      // std::cout << "File exists! Appending data!" << endl;
       outfile.open(name, std::ios_base::app);
     }
   }
@@ -223,19 +251,19 @@ void Utilities::saveCoverage(const std::string& name, const std::string& content
   std::ofstream outfile;
   std::ifstream pFile(name);
   if (outfile.fail()){
-    cout << "Error while opening the stream." << endl;
-    // cout << "File does not exist! Create a new one!" << endl;
+    std::cout << "Error while opening the stream." << endl;
+    // std::cout << "File does not exist! Create a new one!" << endl;
     // outfile.open(name);
     // outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,coverage,numConfiguration,travelledDistance,totalScanTime";
   }
   else
   {
     if (pFile.peek() == std::ifstream::traits_type::eof()){ // file is empty
-      // cout << "File does not exist! Create a new one!" << endl;
+      // std::cout << "File does not exist! Create a new one!" << endl;
       outfile.open(name);
       outfile << "w_info_gain,w_travel_distance,w_sensing_time,w_rfid_gain,w_battery_status,numConfiguration,incrementalCoverage" << endl;
     }else{
-      // cout << "File exists! Appending data!" << endl;
+      // std::cout << "File exists! Appending data!" << endl;
       outfile.open(name, std::ios_base::app);
     }
   }
@@ -257,13 +285,12 @@ bool Utilities::recordContainsCandidates( EvaluationRecords* record,
   // If the selected destination does not appear among the cells already visited
   if ( ! this->contains ( *tabuList, *target ))
   {
-    cout << "F6-2" << endl;
+    // std::cout << "F6-2" << endl;
     // act = true;
     // Add it to the list of visited cells as first-view
     *encodedKeyValue = 1;
     this->updatePathMetrics(count, target, previous, *actualPose, nearCandidates, graph2, map, function,
                       tabuList, history, *encodedKeyValue, astar, numConfiguration, totalAngle, travelledDistance, numOfTurning, *scanAngle, batteryTime);
-    cout << "here" << endl;
   }
   // ...otherwise, if the selected cell has already been visited
   else
@@ -273,8 +300,8 @@ bool Utilities::recordContainsCandidates( EvaluationRecords* record,
     // If there still are more candidates to explore from the last pose in the graph
     if ( graph2->at ( graph2->size()-1 ).second.size() != 0 )
     { 
-      cout <<"F7" << endl;
-      // cout << "[BT1 - Tabulist]There are visible cells but the selected one is already explored!Come back to second best position from the previous position"<< endl;
+      // std::cout <<"F7" << endl;
+      // std::cout << "[BT1 - Tabulist]There are visible cells but the selected one is already explored!Come back to second best position from the previous position"<< endl;
       // Remove the current position from possible candidates
       this->cleanPossibleDestination2 ( nearCandidates, *target );
       // Get the list of new candidate position with associated evaluation
@@ -282,7 +309,7 @@ bool Utilities::recordContainsCandidates( EvaluationRecords* record,
       // If there are candidate positions
       if ( record->size() != 0 )
       {
-        cout <<"F8" << endl;
+        // std::cout <<"F8" << endl;
         // Select the new pose of the robot
         std::pair<Pose,double> result = function->selectNewPose ( record );
         *target = result.first;
@@ -295,7 +322,7 @@ bool Utilities::recordContainsCandidates( EvaluationRecords* record,
       // If there are no more candidate position from the last position in the graph
       else
       {
-        cout <<"F9" << endl;
+        // std::cout <<"F9" << endl;
         // if the graph is now empty, stop the navigation
         if ( graph2->size() == 0 ) return true;
         // Otherwise, select as new position the last cell in the graph and then remove it from there
@@ -307,7 +334,7 @@ bool Utilities::recordContainsCandidates( EvaluationRecords* record,
     // ... if the graph still does not present anymore candidate positions for its last pose
     else
     {
-      cout <<"F10" << endl;
+      // std::cout <<"F10" << endl;
       // Remove the last element (cell and associated candidate from there) from the graph
       graph2->pop_back();
       // Select as new target, the new last element of the graph
@@ -315,8 +342,8 @@ bool Utilities::recordContainsCandidates( EvaluationRecords* record,
       *target = record->getPoseFromEncoding ( targetString );
       // Save it history as cell visited more than once
       history->push_back ( function->getEncodedKey ( *target,2 ) );
-      // cout << "[BT2 - Tabulist]There are visible cells but the selected one is already explored!Come back to two position ago"<< endl;
-      count = count + 1;
+      // std::cout << "[BT2 - Tabulist]There are visible cells but the selected one is already explored!Come back to two position ago"<< endl;
+      count++;
     }
 
   }
@@ -353,7 +380,7 @@ bool Utilities::recordNOTContainsCandidates(vector<pair<string,list<Pose>>>* gra
   *previous = *target;
   // Add it in history as cell visited more than once
   history->push_back ( function->getEncodedKey ( *target,2 ) );
-  count = count + 1;
+  count++;
   return false;
 }
 
@@ -370,7 +397,7 @@ void Utilities::recordContainsCandidatesBT(EvaluationRecords* record,
   // If this cells has not been visited before
   if ( ! this->contains ( *tabuList, *target ) )
   { 
-    std::cout << "1" << endl;
+    // std::cout << "1" << endl;
     // Add it to the list of visited cells as first-view
     *encodedKeyValue = 1;
     this->updatePathMetrics(count, target, previous, *actualPose, nearCandidates, graph2, map, function,
@@ -378,7 +405,7 @@ void Utilities::recordContainsCandidatesBT(EvaluationRecords* record,
     // Leave the backtracking branch
     *btMode = false;
     nearCandidates->clear();
-    // cout << "[BT-MODE4] Go back to previous positions in the graph" << endl;
+    // std::cout << "[BT-MODE4] Go back to previous positions in the graph" << endl;
   }
   // ... otherwise, if the cells has already been visited
   else
@@ -386,8 +413,8 @@ void Utilities::recordContainsCandidatesBT(EvaluationRecords* record,
     // If there are other candidates
     if ( nearCandidates->size() != 0 )
     {
-      std::cout << "2" << endl;
-      // cout << "[BT-MODE1]Already visited, but there are other candidates" << endl;
+      // std::cout << "2" << endl;
+      // std::cout << "[BT-MODE1]Already visited, but there are other candidates" << endl;
 
       // Remove the destination from the candidate list
       for (auto it = tabuList->begin(); it != tabuList->end(); it++){
@@ -417,8 +444,8 @@ void Utilities::recordContainsCandidatesBT(EvaluationRecords* record,
     // ...otherwise, if there are no more candidates
     else
     { 
-      std::cout << "3" << endl;
-      // cout << "[BT-MODE2] Go back to previous positions in the graph" << endl;
+      // std::cout << "3" << endl;
+      // std::cout << "[BT-MODE2] Go back to previous positions in the graph" << endl;
       // Select as target the last element in the graph
       string targetString = graph2->at ( graph2->size()-1 ).first;
       *target = record->getPoseFromEncoding ( targetString );
@@ -466,7 +493,7 @@ void Utilities::recordNOTContainsCandidatesBT(EvaluationRecords* record,
                       tabuList, history, *encodedKeyValue, astar, numConfiguration, totalAngle, travelledDistance, numOfTurning, *scanAngle, batteryTime);
   // Do not leave backtracking before finding a pose with a record.size() > 0 (new frontiers from there)
   // *btMode = false;
-  // cout << "[BT-MODE3] Go back to previous positions in the graph" << endl;
+  // std::cout << "[BT-MODE3] Go back to previous positions in the graph" << endl;
 }
 
 void Utilities::createMultiplePosition(list<Pose> *frontiers, vector<pair<long, long>> *candidatePosition, int range, double FOV)
@@ -591,18 +618,18 @@ bool Utilities::forwardMotion(Pose *target, Pose *previous, list<Pose> *frontier
   // If there are no new candidate positions from the current pose of the robot
   if ( candidatePosition->size() == 0 )
   {
-    cout <<"F1" << endl;
+    // std::cout <<"F1" << endl;
     // Find candidates
     ray->findCandidatePositions2 ( map, *x, *y, *orientation, *FOV, *range );
     *candidatePosition = ray->getCandidatePositions();
     ray->emptyCandidatePositions();
 
-    // cout << "No other candidate position" << endl;
-    // cout << "----- BACKTRACKING -----" << endl;
+    // std::cout << "No other candidate position" << endl;
+    // std::cout << "----- BACKTRACKING -----" << endl;
     // If the graph contains cells that can be explored
     if ( graph2->size() > 1 )
     {
-      cout <<"F3" << endl;
+      // std::cout <<"F3" << endl;
       // Get the last position in the graph and then remove it
       graph2->pop_back();
       string targetString = graph2->at ( graph2->size()-1 ).first;
@@ -610,32 +637,35 @@ bool Utilities::forwardMotion(Pose *target, Pose *previous, list<Pose> *frontier
       *nearCandidates = graph2->at ( graph2->size()-1 ).second;
       // Add it to the history as cell visited more than once
       history->push_back ( function->getEncodedKey ( *target,2 ) );
-      // cout << "[BT]No significative position reachable. Come back to previous position" << endl;
-      *count = *count + 1;
+      // std::cout << "[BT]No significative position reachable. Come back to previous position" << endl;
+      *count++;
       *btMode = true;
     }
     //...otherwise, if the graph does not contain cells that can be explored
     // The navigation is finished!
     else
     {
-      cout <<"F4" << endl;
-      // cout << "Num configuration: " << numConfiguration << endl;
-      // cout << "Travelled distance calculated during the algorithm: " << travelledDistance << endl;
-      // cout << "------------------ HISTORY -----------------" << endl;
+      // std::cout <<"F4" << endl;
+      // std::cout << "Num configuration: " << numConfiguration << endl;
+      // std::cout << "Travelled distance calculated during the algorithm: " << travelledDistance << endl;
+      // std::cout << "------------------ HISTORY -----------------" << endl;
       // Retrieve the cell visited only the first time
-      *tmp_history = this->cleanHistory(history, record);
-      this->calculateDistance(*tmp_history, map, astar );
+      // *tmp_history = this->cleanHistory(history, record);
+      // this->calculateDistance(*tmp_history, map, astar );
 
-      // cout << "------------------ TABULIST -----------------" << endl;
+      // std::cout << "------------------ TABULIST -----------------" << endl;
       // Calculate the path connecting the cells in the tabulist, namely the cells that are visited one time and couldn't be visite again
-      this->calculateDistance(*tabuList, map, astar );
+
+      //NOTE Get correct values from tabuList
+      *travelledDistance = this->calculateDistance(*tabuList, map, astar );
+      *batteryTime = this->calculateRemainingBatteryPercentage(*tabuList, map, astar );
 
       // Normalise the travel distance in meter
       // NOTE: assuming that the robot is moving at 0.5m/s and the resolution of the map is 0.5m per cell)
-      if ( *imgresolution == 1.0 )
-      {
-        *travelledDistance = *travelledDistance/2;
-      }
+      // if ( *imgresolution == 1.0 )
+      // {
+      //   *travelledDistance = *travelledDistance/2;
+      // }
       this->printResult(*newSensedCells, *totalFreeCells, *precision, 
                         *numConfiguration, *travelledDistance, *numOfTurning,
                         *totalAngle, *totalScanTime, *accumulated_received_power, batteryTime);
@@ -653,7 +683,7 @@ bool Utilities::forwardMotion(Pose *target, Pose *previous, list<Pose> *frontier
   //... otherwise, if there are further candidate new position from the current pose of the robot
   else
   {
-    cout <<"F2" << endl;
+    // std::cout <<"F2" << endl;
     // For each candidate position, create many more with different robot orientation
     this->createMultiplePosition(frontiers, candidatePosition, *range, *FOV);
     // Evaluate the frontiers and return a list of <frontier, evaluation> pairs
@@ -663,18 +693,18 @@ bool Utilities::forwardMotion(Pose *target, Pose *previous, list<Pose> *frontier
     // If there are candidate positions
     if ( record->size() != 0 )
     {
-      cout <<"F5" << endl;
+      // std::cout <<"F5" << endl;
       bool break_loop = this->recordContainsCandidates( record, count, target, previous, 
                                 actualPose, nearCandidates, graph2, map, function, tabuList, 
                                 history, encodedKeyValue, astar , numConfiguration, totalAngle,
                                 travelledDistance, numOfTurning , scanAngle, btMode, threshold, rfid_tools, batteryTime);
-      // cout << "Break: " << break_loop << endl;
+      // std::cout << "Break: " << break_loop << endl;
       if (break_loop == true) return true;
     }
     // ... otherwise, if there are no candidate positions
     else
     {
-      cout <<"F6" << endl;
+      // std::cout <<"F6" << endl;
       bool break_loop = this->recordNOTContainsCandidates(graph2, record, target,
                                 previous, history, function, count);
       if (break_loop == true) return true;
@@ -701,7 +731,7 @@ double Utilities::findTags( vector<RFIDGridmap> *RFID_maps_list, vector<pair<dou
   std::pair<int, int> tag, belief_tag;
   // FIXME: not accurate, it must not be used
     // tag= map.findTag();
-    // cout << "RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
+    // std::cout << "RFID pose: [" << tag.second << "," << tag.first << "]" << endl;
   std::string tags_distance_from_gt = to_string(this->w_info_gain) + "," 
                                     + to_string(this->w_travel_distance) + "," 
                                     + to_string(this->w_sensing_time) + "," 
@@ -719,16 +749,16 @@ double Utilities::findTags( vector<RFIDGridmap> *RFID_maps_list, vector<pair<dou
     belief_tag = belief_value_tag.second;
     belief_tag.first = belief_tag.first;
     belief_tag.second = belief_tag.second;
-    // cout << "[Grid]RFID pose: [" << tag.second << "," << tag.first << "]" << "  ->  GT:[" << tags_coord[i].second << "," << tags_coord[i].first << "]" << endl;
+    // std::cout << "[Grid]RFID pose: [" << tag.second << "," << tag.first << "]" << "  ->  GT:[" << tags_coord[i].second << "," << tags_coord[i].first << "]" << endl;
     distance_to_tag = sqrt(pow((*tags_coord)[i].first - tag.first, 2) + pow((*tags_coord)[i].second - tag.second, 2));
     belief_distance_to_tag = sqrt(pow((*tags_coord)[i].first - belief_tag.first, 2) + pow((*tags_coord)[i].second - belief_tag.second, 2));
-    // cout << "Value: " << value << endl;
+    // std::cout << "Value: " << value << endl;
     // if (value >=2) accuracy = accuracy + 1;
-    // cout << "Distance to tag: " << to_string(distance_to_tag) << " cells" << endl;
-    cout << "------" << "[" << i << "]------" << endl;
-    // cout << "[GT]     Tag: " << to_string((*tags_coord)[i].first) << ", " << to_string((*tags_coord)[i].second) << endl;
-    // cout << "[Belief] Tag: " << belief_tag.first << "," << belief_tag.second << endl;
-    cout << "Belief_Distance to tag: " << to_string(belief_distance_to_tag) << " cells" << endl;
+    // std::cout << "Distance to tag: " << to_string(distance_to_tag) << " cells" << endl;
+    std::cout << "------" << "[" << i << "]------" << endl;
+    // std::cout << "[GT]     Tag: " << to_string((*tags_coord)[i].first) << ", " << to_string((*tags_coord)[i].second) << endl;
+    // std::cout << "[Belief] Tag: " << belief_tag.first << "," << belief_tag.second << endl;
+    std::cout << "Belief_Distance to tag: " << to_string(belief_distance_to_tag) << " cells" << endl;
     if (distance_to_tag <= 10.0) accuracy = accuracy + 1;
     if (belief_distance_to_tag <= 10.0)
     {
@@ -743,8 +773,8 @@ double Utilities::findTags( vector<RFIDGridmap> *RFID_maps_list, vector<pair<dou
   }
   accuracy = accuracy / (*RFID_maps_list).size();
   belief_accuracy = belief_accuracy / (*RFID_maps_list).size();
-  cout << "Accuracy: " << to_string(accuracy) << endl;
-  cout << "Belief_Accuracy: " << to_string(belief_accuracy) << endl;
+  std::cout << "Accuracy: " << to_string(accuracy) << endl;
+  std::cout << "Belief_Accuracy: " << to_string(belief_accuracy) << endl;
   tags_distance_from_gt += "\n";
   this->filePutContents(detection_log, tags_distance_from_gt, true);
   accuracy_content += to_string(initRange) + "," + to_string(numConfiguration) + "," + to_string(belief_accuracy) + "\n";

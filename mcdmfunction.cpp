@@ -271,7 +271,7 @@ string MCDMFunction::getEncodedKey(Pose &p, int value) {
   } else if (value == 1) {
     key = to_string(p.getX()) + "/" + to_string(p.getY()) + "/" + to_string(p.getOrientation()) + "/" + "1";
   } else if (value == 2) {
-    key = to_string(p.getX()) + "/" + to_string(p.getY()) + "/" + to_string(p.getOrientation()) + "/" + "0";
+    key = to_string(p.getX()) + "/" + to_string(p.getY()) + "/" + to_string(p.getOrientation()) + "/" + "2";
   }
   return key;
 }

@@ -214,7 +214,7 @@ int main ( int argc, char **argv )
   Astar astar;
   double totalScanTime = 0;
   bool act = true;
-  int encodedKeyValue = 0;
+  int encodedKeyValue = 1;
   string content;
 
   double distStep = 0.1;
@@ -258,12 +258,12 @@ int main ( int argc, char **argv )
   rfid_tools.RFID_maps_list = &RFID_maps_list;
   do
   {
-    std::cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells << " ["<< 100*(float)newSensedCells/(float)totalFreeCells << "%] - Battery: " << to_string(100*batteryTime/MAX_BATTERY) << endl;
-    // if (graph2.size() == 1 and count > 1) break;
+    if (graph2.size() == 1 and count > 1) break;
     // If we are doing "forward" navigation towards cells never visited before
     if ( btMode == false )
     {
-      std::cout <<"   Graph: " << graph2.size() << endl;
+      // std::cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells << " ["<< 100*(float)newSensedCells/(float)totalFreeCells << "%] - Battery: " << to_string(100*batteryTime/MAX_BATTERY) << endl;
+      // std::cout <<"   Graph: " << graph2.size() << endl;
       content = to_string(w_info_gain) 
                 + "," + to_string(w_travel_distance)
                 + "," + to_string(w_sensing_time) 
@@ -351,8 +351,8 @@ int main ( int argc, char **argv )
     // ... otherwise, if we are doing backtracking
     else
     { 
-      std::cout << "   Graph: " << graph2.size() << endl;
-      cout << "   nearCandidates: " << nearCandidates.size() << endl;
+      // std::cout << "   Graph: " << graph2.size() << endl;
+      // cout << "   nearCandidates: " << nearCandidates.size() << endl;
       // if (graph2.size() == 1) break;
 
       x = target.getX();
@@ -396,7 +396,7 @@ int main ( int argc, char **argv )
       // Get the list of the candidate cells with their evaluation
       // TODO: nearCandidates seems to be empty
       EvaluationRecords *record = function.evaluateFrontiers ( nearCandidates, &map, threshold, &rfid_tools, &batteryTime );
-      std::cout << "   record: " << record->size() << endl;
+      // std::cout << "   record: " << record->size() << endl;
       // If there are candidate cells
       if ( record->size() != 0 )
       {
@@ -432,13 +432,18 @@ int main ( int argc, char **argv )
   // utils.saveRFIDMapsWithGroundTruths(&RFID_maps_list, &tags_coord, "/tmp/D");
   // std::cout << "------------------ HISTORY -----------------" << endl;
   // Calculate which cells have been visited only once
+  // FIXME: history doesn't contain last visited cell
   tmp_history = utils.cleanHistory(&history, &record);
   // cout << "1" << endl;
-  utils.calculateDistance(tmp_history, &map, &astar );
+  travelledDistance = utils.calculateDistance(tmp_history, &map, &astar );
   // cout << "2" << endl;
 
   // std::cout << "------------------ TABULIST -----------------" << endl;
-  utils.calculateDistance(tabuList, &map, &astar );
+  // NOTE: tabuList is the most reliable source of information regarding the cells actually visited
+  // because it's is filled only when the cells are visited for the first time and not during virtual
+  // backtracking. So we use tabuList for calculating the final "real" traversedDistance and remainingBatteryTime
+  travelledDistance =  utils.calculateDistance(tabuList, &map, &astar );
+  double batteryPercentage = utils.calculateRemainingBatteryPercentage(tabuList, &map, &astar);
   // cout << "3" << endl;
 
   double belief_accuracy = utils.findTags(&RFID_maps_list, &tags_coord, &map,
@@ -451,7 +456,7 @@ int main ( int argc, char **argv )
             + to_string(norm_w_info_gain) + ","  + to_string(norm_w_travel_distance) + "," + to_string(norm_w_sensing_time) + "," + to_string(norm_w_rfid_gain) + "," + to_string(norm_w_battery_status) + ","
             + to_string(float(newSensedCells)/float(totalFreeCells)) + "," + to_string(numConfiguration) + ","
             + to_string(travelledDistance) + "," + to_string(totalScanTime) + "," + to_string(accumulated_received_power) + "," 
-            + to_string(100*batteryTime/MAX_BATTERY) + ", " + to_string(belief_accuracy) + "\n";
+            + to_string(batteryPercentage) + ", " + to_string(belief_accuracy) + "\n";
   utils.filePutContents(out_log, content, true );
 
   double totalTimeMCDM = chrono::duration<double,milli> ( endMCDM -startMCDM ).count();
@@ -460,7 +465,7 @@ int main ( int argc, char **argv )
 
   utils.printResult(newSensedCells, totalFreeCells, precision, 
                     numConfiguration, travelledDistance, numOfTurning,
-                    totalAngle, totalScanTime, accumulated_received_power, &batteryTime);
+                    totalAngle, totalScanTime, accumulated_received_power, &batteryPercentage);
 
   // std::cout << "Saving tag distribution maps... "<< endl;
   rfid_tools.rm->saveProbMaps("/tmp/");
