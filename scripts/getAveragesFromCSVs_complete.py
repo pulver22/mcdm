@@ -64,6 +64,18 @@ if __name__ == '__main__':
             # Filter tags distances
             for i in range(1,11):
                 distanceDataIn.loc[distanceDataIn['tag'+str(i)] > errorDist, 'tag'+str(i)] = errorDist
+                # Normalize in meters
+                norm_factor = 1.0
+                # Res(inb3123) = 0.5, Res(inbeng) = 0.25, Res(inbatrium) = 0.33, Res(ncfm) = 0.25, Res(orebro) = 0.5
+                if (experiment == "inb3123"  ): norm_factor = 0.5
+                if (experiment == "inbeng"   ): norm_factor = 0.25
+                if (experiment == "inbatrium"): norm_factor = 0.33
+                if (experiment == "ncfm"     ): norm_factor = 0.25
+                if (experiment == "orebro"   ):  norm_factor = 0.5
+                distanceDataIn['tag'+str(i)] *= norm_factor
+
+            # Normalize also the travelled distance in meters
+            dataIN['travelledDistance'] *= norm_factor
 
             # Stack the DataFrames on top of each other                
             if 'allData' in locals():
@@ -77,16 +89,20 @@ if __name__ == '__main__':
         # some data conditioning ...
         allData["Batch"] =  allData["Batch"].astype('category')
         allData["Experiment"] =  allData["Experiment"].astype('category')
-        distanceAllData["Experiment"] =  allData["Experiment"].astype('category')
+
+        # print(distanceAllData.index)
+        # distanceAllData["Experiment"] =  allData["Experiment"]#.astype('category')
 
         grouping_colls = ['w_info_gain', 'w_travel_distance', 'w_sensing_time', 'w_rfid_gain', 'w_battery_status', 'Experiment']
+        distance_grouping_colls = ['w_info_gain', 'w_travel_distance', 'w_sensing_time', 'w_rfid_gain', 'w_battery_status']
         averages = allData.groupby(grouping_colls).mean() 
         averages2 = contitionDF(averages, 'av', None)
-        distanceAverages = distanceAllData.groupby(grouping_colls).mean() 
+        # new_grouping_colls = ['w_info_gain', 'w_travel_distance', 'w_sensing_time', 'w_rfid_gain', 'w_battery_status']
+        distanceAverages = distanceAllData.groupby(distance_grouping_colls).mean() 
         distanceAverages2 = contitionDF(distanceAverages, 'av', None)
 
         stdevs = allData.groupby(grouping_colls).std()
-        distanceStdevs = distanceAllData.groupby(grouping_colls).std()
+        distanceStdevs = distanceAllData.groupby(distance_grouping_colls).std()
         droppedCols = ['Experiment', 'norm_w_info_gain', 'norm_w_travel_distance', 'norm_w_sensing_time', 'norm_w_rfid_gain', 'norm_w_battery_status', 'w_info_gain', 'w_travel_distance', 'w_sensing_time', 'w_rfid_gain', 'w_battery_status']
         distanceDroppedCols = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7', 'tag8', 'tag9', 'tag10']
         stdevs2 = contitionDF(stdevs, 'std',droppedCols)
