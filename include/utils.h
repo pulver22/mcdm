@@ -66,11 +66,22 @@ public:
   /**
    * Calculate the length of a path
    *
-   *  @param list: a list of Pose lying on the path
+   * @param list: a list of Pose lying on the path
    * @param map: a copy of the map
    * @param astar: the astar object used for parsing the map and calculating the distance
+   * @return the distance travelled by the robot along the entire path
    */
-  void calculateDistance(list<Pose> list, dummy::Map* map, Astar* astar);
+  double calculateDistance(list<Pose> list, dummy::Map* map, Astar* astar);
+
+  /**
+   * Calculate the length of a path
+   *
+   * @param list: a list of Pose lying on the path
+   * @param map: a copy of the map
+   * @param astar: the astar object used for parsing the map and calculating the distance
+   * @return the final battery percentage of the robot
+   */
+  double calculateRemainingBatteryPercentage(list<Pose> list, dummy::Map* map, Astar* astar);
   
   /**
    * Create a new Pose object starting from another one

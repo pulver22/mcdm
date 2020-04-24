@@ -42,7 +42,7 @@ do
         w_rfid_gain=${w_rfid_gain_list[$i]}
         w_battery_status=${w_battery_status_list[$i]}
         echo "Testing : [$w_info_gain , $w_travel_distance, $w_sensing_time, $w_rfid_gain, $w_battery_status] "
-        ./../build/mcdm_online_exploration ./../Images/orebro_small.pgm 1 ${X[$counter_run]} ${Y[$counter_run]} 180 6 180 0.99 0 1 ./../config/tag_orebro_${counter_run}.yaml 902e6 -10 $w_info_gain $w_travel_distance $w_sensing_time $w_rfid_gain $w_battery_status ${out_path}/result_orebro_mcdm_r$counter_run.csv ${out_path}/coverage_orebro_mcdm_${i}_r${counter_run}.csv ${out_path}/distance_orebro_mcdm_${i}_r${counter_run}.csv 1 ${out_path}/accuracy_orebro_mcdm_r$counter_run.csv $use_mcdm &>/dev/null &
+        ./../build/mcdm_online_exploration ./../Images/orebro_small.pgm 1 ${X[$counter_run]} ${Y[$counter_run]} 180 6 180 0.99 0 1 ./../config/tag_orebro_${counter_run}.yaml 902e6 -10 $w_info_gain $w_travel_distance $w_sensing_time $w_rfid_gain $w_battery_status ${out_path}/result_orebro_mcdm_r$counter_run.csv ${out_path}/coverage_orebro_mcdm_${i}_r${counter_run}.csv ${out_path}/distance_orebro_mcdm_$r${counter_run}.csv 1 ${out_path}/accuracy_orebro_mcdm_r$counter_run.csv $use_mcdm &>/dev/null &
         ((counter++))
         if ((counter%batch_size==0))
         then
