@@ -183,7 +183,7 @@ int main ( int argc, char **argv )
   double nx = 240*resolution; // radar model active area x-range m.
   double ny = 120*resolution;  // radar model active area y-range m.  
   double rs = resolution; // radar model grid resolution m./cell :: SAME AS INPUT IMAGE!!!
-  double sigma_power = 1; //dB
+  double sigma_power = 3.92; //dB
   double sigma_phase = 1; //rads
   txtPower = txtPower; // NOTE: Added for debug
   std::vector<double> freqs{ freq }; // only 1 freq... noice!
@@ -242,7 +242,8 @@ int main ( int argc, char **argv )
       // Update the overall covered distance
       string path = astar.pathFind ( target.getX(), target.getY(), previous.getX(), previous.getY(), &map );
       distance = astar.lengthPath(path);
-      travelledDistance = travelledDistance + distance;
+      // travelledDistance = travelledDistance + distance;
+      travelledDistance = utils.calculateDistance(tabuList, &map, &astar );
       tmp_numOfTurning = astar.getNumberOfTurning ( path );
       translTime = distance / TRANSL_SPEED;
       rotTime = tmp_numOfTurning / ROT_SPEED;

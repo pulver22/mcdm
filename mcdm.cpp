@@ -224,9 +224,9 @@ int main ( int argc, char **argv )
   double nx = 200*resolution; // radar model active area x-range m.
   double ny = 120*resolution;  // radar model active area y-range m.  
   double rs = resolution; // radar model grid resolution m./cell :: SAME AS INPUT IMAGE!!!
-  double sigma_power = 1; //dB
+  double sigma_power = 3.92; //dB
   double sigma_phase = 1; //rads
-  txtPower = txtPower; // NOTE: Added for debug
+  // txtPower = txtPower; // NOTE: Added for debug
   std::vector<double> freqs{ freq }; // only 1 freq... nice!
   // std::vector<double> freqs{ MIN_FREQ_NA,MIN_FREQ_NA+STEP_FREQ_NA,MIN_FREQ_NA+2.0*STEP_FREQ_NA }; 
 
@@ -244,6 +244,7 @@ int main ( int argc, char **argv )
   bool break_loop;
   double accumulated_received_power = 0.0;
   double batteryTime = MAX_BATTERY;
+  double batteryPercentage = 100;
   double distance = 0.0;
   double tmp_numOfTurning = 0.0;
   double translTime = 0.0;
@@ -264,6 +265,7 @@ int main ( int argc, char **argv )
     {
       // std::cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells << " ["<< 100*(float)newSensedCells/(float)totalFreeCells << "%] - Battery: " << to_string(100*batteryTime/MAX_BATTERY) << endl;
       // std::cout <<"   Graph: " << graph2.size() << endl;
+      travelledDistance = utils.calculateDistance(tabuList, &map, &astar );
       content = to_string(w_info_gain) 
                 + "," + to_string(w_travel_distance)
                 + "," + to_string(w_sensing_time) 
@@ -419,9 +421,10 @@ int main ( int argc, char **argv )
       }
       delete record;
     }
+    batteryPercentage = utils.calculateRemainingBatteryPercentage(tabuList, &map, &astar);
   }
   // Perform exploration until a certain coverage is achieved
-  while ( sensedCells < precision * totalFreeCells and batteryTime > 0.0);
+  while ( sensedCells < precision * totalFreeCells and batteryPercentage > 0.0);
   // cout << "Out" << endl;
   // Plotting utilities
   // map.drawVisitedCells ();
@@ -443,7 +446,7 @@ int main ( int argc, char **argv )
   // because it's is filled only when the cells are visited for the first time and not during virtual
   // backtracking. So we use tabuList for calculating the final "real" traversedDistance and remainingBatteryTime
   travelledDistance =  utils.calculateDistance(tabuList, &map, &astar );
-  double batteryPercentage = utils.calculateRemainingBatteryPercentage(tabuList, &map, &astar);
+  batteryPercentage = utils.calculateRemainingBatteryPercentage(tabuList, &map, &astar);
   // cout << "3" << endl;
 
   double belief_accuracy = utils.findTags(&RFID_maps_list, &tags_coord, &map,

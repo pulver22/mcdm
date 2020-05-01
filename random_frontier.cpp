@@ -188,7 +188,7 @@ int main ( int argc, char **argv )
   double nx = 240*resolution; // radar model active area x-range m.
   double ny = 120*resolution;  // radar model active area y-range m.  
   double rs = resolution; // radar model grid resolution m./cell :: SAME AS INPUT IMAGE!!!
-  double sigma_power = 1; //dB
+  double sigma_power = 3.92; //dB
   double sigma_phase = 1; //rads
   txtPower = txtPower; // NOTE: Added for debug
   std::vector<double> freqs{ freq }; // only 1 freq... noice!
@@ -228,7 +228,7 @@ int main ( int argc, char **argv )
     // If we are doing "forward" navigation towards cells never visited before
     if ( btMode == false )
     {
-
+      travelledDistance = utils.calculateDistance(tabuList, &map, &astar );
       content = to_string(w_info_gain) 
                 + "," + to_string(w_travel_distance)
                 + "," + to_string(w_sensing_time) 
@@ -335,23 +335,24 @@ int main ( int argc, char **argv )
         // The navigation is finished!
         else
         {
-          cout << "Num configuration: " << numConfiguration << endl;
-          cout << "Travelled distance calculated during the algorithm: " << travelledDistance << endl;
-          cout << "------------------ HISTORY -----------------" << endl;
-          // Retrieve the cell visited only the first time
-          list<Pose> tmp_history = utils.cleanHistory(&history, &record);
-          utils.calculateDistance(tmp_history, &map, &astar );
+          // cout << "Num configuration: " << numConfiguration << endl;
+          // cout << "Travelled distance calculated during the algorithm: " << travelledDistance << endl;
+          // cout << "------------------ HISTORY -----------------" << endl;
+          // // Retrieve the cell visited only the first time
+          // list<Pose> tmp_history = utils.cleanHistory(&history, &record);
+          // utils.calculateDistance(tmp_history, &map, &astar );
 
-          cout << "------------------ TABULIST -----------------" << endl;
+          // cout << "------------------ TABULIST -----------------" << endl;
           // Calculate the path connecting the cells in the tabulist, namely the cells that are visited one time and couldn't be visite again
-          utils.calculateDistance(tabuList, &map, &astar );
+          // utils.calculateDistance(tabuList, &map, &astar );
+          travelledDistance = utils.calculateDistance(tabuList, &map, &astar );
 
           // Normalise the travel distance in meter
           // NOTE: assuming that the robot is moving at 0.5m/s and the resolution of the map is 0.5m per cell)
-          if ( imgresolution == 1.0 )
-          {
-            travelledDistance = travelledDistance/2;
-          }
+          // if ( imgresolution == 1.0 )
+          // {
+          //   travelledDistance = travelledDistance/2;
+          // }
           utils.printResult(newSensedCells, totalFreeCells, precision, numConfiguration, travelledDistance, numOfTurning,
               totalAngle, totalScanTime, accumulated_received_power, &batteryTime);
           content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + "," + to_string(w_rfid_gain) + ","
