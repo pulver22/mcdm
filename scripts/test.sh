@@ -1,5 +1,5 @@
 # INB_ENG
-./../build/mcdm_online_exploration ./../Images/inbeng_small.pgm 1 55 41 180 12 180 0.99 0 1 ./../config/tag_inbeng_2.yaml 902e6 0 0 0 0 0 1 /tmp/result_inbeng.csv /tmp/coverage_mcdm_inbeng.csv /tmp/distance_tag.csv 1 /tmp/accuracy.csv 1
+./../build/mcdm_online_exploration ./../Images/inbeng_small.pgm 1 55 41 180 12 180 0.99 0 1 ./../config/tag_inbeng_2.yaml 902e6 0 0 0 0 1 0 /tmp/result_inbeng.csv /tmp/coverage_mcdm_inbeng.csv /tmp/distance_tag.csv 1 /tmp/accuracy.csv 1
 
 # INB_3123
 # ./../build/mcdm_online_exploration ./../Images/inb3123_small.pgm 1 105 78 180 6 180 0.99 0 1 ./../config/tag_inb3123_2.yaml 902e6 0 0 0 0 1 0 /tmp/result_inb3123_mcdm.csv /tmp/coverage_inb3123_mcdm.csv /tmp/distance_inb3123_mcdm.csv 1 /tmp/accuracy_inb3123_mcdm.csv 1

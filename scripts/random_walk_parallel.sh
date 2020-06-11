@@ -8,10 +8,10 @@ X=(102 105 106   72   79   33   126 40   28   38  52   116   97  81   54)
 Y=(97  78  76    124  117  45   99  125  154  95  136  90    100 116  140)
 range=(6         12             9             12             6)
 
-# envs=(ncfm)
-# X=(38  52   116)
-# Y=(95  136  90)
-# range=12
+envs=(inbatrium)
+X=(126 40   28)
+Y=(99  125  154)
+range=9
 
 # MCDM parameters list
 w_info_gain_list=(      1  0  0  ) #0  0  0.2  0.6  0.1  0.1  0.1  0.1 )
@@ -42,7 +42,7 @@ while (( $(echo "$counter_env < $total_envs" | bc -l)));
 do
     echo "===== ENV ${envs[$counter_env]} ====="
     # Path where to save data (create it if it doesn't exist)
-    out_path=/home/pulver/Desktop/mcdm_ral_experiments/random_walk/${envs[$counter_env]}
+    out_path=/home/pulver/Desktop/mcdm_ral_experiments/random_walk/fix_distance/${envs[$counter_env]}
     [ -d $out_path ] || mkdir -p $out_path
 
     while (( $(echo "$counter_run < 3" | bc -l)));

@@ -27,8 +27,8 @@ if __name__ == '__main__':
     # params
     # dont forget the final slash!!!!
     dataFolder = '/home/pulver/Dropbox/University/PostDoc/MCDM/mcdm_ral_experiments/'
-    # experimentFolders = ['inb3123', 'inbatrium', 'inbeng', 'ncfm', 'orebro' ]
-    experimentFolders = ['inb3123', 'ncfm', 'orebro' ]
+    experimentFolders = ['inb3123', 'inbatrium', 'inbeng', 'ncfm', 'orebro' ]
+    # experimentFolders = ['inb3123', 'ncfm', 'orebro' ]
     # Experiment batches 
     numBatches = 3 
 
@@ -145,7 +145,7 @@ if __name__ == '__main__':
                               "accuracy",
                               "totalScanTime",
                               "accumulatedRxPower"])
-    stats_transposed.to_csv('/home/pulver/Desktop/test_inb3123.csv', header=False)#, index=False)
+    stats_transposed.to_csv('/home/pulver/Desktop/test_final.csv', header=False)#, index=False)
 
 
 

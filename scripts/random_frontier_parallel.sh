@@ -42,7 +42,7 @@ while (( $(echo "$counter_env < $total_envs" | bc -l)));
 do
     echo "===== ENV ${envs[$counter_env]} ====="
     # Path where to save data (create it if it doesn't exist)
-    out_path=/home/pulver/Desktop/mcdm_ral_experiments/random_frontier/${envs[$counter_env]}
+    out_path=/home/pulver/Desktop/mcdm_ral_experiments/random_frontier/fix_distance/${envs[$counter_env]}
     [ -d $out_path ] || mkdir -p $out_path
 
     while (( $(echo "$counter_run < 3" | bc -l)));

@@ -26,9 +26,9 @@ def contitionDF(df, colnameSufix, droppedCols):
 if __name__ == '__main__':
     # params
     # dont forget the final slash!!!!
-    dataFolder = '/home/pulver/Dropbox/University/PostDoc/MCDM/mcdm_ral_experiments/'
-    # experimentFolders = ['inb3123', 'inbatrium', 'inbeng', 'ncfm', 'orebro' ]
-    experimentFolders = ['inb3123', 'ncfm', 'orebro' ]
+    dataFolder = '/home/pulver/Desktop/mcdm_ral_experiments/random_walk/fix_distance/'
+    experimentFolders = ['inb3123', 'inbatrium', 'inbeng', 'ncfm', 'orebro' ]
+    # experimentFolders = ['inb3123', 'ncfm', 'orebro' ]
     # Experiment batches 
     numBatches = 3 
     errorDist = 15
@@ -53,7 +53,7 @@ if __name__ == '__main__':
             # FIXME: careful with number padding (01 or just 1?)
             fileName = 'result_' + experiment + '_mcdm_r'+ str(i) + '.csv'
             distanceFileName = 'distance_' + experiment + '_mcdm_' + str(i) + '.csv'
-            print('- File: '+ fileName)            
+            print('- File: '+ fileName + ',' + distanceFileName)            
             fileURI = experimentFolder + fileName
             distanceFileUri = experimentFolder + distanceFileName        
             dataIN = pd.read_csv(fileURI)
@@ -61,6 +61,8 @@ if __name__ == '__main__':
             dataIN["Experiment"] = experiment
             dataIN["Batch"] =  str(i)
 
+            # print(dataIN)
+            # exit(0)
             # Filter tags distances
             for i in range(1,11):
                 distanceDataIn.loc[distanceDataIn['tag'+str(i)] > errorDist, 'tag'+str(i)] = errorDist
@@ -174,7 +176,7 @@ if __name__ == '__main__':
         for column in distance_column_to_remove:
             distanceStats.drop(column, axis=1, inplace=True)
         
-        stats = stats.sort_values(by=["Experiment (av)", "w_info_gain (av)"])
+        stats = stats.sort_values(by=["Experiment (av)"])#, "w_info_gain (av)"])
 
         # Rearrange dataframe
         stats = stats[["Experiment (av)", 
@@ -229,7 +231,7 @@ if __name__ == '__main__':
     for i in range(1,len(experimentFolders)):
         mask[i*14:(i*14 + 5)] = False
     finalData = finalData[mask]
-    finalData.to_csv('/home/pulver/Desktop/final_clean.csv', index=True)
+    finalData.to_csv('/home/pulver/Desktop/final_clean_rw.csv', index=True)
 
 
 
