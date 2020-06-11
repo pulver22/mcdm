@@ -65,3 +65,5 @@ mcdm_online_exploration
 *.pdf
 
 *.gz
+
+.vscode/
