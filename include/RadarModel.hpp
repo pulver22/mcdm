@@ -159,6 +159,11 @@ class RadarModel {
   std::vector<double> _freqs;    // transmission frequencies (Hz.)
   SplineFunction _antenna_gains; // model for antenna power gain depending on
                                  // the angle (dB.)
+  vector<int> _iteration_no_readings;
+  int _counter = 0;
+  vector<bool> _first_detection;
+  vector<std::pair<int, int>> _belief_tags;
+  bool probabilisticTag = true;  // belief on tag position change over time
 
 public:
   /**
@@ -507,6 +512,35 @@ public:
                      double y_m, double orientation_deg, double f_i);
   cv::Mat layerToImage(GridMap *gm, std::string layerName);
 
+  /**
+   * Update the tags position for debugging purposes.
+   * 
+   * @param tags_coord: a list of coordinates pair for all the tags present in the map
+   */
+  void updateTagsPosition(std::vector<std::pair<double,double>> tags_coord);
+
+  /**
+   * Create a bi-variate gaussian noise, modeled as random walk, around the tag position.
+   * The variance increase with the number of iterations.
+   * 
+   * @param mean: the position of the tag
+   * @param iteration: the number of iterations without a reading
+   * @param sigma: the standard deviation of the normal distribution
+   * 
+   * @return the map matrix with a normal distribution centered on the tag position
+   */
+  Eigen::MatrixXf getGaussianRandomWalk(std::pair<int, int> mean, int tag_id);
+
+  /**
+   * Create a gaussian kernel
+   * @param rows: the row size of the kernel
+   * @param cols: the col size of the kernel
+   * @param x_mean: the x-coord of the mean of the gaussian
+   * @param y_mean: the y-coord of the mean of the gaussian
+   * @param x_sigma: the std dev on x
+   * @param y_sigma: the std dev on y
+   */
+  Eigen::MatrixXf getGaussianKernel(int rows, int cols, int x_mean, int y_mean, double x_sigma, double y_sigma);
 }; // end class
 
 #endif

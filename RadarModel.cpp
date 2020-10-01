@@ -1,6 +1,11 @@
 #include "RadarModel.hpp"
 #include <unsupported/Eigen/SpecialFunctions>
 
+#include <opencv/cv.h>
+#include <opencv2/opencv.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/core/eigen.hpp>
+
 using namespace std;
 using namespace grid_map;
 
@@ -99,6 +104,14 @@ RadarModel::RadarModel(const double resolution, const double sigma_power, const 
             _rfid_belief_maps.at("X",*iterator) = point.x();
             _rfid_belief_maps.at("Y",*iterator) = point.y();
         }
+
+        // Tags have not been detected yet
+        for(int i=0; i<tags_coords.size();i++){
+          _first_detection.push_back(false);
+          _iteration_no_readings.push_back(1);
+        }
+        _belief_tags.reserve(tags_coords.size());
+        assert( tags_coords.size() == _first_detection.size());
 
     }
 
@@ -1186,8 +1199,7 @@ double RadarModel::phaseDifference(double tag_x, double tag_y, double freq) {
   return phase;
 }
 
-std::pair<int, std::pair<int, int>>
-RadarModel::findTagFromBeliefMap(int num_tag) {
+std::pair<int, std::pair<int, int>> RadarModel::findTagFromBeliefMap(int num_tag) {
 
   // Access the belief map of every tag
   std::string layerName = getTagLayerName(num_tag);
@@ -1195,54 +1207,42 @@ RadarModel::findTagFromBeliefMap(int num_tag) {
 
   std::pair<int, int> tag(0, 0);
   double powerRead = 0;
-  // for(int row=0; row < grid.getLength().x(); row++)
-  // {
-  //   for(int col=0; col < grid.getLength().y(); col++)
-  //   {
-
+  int buffer_size = 3;
+  
   for (GridMapIterator iterator(_rfid_belief_maps); !iterator.isPastEnd();
        ++iterator) {
     const Index index(*iterator);
     // For every cell, analyse the surrounding area
     double tmp_power = 0.0;
     tmp_power = grid(index(0), index(1));
-    int buffer_size = 3;
+    
     if (index(0) > buffer_size and
         index(0) <= _rfid_belief_maps.getLength().x() - buffer_size) {
       if (index(1) > buffer_size and
           index(1) <= _rfid_belief_maps.getLength().y() - buffer_size) {
-        // std::cout << "I: " << index(0) << "," << index(1) << endl;
         Index submapStartIndex(index(0) - buffer_size, index(1) - buffer_size);
         Index submapBufferSize(buffer_size, buffer_size);
         for (grid_map::SubmapIterator sub_iterator(
                  _rfid_belief_maps, submapStartIndex, submapBufferSize);
              !sub_iterator.isPastEnd(); ++sub_iterator) {
           Index sub_index(*sub_iterator);
-          // std::cout << "I: " << sub_index(0) << "," << sub_index(1) << endl;
           tmp_power += grid(sub_index(0), sub_index(1));
         }
       }
     }
 
-    // for (int i = -3; i <= 3; i++){
-    //   for (int j = -3; j <= 3; j++){
-    //     tmp_power = tmp_power + grid.getCell(row, col);
-    //   }
-    // }
-    // tmp_power = grid.getCell(row, col);
     if (tmp_power > powerRead) {
       powerRead = tmp_power;
-
-      // Normalise the tag coordinate to follow Ricc's system
-      tag.first = _rfid_belief_maps.getLength().x() - index(0);
-      tag.second = _rfid_belief_maps.getLength().y() - index(1);
+      tag.first = index(0);
+      tag.second = index(1);
     }
-
-    // }
   }
+  
+  // Normalise the tag coordinate to follow Ricc's system
+  tag.first = (grid.rows() - tag.first)*_resolution;
+  tag.second = (grid.cols() - tag.second)*_resolution;
   std::pair<int, std::pair<int, int>> final_return(powerRead, tag);
 
-  // cout << "Value read: " << powerRead << endl;
   return final_return;
 }
 
@@ -1301,7 +1301,7 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg,
                                 double rxPower, double phase, double freq,
                                 int i) {
 
-  Eigen::MatrixXf rxPw_mat, likl_mat;
+  Eigen::MatrixXf rxPw_mat, likl_mat, gaussian_kernel;
   std::string tagLayerName;
 
   tagLayerName = getTagLayerName(i);
@@ -1317,7 +1317,7 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg,
   // Where X_mat is < than SENSITIVITY, the tag wont be... prob 0
   // likl_mat = (likl_mat.array()<=SENSITIVITY).select(0,likl_mat);
 
-  // this should remove prob at obstcles
+  // this should remove prob at obstacles
   Eigen::MatrixXf obst_mat = _rfid_belief_maps["ref_map"];
   likl_mat = (obst_mat.array() == _free_space_val).select(likl_mat, 0);
 
@@ -1329,7 +1329,109 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg,
     _rfid_belief_maps[tagLayerName] =
         _rfid_belief_maps[tagLayerName].cwiseProduct(likl_mat);
   }
+
   normalizeRFIDLayer(tagLayerName);
+
+  if(probabilisticTag){
+    // if rxPower < SENSITIVITY (no power received), we want to
+    // add uncertainty on the tag position using Gaussian Random Walk~N(0, T*sigma)
+    // where T is the number of timesteps we didn't received answers
+    std::pair<int, std::pair<int, int>> power_tag;
+    std::pair<int, int> tmp_belief_tag;
+    
+    // if (i == 0 ){  
+      // cout << "R: " << rxPower << ", S:" << SENSITIVITY << endl;
+      power_tag = findTagFromBeliefMap(i);
+      tmp_belief_tag = power_tag.second;
+    // }
+
+    // We received power and it's the first time
+    if(rxPower > SENSITIVITY && _first_detection[i] == false)
+    {
+      _first_detection[i] = true;
+      
+    }
+
+    if(rxPower > SENSITIVITY){
+      _iteration_no_readings[i] = 1;
+      if (tmp_belief_tag.first != 0 and tmp_belief_tag.second != 0){
+        // if (i == 0 ){  
+          _belief_tags[i] = tmp_belief_tag;
+          // cout <<"        --->[YES Reading]B:" << tmp_belief_tag.first << "," << tmp_belief_tag.second << endl;
+        // }
+      }
+      
+    }
+
+    // We apply a gaussian kernel only if we don't receive nothing now
+    // (rxPower < SENSITIVY) but already perceived 
+    // the tag  (_first_detection == true)
+    if (rxPower <= SENSITIVITY and _first_detection[i] == true){
+      if ( _belief_tags[i].first != 0 and _belief_tags[i].second != 0 ){
+        // std::pair<int, std::pair<int, int>> power_tag;
+        // std::pair<int, int> _belief_tag;
+        // power_tag = findTagFromBeliefMap(i);
+        // cout <<"  --->[No Reading]B:" << _belief_tags[i].first << "," << _belief_tags[i].second << endl;
+        // _belief_tag = power_tag.second;
+        gaussian_kernel = getGaussianRandomWalk(_belief_tags[i], i);
+        
+        // this should remove prob at obstacles
+        obst_mat = _rfid_belief_maps["ref_map"];
+        likl_mat = (obst_mat.array() == _free_space_val).select(likl_mat, 0);
+        // cout << "G: " << gaussian_kernel.cols() << endl;
+        // cout << "L: " << likl_mat.cols() << endl;
+        gaussian_kernel = gaussian_kernel.cwiseProduct(likl_mat);
+        
+        // cv::Mat kernel_mat = cv::Mat::zeros(_Nrow, _Ncol, CV_32F);
+        // bool check;
+        // cv::eigen2cv(gaussian_kernel, kernel_mat);
+        // kernel_mat = 255*kernel_mat/gaussian_kernel.maxCoeff();
+        // check = cv::imwrite("/home/pulver/Desktop/gk/gaussian_kernel_" + to_string(_counter) + ".jpg", kernel_mat);
+        // cv::eigen2cv(_rfid_belief_maps["ref_map"], kernel_mat);
+        // check = cv::imwrite("/home/pulver/Desktop/gk/map_.jpg", kernel_mat);
+
+        // cout << "B: " << _rfid_belief_maps[tagLayerName].maxCoeff() << ", K: " << gaussian_kernel.maxCoeff() << endl;
+        // 1) SUM
+        _rfid_belief_maps[tagLayerName] += gaussian_kernel;
+
+  //       // 2) Product
+  //       // _rfid_belief_maps[tagLayerName] =
+  //       //   _rfid_belief_maps[tagLayerName].cwiseProduct(gaussian_kernel);
+
+  //       // 3) Second bayes using the new gaussian kernel as observation
+  //       // normalizeRFIDLayer(tagLayerName);
+  //       // bayes_den = gaussian_kernel.sum();
+  //       // if (bayes_den > 0) {
+  //       //   gaussian_kernel = gaussian_kernel / bayes_den;
+  //       //   // now do bayes ...  everywhere
+  //       //   _rfid_belief_maps[tagLayerName] =
+  //       //       _rfid_belief_maps[tagLayerName].cwiseProduct(gaussian_kernel);
+  //       // }
+
+  //       // 4) Increase the white area adding a small probability in every cell
+  //       // and normalising again
+  //       // Eigen::MatrixXf tmp = Eigen::MatrixXf::Constant(siz(0), siz(1), 1.1);
+  //       // _rfid_belief_maps[tagLayerName] = _rfid_belief_maps[tagLayerName].cwiseProduct(tmp);
+
+
+          
+        // cv::eigen2cv(_rfid_belief_maps[tagLayerName], kernel_mat);
+        // kernel_mat = 255*kernel_mat/_rfid_belief_maps[tagLayerName].maxCoeff();
+        // check = cv::imwrite("/home/pulver/Desktop/gk/conv_" + to_string(_counter) + ".jpg", kernel_mat);
+        
+        _iteration_no_readings[i]++;
+        // _counter++;
+        
+        
+      }
+      
+    }
+
+    
+    normalizeRFIDLayer(tagLayerName);
+  }
+
+
 }
 
 double RadarModel::getTotalEntropy(double x, double y, double orientation,
@@ -1784,3 +1886,83 @@ grid_map::Polygon RadarModel::getSubMapEdges(double robot_x, double robot_y,
 //   }
 //   return rel_point;
 // }
+
+void RadarModel::updateTagsPosition(std::vector<std::pair<double,double>> tags_coord){
+  _tags_coords = tags_coord;
+}
+
+Eigen::MatrixXf RadarModel::getGaussianKernel(int rows, int cols, int x_mean, int y_mean, double x_sigma, double y_sigma)
+{
+    // const auto y_mid = (rows-1) / 2.0;
+    // const auto x_mid = (cols-1) / 2.0;
+
+    const auto y_mid = y_mean;
+    const auto x_mid = x_mean;
+
+    const auto x_spread = 1. / (x_sigma*x_sigma*2);
+    const auto y_spread = 1. / (y_sigma*y_sigma*2);
+
+    const auto denominator = 8 * std::atan(1) * x_sigma * y_sigma;
+
+    std::vector<double> gauss_x, gauss_y;
+
+    gauss_x.reserve(cols);
+    for (auto i = 0;  i < cols;  ++i) {
+        auto x = i - x_mid;
+        gauss_x.push_back(std::exp(-x*x * x_spread));
+    }
+
+    gauss_y.reserve(rows);
+    for (auto i = 0;  i < rows;  ++i) {
+        auto y = i - y_mid;
+        gauss_y.push_back(std::exp(-y*y * y_spread));
+    }
+
+    Eigen::MatrixXf kernel = Eigen::MatrixXf::Zero(rows, cols);
+    for (auto j = 0;  j < rows;  ++j)
+        for (auto i = 0;  i < cols;  ++i) {
+            kernel(j,i) = gauss_x[i] * gauss_y[j] / denominator;
+        }
+
+    return kernel;
+}
+
+Eigen::MatrixXf RadarModel::getGaussianRandomWalk( std::pair<int, int> mean, int tag_id){
+  
+  double sigma = 0.5;
+  // Increase the variance at every iteration
+  sigma = _iteration_no_readings[tag_id]*sigma;
+  // NOTE: Eigen follows a different coordinate system, so we need to swap row and cols 
+  Eigen::MatrixXf kernel = getGaussianKernel( _Nrow,
+                                              _Ncol,
+                                              _rfid_belief_maps.getLength().y() - mean.second, //58
+                                              _rfid_belief_maps.getLength().x() - mean.first,  //37
+                                             sigma, sigma);
+                                             
+  kernel = kernel/kernel.maxCoeff();
+  // cout << "   I: "<<_iteration_no_readings << ", sigma: " << sigma << endl;;
+
+  
+  // cout << "     " << mean.first << "," << mean.second << endl;
+
+  // Show image in a window but first normalize in 0-255
+  // double minValue, maxValue;
+  // kernel = kernel  / kernel.maxCoeff();
+  // kernel = 255*kernel;
+  // // Naming the window 
+  // cv::String geek_window = "MY SAVED IMAGE"; 
+  // // Creating a window 
+  // cv::namedWindow(geek_window); 
+  // cv::Mat kernel_mat = cv::Mat::zeros(_Nrow, _Ncol, CV_32F);
+  // cv::eigen2cv(kernel, kernel_mat);
+  // Showing the image in the defined window 
+    // cv::imshow(geek_window, kernel_mat); 
+    // // waiting for any key to be pressed 
+    // cv::waitKey(0); 
+    // // destroying the creating window 
+    // cv::destroyWindow(geek_window); 
+  
+
+  return kernel;
+
+}

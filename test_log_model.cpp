@@ -1,14 +1,20 @@
 #include "RadarModel.hpp"
-
+#include "kalman-cpp/kalman.hpp"
 
 #include <iostream>
 #include <vector>
 #include <boost/random.hpp>
 #include <boost/nondet_random.hpp>
 #include <chrono>
+#include <Eigen/Dense>
 
 
 const int NARGS = 5;
+int totalReading = 0;
+std::vector<std::pair<double,double>> getRobotDynamic(double resolution, double start_x, double start_y);
+std::vector<std::pair<double,double>> getTagDynamic(double resolution,double absTag_X, double absTag_Y);
+KalmanFilter createKalmanFilter(int n_states, int n_measurements, int numReadings);
+void calculateAccuracy(std::vector<std::pair<double,double>> tags_coord, RadarModel* rm);
 
 // quick build:
 // Create build folder and go there
@@ -42,12 +48,13 @@ int main(int argc, char **argv)
   boost::random::mt19937                        generator(rand_dev());
 
 
-  std::string mapFileURI = "/home/pulver/mcdm/Images/mfc_test.pgm";
-  double resolution = 0.1;
+  std::string mapFileURI = "/home/pulver/projects/mcdm/Images/mfc_test.pgm";
+  double resolution = 1;
   double sigma_power = 4;
   double sigma_phase = 0.2;
-  double txtPower = -10;
+  double txtPower = 0;
   int i = 0;
+  bool useKalman = false;
   cout <<"You provided: (" << argc-1 << ") arguments"<<  std::endl;
 
   if (argc > NARGS) {
@@ -154,12 +161,12 @@ int main(int argc, char **argv)
   //rm.PrintBothProb("/tmp/test/prob_95db_45deg_f_920.png", -95, 45.0*M_PI/180.0, 920e6);
   
   // simple scenario
-  int NumReadings;
+  // int NumReadings;
   // Unit is meters. We multiply pixels by resolution to get them.
   double start_x = 125 * resolution;
   double start_y = 65 * resolution;
-  double end_x = 127 * resolution;
-  double end_y = 46 * resolution;
+  // double end_x = 127 * resolution;
+  // double end_y = 46 * resolution;
   
   double robot_y;
   double robot_x;
@@ -174,63 +181,64 @@ int main(int argc, char **argv)
     rm.saveProbMapDebug("/tmp/test/",t,0,start_x,start_y, robot_head0);
   }
 
+  // ROBOT Dynamic  ////////////////////////////////////////
   // build sampling poses
-  std::vector<std::pair<double,double>> robot_poses;
-  // 5 samples from start point and ing a straight line.
-  NumReadings = 5;
-  for (int i=0;i<NumReadings;i++){
-      // current robot position, map coordinates.   
-      robot_x = start_x + ( (end_x - start_x) * ( i ) / (NumReadings - 1.0) );
-      robot_y = start_y + ( (end_y - start_y) * ( i ) / (NumReadings - 1.0) );
-      robot_poses.push_back(std::make_pair(robot_x, robot_y));
-  }
+  std::vector<std::pair<double,double>> robot_poses = getRobotDynamic(resolution, start_x, start_y);
 
-  // other 10.
-  NumReadings = 10;
-  start_x = end_x;
-  start_y = end_y;
-  end_x = 45 * resolution;
-  end_y = 32 * resolution;
-  for (int i=0;i<NumReadings;i++){
-      // current robot position, map coordinates.   
-      robot_x = start_x + ( (end_x - start_x) * ( i ) / (NumReadings - 1.0) );
-      robot_y = start_y + ( (end_y - start_y) * ( i ) / (NumReadings - 1.0) );
-      robot_poses.push_back(std::make_pair(robot_x, robot_y));
-  }
 
-  // other 5.
-  NumReadings = 5;
-  start_x = end_x;
-  start_y = end_y;
-  end_x = 40 * resolution;
-  end_y = 55 * resolution;
-  for (int i=0;i<NumReadings;i++){
-      // current robot position, map coordinates.   
-      robot_x = start_x + ( (end_x - start_x) * ( i ) / (NumReadings - 1.0) );
-      robot_y = start_y + ( (end_y - start_y) * ( i ) / (NumReadings - 1.0) );
-      robot_poses.push_back(std::make_pair(robot_x, robot_y));
+  // TAG Dynamic ////////////////////////////////////////
+  std::vector<std::pair<double,double>> tag1_poses = getTagDynamic(resolution, absTag1_X, absTag1_Y);
+  
+  ///////////////////////////////////////////////////////
+  KalmanFilter kf;
+  std::pair<int, std::pair<int, int>> tag_measurement; // <powerRead, tag_position(x,y)>>
+  int n_states = 4; // Number of states
+  int n_measurements = 2; // Number of measurements
+  Eigen::VectorXd y(n_measurements);
+  
+  if (useKalman){
+    // KALMAN FILTER SETUP ///////////////////////////////
+    kf = createKalmanFilter(n_states, n_measurements, totalReading);
+    // Feed measurements into filter, output estimated states
+    tag_measurement = rm.findTagFromBeliefMap(0);
+    // Best guess of initial states
+    Eigen::VectorXd x0(n_states);
+    // x0 << measurements[0], 0, -9.81;
+    x0[0] = tag_measurement.second.first;
+    x0[1] = tag_measurement.second.second;
+    x0[2] = 0;
+    x0[3] = 0;
+    // Initialize the Kalman filter
+    double t = 0;
+    kf.init(t, x0);
+  ///////////////////////////////////////////////////////
   }
-
-  // other 10.
-  NumReadings = 10;
-  start_x = end_x;
-  start_y = end_y;
-  end_x = 125 * resolution;
-  end_y = 75 * resolution;
-  for (int i=0;i<NumReadings;i++){
-      // current robot position, map coordinates.   
-      robot_x = start_x + ( (end_x - start_x) * ( i ) / (NumReadings - 1.0) );
-      robot_y = start_y + ( (end_y - start_y) * ( i ) / (NumReadings - 1.0) );
-      robot_poses.push_back(std::make_pair(robot_x, robot_y));
-  }
-
+  
 
 std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 int num_ops = 0;
   // let's do the path ...
- for (int i = 0; i < robot_poses.size(); i++){
+  
+  cout << "\nInitial pose tag1: " << tags_coord[0].first << "," << tags_coord[0].second << endl;
+  for (int i = 0; i < robot_poses.size(); i++){
         robot_x = robot_poses[i].first;
         robot_y =  robot_poses[i].second;
+
+      // Find the tag and use it as measurement for the KF
+      if (useKalman){
+        tag_measurement = rm.findTagFromBeliefMap(0);
+        y[0] = (tag_measurement.second).first;
+        y[1] = (tag_measurement.second).second;
+        kf.update(y);
+      
+      
+        // Update Tag1 position
+        // tags_coord[0] = tag1_poses.at(i);
+        // cout << "   [" << i <<"]tag1: " << tags_coord[0].first << "," << tags_coord[0].second << endl;
+        //         cout << "     [" << i <<"-KF]tag1: " << kf.state().transpose()[0] << "," << kf.state().transpose()[1] << endl;
+        //         cout << "   [measurement]: " << tag_measurement.second.first << ", " << tag_measurement.second.second << endl;
+        // rm.updateTagsPosition(tags_coord);
+      }
 
       // 8 orientations at each pose
       for (int h=0;h<9;h++){
@@ -261,7 +269,7 @@ int num_ops = 0;
             //std::cout<<"\tReading at freq (" << f_i/1e6<< " MHz): (" << (rxPower+30) << ") dBm. ( " << phase << ") rads. " << std::endl << std::endl;
 
             rm.addMeasurement(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
-
+            
             //print maps
             //cout  << "Saving tag distribution maps... "<< endl;
             int lineal_index = (8*(i+1))+(h+1);
@@ -278,7 +286,6 @@ int num_ops = 0;
                       << std::endl;
                       
   //print maps
-  //cout  << "Saving tag distribution maps... "<< endl;
   rm.saveProbMaps("/tmp/test/");
   // for each tag:
   for (int t = 0; t < tags_coord.size(); t++){
@@ -286,6 +293,7 @@ int num_ops = 0;
    rm.saveProbMapDebug("/tmp/",t,0,0,0,0);
   }
 
+  
 
   // lets play with the weights
   double w_i, w_max;
@@ -319,11 +327,199 @@ int num_ops = 0;
     std::cout << std::endl;
   }
 
+  // Calculate the localization accuracy of the tags.
+  calculateAccuracy(tags_coord, &rm);
 
   return 0;
 }
 
 
+std::vector<std::pair<double,double>> getRobotDynamic(double resolution,
+                                        double start_x, double start_y){
+  std::vector<std::pair<double,double>> robot_poses;
+  int NumReadings = 5;
+  double end_x = 127 * resolution;
+  double end_y = 46 * resolution;
+  
+  double robot_y;
+  double robot_x;
+  double robot_head0=0;// atan2( end_y - start_y, end_x - start_x);
+  double robot_head;
+  for (int i=0;i<NumReadings;i++){
+      // current robot position, map coordinates.   
+      robot_x = start_x + ( (end_x - start_x) * ( i ) / (NumReadings - 1.0) );
+      robot_y = start_y + ( (end_y - start_y) * ( i ) / (NumReadings - 1.0) );
+      robot_poses.push_back(std::make_pair(robot_x, robot_y));
+      totalReading++;
+  }
+
+  // other 10.
+  NumReadings = 10;
+  start_x = end_x;
+  start_y = end_y;
+  end_x = 45 * resolution;
+  end_y = 32 * resolution;
+  for (int i=0;i<NumReadings;i++){
+      // current robot position, map coordinates.   
+      robot_x = start_x + ( (end_x - start_x) * ( i ) / (NumReadings - 1.0) );
+      robot_y = start_y + ( (end_y - start_y) * ( i ) / (NumReadings - 1.0) );
+      robot_poses.push_back(std::make_pair(robot_x, robot_y));
+      totalReading++;
+  }
+
+  // other 5.
+  NumReadings = 5;
+  start_x = end_x;
+  start_y = end_y;
+  end_x = 40 * resolution;
+  end_y = 55 * resolution;
+  for (int i=0;i<NumReadings;i++){
+      // current robot position, map coordinates.   
+      robot_x = start_x + ( (end_x - start_x) * ( i ) / (NumReadings - 1.0) );
+      robot_y = start_y + ( (end_y - start_y) * ( i ) / (NumReadings - 1.0) );
+      robot_poses.push_back(std::make_pair(robot_x, robot_y));
+      totalReading++;
+  }
+
+  // other 10.
+  NumReadings = 10;
+  start_x = end_x;
+  start_y = end_y;
+  end_x = 125 * resolution;
+  end_y = 75 * resolution;
+  for (int i=0;i<NumReadings;i++){
+      // current robot position, map coordinates.   
+      robot_x = start_x + ( (end_x - start_x) * ( i ) / (NumReadings - 1.0) );
+      robot_y = start_y + ( (end_y - start_y) * ( i ) / (NumReadings - 1.0) );
+      robot_poses.push_back(std::make_pair(robot_x, robot_y));
+      totalReading++;
+  }
+
+  // other 10.
+  NumReadings = 10;
+  start_x = end_x;
+  start_y = end_y;
+  end_x = 44 * resolution;
+  end_y = 55 * resolution;
+  for (int i=0;i<NumReadings;i++){
+      // current robot position, map coordinates.   
+      robot_x = start_x + ( (end_x - start_x) * ( i ) / (NumReadings - 1.0) );
+      robot_y = start_y + ( (end_y - start_y) * ( i ) / (NumReadings - 1.0) );
+      robot_poses.push_back(std::make_pair(robot_x, robot_y));
+      totalReading++;
+  }
+
+  // other 10.
+  NumReadings = 10;
+  start_x = end_x;
+  start_y = end_y;
+  end_x = 45 * resolution;
+  end_y = 32 * resolution;
+  for (int i=0;i<NumReadings;i++){
+      // current robot position, map coordinates.   
+      robot_x = start_x + ( (end_x - start_x) * ( i ) / (NumReadings - 1.0) );
+      robot_y = start_y + ( (end_y - start_y) * ( i ) / (NumReadings - 1.0) );
+      robot_poses.push_back(std::make_pair(robot_x, robot_y));
+      totalReading++;
+  }
+
+
+  // other 10.
+  NumReadings = 10;
+  start_x = end_x;
+  start_y = end_y;
+  end_x = 127 * resolution;
+  end_y = 46 * resolution;
+  for (int i=0;i<NumReadings;i++){
+      // current robot position, map coordinates.   
+      robot_x = start_x + ( (end_x - start_x) * ( i ) / (NumReadings - 1.0) );
+      robot_y = start_y + ( (end_y - start_y) * ( i ) / (NumReadings - 1.0) );
+      robot_poses.push_back(std::make_pair(robot_x, robot_y));
+      totalReading++;
+  }
+  return robot_poses;
+}
+
+std::vector<std::pair<double,double>> getTagDynamic(double resolution, double absTag_X, double absTag_Y){
+  std::vector<std::pair<double,double>> tag_poses;
+  // 5 samples from start point and ing a straight line.
+  int NumReadings = totalReading;
+  double start_x = absTag_X;
+  double start_y = absTag_Y;
+  double end_x = 46 * resolution;
+  double end_y = 32 * resolution;
+  double tag_x, tag_y;
+  for (int i=0;i<NumReadings;i++){
+    // current robot position, map coordinates.   
+    tag_x = start_x + ( (end_x - start_x) * ( i ) / (NumReadings - 1.0) );
+    tag_y = start_y + ( (end_y - start_y) * ( i ) / (NumReadings - 1.0) );
+    tag_poses.push_back(std::make_pair(tag_x, tag_y));
+  }
+  return tag_poses;
+}
+
+KalmanFilter createKalmanFilter(int n_states, int n_measurements, int numReadings){
+  // KALMAN FILTER SETUP ///////////////////////////////
+  int n = n_states; // Number of states
+  int m = n_measurements; // Number of measurements
+
+  double dt = 1.0/numReadings; // Time step
+  Eigen::MatrixXd A(n, n); // System dynamics matrix
+  Eigen::MatrixXd C(m, n); // Output matrix
+  Eigen::MatrixXd Q(n, n); // Process noise covariance (external uncertainty)
+  Eigen::MatrixXd R(m, m); // Measurement noise covariance
+  Eigen::MatrixXd P(n, n); // Estimate error covariance
+
+  // Discrete LTI projectile motion, measuring position only
+  A << 1, 0, dt, 0, 0, 1, 0, dt, 0, 0, 1, 0, 0, 0, 0, 1;
+  C << 1, 0, 0, 0, 0, 1, 0, 0;
+
+  // Reasonable covariance matrices
+  Q << .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, .05, 0.5;
+  R <<  0.1, 0.1, 0.1, 0.1;
+  P << .1, .1, .1, .1, .1, .1, .1, .1, .1, .1, 10000, 100, .1, .1, 100, 10000;
+
+  std::cout << "A: \n" << A << std::endl;
+  std::cout << "C: \n" << C << std::endl;
+  std::cout << "Q: \n" << Q << std::endl;
+  std::cout << "R: \n" << R << std::endl;
+  std::cout << "P: \n" << P << std::endl;
+
+  // Construct the filter
+  KalmanFilter kf(dt, A, C, Q, R, P);
+  return kf;
+}
+
+void calculateAccuracy(std::vector<std::pair<double,double>> tags_coord, RadarModel* rm){
+  std::pair<double, double> belief_tag;
+  std::pair<int, std::pair<int, int>> belief_value_tag;
+  double belief_distance_to_tag = 0;
+  double belief_accuracy = 0;
+  for (int i=0; i < tags_coord.size(); i++){
+    belief_value_tag = rm->findTagFromBeliefMap(i);
+    belief_tag = belief_value_tag.second;
+    // cout << "Before: " << belief_tag.first;
+    // belief_tag.first = (200.0 - abs(belief_tag.first))*resolution;
+    // cout << "After: " << belief_tag.first;
+    // belief_tag.second = (120.0 - abs(belief_tag.second))*resolution;
+    belief_distance_to_tag = sqrt(pow((tags_coord)[i].first - belief_tag.first, 2) + 
+                                  pow((tags_coord)[i].second - belief_tag.second, 2));
+    std::cout << "------" << "[" << i << "]------" << endl;
+    cout << "T: " << tags_coord[i].first << "," << tags_coord[i].second << endl;
+    cout << "B: " << belief_tag.first << "," << belief_tag.second << endl;
+    // std::cout << "[GT]     Tag: " << to_string((*tags_coord)[i].first) << ", " << to_string((*tags_coord)[i].second) << endl;
+    // std::cout << "[Belief] Tag: " << belief_tag.first << "," << belief_tag.second << endl;
+    std::cout << "Belief_Distance to tag: " << to_string(belief_distance_to_tag) << " cells" << endl;
+    if (belief_distance_to_tag <= 10.0)
+    {
+      belief_accuracy = belief_accuracy + 1;
+      // std::cout << "Tag: " << i << " found" << std::endl;
+    } 
+  }
+  belief_accuracy = belief_accuracy / tags_coord.size();
+  std::cout << "Belief_Accuracy: " << to_string(belief_accuracy) << endl;
+
+}
 
 /*
 

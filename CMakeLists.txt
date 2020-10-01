@@ -67,6 +67,21 @@ target_link_libraries(test_log_model lib  ${catkin_LIBRARIES}
 
 install(TARGETS test_log_model RUNTIME DESTINATION bin)
 
+add_executable(test_gaussian_kernel test_gaussian_kernel.cpp  ${HEADER_FILES})
+
+target_link_libraries(test_gaussian_kernel lib  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES} ${Boost_LIBRARIES} )
+
+install(TARGETS test_gaussian_kernel RUNTIME DESTINATION bin)
+
+
+add_executable(test_kalman kalman-cpp/kalman-test.cpp  ${HEADER_FILES})
+
+target_link_libraries(test_kalman lib  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES} ${Boost_LIBRARIES} )
+
+install(TARGETS test_kalman RUNTIME DESTINATION bin)
+
 
 # ............................................................................
 
@@ -84,7 +99,9 @@ add_test(grid_test grid_map_test)
 add_library(lib RadarModel.cpp pose.cpp PathFinding/astar.cpp PathFinding/node.cpp map.cpp newray.cpp mcdmfunction.cpp evaluationrecords.cpp
        Criteria/mcdmweightreader.cpp Criteria/batterystatuscriterion.cpp Criteria/sensingtimecriterion.cpp Criteria/informationgaincriterion.cpp
         Criteria/traveldistancecriterion.cpp Criteria/weightmatrix.cpp Criteria/criterioncomparator.cpp Criteria/criterion.cpp
-        RFIDGridmap.cpp Criteria/RFIDCriterion.cpp utils.cpp)
+        RFIDGridmap.cpp Criteria/RFIDCriterion.cpp utils.cpp
+        kalman-cpp/kalman.cpp)
+
 
 #Find all the files link them to the executable (for qtcreator)
 FILE(GLOB_RECURSE HEADER_FILES include *.h)
