@@ -282,98 +282,56 @@ Eigen::MatrixXf RadarModel::getPredictionStep(string tagLayerName, int step_size
   double euclidean_distance, belief;
   grid_map::Index index;
   Position point;
-  // cout << "X_mat max coeff: " << X_mat.maxCoeff() << endl;
-  // exit(0);
   
-  // Iterate on all the cells of the grid
-  // grid_map::Index submapStartIndex, submapEndIndex, submapBufferSize;
-  // grid_map::Position submapEndPosition(buffer_size - 1, buffer_size - 1);
-  // grid_map::Position submapStartPosition(X_mat.rows() - buffer_size, X_mat.cols() - buffer_size);
-  // if (!_rfid_belief_maps.getIndex(submapStartPosition, submapStartIndex)) {
-  //   submapStartIndex = grid_map::Index(0, 0);
-  //   // std::cout<<"Clip start!" << std::endl;
-  // }
-
-  // if (!_rfid_belief_maps.getIndex(submapEndPosition, submapEndIndex)) {
-  //   Size siz = _rfid_belief_maps.getSize();
-  //   submapEndIndex = grid_map::Index(siz(0) - 1, siz(1) - 1);
-  //   // std::cout<<"Clip end!" << std::endl;
-  // }
-  // submapBufferSize = submapEndIndex - submapStartIndex;
-  // cout << "submapEndIndex: " << submapEndIndex << endl;
-  // cout << "submapStartIndex: " << submapStartIndex << endl;
-  // cout << "Buffersize " << submapBufferSize << endl;
-  
-  // grid_map::SubmapIterator iterator(_rfid_belief_maps, submapStartIndex,
-  //                                   submapBufferSize);
-  
-  // for (GridMapIterator iterator(_rfid_belief_maps); !iterator.isPastEnd();
-  //      ++iterator) {
-  //   const Index index(*iterator);
-  //   if (index(0) > buffer_size and index(0) <= _rfid_belief_maps.getLength().x() - buffer_size) {
-  //     if (index(1) > buffer_size and index(1) <= _rfid_belief_maps.getLength().y() - buffer_size) {
-  //       Index submapStartIndex(index(0) - buffer_size, index(1) - buffer_size);
-  //       Index submapBufferSize(buffer_size, buffer_size);
-  //       belief = 0;
-  //       for (grid_map::SubmapIterator sub_iterator(
-  //                _rfid_belief_maps, submapStartIndex, submapBufferSize);
-  //            !sub_iterator.isPastEnd(); ++sub_iterator) {
-  //         Index sub_index(*sub_iterator);
-  //         belief += X_mat(sub_index(0), sub_index(1));
-  //         cout << "belief: " << belief << endl;
-  //       }
-  //       result_mat(index(0), index(1)) = belief;
-  //     }
-  //   }
-  // }
-
-  // exit(0);
-  //   if (_rfid_belief_maps.isInside(point)) {
-  //     index = _rfid_belief_maps.getIndex(point, index);
-  //     // cout << "Index: " << index << endl;
-  //     belief = X_mat(index(0), index(1));
-  //     // cout << "belief: " << belief << endl;
-  //     // We don't add belief from positions considered obstacles...
-  //     // cout << "WHAT: " << _rfid_belief_maps.atPosition("ref_map", point) << endl;
-  //     if (_rfid_belief_maps.atPosition("ref_map", point) == _free_space_val) {
-  //       cout << "here!" << endl;
-  //       // exit(0);
-  //     }
-  //   }
-  // }
-
-
-  for (int row = buffer_size-1; row < X_mat.rows() - buffer_size; row++){
-    for (int col = buffer_size-1; col < X_mat.cols() - buffer_size; col++){
-      belief = X_mat(row, col);
-
-      // cout << "R: " << row << "C: " << col << endl;
-      //Update only cells which are not obstacles
-      // TODO: check because probably is not working
-      // index(0) = row;
-      // index(1) = col;
-      // _rfid_belief_maps.getPosition(index, point);
-      // cout << "before " << endl;
-      // if (_rfid_belief_maps.atPosition("ref_map", point) == _free_space_val){
-      //   cout << "here!" << endl;
-      //   exit(0);
-        // Iterate on the buffer size of the neighbors
-        for (int i=row-buffer_size+1; i<row+buffer_size; i++){
-          for (int j=col-buffer_size+1; j<col+buffer_size; j++){
-            euclidean_distance = sqrt(pow(i-row, 2) + pow(j-col,2));
-
-            // cout << "   i: " << i << ", j: " << j << ", value: " << X_mat(i, j) << endl;
-            
-            belief += X_mat(i,j) * exp(-0.5 * pow(euclidean_distance,2) / buffer_size);
-          }
-        }
-        // if (belief != 0) cout << "belief: " << belief << endl;
-        result_mat(row, col) = belief;
-      // }
+  // Iterate on the map
+  for (GridMapIterator iterator(_rfid_belief_maps); !iterator.isPastEnd();
+       ++iterator) {
+    const Index index(*iterator);
+    _rfid_belief_maps.getPosition(*iterator, point);
+    // If the cell is inside the map and not an obstacle
+    if (_rfid_belief_maps.isInside(point) and _rfid_belief_maps.atPosition("ref_map", point) == _free_space_val) {
       
+      if (index(0) > buffer_size and index(0) <= _rfid_belief_maps.getLength().x() - buffer_size) {
+        if (index(1) > buffer_size and index(1) <= _rfid_belief_maps.getLength().y() - buffer_size) {
+          // Keep track of the new belief
+          belief = X_mat(index(0), index(1));
+          // Iterate on the squared filter (buffer_size * buffer_size)
+          Index submapStartIndex(index(0) - buffer_size, index(1) - buffer_size);
+          Index submapBufferSize(buffer_size, buffer_size);
+          for (grid_map::SubmapIterator sub_iterator(
+                  _rfid_belief_maps, submapStartIndex, submapBufferSize);
+              !sub_iterator.isPastEnd(); ++sub_iterator) {
+            Index sub_index(*sub_iterator);
+            euclidean_distance = sqrt(pow(sub_index(0)-index(0), 2) + pow(sub_index(1)-index(1),2));
+            belief += X_mat(sub_index(0), sub_index(1)) * exp(-0.5 * pow(euclidean_distance,2) / buffer_size);
+          }
+          result_mat(index(0), index(1)) = belief;
+        }
+      }
     }
   }
-  // exit(0);
+
+ 
+
+  // for (int row = buffer_size; row < X_mat.rows() - buffer_size; row++){
+  //   for (int col = buffer_size; col < X_mat.cols() - buffer_size; col++){
+  //     belief = X_mat(row, col);
+  //     //Update only cells which are not obstacles
+  //     index(0) = row;
+  //     index(1) = col;
+  //     _rfid_belief_maps.getPosition(index, point);
+  //     if (_rfid_belief_maps.atPosition("ref_map", point) == _free_space_val){
+  //       // Iterate on the buffer size of the neighbors
+  //       for (int i=row-buffer_size; i<row+buffer_size; i++){
+  //         for (int j=col-buffer_size; j<col+buffer_size; j++){
+  //           euclidean_distance = sqrt(pow(i-row, 2) + pow(j-col,2));
+  //           belief += X_mat(i,j) * exp(-0.5 * pow(euclidean_distance,2) / buffer_size);
+  //         }
+  //       }
+  //       result_mat(row, col) = belief;
+  //     }
+  //   }
+  // }
 
 return result_mat;
   // // Normalise the final matrix
