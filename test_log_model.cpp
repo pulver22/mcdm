@@ -49,7 +49,7 @@ int main(int argc, char **argv)
 
 
   std::string mapFileURI = "/home/pulver/projects/mcdm/Images/mfc_test.pgm";
-  double resolution = 1;
+  double resolution = 0.1;
   double sigma_power = 4;
   double sigma_phase = 0.2;
   double txtPower = 0;
@@ -217,6 +217,7 @@ int main(int argc, char **argv)
 
 std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 int num_ops = 0;
+string tagLayerName;
   // let's do the path ...
   
   cout << "\nInitial pose tag1: " << tags_coord[0].first << "," << tags_coord[0].second << endl;
@@ -267,8 +268,8 @@ int num_ops = 0;
             // get expected phase from tag
             phase = rm.phaseDifference( tag_x,  tag_y,  f_i);
             //std::cout<<"\tReading at freq (" << f_i/1e6<< " MHz): (" << (rxPower+30) << ") dBm. ( " << phase << ") rads. " << std::endl << std::endl;
-
-            rm.addMeasurement(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  t);
+            tagLayerName = rm.getTagLayerName(t);
+            rm.addMeasurement(robot_x, robot_y, robot_head*180.0/M_PI,  rxPower,  phase,  f_i,  tagLayerName);
             
             //print maps
             //cout  << "Saving tag distribution maps... "<< endl;

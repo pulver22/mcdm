@@ -8,6 +8,8 @@
 #include "newray.h"
 #include "utils.h"
 #include <math.h>
+#include <omp.h>
+#include <chrono>
 
 using namespace dummy;
 using namespace grid_map;
@@ -74,14 +76,25 @@ double RFIDCriterion::evaluateEntropyOverBelief(Pose &p, dummy::Map *map,
   float RFIDInfoGain = 0.0;
   double entropy_cell = 0.0;
   int buffer_size = 2;
-
+  Utilities utils;
+  // std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+  // #pragma omp parallel for num_threads(omp_get_max_threads())
   for (int tag_id = 0; tag_id < rfid_tools->tags_coord.size(); tag_id++) {
+    // Calculate the POSTERIOR distribution over the RFID tag position and save
+    // in the "KL" layer of the map
+    // utils.computePosteriorBeliefSingleLayer(map, &p, rfid_tools, tag_id, buffer_size);
     entropy_cell =
         // rfid_tools->rm->getTotalEntropy(p.getX(), p.getY(), p.getOrientation(),
         //                                buffer_size, buffer_size, tag_id);
         rfid_tools->rm->getTotalEntropyEllipse(p, p.getRange(), -1.0, tag_id);
     RFIDInfoGain += entropy_cell;
   }
+  // std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+  // std::chrono::duration<double> time_span =  std::chrono::duration_cast<std::chrono::duration<double>>(end - begin);
+  // std::cout << time_span.count() << " [secs]" << std::endl; 
+  
+  // exit(0);
+  
 
   return RFIDInfoGain;
 }

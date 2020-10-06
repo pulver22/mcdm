@@ -18,6 +18,7 @@
 #include "yaml-cpp/yaml.h"
 #include "RadarModel.hpp"
 #include <vector>
+#include <random>
 
 
 
@@ -257,6 +258,7 @@ int main ( int argc, char **argv )
   rfid_tools.txtPower = txtPower;
   rfid_tools.sensitivity = SENSITIVITY;
   rfid_tools.RFID_maps_list = &RFID_maps_list;
+  double entropy_map = 0;
   do
   {
     if (graph2.size() == 1 and count > 1) break;
@@ -264,6 +266,7 @@ int main ( int argc, char **argv )
     if ( btMode == false )
     {
       // std::cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells << " ["<< 100*(float)newSensedCells/(float)totalFreeCells << "%] - Battery: " << to_string(100*batteryTime/MAX_BATTERY) << endl;
+      entropy_map = rfid_tools.rm->getMapTotalEntropy();
       // std::cout <<"   Graph: " << graph2.size() << endl;
       travelledDistance = utils.calculateDistance(tabuList, &map, &astar );
       content = to_string(w_info_gain) 
@@ -320,10 +323,23 @@ int main ( int argc, char **argv )
       totalScanTime += utils.calculateScanTime ( scanAngle*180/PI );
       // Update bot the PP and the RFID maps
       utils.updateMaps(&map, &target, &rfid_tools, false);
-        // rfid_tools.rm->saveProbMapDebug("/tmp/test/",0,count,x,y,-orientation*M_PI/180);
+        rfid_tools.rm->saveProbMapDebug("/tmp/test/",0,count,x,y,-orientation*M_PI/180);
       // Search for new candidate position
       ray.findCandidatePositions ( &map,x,y,orientation,FOV,range );
       vector<pair<long,long> >candidatePosition = ray.getCandidatePositions();
+
+      // Reduce number of candidate position
+      // std::random_device rd;
+      // std::mt19937 g(rd());
+      // std::shuffle(candidatePosition.begin(), candidatePosition.end(), g);
+      // cout << "Candidates: " << candidatePosition.size() << endl;
+      // if (candidatePosition.size() > 15){
+      //   while (candidatePosition.size() > 15){
+      //     candidatePosition.pop_back();
+      //   }
+      // }
+      
+ 
       ray.emptyCandidatePositions();
       // Push position into the navigation graph
       break_loop = utils.updateNavigationGraph(&count, &function, &graph2, &target, &map, &x, &y,
@@ -481,4 +497,5 @@ int main ( int argc, char **argv )
     // std::cout << "---[" << t <<"]----------------" << endl;
     rfid_tools.rm->saveProbMapDebug("/tmp/",t,count,x,y,orientation);
   }
+  cout << "Final entropy: " << entropy_map << endl;
 }

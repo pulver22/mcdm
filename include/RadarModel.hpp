@@ -163,7 +163,7 @@ class RadarModel {
   int _counter = 0;
   vector<bool> _first_detection;
   vector<std::pair<int, int>> _belief_tags;
-  bool probabilisticTag = true;  // belief on tag position change over time
+  bool _probabilisticTag = false;  // belief on tag position change over time
 
 public:
   /**
@@ -289,6 +289,8 @@ public:
   Eigen::MatrixXf getPhaseMat(double x_m, double y_m, double orientation_deg,
                               double freq);
   Eigen::MatrixXf getProbCond(Eigen::MatrixXf X_mat, double x, double sig);
+
+  Eigen::MatrixXf getPredictionStep(string tagLayerName, int step_size);
   /**
    * @param  x             x coord (m.) in map coords of the center
    * @param  y             y coord (m.) in map coords of the center
@@ -305,7 +307,7 @@ public:
   double getTotalWeight(int tag_i);
 
   void addMeasurement(double x, double y, double orientation, double rxPower,
-                      double phase, double freq, int i);
+                      double phase, double freq, string tagLayerName);
   void addMeasurement0(double x, double y, double orientation, double rxPower,
                        double phase, double freq, int i);
   void addMeasurement1(double x, double y, double orientation, double rxPower,
@@ -419,6 +421,11 @@ public:
    */
   double getTotalKL(double x, double y, double orientation,
                     grid_map::SubmapIterator iterator, int tag_i);
+  /**
+   * Compute the entropy on the entire map
+   * @return the entropy value
+   */
+  double getMapTotalEntropy();
   /**
    * Calculate the entropy of the tag position over the map
    *

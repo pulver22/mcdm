@@ -538,7 +538,8 @@ void Utilities::updateMaps( dummy::Map* map, Pose* target,
     // Update the path planning and RFID map
     map->updatePathPlanningGrid ( target->getX(), target->getY(), target->getRange(), rxPower - rfid_tools->sensitivity);
     //So, robot at pr (x,y,orientation) (long, long, int) receives rxPower,phase,freq from tag i . 
-    rfid_tools->rm->addMeasurement(target->getX(), target->getY(), target->getOrientation() , rxPower, phase, rfid_tools->freq, i);
+    string tagLayerName = rfid_tools->rm->getTagLayerName(i);
+    rfid_tools->rm->addMeasurement(target->getX(), target->getY(), target->getOrientation() , rxPower, phase, rfid_tools->freq, tagLayerName);
 
     // mfc: dirty trick to plot sequential images of current prob maps
     // static int lineal_index = 0;
@@ -567,7 +568,8 @@ void Utilities::computePosteriorBeliefSingleLayer( dummy::Map* map, Pose* target
   double rxPower = rfid_tools->rm->received_power_friis_with_obstacles(target->getX(), target->getY(), target->getOrientation() * 3.141592/180.0, (rfid_tools->tags_coord)[tag_id].first, (rfid_tools->tags_coord)[tag_id].second , 0, rfid_tools->freq);
   double phase = rfid_tools->rm->phaseDifference(relTagCoord.first, relTagCoord.second, rfid_tools->freq);    
   //So, robot at pr (x,y,orientation) (long, long, int) receives rxPower,phase,freq from tag i . 
-  rfid_tools->rm->addTmpMeasurementRFIDCriterion(target->getX(), target->getY(), target->getOrientation() , rxPower, phase, rfid_tools->freq, tag_id, len_update);
+  rfid_tools->rm->addMeasurement(target->getX(), target->getY(), target->getOrientation() , rxPower, phase, rfid_tools->freq, "kl");
+  // rfid_tools->rm->addTmpMeasurementRFIDCriterion(target->getX(), target->getY(), target->getOrientation() , rxPower, phase, rfid_tools->freq, tag_id, len_update);
 }
 
 

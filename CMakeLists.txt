@@ -43,10 +43,21 @@ endif()
 
 find_package(yaml-cpp REQUIRED)
 
+# check for OpenMP
+# find_package(OpenMP)
+# # if OpenMP is available
+# if(OPENMP_FOUND)
+#     message(WARNING "OpenMP FOUND!!")
+# # if OpenMP is not available
+# else()
+#     message(WARNING "OpenMP not found. Cannot run benchmarks without it")
+# endif()
+
 include_directories(
   ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIR}
   ${Boost_INCLUDE_DIRS}
+  # ${OPENMP_INCLUDES}
 )
 
 find_package(OpenCV REQUIRED
@@ -57,6 +68,7 @@ find_package(OpenCV REQUIRED
 
 find_package(Boost REQUIRED COMPONENTS random)
 
+find_library(RT_LIBRARY NAMES rt librt)
 
 # ............................................................................
 
@@ -106,22 +118,36 @@ add_library(lib RadarModel.cpp pose.cpp PathFinding/astar.cpp PathFinding/node.c
 #Find all the files link them to the executable (for qtcreator)
 FILE(GLOB_RECURSE HEADER_FILES include *.h)
 add_executable(mcdm_online_exploration mcdm.cpp  ${HEADER_FILES})
-target_link_libraries(mcdm_online_exploration lib  -lboost_unit_test_framework  ${catkin_LIBRARIES}   ${OpenCV_LIBRARIES}  yaml-cpp)
+# include the OpenMP compile flags as well
+# target_compile_options(mcdm_online_exploration PRIVATE)# ${OpenMP_CXX_FLAGS})
+# add the OpenMP libraries for linking
+if (${RT_LIBRARY-NOTFOUND})
+    message(WARNING "rt library not found. Linking may fail.")
+  else()
+    target_link_libraries(mcdm_online_exploration ${RT_LIBRARY})
+  endif()
+target_link_libraries(mcdm_online_exploration lib  -lboost_unit_test_framework ${catkin_LIBRARIES}   ${OpenCV_LIBRARIES} yaml-cpp)# ${OpenMP_CXX_LIBRARIES})
 install(TARGETS mcdm_online_exploration RUNTIME DESTINATION bin)
 
 add_executable(random_walk random_walk.cpp  ${HEADER_FILES})
-target_link_libraries(random_walk lib  -lboost_unit_test_framework  ${catkin_LIBRARIES}   ${OpenCV_LIBRARIES} yaml-cpp)
+# include the OpenMP compile flags as well
+# target_compile_options(random_walk PRIVATE)# ${OpenMP_CXX_FLAGS})
+# add the OpenMP libraries for linking
+target_link_libraries(random_walk lib  -lboost_unit_test_framework ${catkin_LIBRARIES}   ${OpenCV_LIBRARIES} yaml-cpp)# ${OpenMP_CXX_LIBRARIES})
 install(TARGETS random_walk RUNTIME DESTINATION bin)
 
 add_executable(random_frontier random_frontier.cpp  ${HEADER_FILES})
-target_link_libraries(random_frontier lib  -lboost_unit_test_framework  ${catkin_LIBRARIES}   ${OpenCV_LIBRARIES} yaml-cpp)
+# include the OpenMP compile flags as well
+# target_compile_options(random_frontier PRIVATE)# ${OpenMP_CXX_FLAGS})
+# add the OpenMP libraries for linking
+target_link_libraries(random_frontier lib  -lboost_unit_test_framework ${catkin_LIBRARIES}   ${OpenCV_LIBRARIES} yaml-cpp)# ${OpenMP_CXX_LIBRARIES})
 install(TARGETS random_frontier RUNTIME DESTINATION bin)
 
 #add_subdirectory(test)
 
 
 #c++11
-list( APPEND CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS} -O3 -g  -ftest-coverage -fprofile-arcs")
+list( APPEND CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS} -O3 -g  -ftest-coverage -fprofile-arcs")# -fopenmp -pg")
 
 #Add all files in subdirectories of the project in
 # a dummy_target so qtcreator have access to all files
