@@ -82,6 +82,27 @@ RadarModel::RadarModel(const double resolution, const double sigma_power, const 
         Eigen::VectorXd yvals= Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(yVec.data(), yVec.size());
         
         _antenna_gains= SplineFunction(xvals, yvals);
+
+        _x_min = xvals.minCoeff();
+        _x_max = xvals.maxCoeff();
+        _y_min = yvals.minCoeff();
+        _y_max = yvals.maxCoeff();
+
+        double a0[xvals.size()];
+        double b0[yvals.size()];
+        std::vector<double> tmp_X(xvals.size()), tmp_Y(yvals.size());
+        for(int i=0; i<xvals.size(); i++){
+          a0[i] = xvals[i];
+          b0[i] = yvals[i];
+          tmp_X[i] = xvals[i];
+          tmp_Y[i] = yvals[i];
+        }
+        alglib::real_1d_array xValue, yValue;
+        int size = xvals.size();
+        xValue.setcontent(size, a0);
+        yValue.setcontent(size, b0);
+        alglib::spline1dbuildcubic(xValue, yValue, _antenna_gains_alglib);
+        _fast_spline.set_points(tmp_X, tmp_Y);
       
         // rfid beliefs global map: One layer per tag
         std::string layerName;
@@ -401,8 +422,22 @@ Eigen::MatrixXf RadarModel::getFriisMatFast(double x_m, double y_m, double orien
   A = Y.binaryExpr(X, std::ptr_fun(atan2f)).array();
 
   // 1. Create a friis losses propagation matrix without taking obstacles        
-  auto funtor = std::bind(&SplineFunction::interpRadf, _antenna_gains, _1) ;
-  antL =  TAG_LOSSES + A.unaryExpr( funtor ).array();   
+  // auto funtor = std::bind(&SplineFunction::interpRadf, _antenna_gains, _1) ;
+  // antL =  TAG_LOSSES + A.unaryExpr( funtor ).array();   
+  
+  // Find how to increase precision of spline
+  // The following implementation is faster than Eigen
+  double tmp;
+    for (int i=0; i < A.size(); i++){
+      tmp = A(i) * 180/M_PI;
+      // tmp = alglib::spline1dcalc(_antenna_gains_alglib, A(i));
+      tmp = _fast_spline(tmp);
+      tmp = std::max(std::min(tmp, _y_max), _y_min );
+      A(i) = tmp;
+    }
+  antL =  TAG_LOSSES + A.array();
+
+  
   propL = LOSS_CONSTANT - (20.0 * (R * freq).array().log10()).array() ;
 
   // signal goes from antenna to tag and comes back again, so we double the losses
@@ -538,8 +573,7 @@ double RadarModel::getTotalWeight(int tag_i) {
 double RadarModel::getTotalWeight(double x, double y, double orientation,
                                   double size_x, double size_y, int tag_i) {
   // TODO: I'm not using the orientation. Maybe it would be better to use a
-  // polygon iterator,
-  //     so we can rotate edges around the center and have a more flexible thing
+  // polygon iterator, so we can rotate edges around the center and have a more flexible thing
 
   // submapStartIndex the start index of the submap, typically top-left index.
   grid_map::Index submapStartIndex, submapEndIndex, submapBufferSize;
@@ -1365,8 +1399,6 @@ void RadarModel::clearObstacleCellsRFIDMap() {
 
 // So, robot at pr (x,y,orientation) (long, long, int) receives
 // rxPower,phase,freq from tag i .
-// TODO: this is a simplistic model that just "ignores" walls: but they do have
-// absortion and reduce received power at their locations...
 void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg,
                                 double rxPower, double phase, double freq,
                                 string tagLayerName) {
@@ -1586,9 +1618,9 @@ double RadarModel::getMapTotalEntropy() {
 
 double RadarModel::getTotalEntropy(double x, double y, double orientation,
                                    double size_x, double size_y, int tag_i) {
-  // TODO: I'm not using the orientation. Maybe it would be better to use a
-  // polygon iterator,
-  //     so we can rotate edges around the center and have a more flexible thing
+  // NOTE: I'm not using the orientation. Maybe it would be better to use a
+  // polygon iterator, so we can rotate edges around the center and have 
+  // a more flexible thing
 
   // submapStartIndex the start index of the submap, typically top-left index.
   grid_map::Index submapStartIndex, submapEndIndex, submapBufferSize;
@@ -1758,9 +1790,9 @@ void RadarModel::printEllipse(double x, double y, double orient_rad, double maxX
 
 double RadarModel::getTotalKL(double x, double y, double orientation,
                               double size_x, double size_y, int tag_i) {
-  // TODO: I'm not using the orientation. Maybe it would be better to use a
-  // polygon iterator,
-  //     so we can rotate edges around the center and have a more flexible thing
+  // NOTE: I'm not using the orientation. Maybe it would be better to use a
+  // polygon iterator, so we can rotate edges around the center and have a 
+  // more flexible thing
 
   // submapStartIndex the start index of the submap, typically top-left index.
   grid_map::Index submapStartIndex, submapEndIndex, submapBufferSize;

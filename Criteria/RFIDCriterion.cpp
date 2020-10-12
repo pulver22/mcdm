@@ -82,6 +82,7 @@ double RFIDCriterion::evaluateEntropyOverBelief(Pose &p, dummy::Map *map,
   for (int tag_id = 0; tag_id < rfid_tools->tags_coord.size(); tag_id++) {
     // Calculate the POSTERIOR distribution over the RFID tag position and save
     // in the "KL" layer of the map
+    // NOTE: computing the posterior for every candidate position is way too computationally intensive
     // utils.computePosteriorBeliefSingleLayer(map, &p, rfid_tools, tag_id, buffer_size);
     entropy_cell =
         // rfid_tools->rm->getTotalEntropy(p.getX(), p.getY(), p.getOrientation(),

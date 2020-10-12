@@ -67,3 +67,5 @@ mcdm_online_exploration
 *.gz
 
 .vscode/
+
+cmake-build-debug/

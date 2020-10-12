@@ -265,7 +265,7 @@ int main ( int argc, char **argv )
     // If we are doing "forward" navigation towards cells never visited before
     if ( btMode == false )
     {
-      // std::cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells << " ["<< 100*(float)newSensedCells/(float)totalFreeCells << "%] - Battery: " << to_string(100*batteryTime/MAX_BATTERY) << endl;
+      std::cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells << " ["<< 100*(float)newSensedCells/(float)totalFreeCells << "%] - Battery: " << to_string(100*batteryTime/MAX_BATTERY) << endl;
       entropy_map = rfid_tools.rm->getMapTotalEntropy();
       // std::cout <<"   Graph: " << graph2.size() << endl;
       travelledDistance = utils.calculateDistance(tabuList, &map, &astar );
@@ -412,7 +412,6 @@ int main ( int argc, char **argv )
       // Remove the current pose from the list of possible candidate cells
       utils.cleanPossibleDestination2 ( &nearCandidates,target );
       // Get the list of the candidate cells with their evaluation
-      // TODO: nearCandidates seems to be empty
       EvaluationRecords *record = function.evaluateFrontiers ( nearCandidates, &map, threshold, &rfid_tools, &batteryTime );
       // std::cout << "   record: " << record->size() << endl;
       // If there are candidate cells
