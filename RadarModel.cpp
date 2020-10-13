@@ -6,8 +6,15 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/core/eigen.hpp>
 
+#include <iostream>
+#include <algorithm> // for copy
+#include <iterator> // for ostream_iterator
+#include <numeric> 
+#include <functional>
 #include <omp.h>
 #include <chrono>
+
+#include "math.h"
 
 using namespace std;
 using namespace grid_map;
@@ -296,10 +303,17 @@ Eigen::MatrixXf  RadarModel::getProbCond(Eigen::MatrixXf X_mat, double x, double
 }
 
 Eigen::MatrixXf RadarModel::getPredictionStep(string tagLayerName, int step_size){
-  int buffer_size = step_size;
+  // 1)Create a matrix of distances, 
+  // 2) convert them into probabilities, 
+  // 3) normalize them so they sum up to 1, 
+  // 4) multiply them for the previous belief
+  // 5) sum everything
+  int buffer_size = 5;
+  std::vector<double> distance_mat, belief_mat ;
+
   Eigen::MatrixXf X_mat = _rfid_belief_maps[tagLayerName];
   Eigen::MatrixXf result_mat(X_mat.rows(), X_mat.cols());
-  Eigen::MatrixXf obst_mat = _rfid_belief_maps["ref_map"];
+  // Eigen::MatrixXf obst_mat = _rfid_belief_maps["ref_map"];
   double euclidean_distance, belief;
   grid_map::Index index;
   Position point;
@@ -310,53 +324,63 @@ Eigen::MatrixXf RadarModel::getPredictionStep(string tagLayerName, int step_size
     const Index index(*iterator);
     _rfid_belief_maps.getPosition(*iterator, point);
     // If the cell is inside the map and not an obstacle
-    if (_rfid_belief_maps.isInside(point) and _rfid_belief_maps.atPosition("ref_map", point) == _free_space_val) {
-      
-      if (index(0) > buffer_size and index(0) <= _rfid_belief_maps.getLength().x() - buffer_size) {
-        if (index(1) > buffer_size and index(1) <= _rfid_belief_maps.getLength().y() - buffer_size) {
-          // Keep track of the new belief
-          belief = X_mat(index(0), index(1));
-          // Iterate on the squared filter (buffer_size * buffer_size)
-          Index submapStartIndex(index(0) - buffer_size, index(1) - buffer_size);
-          Index submapBufferSize(buffer_size, buffer_size);
-          for (grid_map::SubmapIterator sub_iterator(
-                  _rfid_belief_maps, submapStartIndex, submapBufferSize);
-              !sub_iterator.isPastEnd(); ++sub_iterator) {
-            Index sub_index(*sub_iterator);
-            euclidean_distance = sqrt(pow(sub_index(0)-index(0), 2) + pow(sub_index(1)-index(1),2));
-            belief += X_mat(sub_index(0), sub_index(1)) * exp(-0.5 * pow(euclidean_distance,2) / buffer_size);
+    if (_rfid_belief_maps.isInside(point) ){
+      if(_rfid_belief_maps.atPosition("ref_map", point) == _free_space_val) {
+        // If the cell is within the boundaries
+        if (index(0) > buffer_size and index(0) <= (X_mat.rows() - buffer_size)) {
+          if (index(1) > buffer_size and index(1) <= (X_mat.cols() - buffer_size)) {
+          
+            belief = 0.0;
+            
+            // Iterate on the squared filter (buffer_size * buffer_size)
+            Index submapStartIndex(index(0) - (int)buffer_size/2, index(1) - (int)buffer_size/2);
+            Index submapBufferSize(buffer_size, buffer_size);
+            for (grid_map::SubmapIterator sub_iterator(
+                    _rfid_belief_maps, submapStartIndex, submapBufferSize);
+                !sub_iterator.isPastEnd(); ++sub_iterator) {
+              Index sub_index(*sub_iterator);
+              belief_mat.push_back(X_mat(sub_index(0), sub_index(1)));
+              _rfid_belief_maps.getPosition(*sub_iterator, point);
+              // If the cells is not occupied, calculate the distance from the observed cell
+              if(_rfid_belief_maps.atPosition("ref_map", point) == _free_space_val){
+                euclidean_distance = sqrt(pow(sub_index(0)-index(0), 2) + pow(sub_index(1)-index(1),2));
+                distance_mat.push_back(euclidean_distance);
+              }else{
+                // otherwise set a very large distance in the case there is an obstacle
+                distance_mat.push_back(1000.0);
+              }
+
+            }
+            
+            // Convert distance into probabilities of moving
+            std::transform(distance_mat.begin(), distance_mat.end(), distance_mat.begin(),
+               std::bind(&RadarModel::getProbabilityMoving, std::placeholders::_1));
+            
+            // Normalize the probabilities
+            double total_distance = accumulate(distance_mat.begin(),distance_mat.end(), 0.0);
+            std::transform(distance_mat.begin(), distance_mat.end(), distance_mat.begin(),
+               std::bind(std::multiplies<double>(), std::placeholders::_1, (double)1/total_distance));
+            
+            // Calculate final belief
+            belief = std::inner_product(distance_mat.begin(),distance_mat.end(),belief_mat.begin(), 0.0);
+            
+            result_mat(index(0), index(1)) = belief;
+            // Clear the vector for a new calculation
+            distance_mat.clear();
+            belief_mat.clear();
           }
-          result_mat(index(0), index(1)) = belief;
         }
       }
     }
   }
 
- 
-
-  // for (int row = buffer_size; row < X_mat.rows() - buffer_size; row++){
-  //   for (int col = buffer_size; col < X_mat.cols() - buffer_size; col++){
-  //     belief = X_mat(row, col);
-  //     //Update only cells which are not obstacles
-  //     index(0) = row;
-  //     index(1) = col;
-  //     _rfid_belief_maps.getPosition(index, point);
-  //     if (_rfid_belief_maps.atPosition("ref_map", point) == _free_space_val){
-  //       // Iterate on the buffer size of the neighbors
-  //       for (int i=row-buffer_size; i<row+buffer_size; i++){
-  //         for (int j=col-buffer_size; j<col+buffer_size; j++){
-  //           euclidean_distance = sqrt(pow(i-row, 2) + pow(j-col,2));
-  //           belief += X_mat(i,j) * exp(-0.5 * pow(euclidean_distance,2) / buffer_size);
-  //         }
-  //       }
-  //       result_mat(row, col) = belief;
-  //     }
-  //   }
-  // }
-
 return result_mat;
-  // // Normalise the final matrix
-  // result_mat = result_mat/result_mat.sum();
+}
+
+double RadarModel::getProbabilityMoving(double distance){
+  if (distance >= 100) return 0;
+
+  return exp(-0.5 * distance / 2);
 }
 
 Eigen::MatrixXf RadarModel::getFriisMat(double x_m, double y_m, double orientation_deg, double freq){
@@ -1417,9 +1441,6 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg,
   // get the likelihood of the received power at each point
   likl_mat = getProbCond(rxPw_mat, rxPower, _sigma_power);
 
-  // Where X_mat is < than SENSITIVITY, the tag wont be... prob 0
-  // likl_mat = (likl_mat.array()<=SENSITIVITY).select(0,likl_mat);
-
   // this should remove prob at obstacles
   Eigen::MatrixXf obst_mat = _rfid_belief_maps["ref_map"];
   likl_mat = (obst_mat.array() == _free_space_val).select(likl_mat, 0);
@@ -1438,117 +1459,15 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg,
 
 
   // PREDICTION STEP
-  prediction_belief = getPredictionStep(tagLayerName, 2);
-  // Get rid of obstacles
-  prediction_belief = (obst_mat.array() == _free_space_val).select(prediction_belief, 0);
-  // _rfid_belief_maps[tagLayerName] = _rfid_belief_maps[tagLayerName].cwiseProduct(prediction_belief);
-  // Normalise 
-  // prediction_belief = prediction_belief/prediction_belief.sum();
-  _rfid_belief_maps[tagLayerName] = prediction_belief;
-  // cout << "Max: " << prediction_belief.maxCoeff() << endl;
-  normalizeRFIDLayer(tagLayerName);
-
-
-
-  if(_probabilisticTag){
-    // if rxPower < SENSITIVITY (no power received), we want to
-    // add uncertainty on the tag position using Gaussian Random Walk~N(0, T*sigma)
-    // where T is the number of timesteps we didn't received answers
-    std::pair<int, std::pair<int, int>> power_tag;
-    std::pair<int, int> tmp_belief_tag;
-    
-    // if (i == 0 ){  
-      // cout << "R: " << rxPower << ", S:" << SENSITIVITY << endl;
-      int i = std::stoi( tagLayerName );
-      power_tag = findTagFromBeliefMap(i);
-      tmp_belief_tag = power_tag.second;
-    // }
-
-    // We received power and it's the first time
-    if(rxPower > SENSITIVITY && _first_detection[i] == false)
-    {
-      _first_detection[i] = true;
-      
-    }
-
-    if(rxPower > SENSITIVITY){
-      _iteration_no_readings[i] = 1;
-      if (tmp_belief_tag.first != 0 and tmp_belief_tag.second != 0){
-        // if (i == 0 ){  
-          _belief_tags[i] = tmp_belief_tag;
-          // cout <<"        --->[YES Reading]B:" << tmp_belief_tag.first << "," << tmp_belief_tag.second << endl;
-        // }
-      }
-      
-    }
-
-    // We apply a gaussian kernel only if we don't receive nothing now
-    // (rxPower < SENSITIVY) but already perceived 
-    // the tag  (_first_detection == true)
-    if (rxPower <= SENSITIVITY and _first_detection[i] == true){
-      if ( _belief_tags[i].first != 0 and _belief_tags[i].second != 0 ){
-        // std::pair<int, std::pair<int, int>> power_tag;
-        // std::pair<int, int> _belief_tag;
-        // power_tag = findTagFromBeliefMap(i);
-        // cout <<"  --->[No Reading]B:" << _belief_tags[i].first << "," << _belief_tags[i].second << endl;
-        // _belief_tag = power_tag.second;
-        gaussian_kernel = getGaussianRandomWalk(_belief_tags[i], i);
-        
-        // this should remove prob at obstacles
-        obst_mat = _rfid_belief_maps["ref_map"];
-        likl_mat = (obst_mat.array() == _free_space_val).select(likl_mat, 0);
-        // cout << "G: " << gaussian_kernel.cols() << endl;
-        // cout << "L: " << likl_mat.cols() << endl;
-        gaussian_kernel = gaussian_kernel.cwiseProduct(likl_mat);
-        
-        // cv::Mat kernel_mat = cv::Mat::zeros(_Nrow, _Ncol, CV_32F);
-        // bool check;
-        // cv::eigen2cv(gaussian_kernel, kernel_mat);
-        // kernel_mat = 255*kernel_mat/gaussian_kernel.maxCoeff();
-        // check = cv::imwrite("/home/pulver/Desktop/gk/gaussian_kernel_" + to_string(_counter) + ".jpg", kernel_mat);
-        // cv::eigen2cv(_rfid_belief_maps["ref_map"], kernel_mat);
-        // check = cv::imwrite("/home/pulver/Desktop/gk/map_.jpg", kernel_mat);
-
-        // cout << "B: " << _rfid_belief_maps[tagLayerName].maxCoeff() << ", K: " << gaussian_kernel.maxCoeff() << endl;
-        // 1) SUM
-        _rfid_belief_maps[tagLayerName] += gaussian_kernel;
-
-  //       // 2) Product
-  //       // _rfid_belief_maps[tagLayerName] =
-  //       //   _rfid_belief_maps[tagLayerName].cwiseProduct(gaussian_kernel);
-
-  //       // 3) Second bayes using the new gaussian kernel as observation
-  //       // normalizeRFIDLayer(tagLayerName);
-  //       // bayes_den = gaussian_kernel.sum();
-  //       // if (bayes_den > 0) {
-  //       //   gaussian_kernel = gaussian_kernel / bayes_den;
-  //       //   // now do bayes ...  everywhere
-  //       //   _rfid_belief_maps[tagLayerName] =
-  //       //       _rfid_belief_maps[tagLayerName].cwiseProduct(gaussian_kernel);
-  //       // }
-
-  //       // 4) Increase the white area adding a small probability in every cell
-  //       // and normalising again
-  //       // Eigen::MatrixXf tmp = Eigen::MatrixXf::Constant(siz(0), siz(1), 1.1);
-  //       // _rfid_belief_maps[tagLayerName] = _rfid_belief_maps[tagLayerName].cwiseProduct(tmp);
-
-
-          
-        // cv::eigen2cv(_rfid_belief_maps[tagLayerName], kernel_mat);
-        // kernel_mat = 255*kernel_mat/_rfid_belief_maps[tagLayerName].maxCoeff();
-        // check = cv::imwrite("/home/pulver/Desktop/gk/conv_" + to_string(_counter) + ".jpg", kernel_mat);
-        
-        _iteration_no_readings[i]++;
-        // _counter++;
-        
-        
-      }
-      
-    }
-
-    
+  if (_probabilisticTag){
+    prediction_belief = getPredictionStep(tagLayerName, 2);
+    // Get rid of obstacles
+    prediction_belief = (obst_mat.array() == _free_space_val).select(prediction_belief, 0);
+    _rfid_belief_maps[tagLayerName] = prediction_belief;
+    // Normalise
     normalizeRFIDLayer(tagLayerName);
   }
+  
 
 
 }

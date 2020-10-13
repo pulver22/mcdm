@@ -1,5 +1,5 @@
 # INB_ENG
-# valgrind --tool=callgrind --dump-instr=yes -v --instr-atstart=no 
+# valgrind --tool=callgrind 
 ./build/mcdm_online_exploration ./Images/inbeng_small.pgm 1 55 41 180 12 180 0.99 0 1 ./config/tag_inbeng_2.yaml 902e6 0.1 0.1 0.1 0.1 0.6 0.1 /tmp/result_inbeng.csv /tmp/coverage_mcdm_inbeng.csv /tmp/distance_tag.csv 1 /tmp/accuracy.csv 1
 
 # INB_3123

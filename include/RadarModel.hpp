@@ -174,7 +174,7 @@ class RadarModel {
   int _counter = 0;
   vector<bool> _first_detection;
   vector<std::pair<int, int>> _belief_tags;
-  bool _probabilisticTag = false;  // belief on tag position change over time
+  bool _probabilisticTag = true;  // belief on tag position change over time
 
 public:
   /**
@@ -559,6 +559,15 @@ public:
    * @param y_sigma: the std dev on y
    */
   Eigen::MatrixXf getGaussianKernel(int rows, int cols, int x_mean, int y_mean, double x_sigma, double y_sigma);
+
+  /**
+   * Convert distance from a cell into a probability of going there
+   * using an exponential function.
+   * 
+   * @param distance: is the distance between two cells
+   * @return the probability to go there
+   */
+  static double getProbabilityMoving(double distance);
 }; // end class
 
 #endif
