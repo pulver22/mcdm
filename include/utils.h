@@ -55,7 +55,9 @@ public:
                              int range, int FOV, double threshold,
                              string actualPose,
                              vector< pair< string, list< Pose > > > *graph2,
-                             MCDMFunction *function, RFID_tools *rfid_tools, double *batteryTime);
+                             MCDMFunction *function, RFID_tools *rfid_tools, 
+                             double *batteryTime, 
+                             bool *explorationCompleted);
   /**
    * Calculate the time required for performing a scan with the TDLAS sensor
    * 
@@ -194,7 +196,7 @@ public:
                               int* count, Pose* target, Pose* previous, string* actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
                               dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int* encodedKeyValue, Astar* astar , long* numConfiguration,
                                 double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold,
-                                RFID_tools *rfid_tools, double *batteryTime);
+                                RFID_tools *rfid_tools, double *batteryTime, bool *explorationCompleted);
   
   /**
     * What to do when we are doing forward motion and there are no more candidates to explore from the considered position
@@ -237,7 +239,7 @@ public:
                                 int* count, Pose* target, Pose* previous, string* actualPose, list<Pose>* nearCandidates, vector<pair<string,list<Pose>>>* graph2,
                                 dummy::Map* map, MCDMFunction* function, list<Pose>* tabuList, vector<string>* history, int* encodedKeyValue, Astar* astar , long* numConfiguration,
                                 double* totalAngle, double * travelledDistance, int* numOfTurning , double* scanAngle, bool* btMode, double* threshold,
-                                RFID_tools *rfid_tools, double *batteryTime);
+                                RFID_tools *rfid_tools, double *batteryTime, bool *explorationCompleted);
   
   /**
    * What to do when we are in backtracking and there are no more candidates to explore from the considered position
@@ -323,7 +325,7 @@ public:
    */
   bool updateNavigationGraph(int *count, MCDMFunction *function, vector<pair<string,list<Pose>>> *graph2, Pose *target , dummy::Map *map, 
                             long *x, long *y, int *orientation, int *range, double *FOV, double *threshold, string *actualPose,
-                            RFID_tools *rfid_tools, double *batteryTime);
+                            RFID_tools *rfid_tools, double *batteryTime, bool *explorationCompleted);
 
   /**
    * Main exploration code to follow when the robot is not performing backtracking.
@@ -370,7 +372,7 @@ public:
                       list<Pose> *tmp_history, list<Pose> *tabuList, Astar *astar, double *imgresolution, double *travelledDistance,
                       long *sensedCells, long *newSensedCells, long *totalFreeCells, double *totalScanTime, string *out_log,
                       long *numConfiguration, string *actualPose, int* encodedKeyValue, double *totalAngle, int *numOfTurning,
-                      double *scanAngle, bool *btMode, RFID_tools *rfid_tools, double *accumulated_received_power, double *precision, double *batteryTime);
+                      double *scanAngle, bool *btMode, RFID_tools *rfid_tools, double *accumulated_received_power, double *precision, double *batteryTime, bool *explorationCompleted);
 
   /**
    * At the end of the exploration, look for the region with highest intensity in

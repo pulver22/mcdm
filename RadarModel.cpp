@@ -308,7 +308,7 @@ Eigen::MatrixXf RadarModel::getPredictionStep(string tagLayerName, int step_size
   // 3) normalize them so they sum up to 1, 
   // 4) multiply them for the previous belief
   // 5) sum everything
-  int buffer_size = 5;
+  int buffer_size = step_size;
   std::vector<double> distance_mat, belief_mat ;
 
   Eigen::MatrixXf X_mat = _rfid_belief_maps[tagLayerName];
@@ -1460,7 +1460,7 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg,
 
   // PREDICTION STEP
   if (_probabilisticTag){
-    prediction_belief = getPredictionStep(tagLayerName, 2);
+    prediction_belief = getPredictionStep(tagLayerName, 5);
     // Get rid of obstacles
     prediction_belief = (obst_mat.array() == _free_space_val).select(prediction_belief, 0);
     _rfid_belief_maps[tagLayerName] = prediction_belief;

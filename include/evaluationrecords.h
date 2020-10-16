@@ -107,6 +107,11 @@ public:
 	 */
     void normalize();
 
+	/**
+	 * Empty the evaluation record
+	 */
+	void clear();
+
 
 protected:
     unordered_map<string, double> evaluations;

@@ -71,7 +71,8 @@ public:
    * @param batteryTime: the remaining battery time
    * @return a record of frontiers and their associated evaluation
    */ 
-  EvaluationRecords* evaluateFrontiers(const list< Pose >& frontiers, dummy::Map* map, double threshold, RFID_tools *rfid_tools, double *batteryTime);
+  EvaluationRecords* evaluateFrontiers(const list< Pose >& frontiers, dummy::Map* map, 
+    double threshold, RFID_tools *rfid_tools, double *batteryTime, bool *explorationCompleted);
 
   /**
    * Find the best frontier where to send the robot.

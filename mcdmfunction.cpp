@@ -126,7 +126,8 @@ void MCDMFunction::evaluateFrontier(Pose &p, dummy::Map *map, RFID_tools *rfid_t
 
 // Scan a list of candidate positions,then apply the choquet fuzzy algorithm
 EvaluationRecords *
-MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map *map, double threshold, RFID_tools *rfid_tools, double *batteryTime) {
+MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map *map,
+   double threshold, RFID_tools *rfid_tools, double *batteryTime, bool *explorationCompleted) {
 
   Pose f;
   //Clean the last evaluation
@@ -225,11 +226,19 @@ MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map *ma
 
     }
 
-    if (finalValue > threshold and no_info_gain == false) {
-        toRet->putEvaluation(f, finalValue);
-      }
-  
+    // If we are still exploring the environment, add the frontier only
+    // if it leads to some map coverage
+    if (finalValue > threshold and no_info_gain == false and *explorationCompleted==false){
+      toRet->putEvaluation(f, finalValue);
     }
+      
+    // If the map is already explored and we are focusing on entropy, add the frontier
+    // as long as it has a good utility
+    if (finalValue > threshold and *explorationCompleted==true){
+      toRet->putEvaluation(f, finalValue);
+    }
+  
+  }
     
 
     
@@ -263,13 +272,12 @@ string MCDMFunction::getEncodedKey(Pose &p, int value) {
   //value = 0 : encode everything
   //value = 1 : encode x,y,orientation, take first
   //value = 2 : encode x,y,orientation, take multiple time
-  if (value == 0) {
+  if (value == 0 or value == 1) {
     key = to_string(p.getX()) + "/" + to_string(p.getY()) + "/" + to_string(p.getOrientation()) + "/" +
-          to_string(p.getRange())
-          + "/" + to_string(p.getFOV()) + to_string(p.getScanAngles().first) + "/" +
+          to_string(p.getRange()) + "/" + to_string(p.getFOV()) + "/" + to_string(p.getScanAngles().first) + "/" +
           to_string(p.getScanAngles().second);
-  } else if (value == 1) {
-    key = to_string(p.getX()) + "/" + to_string(p.getY()) + "/" + to_string(p.getOrientation()) + "/" + "1";
+  // } else if (value == 1) {
+  //   key = to_string(p.getX()) + "/" + to_string(p.getY()) + "/" + to_string(p.getOrientation()) + "/" + "1";
   } else if (value == 2) {
     key = to_string(p.getX()) + "/" + to_string(p.getY()) + "/" + to_string(p.getOrientation()) + "/" + "2";
   }
