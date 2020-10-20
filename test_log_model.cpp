@@ -49,7 +49,7 @@ int main(int argc, char **argv)
 
 
   std::string mapFileURI = "/home/pulver/projects/mcdm/Images/mfc_test.pgm";
-  double resolution = 0.1;
+  double resolution = 1;
   double sigma_power = 4;
   double sigma_phase = 0.2;
   double txtPower = 0;

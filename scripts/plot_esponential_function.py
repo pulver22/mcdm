@@ -35,5 +35,5 @@ plt.legend(title='y value')
 plt.title('p(distance) = exp(-0.5 * distance/y)')
 plt.xlabel('distance')
 plt.ylabel('p(distance)')
-plt.show()
-
+# plt.show()
+plt.savefig('./results/exponential_prob.png')

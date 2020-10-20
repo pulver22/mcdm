@@ -38,13 +38,11 @@ void Utilities::cleanPossibleDestination2(std::list<Pose> *possibleDestinations,
   }
 }
 
-void Utilities::pushInitialPositions(dummy::Map *map, int x, int y,
-                                     int orientation, int range, int FOV,
-                                     double threshold, string actualPose,
-                                     vector<pair<string, list<Pose>>> *graph2,
-                                     MCDMFunction *function,
-                                     RFID_tools *rfid_tools,
-                                     double *batteryTime, bool *explorationCompleted) {
+void Utilities::pushInitialPositions(
+    dummy::Map *map, int x, int y, int orientation, int range, int FOV,
+    double threshold, string actualPose,
+    vector<pair<string, list<Pose>>> *graph2, MCDMFunction *function,
+    RFID_tools *rfid_tools, double *batteryTime, bool *explorationCompleted) {
   NewRay ray;
   ray.findCandidatePositions(map, x, y, orientation, FOV, range);
   vector<pair<long, long>> candidatePosition = ray.getCandidatePositions();
@@ -157,7 +155,7 @@ void Utilities::updatePathMetrics(int *count, Pose *target, Pose *previous,
   // NOTE: if we are in backtracking there is no reason to add a cell already
   // present (it will only make increase the graph)
   if (encodedKeyValue != 2) {
-    cout << "Moving" << endl;
+    // cout << "Moving" << endl;
     // Add it to the list of visited cells from which acting
     history->push_back(function->getEncodedKey(*target, encodedKeyValue));
     // NOTE: when using a probabilistic tag, we can go back to previously seen
@@ -322,16 +320,17 @@ bool Utilities::recordContainsCandidates(
     double *batteryTime, bool *explorationCompleted) {
   // Set the previous pose equal to the current one (represented by target)
   *previous = *target;
-  // Clean all the possible destination from cells recently visited
-  for (list<Pose>::iterator it=tabuList->begin(); it!=tabuList->end(); it++){
-    // utils.cleanPossibleDestination2(&nearCandidates, *it);
-    record->removeFrontier(*it);
-  }
+  // // Clean all the possible destination from cells recently visited
+  // for (list<Pose>::iterator it = tabuList->begin(); it != tabuList->end();
+  //      it++) {
+  //   // utils.cleanPossibleDestination2(&nearCandidates, *it);
+  //   record->removeFrontier(*it);
+  // }
   // Select the new robot destination from the list of candidates
   std::pair<Pose, double> result = function->selectNewPose(record);
   *target = result.first;
   cout << "Selected: " << function->getEncodedKey(*target, 2) << endl;
-  cout << "Tabulist: " << tabuList->size() << endl;
+  // cout << "Tabulist: " << tabuList->size() << endl;
 
   // If the selected destination does not appear among the cells already visited
   if (!this->contains(*tabuList, *target)) {
@@ -346,6 +345,11 @@ bool Utilities::recordContainsCandidates(
   }
   // ...otherwise, if the selected cell has already been visited
   else {
+    if (*explorationCompleted == true){
+      std::cout << "F5-3" << endl;
+      exit(0);
+    }
+    
     // If the graph is empty, stop the navigation
     if (graph2->size() == 0)
       return true;
@@ -360,16 +364,18 @@ bool Utilities::recordContainsCandidates(
       this->cleanPossibleDestination2(nearCandidates, *target);
       // Get the list of new candidate position with associated evaluation
       record = function->evaluateFrontiers(*nearCandidates, map, *threshold,
-                                           rfid_tools, batteryTime, explorationCompleted);
+                                           rfid_tools, batteryTime,
+                                           explorationCompleted);
       // If there are candidate positions
       if (record->size() != 0) {
-        std::cout << "F5-4" << endl;
         // Select the new pose of the robot
         std::pair<Pose, double> result = function->selectNewPose(record);
         *target = result.first;
-        cout << function->getEncodedKey(*target, 2) << endl;
+        // std::cout << "F5-4" << endl;
+        // cout << function->getEncodedKey(*target, 2) << endl;
         *encodedKeyValue = 2;
-        if (*explorationCompleted) *encodedKeyValue = 1;
+        if (*explorationCompleted)
+          *encodedKeyValue = 1;
         this->updatePathMetrics(count, target, previous, *actualPose,
                                 nearCandidates, graph2, map, function, tabuList,
                                 history, *encodedKeyValue, astar,
@@ -377,12 +383,13 @@ bool Utilities::recordContainsCandidates(
                                 numOfTurning, *scanAngle, batteryTime);
         // Set that we are now in backtracking
         *btMode = true;
-        if (*explorationCompleted) *btMode = false;
+        if (*explorationCompleted)
+          *btMode = false;
       }
       // If there are no more candidate position from the last position in the
       // graph
       else {
-        std::cout << "F5-5" << endl;
+        // std::cout << "F5-5" << endl;
         // if the graph is now empty, stop the navigation
         if (graph2->size() == 0)
           return true;
@@ -396,7 +403,7 @@ bool Utilities::recordContainsCandidates(
     // ... if the graph still does not present anymore candidate positions for
     // its last pose
     else {
-      std::cout << "F5-6" << endl;
+      // std::cout << "F5-6" << endl;
       // Remove the last element (cell and associated candidate from there) from
       // the graph
       graph2->pop_back();
@@ -444,7 +451,7 @@ bool Utilities::recordNOTContainsCandidates(
   //   cout << "F6-3" << endl;
   // }
   // int i = 1;
-  while (target->isEqual(*previous)){
+  while (target->isEqual(*previous)) {
     if (graph2->size() == 0)
       return true;
     string targetString = graph2->at(graph2->size() - 1).first;
@@ -503,7 +510,8 @@ void Utilities::recordContainsCandidatesBT(
       this->cleanPossibleDestination2(nearCandidates, *target);
       // Get the candidates with their evaluation
       EvaluationRecords *record = function->evaluateFrontiers(
-          *nearCandidates, map, *threshold, rfid_tools, batteryTime, explorationCompleted);
+          *nearCandidates, map, *threshold, rfid_tools, batteryTime,
+          explorationCompleted);
       // Select the new destination
       std::pair<Pose, double> result = function->selectNewPose(record);
       *target = result.first;
@@ -693,14 +701,12 @@ void Utilities::computePosteriorBeliefSingleLayer(dummy::Map *map, Pose *target,
   // rfid_tools->freq, tag_id, len_update);
 }
 
-bool Utilities::updateNavigationGraph(int *count, MCDMFunction *function,
-                                      vector<pair<string, list<Pose>>> *graph2,
-                                      Pose *target, dummy::Map *map, long *x,
-                                      long *y, int *orientation, int *range,
-                                      double *FOV, double *threshold,
-                                      string *actualPose,
-                                      RFID_tools *rfid_tools,
-                                      double *batteryTime, bool *explorationCompleted) {
+bool Utilities::updateNavigationGraph(
+    int *count, MCDMFunction *function,
+    vector<pair<string, list<Pose>>> *graph2, Pose *target, dummy::Map *map,
+    long *x, long *y, int *orientation, int *range, double *FOV,
+    double *threshold, string *actualPose, RFID_tools *rfid_tools,
+    double *batteryTime, bool *explorationCompleted) {
   if (count == 0) {
     this->invertedInitial =
         this->createFromInitialPose(*x, *y, *orientation, 180, *range, *FOV);
@@ -827,15 +833,16 @@ bool Utilities::forwardMotion(
 
   }
   //... otherwise, if there are further candidate new position from the current
-  //pose of the robot
+  // pose of the robot
   else {
     // std::cout <<"F2" << endl;
     // For each candidate position, create many more with different robot
     // orientation
     this->createMultiplePosition(frontiers, candidatePosition, *range, *FOV);
     // Evaluate the frontiers and return a list of <frontier, evaluation> pairs
-    record = function->evaluateFrontiers(*frontiers, map, *threshold,
-                                         rfid_tools, batteryTime, explorationCompleted);
+    record =
+        function->evaluateFrontiers(*frontiers, map, *threshold, rfid_tools,
+                                    batteryTime, explorationCompleted);
     *nearCandidates = record->getFrontiers();
 
     // If there are candidate positions
@@ -845,7 +852,8 @@ bool Utilities::forwardMotion(
           record, count, target, previous, actualPose, nearCandidates, graph2,
           map, function, tabuList, history, encodedKeyValue, astar,
           numConfiguration, totalAngle, travelledDistance, numOfTurning,
-          scanAngle, btMode, threshold, rfid_tools, batteryTime, explorationCompleted);
+          scanAngle, btMode, threshold, rfid_tools, batteryTime,
+          explorationCompleted);
       // std::cout << "Break: " << break_loop << endl;
       if (break_loop == true)
         return true;
@@ -964,4 +972,40 @@ void Utilities::getEllipseSize(int X_max, int X_min, double *major_axis,
   double focal_length = (X_max - X_min) / 2.0; // (X_max - X_min)/2
   *major_axis = focal_length + X_min;          // (focal_length + X_min)
   *minor_axis = sqrt(pow(*major_axis, 2) - pow(focal_length, 2));
+}
+
+std::vector<pair<Pose, list<Pose>>>
+Utilities::getTopologicalMap(Astar *astar, EvaluationRecords *record,
+                             vector<string> *history, dummy::Map *map) {
+  std::vector<pair<Pose, list<Pose>>> topologicalMap;
+  vector<Pose> nextNodes;
+  Pose tmp;
+  double maxDistance = 10;
+
+  vector<string>::iterator it_history = history->begin();
+  for (it_history; it_history != history->end(); it_history++) {
+    // Add to the topoMap the cells when appearing the first time
+    tmp = record->getPoseFromEncoding(*it_history);
+    nextNodes.push_back(tmp);
+  }
+
+  list<Pose> neighbors;
+  string path;
+  double distance = 0;
+  for (int i = 0; i < nextNodes.size(); i++) {
+    neighbors.clear();
+    for (int j = 0; j < nextNodes.size(); j++) {
+      if (!nextNodes.at(i).isEqual(nextNodes.at(j))) {
+        path = astar->pathFind(nextNodes[i].getX(), nextNodes[i].getY(),
+                               nextNodes[j].getX(), nextNodes[j].getY(), map);
+        distance = astar->lengthPath(path);
+        if (distance < maxDistance)
+          neighbors.push_back(nextNodes[j]);
+      }
+    }
+    topologicalMap.push_back(std::make_pair(nextNodes[i], neighbors));
+    // cout << "[" << i << "]" << neighbors.size() << endl;
+  }
+  cout << "Number of nodes: " << topologicalMap.size() << endl;
+  return topologicalMap;
 }
