@@ -26,7 +26,6 @@ using namespace std;
 using namespace dummy;
 using namespace YAML;
 
-const int MAX_TABULIST_COUNT = 30;
 
 // Example: ./mcdm_online_exploration ./../Images/cor_map_05_00_new1.pgm 1 99 99 180 5 180 1 0 1 54 143 865e6 0
 int main ( int argc, char **argv )
@@ -175,7 +174,8 @@ int main ( int argc, char **argv )
   std::string coverage_log (argv[20]);
   std::string detection_log (argv[21]);
   std::string accuracy_log (argv[23]);
-  std::string entropy_log = "/tmp/entropy.csv";
+  std::string entropy_log_path (argv[25]);
+  string entropy_log = entropy_log_path + "/entropy.csv";
   bool use_mcdm = bool(atoi(argv[24]));
   //x,y,orientation,range,FOV
   double norm_w_info_gain, norm_w_travel_distance, norm_w_sensing_time, norm_w_rfid_gain, norm_w_battery_status;
@@ -291,7 +291,7 @@ int main ( int argc, char **argv )
     // If we are doing "forward" navigation towards cells never visited before
     if ( btMode == false )
     {
-      entropy_map = rfid_tools.rm->getMapTotalEntropy();
+      entropy_map = rfid_tools.rm->getMapTotalEntropy(entropy_log_path);
       std::cout << "Area sensed: " << newSensedCells << " / " << totalFreeCells << " ["<< 100*(float)newSensedCells/(float)totalFreeCells <<
       "%] - Battery: " << to_string(batteryPercentage) << 
       ", Entropy: " << entropy_map << endl;
@@ -468,7 +468,8 @@ int main ( int argc, char **argv )
       delete record;
     }
     
-    batteryPercentage = utils.calculateRemainingBatteryPercentage(tabuList, &map, &astar);
+    // batteryPercentage = utils.calculateRemainingBatteryPercentage(tabuList, &map, &astar);
+    batteryPercentage = 100*batteryTime/MAX_BATTERY;
   }
   // Perform exploration until a certain coverage is achieved
   while ( sensedCells < precision * totalFreeCells and batteryPercentage > 0.0);
@@ -479,10 +480,18 @@ int main ( int argc, char **argv )
   tabuList.clear();
   vector<string>::iterator it_history = history.begin();
   Pose tmp;
-  for (it_history; it_history!=prev(history.end()); it_history++){
-      tmp = record.getPoseFromEncoding(*it_history);
-      nextNodes.push_back(tmp);
-    }
+  // Build a graph modeled as hashmap. Keys are individual nodes, and attributes are
+  // all the cells reachable from the keys within a certain distance (e.g. 10 meters)
+  std::cout << "Preparing topological map..." << endl;
+  std::vector<pair<Pose, list<Pose>>> topologicalMap = utils.getTopologicalMap(&astar, &record, &history, &map);
+  // std::cout << "TopologicalMap nodes: " << topologicalMap.size() << endl;
+  // std::cout << topologicalMap[0].first.getX() << endl;
+  // for (it_history; it_history!=prev(history.end()); it_history++){
+  //     tmp = record.getPoseFromEncoding(*it_history);
+  //     nextNodes.push_back(tmp);
+  //   }
+
+
   do{
     /**
      * Get current pose in the history tree
@@ -498,34 +507,31 @@ int main ( int argc, char **argv )
     totalScanTime += utils.calculateScanTime ( scanAngle*180/PI );
     // Update bot the PP and the RFID maps
     utils.updateMaps(&map, &target, &rfid_tools, false);
+      
 
-    entropy_map = rfid_tools.rm->getMapTotalEntropy();
+    entropy_map = rfid_tools.rm->getMapTotalEntropy(entropy_log_path);
+    batteryPercentage = 100*batteryTime/MAX_BATTERY;
       std::cout << "\n[ENTROPY]Area sensed: " << newSensedCells << " / " << totalFreeCells << " ["<< 100*(float)newSensedCells/(float)totalFreeCells <<
-      "%] - Battery: " << to_string(100*batteryTime/MAX_BATTERY) << 
+      "%] - Battery: " << to_string(batteryPercentage) << 
       ", Entropy: " << entropy_map << endl;
     // Record current map's entropy on the log
     content = to_string(entropy_map) + "\n";
     utils.filePutContents(entropy_log, content, true );
     
+    // TODO: I am not sure this is required anymore with the topological map
     if(tabuListCount >= 0){
         tabuListCount--;
       } else {
         tabuList.clear();
         tabuListCount = MAX_TABULIST_COUNT;
       }
-    
-    
-    
     // nextNodes.clear();
     record.clear();
     // cout << "nextNodes: " << nextNodes.size() << endl;
     
     
-    rfid_tools.rm->saveProbMapDebug("/tmp/test/",0,count,x,y,-orientation*M_PI/180);
     // string current_pose = function.getEncodedKey(target, 2);
     // while(record.size() == 0){
-      string current_pose = function.getEncodedKey(target, 2);
-      cout << "CurrentPose: " << current_pose << endl;
     //   for ( it_history; it_history!=prev(history.end(),1); it_history++)
     //   {
     //     if ((*it_history).back() != '2'){
@@ -560,15 +566,77 @@ int main ( int argc, char **argv )
     //     // TODO: code loops here while record is equal to 0
     //   }
       // cout << "nextNodes: " << nextNodes.size() << endl;
-      record = *function.evaluateFrontiers(nextNodes, &map, threshold, &rfid_tools, &batteryTime, &explorationCompleted);
+    while(record.size() == 0){
+      // Find current position in the topological map, retrieve the neighbors
+      nearCandidates.clear();
+      for (int i=0; i < topologicalMap.size(); i++){
+        Pose tmp = topologicalMap[i].first;
+        if (tmp.isEqual(target)){
+          nearCandidates = topologicalMap[i].second;
+          // std::cout << "Candidates: " << nearCandidates.size() << endl;
+        } 
+      }
+      if (nearCandidates.size() == 0){
+        std::cout << "[ERROR] in finding new positions" << endl;
+        break;
+      }
+      
+      frontiers = nearCandidates;
+      list<Pose>::iterator it_tabuList;
+      cout << "nearCandidates: " << nearCandidates.size() << endl;
+      for (it_tabuList=tabuList.begin(); it_tabuList!=tabuList.end(); it_tabuList++){
+        // nearCandidates.remove(*it_tabuList);
+        std::list<Pose>::iterator findIter = std::find(
+          nearCandidates.begin(), nearCandidates.end(), *it_tabuList);
+        if (findIter != nearCandidates.end()) {
+          nearCandidates.erase(findIter);
+        }
+      }
+      cout << "nearCandidates: " << nearCandidates.size() << endl;
+
+      // Evaluate all the candidate position
+      record = *function.evaluateFrontiers(nearCandidates, &map, threshold, &rfid_tools, &batteryTime, &explorationCompleted);
+      cout << "Record1: " << record.size() << endl; 
+      // Clean all the possible destination from cells recently visited
+      for (list<Pose>::iterator it = tabuList.begin(); it != tabuList.end();
+          it++) {
+        // utils.cleanPossibleDestination2(&nearCandidates, *it);
+        record.removeFrontier(*it);
+      }
+      
+      cout << "Record2: " << record.size() << endl; 
+
       if (record.size() == 0){
         std::cout << "F6" << endl;
-        break_loop = utils.recordNOTContainsCandidates(&graph2, &record, &target,
-                                &previous, &history, &function, &count);
-        if (break_loop == true) break;
+        tabuList.push_back(target);
+        // break_loop = utils.recordNOTContainsCandidates(&graph2, &record, &target,
+        //                         &previous, &history, &function, &count);
+        // if (break_loop == true) break;
+
+        // Select a random neighbout as new target and look new candidates from there
+        std::random_device rd;     // only used once to initialise (seed) engine
+        std::mt19937 rng(rd());    // random-number engine used (Mersenne-Twister in this case)
+        std::uniform_int_distribution<int> uni(0, frontiers.size()-1); // guaranteed unbiased
+
+        int random_integer = uni(rng);
+        list<Pose>::iterator it_candidates = frontiers.begin();
+        std::advance(it_candidates, random_integer);
+        target = *(it_candidates);
       }
-    // }
-    cout << "Record: " << record.size() << endl; 
+    }
+
+    // cout << "Record1: " << record.size() << endl; 
+    //   // Clean all the possible destination from cells recently visited
+    //   for (list<Pose>::iterator it = tabuList.begin(); it != tabuList.end();
+    //       it++) {
+    //     // utils.cleanPossibleDestination2(&nearCandidates, *it);
+    //     record.removeFrontier(*it);
+    //   }
+      
+    string current_pose = function.getEncodedKey(target, 2);
+    cout << "CurrentPose: " << current_pose << endl;
+    rfid_tools.rm->saveProbMapDebug("/tmp/test/",0,count,target.getX(),target.getY(),-target.getOrientation()*M_PI/180);
+    // cout << "Record2: " << record.size() << endl; 
     nearCandidates = record.getFrontiers();
     // // Clean all the possible destination from cells recently visited
     // for (list<Pose>::iterator it=tabuList.begin(); it!=tabuList.end(); it++){
@@ -602,9 +670,8 @@ int main ( int argc, char **argv )
       //mfc: the above gets the received power between a robot in "target" in METERS and tags_coord[i] in METERS. I'm assuming orientation is in deg.
       accumulated_received_power += rx_power;
     }
-    batteryPercentage = utils.calculateRemainingBatteryPercentage(tabuList, &map, &astar);
   }
-  while( entropy_map > 20.0 and batteryPercentage > 50.0);
+  while( entropy_map > 20.0 and batteryPercentage > 2.0);
   cout << "Out" << endl;
   // Plotting utilities
   // map.drawVisitedCells ();

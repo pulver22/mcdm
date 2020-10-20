@@ -420,6 +420,18 @@ public:
    */
   void saveRFIDMapsWithGroundTruths(vector<RFIDGridmap> *RFID_maps_list, vector<pair<double, double>> *tags_coord, string root);
 
+  /**
+   * Build a topological map of nodes and reachable ones using the list of cells explored in adanced.
+   * 
+   * @param astar: implementation of astar used for calculating distance between cells
+   * @param record: utilities for managing poses
+   * @param history: list of cells previously seen
+   * @param map: reference to the map, needed for astar
+   * 
+   * @return the topological map modeled as list of cell and associated neighbors
+   */
+  std::vector<pair<Pose, list<Pose>>> getTopologicalMap(Astar *astar, EvaluationRecords *record, vector<string> *history, dummy::Map *map );
+
 protected:
 
 Pose invertedInitial, eastInitial, westInitial;

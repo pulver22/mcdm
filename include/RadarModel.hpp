@@ -33,6 +33,7 @@
 #include "pose.h"
 
 #include "spline.h"
+// #include "utils.h"
 
 using namespace std;
 using namespace grid_map;
@@ -175,6 +176,7 @@ class RadarModel {
   vector<bool> _first_detection;
   vector<std::pair<int, int>> _belief_tags;
   bool _probabilisticTag = true;  // belief on tag position change over time
+  // Utilities _utils;
 
 public:
   /**
@@ -436,7 +438,7 @@ public:
    * Compute the entropy on the entire map
    * @return the entropy value
    */
-  double getMapTotalEntropy();
+  double getMapTotalEntropy(string entropy_log_path);
   /**
    * Calculate the entropy of the tag position over the map
    *
@@ -568,6 +570,8 @@ public:
    * @return the probability to go there
    */
   static double getProbabilityMoving(double distance);
+
+  void saveEntropyLog(const std::string& name, const std::string& content);
 }; // end class
 
 #endif

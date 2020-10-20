@@ -56,8 +56,12 @@ double Pose::getFOV()
 
 bool Pose::isEqual(Pose& p)
 {
-    if(aX == p.getX() & aY == p.getY() & orientation == p.getOrientation() & FOV == p.getFOV() & range == p.getRange()){
-	return true;
+    if(this->aX == p.getX() & 
+      this->aY == p.getY() & 
+      this->orientation == p.getOrientation() & 
+      this->FOV == p.getFOV() 
+      & this->range == p.getRange()){
+      return true;
     } else return false;
 
 

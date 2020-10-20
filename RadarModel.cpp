@@ -1460,7 +1460,7 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg,
 
   // PREDICTION STEP
   if (_probabilisticTag){
-    prediction_belief = getPredictionStep(tagLayerName, 5);
+    prediction_belief = getPredictionStep(tagLayerName, 3);
     // Get rid of obstacles
     prediction_belief = (obst_mat.array() == _free_space_val).select(prediction_belief, 0);
     _rfid_belief_maps[tagLayerName] = prediction_belief;
@@ -1472,8 +1472,9 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg,
 
 }
 
-double RadarModel::getMapTotalEntropy() {
+double RadarModel::getMapTotalEntropy(string entropy_log_path) {
   double totalEntropy = 0;
+  double tagEntropy = 0;
   double tmp = 0;
   Eigen::MatrixXf likelihood, negLikelihood, logLikelihood, logNegLikelihood,
       ones;
@@ -1523,9 +1524,11 @@ double RadarModel::getMapTotalEntropy() {
     //     }
     //   }
     // }
-
-    totalEntropy += (-likelihood.cwiseProduct(logLikelihood) -
+    tagEntropy = (-likelihood.cwiseProduct(logLikelihood) -
                      negLikelihood.cwiseProduct(logNegLikelihood)).sum();
+    string content = to_string(tagEntropy) + "\n";
+    this->saveEntropyLog(entropy_log_path + "/entropy_"+to_string(tagID)+".csv", content);
+    totalEntropy += tagEntropy;
   }
   // std::chrono::steady_clock::time_point end =
   // std::chrono::steady_clock::now(); std::chrono::duration<double> time_span =
@@ -2096,4 +2099,21 @@ Eigen::MatrixXf RadarModel::getGaussianRandomWalk( std::pair<int, int> mean, int
 
   return kernel;
 
+}
+
+void RadarModel::saveEntropyLog(const std::string& name, const std::string& content){
+  std::ofstream outfile;
+  std::ifstream pFile(name);
+  if (outfile.fail()) {
+    std::cout << "Error while opening the stream." << endl;
+  } else {
+    if (pFile.peek() == std::ifstream::traits_type::eof()) { // file is empty
+      // std::cout << "File does not exist! Create a new one!" << endl;
+      outfile.open(name);
+    } else {
+      // std::cout << "File exists! Appending data!" << endl;
+      outfile.open(name, std::ios_base::app);
+    }
+  }
+  outfile << content;
 }
