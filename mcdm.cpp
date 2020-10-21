@@ -175,6 +175,13 @@ int main ( int argc, char **argv )
   std::string detection_log (argv[21]);
   std::string accuracy_log (argv[23]);
   std::string entropy_log_path (argv[25]);
+  const char* path = entropy_log_path.c_str();
+  boost::filesystem::path dir(path);
+  if(boost::filesystem::create_directory(dir))
+  {
+      std::cerr<< "Directory Created: "<< entropy_log_path <<std::endl;
+  }
+
   string entropy_log = entropy_log_path + "/entropy.csv";
   bool use_mcdm = bool(atoi(argv[24]));
   //x,y,orientation,range,FOV

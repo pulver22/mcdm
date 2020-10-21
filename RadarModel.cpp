@@ -104,11 +104,11 @@ RadarModel::RadarModel(const double resolution, const double sigma_power, const 
           tmp_X[i] = xvals[i];
           tmp_Y[i] = yvals[i];
         }
-        alglib::real_1d_array xValue, yValue;
-        int size = xvals.size();
-        xValue.setcontent(size, a0);
-        yValue.setcontent(size, b0);
-        alglib::spline1dbuildcubic(xValue, yValue, _antenna_gains_alglib);
+        // alglib::real_1d_array xValue, yValue;
+        // int size = xvals.size();
+        // xValue.setcontent(size, a0);
+        // yValue.setcontent(size, b0);
+        // alglib::spline1dbuildcubic(xValue, yValue, _antenna_gains_alglib);
         _fast_spline.set_points(tmp_X, tmp_Y);
       
         // rfid beliefs global map: One layer per tag

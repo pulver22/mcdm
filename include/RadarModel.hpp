@@ -10,8 +10,8 @@
 #include <Eigen/Dense>
 #include <unsupported/Eigen/Splines>
 
-#include "../alglib/src/interpolation.h"
-#include "../alglib/src/ap.h"
+// #include "../alglib/src/interpolation.h"
+// #include "../alglib/src/ap.h"
 
 // Math
 #include <algorithm>
@@ -165,7 +165,7 @@ class RadarModel {
   std::vector<double> _freqs;    // transmission frequencies (Hz.)
   SplineFunction _antenna_gains; // model for antenna power gain depending on
                                  // the angle (dB.)
-  alglib::spline1dinterpolant _antenna_gains_alglib;
+  // alglib::spline1dinterpolant _antenna_gains_alglib;
   tk::spline _fast_spline;
   vector<int> _iteration_no_readings;
   double _x_min;

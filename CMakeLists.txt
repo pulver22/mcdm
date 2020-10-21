@@ -72,19 +72,19 @@ find_library(RT_LIBRARY NAMES rt librt)
 
 # ............................................................................
 
-add_executable(test_log_model test_log_model.cpp  ${HEADER_FILES})
+#add_executable(test_log_model test_log_model.cpp  ${HEADER_FILES})
 
-target_link_libraries(test_log_model lib  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES} ${Boost_LIBRARIES} )
+#target_link_libraries(test_log_model lib  ${catkin_LIBRARIES}
+#  ${OpenCV_LIBRARIES} ${Boost_LIBRARIES} )
 
-install(TARGETS test_log_model RUNTIME DESTINATION bin)
+#install(TARGETS test_log_model RUNTIME DESTINATION bin)
 
-add_executable(test_gaussian_kernel test_gaussian_kernel.cpp  ${HEADER_FILES})
+#add_executable(test_gaussian_kernel test_gaussian_kernel.cpp  ${HEADER_FILES})
 
-target_link_libraries(test_gaussian_kernel lib  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES} ${Boost_LIBRARIES} )
+#target_link_libraries(test_gaussian_kernel lib  ${catkin_LIBRARIES}
+#  ${OpenCV_LIBRARIES} ${Boost_LIBRARIES} )
 
-install(TARGETS test_gaussian_kernel RUNTIME DESTINATION bin)
+#install(TARGETS test_gaussian_kernel RUNTIME DESTINATION bin)
 
 
 # add_executable(test_kalman kalman-cpp/kalman-test.cpp  ${HEADER_FILES})
@@ -112,9 +112,10 @@ add_library(lib RadarModel.cpp pose.cpp PathFinding/astar.cpp PathFinding/node.c
        Criteria/mcdmweightreader.cpp Criteria/batterystatuscriterion.cpp Criteria/sensingtimecriterion.cpp Criteria/informationgaincriterion.cpp
         Criteria/traveldistancecriterion.cpp Criteria/weightmatrix.cpp Criteria/criterioncomparator.cpp Criteria/criterion.cpp
         RFIDGridmap.cpp Criteria/RFIDCriterion.cpp utils.cpp
-        kalman-cpp/kalman.cpp play_with_eigen.cpp 
-        alglib/src/interpolation.cpp alglib/src/ap.cpp alglib/src/optimization.cpp alglib/src/alglibinternal.cpp alglib/src/linalg.cpp
-        alglib/src/alglibmisc.cpp alglib/src/solvers.cpp alglib/src/integration.cpp alglib/src/specialfunctions.cpp )
+       # kalman-cpp/kalman.cpp play_with_eigen.cpp
+       # alglib/src/interpolation.cpp alglib/src/ap.cpp alglib/src/optimization.cpp alglib/src/alglibinternal.cpp alglib/src/linalg.cpp
+       # alglib/src/alglibmisc.cpp alglib/src/solvers.cpp alglib/src/integration.cpp alglib/src/specialfunctions.cpp 
+)
 
 
 #Find all the files link them to the executable (for qtcreator)
@@ -148,12 +149,12 @@ install(TARGETS mcdm_online_exploration RUNTIME DESTINATION bin)
 # install(TARGETS random_frontier RUNTIME DESTINATION bin)
 
 
-add_executable(play_with_eigen play_with_eigen.cpp  ${HEADER_FILES})
+#add_executable(play_with_eigen play_with_eigen.cpp  ${HEADER_FILES})
 
-target_link_libraries(play_with_eigen lib  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES} ${Boost_LIBRARIES} )
+#target_link_libraries(play_with_eigen lib  ${catkin_LIBRARIES}
+#  ${OpenCV_LIBRARIES} ${Boost_LIBRARIES} )
 
-install(TARGETS play_with_eigen RUNTIME DESTINATION bin)
+#install(TARGETS play_with_eigen RUNTIME DESTINATION bin)
 #add_subdirectory(test)
 
 
