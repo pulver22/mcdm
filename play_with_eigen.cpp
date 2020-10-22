@@ -5,8 +5,6 @@
 #include <Eigen/Core>
 #include <unsupported/Eigen/Splines>
 
-#include "alglib/src/interpolation.h"
-#include "alglib/src/ap.h"
 
 #include <chrono>
 
@@ -144,7 +142,7 @@ int main(int argc, char **argv)
     Eigen::VectorXd yvals= Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(yVec.data(), yVec.size());
     SplineFunction _antenna_gains= SplineFunction(xvals, yvals);
 
-    alglib::spline1dinterpolant s;
+    
     double a0[xvals.size()];
     double b0[yvals.size()];
     std::vector<double> tmp_X(xvals.size()), tmp_Y(yvals.size());
@@ -154,11 +152,7 @@ int main(int argc, char **argv)
       tmp_X[i] = xvals[i];
       tmp_Y[i] = yvals[i];
     }
-    alglib::real_1d_array xValue, yValue;
     int size = xvals.size();
-    xValue.setcontent(size, a0);
-    yValue.setcontent(size, b0);
-    alglib::spline1dbuildcubic(xValue, yValue, s);
     ////////////////////////
 
     tk::spline new_spline;
@@ -216,7 +210,6 @@ int main(int argc, char **argv)
     // std::cout << "Value: " << tmp << std::endl;
     // // tmp = _antenna_gains.scaled_value(tmp * 180/M_PI);
     // std::cout << "Scaled value: " << tmp << std::endl;
-    // tmp = alglib::spline1dcalc(s, tmp* 180/M_PI);
     // std::cout << "Spline: " << tmp << std::endl;
     // tmp = std::max(std::min(tmp, (double) yvals.maxCoeff()), (double)yvals.minCoeff() );
     // std::cout << "2: " << tmp << std::endl;
@@ -226,7 +219,6 @@ int main(int argc, char **argv)
     // double tmp;
     // for (int i=0; i < A.size(); i++){
     //   tmp = A(i) * 180/M_PI;
-    //   // tmp = alglib::spline1dcalc(s, tmp);
     //   tmp = new_spline(tmp);
     //   tmp = std::max(std::min(tmp, (double) yvals.maxCoeff()), (double)yvals.minCoeff() );
     //   A(i) = tmp;

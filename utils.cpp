@@ -15,11 +15,11 @@ Utilities::Utilities(){};
 
 Utilities::~Utilities() {}
 
-bool Utilities::contains(std::list<Pose> &list, Pose &p) {
+bool Utilities::contains(std::list<Pose> *list, Pose *p) {
   bool result = false;
 
-  std::list<Pose>::iterator findIter = std::find(list.begin(), list.end(), p);
-  if (findIter != list.end()) {
+  std::list<Pose>::iterator findIter = std::find(list->begin(), list->end(), *p);
+  if (findIter != list->end()) {
     // cout << "Found: " << p.isEqual(*findIter) << endl;
     result = true;
   }
@@ -60,7 +60,7 @@ void Utilities::pushInitialPositions(
     frontiers.push_back(p4);
   }
   EvaluationRecords *record = function->evaluateFrontiers(
-      frontiers, map, threshold, rfid_tools, batteryTime, explorationCompleted);
+      &frontiers, map, threshold, rfid_tools, batteryTime, explorationCompleted);
   list<Pose> nearCandidates = record->getFrontiers();
   std::pair<string, list<Pose>> pair = make_pair(actualPose, nearCandidates);
   graph2->push_back(pair);
@@ -329,12 +329,12 @@ bool Utilities::recordContainsCandidates(
   // Select the new robot destination from the list of candidates
   std::pair<Pose, double> result = function->selectNewPose(record);
   *target = result.first;
-  cout << "Selected: " << function->getEncodedKey(*target, 2) << endl;
+  // cout << "Selected: " << function->getEncodedKey(*target, 2) << endl;
   // cout << "Tabulist: " << tabuList->size() << endl;
 
   // If the selected destination does not appear among the cells already visited
-  if (!this->contains(*tabuList, *target)) {
-    std::cout << "F5-2" << endl;
+  if (!this->contains(tabuList, target)) {
+    // std::cout << "F5-2" << endl;
     // act = true;
     // Add it to the list of visited cells as first-view
     *encodedKeyValue = 1;
@@ -363,7 +363,7 @@ bool Utilities::recordContainsCandidates(
       // candidates
       this->cleanPossibleDestination2(nearCandidates, *target);
       // Get the list of new candidate position with associated evaluation
-      record = function->evaluateFrontiers(*nearCandidates, map, *threshold,
+      record = function->evaluateFrontiers(nearCandidates, map, *threshold,
                                            rfid_tools, batteryTime,
                                            explorationCompleted);
       // If there are candidate positions
@@ -481,7 +481,7 @@ void Utilities::recordContainsCandidatesBT(
   std::pair<Pose, double> result = function->selectNewPose(record);
   *target = result.first;
   // If this cells has not been visited before
-  if (!this->contains(*tabuList, *target)) {
+  if (!this->contains(tabuList, target)) {
     // std::cout << "1" << endl;
     // Add it to the list of visited cells as first-view
     *encodedKeyValue = 1;
@@ -510,7 +510,7 @@ void Utilities::recordContainsCandidatesBT(
       this->cleanPossibleDestination2(nearCandidates, *target);
       // Get the candidates with their evaluation
       EvaluationRecords *record = function->evaluateFrontiers(
-          *nearCandidates, map, *threshold, rfid_tools, batteryTime,
+          nearCandidates, map, *threshold, rfid_tools, batteryTime,
           explorationCompleted);
       // Select the new destination
       std::pair<Pose, double> result = function->selectNewPose(record);
@@ -841,13 +841,19 @@ bool Utilities::forwardMotion(
     this->createMultiplePosition(frontiers, candidatePosition, *range, *FOV);
     // Evaluate the frontiers and return a list of <frontier, evaluation> pairs
     record =
-        function->evaluateFrontiers(*frontiers, map, *threshold, rfid_tools,
+        function->evaluateFrontiers(frontiers, map, *threshold, rfid_tools,
                                     batteryTime, explorationCompleted);
     *nearCandidates = record->getFrontiers();
 
     // If there are candidate positions
     if (record->size() != 0) {
       // std::cout <<"F5" << endl;
+      // Remove the cells which are recently visited (part of tabuList)
+      list<Pose>::iterator it_tabuList;
+      for (it_tabuList=tabuList->begin(); it_tabuList!=tabuList->end(); it_tabuList++){
+        this->cleanPossibleDestination2(nearCandidates, *it_tabuList);
+      }
+
       bool break_loop = this->recordContainsCandidates(
           record, count, target, previous, actualPose, nearCandidates, graph2,
           map, function, tabuList, history, encodedKeyValue, astar,
@@ -981,31 +987,101 @@ Utilities::getTopologicalMap(Astar *astar, EvaluationRecords *record,
   vector<Pose> nextNodes;
   Pose tmp;
   double maxDistance = 10;
-
+  
   vector<string>::iterator it_history = history->begin();
   for (it_history; it_history != history->end(); it_history++) {
     // Add to the topoMap the cells when appearing the first time
     tmp = record->getPoseFromEncoding(*it_history);
-    nextNodes.push_back(tmp);
+    // Add a cell only if not already there
+    std::vector<Pose>::iterator findIter = std::find(nextNodes.begin(), nextNodes.end(), tmp);
+    if (findIter == nextNodes.end()) {
+      nextNodes.push_back(tmp);
+    }
+    // nextNodes.push_back(tmp);
   }
-
   list<Pose> neighbors;
   string path;
   double distance = 0;
   for (int i = 0; i < nextNodes.size(); i++) {
     neighbors.clear();
     for (int j = 0; j < nextNodes.size(); j++) {
-      if (!nextNodes.at(i).isEqual(nextNodes.at(j))) {
-        path = astar->pathFind(nextNodes[i].getX(), nextNodes[i].getY(),
-                               nextNodes[j].getX(), nextNodes[j].getY(), map);
-        distance = astar->lengthPath(path);
-        if (distance < maxDistance)
-          neighbors.push_back(nextNodes[j]);
-      }
+      // if (!nextNodes.at(i).isEqual(nextNodes.at(j))) {
+      //   path = astar->pathFind(nextNodes[i].getX(), nextNodes[i].getY(),
+      //                          nextNodes[j].getX(), nextNodes[j].getY(), map);
+      //   distance = astar->lengthPath(path);
+      distance = sqrt(pow(nextNodes[i].getX() - nextNodes[j].getX(), 2) +
+                      pow(nextNodes[i].getY() - nextNodes[j].getY(), 2));
+      if (distance < maxDistance)  neighbors.push_back(nextNodes[j]);
+      // }
     }
     topologicalMap.push_back(std::make_pair(nextNodes[i], neighbors));
-    // cout << "[" << i << "]" << neighbors.size() << endl;
   }
-  cout << "Number of nodes: " << topologicalMap.size() << endl;
   return topologicalMap;
 }
+
+std::vector<pair<pair<double, double>, list<Pose>>> Utilities::getTopologicalMapSlim(Astar *astar, EvaluationRecords *record, vector<string> *history, dummy::Map *map ){
+  std::vector<pair<pair<double, double>, list<Pose>>> newTopologicalMap;
+  vector<pair<double, double>> positions;
+  vector<Pose> nextNodes;
+  Pose tmp;
+  double maxDistance = 10;
+
+  vector<string>::iterator it_history = history->begin();
+  // To reduce size of the topologicalMap, consider only (X,Y) without orientation as nodes
+  // The orientation goes only in those Poses which are the neighbors
+  for(it_history; it_history!=history->end(); it_history++){
+    tmp = record->getPoseFromEncoding(*it_history);
+    std::pair<double, double> tmpPair(tmp.getX(), tmp.getY());
+    std::vector<pair<double, double>>::iterator findIter = std::find(positions.begin(), positions.end(), tmpPair);
+    if (findIter  == positions.end()) positions.push_back(tmpPair);
+    nextNodes.push_back(tmp);
+  }
+  
+  list<Pose> neighbors;
+  string path;
+  double distance = 0;
+  for (int i = 0; i < positions.size(); i++) {
+    neighbors.clear();
+    for (int j = 0; j < nextNodes.size(); j++) {
+      if (positions[i].first !=nextNodes.at(j).getX() && positions[i].second != nextNodes.at(j).getY()) {
+        // path = astar->pathFind(positions[i].first, nextNodes[i].getY(),
+        //                        positions[i].second, nextNodes[j].getY(), map);
+        // distance = astar->lengthPath(path);
+        distance = sqrt(pow(positions[i].first - nextNodes[j].getX(), 2) +
+                      pow(positions[i].second - nextNodes[j].getY(), 2));
+        if (distance < maxDistance)  neighbors.push_back(nextNodes[j]);
+      }
+    }
+    newTopologicalMap.push_back(std::make_pair(positions[i], neighbors));
+  }
+  return newTopologicalMap;
+}
+
+Pose Utilities::getFarestNeighbor(list<Pose> *nearCandidates, Pose *target){
+  list<Pose>::iterator it_candidates = nearCandidates->begin();
+  Pose farest_pose = *target;
+  double farest_distance, tmp_distance;
+  farest_distance  = 0.0;
+  for (it_candidates; it_candidates!=nearCandidates->end(); it_candidates++ ){
+    if (!target->isEqual(*it_candidates)){
+      tmp_distance = sqrt(pow(target->getX() - it_candidates->getX(),2) +
+                        pow(target->getY() - it_candidates->getY(),2));
+      if (tmp_distance > farest_distance){
+        farest_distance = tmp_distance;
+        farest_pose = *it_candidates;
+      }
+    }
+  }
+  return farest_pose;
+}
+
+void Utilities::updateCriteria(double w_info_gain, double w_travel_distance, double w_sensing_time, double w_rfid_gain, double w_battery_status){
+  this->w_info_gain = w_info_gain;
+  this->w_travel_distance = w_travel_distance;
+  this->w_sensing_time = w_sensing_time;
+  this->w_rfid_gain = w_rfid_gain;
+  this->w_battery_status = w_battery_status;
+}
+
+
+

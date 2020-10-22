@@ -104,11 +104,6 @@ RadarModel::RadarModel(const double resolution, const double sigma_power, const 
           tmp_X[i] = xvals[i];
           tmp_Y[i] = yvals[i];
         }
-        // alglib::real_1d_array xValue, yValue;
-        // int size = xvals.size();
-        // xValue.setcontent(size, a0);
-        // yValue.setcontent(size, b0);
-        // alglib::spline1dbuildcubic(xValue, yValue, _antenna_gains_alglib);
         _fast_spline.set_points(tmp_X, tmp_Y);
       
         // rfid beliefs global map: One layer per tag
@@ -454,7 +449,6 @@ Eigen::MatrixXf RadarModel::getFriisMatFast(double x_m, double y_m, double orien
   double tmp;
     for (int i=0; i < A.size(); i++){
       tmp = A(i) * 180/M_PI;
-      // tmp = alglib::spline1dcalc(_antenna_gains_alglib, A(i));
       tmp = _fast_spline(tmp);
       tmp = std::max(std::min(tmp, _y_max), _y_min );
       A(i) = tmp;
@@ -1460,7 +1454,7 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg,
 
   // PREDICTION STEP
   if (_probabilisticTag){
-    prediction_belief = getPredictionStep(tagLayerName, 3);
+    prediction_belief = getPredictionStep(tagLayerName, 5);
     // Get rid of obstacles
     prediction_belief = (obst_mat.array() == _free_space_val).select(prediction_belief, 0);
     _rfid_belief_maps[tagLayerName] = prediction_belief;
