@@ -43,7 +43,7 @@ def normaliseDataAndPlot(total_entropies, exp_completed, out_path, title):
     # move ticks
     # plt.tick_params(axis='y', which='both',left=False, right=True, labelleft=False, labelright=True)
     plt.xlabel('Robot configuration')
-    plt.ylabel('Entropy', )
+    plt.ylabel('Entropy' )
     
     # move label
     # plt.ylabel('Your label here', labelpad=-725, fontsize=18)

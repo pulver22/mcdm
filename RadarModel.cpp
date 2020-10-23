@@ -1454,7 +1454,7 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg,
 
   // PREDICTION STEP
   if (_probabilisticTag){
-    prediction_belief = getPredictionStep(tagLayerName, 5);
+    prediction_belief = getPredictionStep(tagLayerName, 3);
     // Get rid of obstacles
     prediction_belief = (obst_mat.array() == _free_space_val).select(prediction_belief, 0);
     _rfid_belief_maps[tagLayerName] = prediction_belief;
@@ -1521,7 +1521,7 @@ double RadarModel::getMapTotalEntropy(string entropy_log_path) {
     tagEntropy = (-likelihood.cwiseProduct(logLikelihood) -
                      negLikelihood.cwiseProduct(logNegLikelihood)).sum();
     string content = to_string(tagEntropy) + "\n";
-    this->saveEntropyLog(entropy_log_path + "/entropy_"+to_string(tagID)+".csv", content);
+    this->saveLog(entropy_log_path + "/entropy_"+to_string(tagID)+".csv", content);
     totalEntropy += tagEntropy;
   }
   // std::chrono::steady_clock::time_point end =
@@ -2095,7 +2095,7 @@ Eigen::MatrixXf RadarModel::getGaussianRandomWalk( std::pair<int, int> mean, int
 
 }
 
-void RadarModel::saveEntropyLog(const std::string& name, const std::string& content){
+void RadarModel::saveLog(const std::string& name, const std::string& content){
   std::ofstream outfile;
   std::ifstream pFile(name);
   if (outfile.fail()) {

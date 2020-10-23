@@ -126,7 +126,7 @@ void MCDMFunction::evaluateFrontier(Pose &p, dummy::Map *map, RFID_tools *rfid_t
 
 // Scan a list of candidate positions,then apply the choquet fuzzy algorithm
 EvaluationRecords *
-MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map *map,
+MCDMFunction::evaluateFrontiers(const std::list<Pose> *frontiers, dummy::Map *map,
    double threshold, RFID_tools *rfid_tools, double *batteryTime, bool *explorationCompleted) {
 
   Pose f;
@@ -149,7 +149,7 @@ MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map *ma
 
   //Evaluate the frontiers
   list<Pose>::const_iterator it2;
-  for (it2 = frontiers.begin(); it2 != frontiers.end(); it2++) {
+  for (it2 = frontiers->begin(); it2 != frontiers->end(); it2++) {
     f = *it2;
     evaluateFrontier(f, map, rfid_tools, batteryTime);
   }
@@ -165,7 +165,7 @@ MCDMFunction::evaluateFrontiers(const std::list<Pose> &frontiers, dummy::Map *ma
 
 
   // analyze every single frontier f, and add in the evaluationRecords <frontier, evaluation>
-  for (list<Pose>::const_iterator i = frontiers.begin(); i != frontiers.end(); i++) {
+  for (list<Pose>::const_iterator i = frontiers->begin(); i != frontiers->end(); i++) {
 
     // cout <<"---------------------NEW FRONTIER -------------------"<<endl;
     f = *i;
@@ -284,4 +284,30 @@ string MCDMFunction::getEncodedKey(Pose &p, int value) {
   return key;
 }
 
+void MCDMFunction::updateCriteria(double w_criterion_1, double w_criterion_2,
+                                  double w_criterion_3, double w_criterion_4,
+                                  double w_criterion_5) {
+  // Initialization ad-hoc: create a weightmatrix for 3 criteria with predefined
+  // weight
+  MCDMWeightReader reader;
+  // cout << "test" << endl;
+  matrix = reader.getMatrix(w_criterion_1, w_criterion_2, w_criterion_3,
+                            w_criterion_4, w_criterion_5);
 
+  //Remove all existing criteria
+  this->criteria.clear();
+  
+  // get the list of all criteria to be considered
+  list<string> listCriteria = matrix->getKnownCriteria();
+  for (list<string>::iterator it = listCriteria.begin();
+       it != listCriteria.end(); ++it) {
+    string name = *it;
+    // retrieve the weight of the criterion using the encoded version of the
+    // name
+    double weight = matrix->getWeight(matrix->getNameEncoding(name));
+    Criterion *c = createCriterion(name, weight);
+    if (c != NULL) {
+      this->criteria.emplace(name, c);
+    }
+  }
+}

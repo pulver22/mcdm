@@ -28,7 +28,7 @@ public:
    * @param list: the list of Pose objects
    * @param p: the Pose object to look for
    */
-  bool contains ( std::list< Pose >& list, Pose& p );
+  bool contains ( std::list< Pose > *list, Pose *p );
  
   /**
    * Remove a Pose object from a list of Pose objects
@@ -386,12 +386,13 @@ public:
    * @param initRange: sensor range
    * @param numConfiguration: number of configuration of the robot
    * @param rfid_tools: various RFID utilities
+   * @param distance_log_path: where to save distance logs
    * @return the accuracy computed using the belief maps.
    */
   double findTags(vector<RFIDGridmap> *RFID_maps_list, vector<pair<double, double>> *tags_coord, dummy::Map *map, 
                 string detection_log, string accuracy_log, 
                 int initRange, long numConfiguration,
-                RFID_tools *rfid_tools);
+                RFID_tools *rfid_tools, string distance_log_path);
 
   /**
    * Save the RFID map as image on disk.
@@ -431,6 +432,18 @@ public:
    * @return the topological map modeled as list of cell and associated neighbors
    */
   std::vector<pair<Pose, list<Pose>>> getTopologicalMap(Astar *astar, EvaluationRecords *record, vector<string> *history, dummy::Map *map );
+
+  std::vector<pair<pair<double, double>, list<Pose>>> getTopologicalMapSlim(Astar *astar, EvaluationRecords *record, vector<string> *history, dummy::Map *map );
+
+  /**
+   * Given a list of cells, find which one is the farer from a target one
+   * @param nearCandidates: list of cells to analyse
+   * @param target: the current cell of the robot
+   * @return the farer cell from the current one
+   */
+  Pose getFarestNeighbor(list<Pose> *nearCandidates, Pose *target);
+
+  void updateCriteria(double w_info_gain, double w_travel_distance, double w_sensing_time, double w_rfid_gain, double w_battery_status);
 
 protected:
 

@@ -91,12 +91,12 @@ std::list<Pose> EvaluationRecords::getFrontiers()
 void EvaluationRecords::removeFrontier(Pose& frontier)
 {        
     for(unordered_map<string,double>::iterator it = evaluations.begin(); it != evaluations.end(); it++){
-	string s1 = (*it).first;
-	string s2 = getEncodedKey(frontier);
-	if( s1 == s2 ){
-	    evaluations.erase(s2);
-	    break;
-	}
+		string s1 = (*it).first;
+		string s2 = getEncodedKey(frontier);
+		if( s1 == s2 ){
+			evaluations.erase(s2);
+			break;
+		}
     }
 }
 
