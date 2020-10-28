@@ -71,7 +71,7 @@ public:
    * @param batteryTime: the remaining battery time
    * @return a record of frontiers and their associated evaluation
    */ 
-  EvaluationRecords* evaluateFrontiers(const list< Pose >& frontiers, dummy::Map* map, 
+  EvaluationRecords* evaluateFrontiers(const list< Pose >* frontiers, dummy::Map* map, 
     double threshold, RFID_tools *rfid_tools, double *batteryTime, bool *explorationCompleted);
 
   /**
@@ -90,6 +90,8 @@ public:
    * @return the encoding
    */
   string getEncodedKey(Pose& p, int value);
+
+  void updateCriteria(double w_criterion_1, double w_criterion_2, double w_criterion_3, double w_criterion_4, double w_criterion_5);
 
 protected:
 

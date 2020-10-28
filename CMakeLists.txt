@@ -72,12 +72,12 @@ find_library(RT_LIBRARY NAMES rt librt)
 
 # ............................................................................
 
-#add_executable(test_log_model test_log_model.cpp  ${HEADER_FILES})
+add_executable(test_log_model test_log_model.cpp  ${HEADER_FILES})
 
-#target_link_libraries(test_log_model lib  ${catkin_LIBRARIES}
-#  ${OpenCV_LIBRARIES} ${Boost_LIBRARIES} )
+target_link_libraries(test_log_model lib  ${catkin_LIBRARIES}
+ ${OpenCV_LIBRARIES} ${Boost_LIBRARIES} )
 
-#install(TARGETS test_log_model RUNTIME DESTINATION bin)
+install(TARGETS test_log_model RUNTIME DESTINATION bin)
 
 #add_executable(test_gaussian_kernel test_gaussian_kernel.cpp  ${HEADER_FILES})
 
@@ -87,12 +87,12 @@ find_library(RT_LIBRARY NAMES rt librt)
 #install(TARGETS test_gaussian_kernel RUNTIME DESTINATION bin)
 
 
-# add_executable(test_kalman kalman-cpp/kalman-test.cpp  ${HEADER_FILES})
+add_executable(test_kalman kalman-cpp/kalman-test.cpp  ${HEADER_FILES})
 
-# target_link_libraries(test_kalman lib  ${catkin_LIBRARIES}
-#   ${OpenCV_LIBRARIES} ${Boost_LIBRARIES} )
+target_link_libraries(test_kalman lib  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES} ${Boost_LIBRARIES} )
 
-# install(TARGETS test_kalman RUNTIME DESTINATION bin)
+install(TARGETS test_kalman RUNTIME DESTINATION bin)
 
 # ............................................................................
 
@@ -131,28 +131,28 @@ if (${RT_LIBRARY-NOTFOUND})
 target_link_libraries(mcdm_online_exploration lib  -lboost_unit_test_framework ${catkin_LIBRARIES}   ${OpenCV_LIBRARIES} yaml-cpp)# ${OpenMP_CXX_LIBRARIES})
 install(TARGETS mcdm_online_exploration RUNTIME DESTINATION bin)
 
-# add_executable(random_walk random_walk.cpp  ${HEADER_FILES})
-# # include the OpenMP compile flags as well
-# # target_compile_options(random_walk PRIVATE)# ${OpenMP_CXX_FLAGS})
-# # add the OpenMP libraries for linking
-# target_link_libraries(random_walk lib  -lboost_unit_test_framework ${catkin_LIBRARIES}   ${OpenCV_LIBRARIES} yaml-cpp)# ${OpenMP_CXX_LIBRARIES})
-# install(TARGETS random_walk RUNTIME DESTINATION bin)
+add_executable(random_walk random_walk.cpp  ${HEADER_FILES})
+# include the OpenMP compile flags as well
+# target_compile_options(random_walk PRIVATE)# ${OpenMP_CXX_FLAGS})
+# add the OpenMP libraries for linking
+target_link_libraries(random_walk lib  -lboost_unit_test_framework ${catkin_LIBRARIES}   ${OpenCV_LIBRARIES} yaml-cpp)# ${OpenMP_CXX_LIBRARIES})
+install(TARGETS random_walk RUNTIME DESTINATION bin)
 
-# add_executable(random_frontier random_frontier.cpp  ${HEADER_FILES})
-# # include the OpenMP compile flags as well
-# # target_compile_options(random_frontier PRIVATE)# ${OpenMP_CXX_FLAGS})
-# # add the OpenMP libraries for linking
-# target_link_libraries(random_frontier lib  -lboost_unit_test_framework ${catkin_LIBRARIES}   ${OpenCV_LIBRARIES} yaml-cpp)# ${OpenMP_CXX_LIBRARIES})
-# install(TARGETS random_frontier RUNTIME DESTINATION bin)
+add_executable(random_frontier random_frontier.cpp  ${HEADER_FILES})
+# include the OpenMP compile flags as well
+# target_compile_options(random_frontier PRIVATE)# ${OpenMP_CXX_FLAGS})
+# add the OpenMP libraries for linking
+target_link_libraries(random_frontier lib  -lboost_unit_test_framework ${catkin_LIBRARIES}   ${OpenCV_LIBRARIES} yaml-cpp)# ${OpenMP_CXX_LIBRARIES})
+install(TARGETS random_frontier RUNTIME DESTINATION bin)
 
 
-#add_executable(play_with_eigen play_with_eigen.cpp  ${HEADER_FILES})
+add_executable(play_with_eigen play_with_eigen.cpp  ${HEADER_FILES})
 
-#target_link_libraries(play_with_eigen lib  ${catkin_LIBRARIES}
-#  ${OpenCV_LIBRARIES} ${Boost_LIBRARIES} )
+target_link_libraries(play_with_eigen lib  ${catkin_LIBRARIES}
+ ${OpenCV_LIBRARIES} ${Boost_LIBRARIES} )
 
-#install(TARGETS play_with_eigen RUNTIME DESTINATION bin)
-#add_subdirectory(test)
+install(TARGETS play_with_eigen RUNTIME DESTINATION bin)
+add_subdirectory(test)
 
 
 #c++11

@@ -1,52 +1,57 @@
+#include "Criteria/traveldistancecriterion.h"
+#include "map.h"
+#include "mcdmfunction.h"
+#include "newray.h"
 #include <algorithm>
 #include <iostream>
 #include <iterator>
 #include <random>
-#include "map.h"
-#include "newray.h"
-#include "mcdmfunction.h"
-#include "Criteria/traveldistancecriterion.h"
-# define PI           3.14159265358979323846  /* pi */
-#include <unistd.h>
-#include <time.h>
-#include <ctime>
+#define PI 3.14159265358979323846 /* pi */
 #include "utils.h"
+#include <ctime>
+#include <time.h>
+#include <unistd.h>
 // #include "RFIDGridmap.h"
-#include "yaml-cpp/yaml.h"
 #include "RadarModel.hpp"
+#include "yaml-cpp/yaml.h"
 #include <vector>
-
-
-
 
 using namespace std;
 using namespace dummy;
 using namespace YAML;
 
-// Example: ./mcdm_online_exploration ./../Images/cor_map_05_00_new1.pgm 1 99 99 180 5 180 1 0 1 54 143 865e6 0
-int main ( int argc, char **argv )
-{
+// Example: ./mcdm_online_exploration ./../Images/cor_map_05_00_new1.pgm 1 99 99
+// 180 5 180 1 0 1 54 143 865e6 0
+int main(int argc, char **argv) {
   auto startMCDM = chrono::high_resolution_clock::now();
   ifstream infile;
-  infile.open ( argv[1] );  // the path to the map
-  double resolution = atof ( argv[2] );  // the resolution of the map
-  double imgresolution = atof ( argv[10] );  // the resolution to use for the planningGrid and RFIDGrid
-  dummy::Map map = dummy::Map ( infile,resolution, imgresolution );
-  // cout << "Map dimension: " << map.getNumGridCols() << " : "<<  map.getNumGridRows() << endl;
+  infile.open(argv[1]);              // the path to the map
+  double resolution = atof(argv[2]); // the resolution of the map
+  double imgresolution =
+      atof(argv[10]); // the resolution to use for the planningGrid and RFIDGrid
+  dummy::Map map = dummy::Map(infile, resolution, imgresolution);
+  // cout << "Map dimension: " << map.getNumGridCols() << " : "<<
+  // map.getNumGridRows() << endl;
   int gridToPathGridScale = map.getGridToPathGridScale();
-  // i switched x and y because the map's orientation inside and outside programs are different
-  long initX = static_cast<long>( atoi ( argv[4] ) *imgresolution );  // initial X-position of the robot in map frame
-  long initY = static_cast<long>( atoi ( argv[3] ) *imgresolution );  // initial Y-position of the robot in map frame
+  // i switched x and y because the map's orientation inside and outside
+  // programs are different
+  long initX = static_cast<long>(
+      atoi(argv[4]) *
+      imgresolution); // initial X-position of the robot in map frame
+  long initY = static_cast<long>(
+      atoi(argv[3]) *
+      imgresolution); // initial Y-position of the robot in map frame
   // std::cout << "initX: " << initX << " initY: " << initY << std::endl;
-  int initOrientation = atoi ( argv[5] );  // initial orientation of the robot in map frame
-  double initFov = atoi ( argv[7] );  // initial FOV of the robot sensor
-  initFov = initFov * PI /180;
-  int initRange = atoi ( argv[6] );
-  double precision = atof ( argv[8] );
-  double threshold = atof ( argv[9] );
+  int initOrientation =
+      atoi(argv[5]); // initial orientation of the robot in map frame
+  double initFov = atoi(argv[7]); // initial FOV of the robot sensor
+  initFov = initFov * PI / 180;
+  int initRange = atoi(argv[6]);
+  double precision = atof(argv[8]);
+  double threshold = atof(argv[9]);
   /// RFID
   YAML::Node config = YAML::LoadFile(argv[11]);
-  
+
   double absTag1_X = config["tag1X"].as<double>();
   double absTag1_Y = config["tag1Y"].as<double>();
 
@@ -77,7 +82,7 @@ int main ( int argc, char **argv )
   double absTag10_X = config["tag10X"].as<double>();
   double absTag10_Y = config["tag10Y"].as<double>();
 
-  std::vector<std::pair<double,double>> tags_coord;
+  std::vector<std::pair<double, double>> tags_coord;
   tags_coord.push_back(std::make_pair(absTag1_X, absTag1_Y));
   tags_coord.push_back(std::make_pair(absTag2_X, absTag2_Y));
   tags_coord.push_back(std::make_pair(absTag3_X, absTag3_Y));
@@ -111,7 +116,7 @@ int main ( int argc, char **argv )
   RFID_maps_list.push_back(myGrid9);
   RFID_maps_list.push_back(myGrid10);
 
-  double freq = std::stod(argv[12]); // Hertzs
+  double freq = std::stod(argv[12]);     // Hertzs
   double txtPower = std::stod(argv[13]); // dBs
   std::pair<int, int> relTagCoord;
 
@@ -121,49 +126,67 @@ int main ( int argc, char **argv )
   double w_sensing_time = atof(argv[16]);
   double w_rfid_gain = atof(argv[17]);
   double w_battery_status = atof(argv[18]);
-  std::string out_log (argv[19]);
-  std::string coverage_log (argv[20]);
-  std::string detection_log (argv[21]);
-  std::string accuracy_log (argv[23]);
+  std::string out_log(argv[19]);
+  std::string coverage_log(argv[20]);
+  std::string detection_log(argv[21]);
+  std::string accuracy_log(argv[23]);
+  std::string entropy_log_path(argv[25]);
+  std::string distance_log_path = entropy_log_path;
+  const char *path = entropy_log_path.c_str();
+  boost::filesystem::path dir(path);
+  if (boost::filesystem::create_directory(dir)) {
+    std::cerr << "Directory Created: " << entropy_log_path << std::endl;
+  }
+
+  string entropy_log = entropy_log_path + "/entropy.csv";
   bool use_mcdm = bool(atoi(argv[24]));
-  //x,y,orientation,range,FOV
-  double norm_w_info_gain, norm_w_travel_distance, norm_w_sensing_time, norm_w_rfid_gain, norm_w_battery_status;
-  double sum_w = w_info_gain + w_travel_distance + w_sensing_time + w_rfid_gain + w_battery_status;
+  // x,y,orientation,range,FOV
+  double norm_w_info_gain, norm_w_travel_distance, norm_w_sensing_time,
+      norm_w_rfid_gain, norm_w_battery_status;
+  double sum_w = w_info_gain + w_travel_distance + w_sensing_time +
+                 w_rfid_gain + w_battery_status;
   norm_w_info_gain = w_info_gain / sum_w;
   norm_w_travel_distance = w_travel_distance / sum_w;
   norm_w_sensing_time = w_sensing_time / sum_w;
   norm_w_rfid_gain = w_rfid_gain / sum_w;
   norm_w_battery_status = w_battery_status / sum_w;
-  // cout << "[ " << norm_w_info_gain << ", " << norm_w_travel_distance 
-  //       << ", " << norm_w_sensing_time << ", " << norm_w_rfid_gain << " ]" << endl;
-  Utilities utils(norm_w_info_gain, norm_w_travel_distance, norm_w_sensing_time, norm_w_rfid_gain, norm_w_battery_status);
+  // cout << "[ " << norm_w_info_gain << ", " << norm_w_travel_distance
+  //       << ", " << norm_w_sensing_time << ", " << norm_w_rfid_gain << " ]" <<
+  //       endl;
+  Utilities utils(norm_w_info_gain, norm_w_travel_distance, norm_w_sensing_time,
+                  norm_w_rfid_gain, norm_w_battery_status);
 
-  Pose initialPose = Pose ( initX,initY,initOrientation,initRange,initFov );
-  Pose invertedInitial = utils.createFromInitialPose ( initX,initY,initOrientation,180,initRange,initFov );
-  Pose eastInitial = utils.createFromInitialPose ( initX,initY,initOrientation,90,initRange,initFov );
-  Pose westInitial = utils.createFromInitialPose ( initX,initY,initOrientation,270,initRange,initFov );
+  Pose initialPose = Pose(initX, initY, initOrientation, initRange, initFov);
+  Pose invertedInitial = utils.createFromInitialPose(
+      initX, initY, initOrientation, 180, initRange, initFov);
+  Pose eastInitial = utils.createFromInitialPose(initX, initY, initOrientation,
+                                                 90, initRange, initFov);
+  Pose westInitial = utils.createFromInitialPose(initX, initY, initOrientation,
+                                                 270, initRange, initFov);
   Pose target = initialPose;
   Pose previous = initialPose;
   long numConfiguration = 1;
-  vector<pair<string,list<Pose>>> graph2;
+  vector<pair<string, list<Pose>>> graph2;
   NewRay ray;
-  ray.setGridToPathGridScale ( gridToPathGridScale );
+  ray.setGridToPathGridScale(gridToPathGridScale);
   // MCDMFunction function(w_info_gain, w_travel_distance, w_sensing_time);
-  MCDMFunction function(w_info_gain, w_travel_distance, w_sensing_time, w_rfid_gain);
+  MCDMFunction function(w_info_gain, w_travel_distance, w_sensing_time,
+                        w_rfid_gain);
   // cout << "MCDM matrix created! " << endl;
-//  MCDMFunction function;
+  //  MCDMFunction function;
   long sensedCells = 0;
   long newSensedCells = 0;
   long totalFreeCells = map.getTotalFreeCells();
   int count = 0;
   double travelledDistance = 0;
   int numOfTurning = 0;
-  unordered_map<string,int> visitedCell;
-  vector<string>history;
-  history.push_back ( function.getEncodedKey ( target,1 ) );
+  unordered_map<string, int> visitedCell;
+  vector<string> history;
+  history.push_back(function.getEncodedKey(target, 1));
   EvaluationRecords record;
-  //amount of time the robot should do nothing for scanning the environment ( final value expressed in second)
-  unsigned int microseconds = 5 * 1000 * 1000 ;
+  // amount of time the robot should do nothing for scanning the environment (
+  // final value expressed in second)
+  unsigned int microseconds = 5 * 1000 * 1000;
   list<Pose> unexploredFrontiers;
   list<Pose> tabuList;
   tabuList.push_back(target);
@@ -176,24 +199,28 @@ int main ( int argc, char **argv )
   int encodedKeyValue = 0;
   string content;
   std::pair<long, long> nextRandomPosition;
-  std::random_device rd; // obtain a random number from hardware
+  std::random_device rd;  // obtain a random number from hardware
   std::mt19937 eng(rd()); // seed the generator
   std::uniform_int_distribution<> distr(0, 359); // define the range
-   // Radar model: 
-  double nx = 240*resolution; // radar model active area x-range m.
-  double ny = 120*resolution;  // radar model active area y-range m.  
-  double rs = resolution; // radar model grid resolution m./cell :: SAME AS INPUT IMAGE!!!
-  double sigma_power = 3.92; //dB
-  double sigma_phase = 1; //rads
-  txtPower = txtPower; // NOTE: Added for debug
-  std::vector<double> freqs{ freq }; // only 1 freq... noice!
-  // std::vector<double> freqs{ MIN_FREQ_NA,MIN_FREQ_NA+STEP_FREQ_NA,MIN_FREQ_NA+2.0*STEP_FREQ_NA }; 
+                                                 // Radar model:
+  double nx = 240 * resolution; // radar model active area x-range m.
+  double ny = 120 * resolution; // radar model active area y-range m.
+  double rs = resolution;    // radar model grid resolution m./cell :: SAME AS
+                             // INPUT IMAGE!!!
+  double sigma_power = 3.92; // dB
+  double sigma_phase = 1;    // rads
+  txtPower = txtPower;       // NOTE: Added for debug
+  std::vector<double> freqs{freq}; // only 1 freq... noice!
+  // std::vector<double> freqs{
+  // MIN_FREQ_NA,MIN_FREQ_NA+STEP_FREQ_NA,MIN_FREQ_NA+2.0*STEP_FREQ_NA };
 
-  cout <<"Building radar model." << endl;
-  RadarModel rm(rs, sigma_power, sigma_phase, txtPower, freqs, tags_coord, argv[1] );
-  //RadarModel rm(nx, ny, rs, sigma_power, sigma_phase, txtPower, freqs, tags_coord, argv[1] );
+  cout << "Building radar model." << endl;
+  RadarModel rm(rs, sigma_power, sigma_phase, txtPower, freqs, tags_coord,
+                argv[1]);
+  // RadarModel rm(nx, ny, rs, sigma_power, sigma_phase, txtPower, freqs,
+  // tags_coord, argv[1] );
   cout << "Radar model built." << endl;
-  rm.PrintRefMapWithTags("/tmp/scenario.png"); 
+  rm.PrintRefMapWithTags("/tmp/scenario.png");
 
   long x, y = 0;
   int orientation, range;
@@ -215,122 +242,129 @@ int main ( int argc, char **argv )
   rfid_tools.txtPower = txtPower;
   rfid_tools.sensitivity = SENSITIVITY;
   rfid_tools.RFID_maps_list = &RFID_maps_list;
+  double entropy_map = 0;
+  bool explorationCompleted = false;
+  do {
+    if (sensedCells >= precision * totalFreeCells) explorationCompleted = true;
+    double belief_accuracy = utils.findTags(
+        &RFID_maps_list, &tags_coord, &map, detection_log, accuracy_log,
+        initRange, numConfiguration, &rfid_tools, distance_log_path);
+    // Keep track of entropy in the map
+    entropy_map = rfid_tools.rm->getMapTotalEntropy(entropy_log_path);
 
-  do
-  {
-      content = to_string(w_info_gain) 
-                + "," + to_string(w_travel_distance)
-                + "," + to_string(w_sensing_time) 
-                + "," + to_string(w_rfid_gain)
-                + "," + to_string(w_battery_status)
-                + "," + to_string(norm_w_info_gain)
-                + "," + to_string(norm_w_travel_distance)
-                + "," + to_string(norm_w_sensing_time)
-                + "," + to_string(norm_w_rfid_gain)
-                + "," + to_string(norm_w_battery_status)
-                + "," + to_string(numConfiguration) 
-                + "," + to_string(100 * float(newSensedCells)/float(totalFreeCells)) 
-                + "," + to_string(travelledDistance) + "\n" ;
-      utils.filePutContents(coverage_log, content, true );
-      x = target.getX();
-      y = target.getY();
-      orientation = target.getOrientation();
-      range = target.getRange();
-      FOV = target.getFOV();
-      actualPose = function.getEncodedKey ( target,0 );
-      map.setCurrentPose ( target );
-      // Update the overall covered distance
-      string path = astar.pathFind ( target.getX(), target.getY(), previous.getX(), previous.getY(), &map );
-      distance = astar.lengthPath(path);
-      // travelledDistance = travelledDistance + distance;
-      travelledDistance = utils.calculateDistance(tabuList, &map, &astar );
-      tmp_numOfTurning = astar.getNumberOfTurning ( path );
-      translTime = distance / TRANSL_SPEED;
-      rotTime = tmp_numOfTurning / ROT_SPEED;
-      batteryTime = batteryTime - (translTime + rotTime);
-      // Update the overall number of turnings
-      numOfTurning = numOfTurning + astar.getNumberOfTurning ( path );
-      visitedCell.emplace ( encoding,0 );
-      // Get the sensing time required for scanning
-      target.setScanAngles ( ray.getSensingTime ( &map,x,y,orientation,FOV,range ) );
-      // Perform a scanning operation
-      double X_max = range;
-      double X_min = atoi ( argv[22] );
-      double focal_length = (X_max - X_min) / 2.0; // (X_max - X_min)/2
-      major_axis = focal_length + X_min;  // (focal_length + X_min)
-      minor_axis = sqrt(pow(major_axis, 2) - pow(focal_length, 2));
-      newSensedCells = sensedCells + ray.performSensingOperationEllipse ( &map,x,y,orientation,             target.getScanAngles().first, target.getScanAngles().second, major_axis, minor_axis);
-      // Calculate the scanning angle
-      scanAngle = target.getScanAngles().second - target.getScanAngles().first;
-      // Update the overall scanning time
-      totalScanTime += utils.calculateScanTime ( scanAngle*180/PI );
-      // Update bot the PP and the RFID maps
-      utils.updateMaps(&map, &target, &rfid_tools, false);
-      // Calculate the accumulated received power
-      for (int tag_id = 0; tag_id < tags_coord.size(); tag_id++){
-        // mfc: previous
-        //double rx_power = rfid_tools.rm->received_power_friis(tags_coord[tag_id].first, tags_coord[tag_id].second, freq, txtPower);
-        double rx_power = rfid_tools.rm->received_power_friis_with_obstacles(target.getX(), target.getY(), target.getOrientation() * PI/180.0,tags_coord[tag_id].first, tags_coord[tag_id].second, 0, freq);
-        //mfc: the above gets the received power between a robot in "target" in METERS and tags_coord[i] in METERS. I'm assuming orientation is in deg.
-        accumulated_received_power += rx_power;        
-      }
-      // Find new random destination
-      nextRandomPosition = map.getRandomFreeCell();
-      orientation = distr(eng);  // get a random orientation between 0 and 359
-      orientation = orientation * M_PI / 180.0;
-      target.updateFromData(nextRandomPosition, orientation, range, FOV);
-      sensedCells = newSensedCells;
-      numConfiguration++;
-      // Add target to history and tabulist
-      history.push_back(function.getEncodedKey(target, 1));
-      tabuList.push_back(target);
-      batteryPercentage = utils.calculateRemainingBatteryPercentage(tabuList, &map, &astar);
+    content =
+        to_string(w_info_gain) + "," + to_string(w_travel_distance) + "," +
+        to_string(w_sensing_time) + "," + to_string(w_rfid_gain) + "," +
+        to_string(w_battery_status) + "," + to_string(norm_w_info_gain) + "," +
+        to_string(norm_w_travel_distance) + "," +
+        to_string(norm_w_sensing_time) + "," + to_string(norm_w_rfid_gain) +
+        "," + to_string(norm_w_battery_status) + "," +
+        to_string(numConfiguration) + "," +
+        to_string(100 * float(newSensedCells) / float(totalFreeCells)) + "," +
+        to_string(travelledDistance) + "\n";
+    utils.filePutContents(coverage_log, content, true);
+    x = target.getX();
+    y = target.getY();
+    orientation = target.getOrientation();
+    range = target.getRange();
+    FOV = target.getFOV();
+    actualPose = function.getEncodedKey(target, 0);
+    map.setCurrentPose(target);
+    // Update the overall covered distance
+    string path = astar.pathFind(target.getX(), target.getY(), previous.getX(),
+                                 previous.getY(), &map);
+    distance = astar.lengthPath(path);
+    // travelledDistance = travelledDistance + distance;
+    travelledDistance = utils.calculateDistance(tabuList, &map, &astar);
+    tmp_numOfTurning = astar.getNumberOfTurning(path);
+    translTime = distance / TRANSL_SPEED;
+    rotTime = tmp_numOfTurning / ROT_SPEED;
+    batteryTime = batteryTime - (translTime + rotTime);
+    // Update the overall number of turnings
+    numOfTurning = numOfTurning + astar.getNumberOfTurning(path);
+    visitedCell.emplace(encoding, 0);
+    // Get the sensing time required for scanning
+    target.setScanAngles(
+        ray.getSensingTime(&map, x, y, orientation, FOV, range));
+    // Perform a scanning operation
+    double X_max = range;
+    double X_min = atoi(argv[22]);
+    double focal_length = (X_max - X_min) / 2.0; // (X_max - X_min)/2
+    major_axis = focal_length + X_min;           // (focal_length + X_min)
+    minor_axis = sqrt(pow(major_axis, 2) - pow(focal_length, 2));
+    newSensedCells = sensedCells +
+                     ray.performSensingOperationEllipse(
+                         &map, x, y, orientation, target.getScanAngles().first,
+                         target.getScanAngles().second, major_axis, minor_axis);
+    // Calculate the scanning angle
+    scanAngle = target.getScanAngles().second - target.getScanAngles().first;
+    // Update the overall scanning time
+    totalScanTime += utils.calculateScanTime(scanAngle * 180 / PI);
+    // Update bot the PP and the RFID maps
+    utils.updateMaps(&map, &target, &rfid_tools, false);
+    // Calculate the accumulated received power
+    for (int tag_id = 0; tag_id < tags_coord.size(); tag_id++) {
+      double rx_power = rfid_tools.rm->received_power_friis_with_obstacles(
+          target.getX(), target.getY(), target.getOrientation() * PI / 180.0,
+          tags_coord[tag_id].first, tags_coord[tag_id].second, 0, freq);
+      accumulated_received_power += rx_power;
+    }
+    // Find new random destination
+    nextRandomPosition = map.getRandomFreeCell();
+    orientation = distr(eng); // get a random orientation between 0 and 359
+    orientation = orientation * M_PI / 180.0;
+    target.updateFromData(nextRandomPosition, orientation, range, FOV);
+    sensedCells = newSensedCells;
+    numConfiguration++;
+    // Add target to history and tabulist
+    history.push_back(function.getEncodedKey(target, 1));
+    tabuList.push_back(target);
+    batteryPercentage =
+        utils.calculateRemainingBatteryPercentage(tabuList, &map, &astar);
 
   }
   // Perform exploration until a certain coverage is achieved
-  while ( sensedCells < precision * totalFreeCells and batteryPercentage > 0.0 );
-  // Plotting utilities
-  // map.drawVisitedCells ();
-  // map.printVisitedCells ( history );
-  // map.drawRFIDScan();
-  // map.drawRFIDGridScan(myGrid);
-  // myGrid.saveAs(("/home/pulver/Desktop/MCDM/rfid_result_gridmap.pgm"));
-
-  // cout << "Num configuration: " << numConfiguration << endl;
-  // cout << "Travelled distance calculated during the algorithm: " << travelledDistance << endl;
-  //
-  // cout << "------------------ HISTORY -----------------" << endl;
-  // Calculate which cells have been visited only once
-  // list<Pose> tmp_history = utils.cleanHistory(&history, &record);
-  // utils.calculateDistance(tmp_history, &map, &astar );
+  while (sensedCells < precision * totalFreeCells 
+    and batteryPercentage > 0.0 and entropy_map > 20.0);
+  
 
   // cout << "------------------ TABULIST -----------------" << endl;
-  travelledDistance = utils.calculateDistance(tabuList, &map, &astar );
-  batteryPercentage = utils.calculateRemainingBatteryPercentage(tabuList, &map, &astar);
+  travelledDistance = utils.calculateDistance(tabuList, &map, &astar);
+  batteryPercentage =
+      utils.calculateRemainingBatteryPercentage(tabuList, &map, &astar);
 
-  double belief_accuracy = utils.findTags(&RFID_maps_list, &tags_coord, &map,
-                  detection_log, accuracy_log, 
-                  initRange, numConfiguration,
-                  &rfid_tools);
+  double belief_accuracy = utils.findTags(
+      &RFID_maps_list, &tags_coord, &map, detection_log, accuracy_log,
+      initRange, numConfiguration, &rfid_tools, distance_log_path);
 
-  cout << "-----------------------------------------------------------------"<<endl;
+  cout << "-----------------------------------------------------------------"
+       << endl;
   auto endMCDM = chrono::high_resolution_clock::now();
-  content = to_string(w_info_gain) + ","  + to_string(w_travel_distance) + "," + to_string(w_sensing_time) + "," + to_string(w_rfid_gain) + "," + to_string(w_battery_status) + ","
-            + to_string(norm_w_info_gain) + ","  + to_string(norm_w_travel_distance) + "," + to_string(norm_w_sensing_time) + "," + to_string(norm_w_rfid_gain) + "," + to_string(norm_w_battery_status) + ","
-            + to_string(float(newSensedCells)/float(totalFreeCells)) + "," + to_string(numConfiguration) + ","
-            + to_string(travelledDistance) + "," + to_string(totalScanTime) + "," + to_string(accumulated_received_power) + "," 
-            + to_string(batteryPercentage) + ", " + to_string(belief_accuracy) + "\n";
-  utils.filePutContents(out_log, content, true );
+  content = to_string(w_info_gain) + "," + to_string(w_travel_distance) + "," +
+            to_string(w_sensing_time) + "," + to_string(w_rfid_gain) + "," +
+            to_string(w_battery_status) + "," + to_string(norm_w_info_gain) +
+            "," + to_string(norm_w_travel_distance) + "," +
+            to_string(norm_w_sensing_time) + "," + to_string(norm_w_rfid_gain) +
+            "," + to_string(norm_w_battery_status) + "," +
+            to_string(float(newSensedCells) / float(totalFreeCells)) + "," +
+            to_string(numConfiguration) + "," + to_string(travelledDistance) +
+            "," + to_string(totalScanTime) + "," +
+            to_string(accumulated_received_power) + "," +
+            to_string(batteryPercentage) + ", " + to_string(belief_accuracy) +
+            "\n";
+  utils.filePutContents(out_log, content, true);
 
-  double totalTimeMCDM = chrono::duration<double,milli> ( endMCDM -startMCDM ).count();
-  cout << "Total time for MCDM algorithm : " << totalTimeMCDM << "ms, " << totalTimeMCDM/1000 <<" s, " <<
-          totalTimeMCDM/60000 << " m "<< endl;
+  double totalTimeMCDM =
+      chrono::duration<double, milli>(endMCDM - startMCDM).count();
+  cout << "Total time for MCDM algorithm : " << totalTimeMCDM << "ms, "
+       << totalTimeMCDM / 1000 << " s, " << totalTimeMCDM / 60000 << " m "
+       << endl;
 
-  utils.printResult(newSensedCells, totalFreeCells, precision, 
-                    numConfiguration, travelledDistance, numOfTurning,
-                    totalAngle, totalScanTime, accumulated_received_power, &batteryPercentage);
+  utils.printResult(newSensedCells, totalFreeCells, precision, numConfiguration,
+                    travelledDistance, numOfTurning, totalAngle, totalScanTime,
+                    accumulated_received_power, &batteryPercentage);
 
-  //     cout << "Total time for MCDM algorithm : " << totalTimeMCDM << "ms, " << totalTimeMCDM/1000 <<" s, " <<
+  //     cout << "Total time for MCDM algorithm : " << totalTimeMCDM << "ms, "
+  //     << totalTimeMCDM/1000 <<" s, " <<
   // 		totalTimeMCDM/60000 << " m "<< endl;
-
 }

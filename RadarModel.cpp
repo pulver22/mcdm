@@ -15,6 +15,7 @@
 #include <chrono>
 
 #include "math.h"
+#include <random>
 
 using namespace std;
 using namespace grid_map;
@@ -78,7 +79,9 @@ RadarModel::RadarModel(const double resolution, const double sigma_power, const 
         _freqs = freqs;
         _resolution = resolution;
         _tags_coords = tags_coords;
+        _original_tags_coords = tags_coords;
         _numTags =  tags_coords.size();
+
 
         initRefMap(imageFileURI);
 
@@ -142,6 +145,14 @@ RadarModel::RadarModel(const double resolution, const double sigma_power, const 
         // Add tmp later for KL-divergence computation
         _rfid_belief_maps.add("kl", 0.0);
 
+        // Verify tags are on free cells (mind the different reference system)
+        // for (int i=0; i<_tags_coords.size(); i++){
+        //   // (grid.rows() - tag.first)*_resolution;
+        //  Index index((_rfid_belief_maps["ref_map"].rows() - _tags_coords[i].first) *_resolution, 
+        //               (_rfid_belief_maps["ref_map"].cols() - _tags_coords[i].second)*_resolution);
+        //  cout << _rfid_belief_maps.at("ref_map", index) << endl;
+        // }
+
     }
 
 
@@ -198,46 +209,46 @@ void RadarModel::initRefMap(const std::string imageURI) {
   grid_map::Index index;
 
   // std::cout<<"\nTesting boundaries: " <<std::endl;
-  index = grid_map::Index(0, 0);
+  // index = grid_map::Index(0, 0);
   // std::cout<<"P: Index("  << 0 << ", " << 0 << ") " <<std::endl;
-  if (_rfid_belief_maps.getPosition(index, p)) {
+  // if (_rfid_belief_maps.getPosition(index, p)) {
     // std::cout<<"P: Cell("  << index(0) << ", " << index(1) << ") is at (" <<
     // p(0) << ", " << p(1)<<") m. " <<std::endl;
-  } else {
+  // } else {
     // std::cout<<" Cell("  << index(0) << ", " << index(1) << ") is out
     // bounds!" <<std::endl;
-  }
+  // }
 
-  index = grid_map::Index(_Nrow - 1, 0);
+  // index = grid_map::Index(_Nrow - 1, 0);
   // std::cout<<"P: Index("  << (_Nrow-1) << ", " << 0 << ") " <<std::endl;
-  if (_rfid_belief_maps.getPosition(index, p)) {
+  // if (_rfid_belief_maps.getPosition(index, p)) {
     // std::cout<<"P: Cell("  << index(0) << ", " << index(1) << ") is at (" <<
     // p(0) << ", " << p(1)<<") m. " <<std::endl;
-  } else {
+  // } else {
     // std::cout<<" Cell("  << index(0) << ", " << index(1) << ") is out
     // bounds!" <<std::endl;
-  }
+  // }
 
-  index = grid_map::Index(0, _Ncol - 1);
+  // index = grid_map::Index(0, _Ncol - 1);
   // std::cout<<"P: Index("  << (0) << ", " << (_Ncol-1) << ") " <<std::endl;
-  if (_rfid_belief_maps.getPosition(index, p)) {
+  // if (_rfid_belief_maps.getPosition(index, p)) {
     // std::cout<<"P: Cell("  << index(0) << ", " << index(1) << ") is at (" <<
     // p(0) << ", " << p(1)<<") m. " <<std::endl;
-  } else {
+  // } else {
     // std::cout<<" Cell("  << index(0) << ", " << index(1) << ") is out
     // bounds!" <<std::endl;
-  }
+  // }
 
-  index = grid_map::Index(_Nrow - 1, _Ncol - 1);
+  // index = grid_map::Index(_Nrow - 1, _Ncol - 1);
   // std::cout << "P: Index("  << (_Nrow-1) << ", " << (_Ncol-1) << ") "
   // <<std::endl;
-  if (_rfid_belief_maps.getPosition(index, p)) {
+  // if (_rfid_belief_maps.getPosition(index, p)) {
     // std::cout<<"P: Cell("  << index(0) << ", " << index(1) << ") is at (" <<
     // p(0) << ", " << p(1)<<") m. " <<std::endl;
-  } else {
+  // } else {
     // std::cout<<" Cell("  << index(0) << ", " << index(1) << ") is out
     // bounds!" <<std::endl;
-  }
+  // }
   // std::cout << "............................. " << std::endl << std::endl;
 }
 
@@ -375,7 +386,7 @@ return result_mat;
 double RadarModel::getProbabilityMoving(double distance){
   if (distance >= 100) return 0;
 
-  return exp(-0.5 * distance / 2);
+  return exp(-0.5 * pow(distance,2) / pow(_motionModelStdDev,2));
 }
 
 Eigen::MatrixXf RadarModel::getFriisMat(double x_m, double y_m, double orientation_deg, double freq){
@@ -1046,6 +1057,7 @@ void RadarModel::saveProbMapDebug(std::string savePATH, int tag_num, int step,
   std::string layerName = getTagLayerName(tag_num);
   // Some color  ...
   cv::Scalar green(0, 255, 0);
+  cv::Scalar red(0, 0, 255);
 
   // Convert to image.
   cv::Mat image = rfidBeliefToCVImg(layerName);
@@ -1058,6 +1070,11 @@ void RadarModel::saveProbMapDebug(std::string savePATH, int tag_num, int step,
   double ty = _tags_coords[tag_num].second;
   tag_center = getPoint(tx, ty);
   cv::circle(image, tag_center, 5, green, 1);
+
+  tx = _original_tags_coords[tag_num].first;
+  ty = _original_tags_coords[tag_num].second;
+  tag_center = getPoint(tx, ty);
+  cv::circle(image, tag_center, 5, red, 1);
 
   /// overlay robot position
   /// .................................................................................................
@@ -1454,7 +1471,7 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg,
 
   // PREDICTION STEP
   if (_probabilisticTag){
-    prediction_belief = getPredictionStep(tagLayerName, 3);
+    prediction_belief = getPredictionStep(tagLayerName, 9);
     // Get rid of obstacles
     prediction_belief = (obst_mat.array() == _free_space_val).select(prediction_belief, 0);
     _rfid_belief_maps[tagLayerName] = prediction_belief;
@@ -2110,4 +2127,42 @@ void RadarModel::saveLog(const std::string& name, const std::string& content){
     }
   }
   outfile << content;
+}
+
+void RadarModel::moveTagWithMotionModel(){
+  std::random_device rd;  //Will be used to obtain a seed for the random number engine
+  std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+  // // std::uniform_real_distribution<> dis(-sqrt(_motionModelStdDev), sqrt(_motionModelStdDev));
+  std::uniform_real_distribution<> dis(-1.0, 1.0);
+  Index index;
+  Position point;
+  // cout << _free_space_val << endl;
+  for(int tagID = 0; tagID < _tags_coords.size(); tagID++){  
+    double delta_x, delta_y = 0.0;
+    for (int sample = 0; sample < 12; ++sample) {
+        delta_x += dis(gen);
+        delta_y += dis(gen);
+    }
+    delta_x *= _motionModelStdDev/6;
+    delta_y *= _motionModelStdDev/6;
+
+    // The new index can be found as follow
+    // x' = x + delta  (motion model GIMP coordinate)
+    // x^ = map.rows() - x  (map current position from GIMP to gridmap coordinate)
+    // => x^' = map.rows() - x' = map.rows() - (x + delta) = map.row() - x - delta
+
+    // Move the tag only if the new position will be inside the free space
+    index(0) = std::round(_rfid_belief_maps["ref_map"].rows() - _tags_coords[tagID].first - delta_x)*_resolution;
+    index(1) = std::round(_rfid_belief_maps["ref_map"].cols() - _tags_coords[tagID].second - delta_y)*_resolution;
+
+      
+    if(_rfid_belief_maps.at("ref_map", index) == _free_space_val){
+      _tags_coords[tagID].first = std::round(_tags_coords[tagID].first + delta_x)*_resolution;
+      _tags_coords[tagID].second = std::round(_tags_coords[tagID].second + delta_y)*_resolution;
+    } 
+  }
+}
+
+std::vector<std::pair<double, double>> RadarModel::getTagsCoord(){
+  return this->_tags_coords;
 }

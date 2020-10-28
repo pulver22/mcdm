@@ -3,7 +3,7 @@ import numpy as np
 import math
 
 def prob(x, y):
-    return math.exp(-0.5 * x/y)
+    return math.exp(-0.5 * x**2/y**2)
 
 distances = np.asarray([1.4, 1, 1.4, 1, 0, 1, 1.4, 1, 1.4])
 distances = np.expand_dims(distances, axis=1)
@@ -32,7 +32,7 @@ for col in range(1, distances.shape[1]):
     plt.plot(distances[:,0], distances[:,col],'-o',  label=list_index[col-1])
 
 plt.legend(title='y value')
-plt.title('p(distance) = exp(-0.5 * distance/y)')
+plt.title('p(distance) = exp(-0.5 * distance^2/y^2)')
 plt.xlabel('distance')
 plt.ylabel('p(distance)')
 # plt.show()

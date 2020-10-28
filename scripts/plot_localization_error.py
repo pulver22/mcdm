@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-root = "/home/pulver/Desktop/mcdm_ral_experiments/inbeng/"
+root = "/home/pulver/Desktop/mcdm_ral_experiments/moving/kernel_9x9/5/"
 out_path = root + "localization_error.png"
 resolution = 0.25
 

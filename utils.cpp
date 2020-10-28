@@ -356,7 +356,7 @@ bool Utilities::recordContainsCandidates(
     // If there still are more candidates to explore from the last pose in the
     // graph
     if (graph2->at(graph2->size() - 1).second.size() != 0) {
-      std::cout << "F5-3" << endl;
+      // std::cout << "F5-3" << endl;
       // std::cout << "[BT1 - Tabulist]There are visible cells but the selected
       // one is already explored!Come back to second best position from the
       // previous position"<< endl; Remove the current position from possible
@@ -621,9 +621,10 @@ void Utilities::updateMaps(dummy::Map *map, Pose *target,
                            RFID_tools *rfid_tools, bool computeKL = false) {
   std::pair<int, int> relTagCoord;
   // std::cout << "----" << std::endl;
-  for (int i = 0; i < rfid_tools->tags_coord.size(); i++) {
-    relTagCoord = map->getRelativeTagCoord((rfid_tools->tags_coord)[i].first,
-                                           (rfid_tools->tags_coord)[i].second,
+  std::vector<std::pair<double, double>> tags_coords = rfid_tools->rm->getTagsCoord();
+  for (int i = 0; i < tags_coords.size(); i++) {
+    relTagCoord = map->getRelativeTagCoord(tags_coords[i].first,
+                                           tags_coords[i].second,
                                            target->getX(), target->getY());
     // Calculate the received power and phase
     // mfc prev
@@ -632,7 +633,7 @@ void Utilities::updateMaps(dummy::Map *map, Pose *target,
     double rxPower = rfid_tools->rm->received_power_friis_with_obstacles(
         target->getX(), target->getY(),
         target->getOrientation() * 3.141592 / 180.0,
-        (rfid_tools->tags_coord)[i].first, (rfid_tools->tags_coord)[i].second,
+        tags_coords[i].first, tags_coords[i].second,
         0, rfid_tools->freq);
     // mfc: the above gets the received power between a robot in "target" in
     // METERS and tags_coord[i] in METERS. I'm assuming orientation is in deg.
@@ -679,16 +680,17 @@ void Utilities::computePosteriorBeliefSingleLayer(dummy::Map *map, Pose *target,
                                                   int tag_id,
                                                   double len_update) {
   std::pair<int, int> relTagCoord;
+  std::vector<std::pair<double, double>> tags_coords = rfid_tools->rm->getTagsCoord();
   // std::cout << "----" << std::endl;
   relTagCoord = map->getRelativeTagCoord(
-      (rfid_tools->tags_coord)[tag_id].first,
-      (rfid_tools->tags_coord)[tag_id].second, target->getX(), target->getY());
+      tags_coords[tag_id].first,
+      tags_coords[tag_id].second, target->getX(), target->getY());
   // Calculate the received power and phase
   double rxPower = rfid_tools->rm->received_power_friis_with_obstacles(
       target->getX(), target->getY(),
       target->getOrientation() * 3.141592 / 180.0,
-      (rfid_tools->tags_coord)[tag_id].first,
-      (rfid_tools->tags_coord)[tag_id].second, 0, rfid_tools->freq);
+      tags_coords[tag_id].first,
+      tags_coords[tag_id].second, 0, rfid_tools->freq);
   double phase = rfid_tools->rm->phaseDifference(
       relTagCoord.first, relTagCoord.second, rfid_tools->freq);
   // So, robot at pr (x,y,orientation) (long, long, int) receives
@@ -826,7 +828,6 @@ bool Utilities::forwardMotion(
           "," + to_string(*totalScanTime) + +"," +
           to_string(*accumulated_received_power) + "\n";
       this->filePutContents(*out_log, content, true);
-      exit(0);
     }
 
     *sensedCells = *newSensedCells;

@@ -58,8 +58,8 @@ double RFIDCriterion::evaluateSumOverBelief(Pose &p, dummy::Map *map,
   double RFIDInfoGain = 0.0;
   double tmp_belief = 0.0;
   int buffer_size = 2;
-
-  for (int tag_id = 0; tag_id < rfid_tools->tags_coord.size(); tag_id++) {
+  std::vector<std::pair<double, double>> tags_coords = rfid_tools->rm->getTagsCoord();
+  for (int tag_id = 0; tag_id < tags_coords.size(); tag_id++) {
     tmp_belief =
         rfid_tools->rm->getTotalWeight(p.getX(), p.getY(), p.getOrientation(),
                                       buffer_size, buffer_size, tag_id);
@@ -77,9 +77,10 @@ double RFIDCriterion::evaluateEntropyOverBelief(Pose &p, dummy::Map *map,
   double entropy_cell = 0.0;
   int buffer_size = 2;
   Utilities utils;
+  std::vector<std::pair<double, double>> tags_coords = rfid_tools->rm->getTagsCoord();
   // std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
   // #pragma omp parallel for num_threads(omp_get_max_threads())
-  for (int tag_id = 0; tag_id < rfid_tools->tags_coord.size(); tag_id++) {
+  for (int tag_id = 0; tag_id < tags_coords.size(); tag_id++) {
     // Calculate the POSTERIOR distribution over the RFID tag position and save
     // in the "KL" layer of the map
     // NOTE: computing the posterior for every candidate position is way too computationally intensive
@@ -106,8 +107,8 @@ double RFIDCriterion::evaluateKLDivergence(Pose &p, dummy::Map *map,
   Utilities utils;
   float KL_div_cell = 0.0;
   int buffer_size = 2;
-
-  for (int tag_id = 0; tag_id < rfid_tools->tags_coord.size(); tag_id++) {
+  std::vector<std::pair<double, double>> tags_coords = rfid_tools->rm->getTagsCoord();
+  for (int tag_id = 0; tag_id < tags_coords.size(); tag_id++) {
     // Calculate the POSTERIOR distribution over the RFID tag position and save
     // in the "KL" layer of the map
     utils.computePosteriorBeliefSingleLayer(map, &p, rfid_tools, tag_id, buffer_size);

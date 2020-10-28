@@ -157,7 +157,7 @@ class RadarModel {
   GridMap _tmp_rfid_c_map;
 
   std::vector<std::pair<double, double>>
-      _tags_coords; // tag locations in reference map coords (m.)
+      _tags_coords, _original_tags_coords; // tag locations in reference map coords (m.)
   int _numTags;     // rfid tags to consider
 
   std::vector<double> _freqs;    // transmission frequencies (Hz.)
@@ -173,6 +173,7 @@ class RadarModel {
   vector<bool> _first_detection;
   vector<std::pair<int, int>> _belief_tags;
   bool _probabilisticTag = true;  // belief on tag position change over time
+  static constexpr double _motionModelStdDev = 5.0;  // small values reduce probability to move
   // Utilities _utils;
 
 public:
@@ -569,6 +570,12 @@ public:
   static double getProbabilityMoving(double distance);
 
   void saveLog(const std::string& name, const std::string& content);
+
+  /**
+   * Move the tag around the environment according to the motion model adopted (velocity-based).
+   */
+  void moveTagWithMotionModel();
+  std::vector<std::pair<double, double>> getTagsCoord();
 }; // end class
 
 #endif
