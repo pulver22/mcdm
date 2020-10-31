@@ -173,7 +173,7 @@ class RadarModel {
   vector<bool> _first_detection;
   vector<std::pair<int, int>> _belief_tags;
   bool _probabilisticTag = true;  // belief on tag position change over time
-  static constexpr double _motionModelStdDev = 5.0;  // small values reduce probability to move
+  static constexpr double _motionModelStdDev = 1.0;  // small values reduce probability to move
   // Utilities _utils;
 
 public:

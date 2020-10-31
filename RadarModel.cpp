@@ -1471,7 +1471,7 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg,
 
   // PREDICTION STEP
   if (_probabilisticTag){
-    prediction_belief = getPredictionStep(tagLayerName, 9);
+    prediction_belief = getPredictionStep(tagLayerName, 4*_motionModelStdDev);
     // Get rid of obstacles
     prediction_belief = (obst_mat.array() == _free_space_val).select(prediction_belief, 0);
     _rfid_belief_maps[tagLayerName] = prediction_belief;
@@ -2133,18 +2133,24 @@ void RadarModel::moveTagWithMotionModel(){
   std::random_device rd;  //Will be used to obtain a seed for the random number engine
   std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
   // // std::uniform_real_distribution<> dis(-sqrt(_motionModelStdDev), sqrt(_motionModelStdDev));
-  std::uniform_real_distribution<> dis(-1.0, 1.0);
+  std::uniform_real_distribution<double> dis(-1.0, 1.0);
+  std::normal_distribution<double> n_dis(0.0, _motionModelStdDev);
   Index index;
   Position point;
   // cout << _free_space_val << endl;
   for(int tagID = 0; tagID < _tags_coords.size(); tagID++){  
     double delta_x, delta_y = 0.0;
-    for (int sample = 0; sample < 12; ++sample) {
-        delta_x += dis(gen);
-        delta_y += dis(gen);
-    }
-    delta_x *= _motionModelStdDev/6;
-    delta_y *= _motionModelStdDev/6;
+    // Use the Sebastian Thrun trick
+    // for (int sample = 0; sample < 12; ++sample) {
+    //     delta_x += dis(gen);
+    //     delta_y += dis(gen);
+    // }
+    // delta_x *= _motionModelStdDev/6;
+    // delta_y *= _motionModelStdDev/6;
+
+    // Sample directly from the zero-mean normal distribution
+    delta_x += n_dis(gen);
+    delta_y += n_dis(gen);
 
     // The new index can be found as follow
     // x' = x + delta  (motion model GIMP coordinate)

@@ -191,7 +191,7 @@ int main(int argc, char **argv) {
 
   string entropy_log = entropy_log_path + "/entropy.csv";
   bool use_mcdm = bool(atoi(argv[24]));
-  bool use_moving_tags = false;  // bool(atoi(argv[26]));
+  bool use_moving_tags = true;  // bool(atoi(argv[26]));
   // x,y,orientation,range,FOV
   double norm_w_info_gain, norm_w_travel_distance, norm_w_sensing_time,
       norm_w_rfid_gain, norm_w_battery_status;
@@ -207,6 +207,11 @@ int main(int argc, char **argv) {
   MCDMFunction function(norm_w_info_gain, norm_w_travel_distance,
                         norm_w_sensing_time, norm_w_rfid_gain,
                         norm_w_battery_status, use_mcdm);
+  long totalFreeCells = map.getTotalFreeCells();
+  // Pick a random starting position in the map
+  pair<long, long> random_pose = map.getRandomFreeCell();
+  initX = random_pose.first;
+  initY = random_pose.second;
   Pose initialPose = Pose(initX, initY, initOrientation, initRange, initFov);
 
   Pose invertedInitial = utils.createFromInitialPose(
@@ -223,7 +228,7 @@ int main(int argc, char **argv) {
   ray.setGridToPathGridScale(gridToPathGridScale);
   long sensedCells = 0;
   long newSensedCells = 0;
-  long totalFreeCells = map.getTotalFreeCells();
+
   int count = 0;
   double travelledDistance = 0;
   int numOfTurning = 0;
@@ -443,7 +448,7 @@ int main(int argc, char **argv) {
     // batteryPercentage = 100*batteryTime/MAX_BATTERY;
   }
   // Perform exploration until a certain coverage is achieved
-  while (sensedCells < precision * totalFreeCells and batteryPercentage > 0.0 and entropy_map > 20.0);
+  while (sensedCells < precision * totalFreeCells and batteryPercentage > 0.0);
   explorationCompleted = true;
   // Add the last position to history list
   history.push_back(function.getEncodedKey(target, 1));
@@ -481,6 +486,7 @@ int main(int argc, char **argv) {
 
   int farestNeighborsCount = 30;
   do {
+    if (break_loop == true)  break;
     // Update tags position
     if (use_moving_tags)  rfid_tools.rm->moveTagWithMotionModel();
     tags_coord = rfid_tools.rm->getTagsCoord();
@@ -552,6 +558,7 @@ int main(int argc, char **argv) {
 
       if (nearCandidates.size() == 0) {
         std::cout << "[ERROR] in finding new positions" << endl;
+        break_loop = true;
         break;
       }
 
@@ -659,7 +666,7 @@ int main(int argc, char **argv) {
           tags_coord[tag_id].first, tags_coord[tag_id].second, 0, freq);
       accumulated_received_power += rx_power;
     }
-  } while (entropy_map > 20.0 and batteryPercentage > 0.0);
+  } while (batteryPercentage > 0.0);
 
   // std::cout << "------------------ HISTORY -----------------" << endl;
   // Calculate which cells have been visited only once
