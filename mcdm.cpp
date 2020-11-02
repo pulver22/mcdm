@@ -182,6 +182,7 @@ int main(int argc, char **argv) {
   std::string detection_log(argv[21]);
   std::string accuracy_log(argv[23]);
   std::string entropy_log_path(argv[25]);
+  double radarModelEntropyStdDev = atof(argv[26]);
   std::string distance_log_path = entropy_log_path;
   const char *path = entropy_log_path.c_str();
   boost::filesystem::path dir(path);
@@ -267,7 +268,7 @@ int main(int argc, char **argv) {
 
   std::cout << "Building radar model." << endl;
   RadarModel rm(rs, sigma_power, sigma_phase, txtPower, freqs, tags_coord,
-                argv[1]);
+                argv[1], radarModelEntropyStdDev);
   std::cout << "Radar model built." << endl;
   rm.PrintRefMapWithTags("/tmp/scenario.png");
 
