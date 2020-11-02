@@ -173,24 +173,22 @@ class RadarModel {
   vector<bool> _first_detection;
   vector<std::pair<int, int>> _belief_tags;
   bool _probabilisticTag = true;  // belief on tag position change over time
-  // static constexpr double _motionModelStdDev = 1.0 ;  // small values reduce probability to move
-  static double _motionModelStdDev;
+  static constexpr double _motionModelStdDev = 1.0;  // small values reduce probability to move
+  // Utilities _utils;
 
 public:
-  
   /**
    * @brief Construct a new Radar Model object
    *        It is based upon the link budget equation. See D. M. Dobkin, “The RF
    * in RFID: Passive UHF RFID in Practice”, Elsevier, 2007
-   * @param resolution: reference map and rfid belief map images resolution in
+   * @param resolution   reference map and rfid belief map images resolution in
    * m./cell
-   * @param sigma_power: noise std in log model
-   * @param sigma_phase: noise std in phase
-   * @param txtPower: transmitted power (dB)
-   * @param freqs: frequencies used in transmission
-   * @param tags_coords: tag positions in map coordinates
-   * @param imageFileURI: reference map file
-   * @param motionStdDev: the std of the Normal distribution used for moving the tags
+   * @param sigma_power  noise std in log model
+   * @param sigma_phase  noise std in phase
+   * @param txtPower     transmitted power (dB)
+   * @param freqs        frequencies used in transmission
+   * @param tags_coords  tag positions in map coordinates
+   * @param imageFileURI reference map file
    *   TODO We will use a fixed antenna model, Gaussian noise model and will
    * assume tags are isotropic. This may need to be revisited ...
    */
@@ -198,8 +196,7 @@ public:
              const double sigma_phase, const double txtPower,
              const std::vector<double> freqs,
              const std::vector<std::pair<double, double>> tags_coords,
-             const std::string imageFileURI,
-             double motionStdDev);
+             const std::string imageFileURI);
 
   RadarModel();
 
@@ -579,8 +576,6 @@ public:
    */
   void moveTagWithMotionModel();
   std::vector<std::pair<double, double>> getTagsCoord();
-  double getMotionStdDev();
-  void updateMotionModel(double std_dev);
 }; // end class
 
 #endif

@@ -70,11 +70,9 @@ SplineFunction::scaled_values(Eigen::VectorXd const &x_vec) const {
 
 //////////////////
 
-double RadarModel::_motionModelStdDev = 0.0;
-
 RadarModel::RadarModel(){};
 
-RadarModel::RadarModel(const double resolution, const double sigma_power, const double sigma_phase, const double txtPower, const std::vector<double> freqs, const std::vector<std::pair<double,double>> tags_coords, const std::string imageFileURI, double motionStdDev) {
+RadarModel::RadarModel(const double resolution, const double sigma_power, const double sigma_phase, const double txtPower, const std::vector<double> freqs, const std::vector<std::pair<double,double>> tags_coords, const std::string imageFileURI ) {
         _sigma_power = sigma_power;
         _sigma_phase = sigma_phase;
         _txtPower = txtPower;
@@ -83,7 +81,7 @@ RadarModel::RadarModel(const double resolution, const double sigma_power, const 
         _tags_coords = tags_coords;
         _original_tags_coords = tags_coords;
         _numTags =  tags_coords.size();
-        _motionModelStdDev = motionStdDev;
+
 
         initRefMap(imageFileURI);
 
@@ -387,7 +385,7 @@ return result_mat;
 
 double RadarModel::getProbabilityMoving(double distance){
   if (distance >= 100) return 0;
-  // double std_dev = getMotionStdDev();
+
   return exp(-0.5 * pow(distance,2) / pow(_motionModelStdDev,2));
 }
 
@@ -1473,7 +1471,7 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg,
 
   // PREDICTION STEP
   if (_probabilisticTag){
-    prediction_belief = getPredictionStep(tagLayerName, int(4*_motionModelStdDev));
+    prediction_belief = getPredictionStep(tagLayerName, 4*_motionModelStdDev);
     // Get rid of obstacles
     prediction_belief = (obst_mat.array() == _free_space_val).select(prediction_belief, 0);
     _rfid_belief_maps[tagLayerName] = prediction_belief;
@@ -2173,11 +2171,4 @@ void RadarModel::moveTagWithMotionModel(){
 
 std::vector<std::pair<double, double>> RadarModel::getTagsCoord(){
   return this->_tags_coords;
-}
-
-double RadarModel::getMotionStdDev(){
-  return this->_motionModelStdDev;
-}
-void RadarModel::updateMotionModel(double std_dev){
-  this->_motionModelStdDev = std_dev;
 }
