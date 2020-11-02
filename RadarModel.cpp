@@ -1473,7 +1473,7 @@ void RadarModel::addMeasurement(double x_m, double y_m, double orientation_deg,
 
   // PREDICTION STEP
   if (_probabilisticTag){
-    prediction_belief = getPredictionStep(tagLayerName, int(4*_motionModelStdDev));
+    prediction_belief = getPredictionStep(tagLayerName, ceil( 5*_motionModelStdDev));
     // Get rid of obstacles
     prediction_belief = (obst_mat.array() == _free_space_val).select(prediction_belief, 0);
     _rfid_belief_maps[tagLayerName] = prediction_belief;

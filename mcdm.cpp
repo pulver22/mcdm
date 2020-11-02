@@ -192,7 +192,7 @@ int main(int argc, char **argv) {
 
   string entropy_log = entropy_log_path + "/entropy.csv";
   bool use_mcdm = bool(atoi(argv[24]));
-  bool use_moving_tags = true;  // bool(atoi(argv[26]));
+  bool use_moving_tags = false;  // bool(atoi(argv[26]));
   // x,y,orientation,range,FOV
   double norm_w_info_gain, norm_w_travel_distance, norm_w_sensing_time,
       norm_w_rfid_gain, norm_w_battery_status;
