@@ -1,11 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-root = "/home/pulver/Desktop/mcdm_ral_experiments/moving/kernel_9x9/5/"
+root = "/home/pulver/Desktop/nbs_aaai/moving/std__0.5/"
 out_path = root + "localization_error.png"
 resolution = 0.25
 
-run = 3
+run = 50
 total_tag = 10
 localization_errors = []
 
@@ -17,24 +17,24 @@ parameters = {'axes.labelsize': 8,
                 'xtick.labelsize': 8,
                 'legend.fontsize': 8}
 plt.rcParams.update(parameters)
-fig = plt.figure(figsize=(6,6))
+fig = plt.figure(figsize=(6,8))
 axs = fig.subplots(rows, cols, sharex=True, sharey=True)
 fig.suptitle("Tags localization error")
 
 def plotData(data, row, col, axes):
     # Normalise lenght
     max_len_index = np.max([x.shape[0] for x in tag_single])
-    final = np.zeros(shape=(max_len_index, run + 2))
-    for i in range(run):
+    final = np.zeros(shape=(max_len_index, len(data) + 2))
+    for i in range(len(data)):
         while tag_single[i].shape[0] < max_len_index:
             tag_single[i] = np.vstack([tag_single[i], tag_single[i][-1,:]])
         final[:,i] = tag_single[i][:,0]
         # Calculate average and std dev 
-    final[:,-2] = np.average(final[:,0:run], axis=1)
-    final[:,-1] = np.std(final[:,0:run], axis=1)
+    final[:,-2] = np.average(final[:,0:-3], axis=1)
+    final[:,-1] = np.std(final[:,0:-3], axis=1)
     #  Plot the trajectories
     x = np.arange(1, final.shape[0] + 1, 1)
-    axs[row, col].plot(x, final[:,3], label="Tag-"+str(tag_id), color='#CC4F1B')
+    axs[row, col].plot(x, final[:,-2], label="Tag-"+str(tag_id), color='#CC4F1B')
     axs[row, col].fill_between(x, final[:, -2]-final[:, -1], final[:, -2]+final[:, -1], alpha=0.5, edgecolor='#CC4F1B', facecolor='#FF9848')
     axs[row, col].legend(loc='upper right')#, fontsize='x-small')
     axs[row, col].set_xlim(left=0, right=max(x))
@@ -57,9 +57,10 @@ for row in range(rows):
         for i in range(run):
             tag_id = 2*row + col;
             tmp = np.loadtxt(open(root + "entropy_" + str(i) + "/distance_" + str(tag_id) + '.csv', "rb"), delimiter=",", skiprows=0)
-            tmp = np.expand_dims(tmp, axis=1)  # Add one column needed later for stacking
-            tmp *= resolution  # Multiple distance by resolution to obtain data in meters
-            tag_single.append(tmp)
+            if (tmp.size > 1):
+                tmp = np.expand_dims(tmp, axis=1)  # Add one column needed later for stacking
+                tmp *= resolution  # Multiple distance by resolution to obtain data in meters
+                tag_single.append(tmp)
         
         plotData(tag_single, row, col, axs)
         tag_single.clear()

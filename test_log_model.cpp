@@ -53,6 +53,7 @@ int main(int argc, char **argv)
   double sigma_power = 4;
   double sigma_phase = 0.2;
   double txtPower = 0;
+  double motionModelStdDev = 1.0;
   int i = 0;
   bool useKalman = false;
   cout <<"You provided: (" << argc-1 << ") arguments"<<  std::endl;
@@ -125,7 +126,7 @@ int main(int argc, char **argv)
 
 
   cout <<"Building radar model." << endl;
-  RadarModel rm(resolution, sigma_power, sigma_phase, txtPower, freqs, tags_coord, mapFileURI);
+  RadarModel rm(resolution, sigma_power, sigma_phase, txtPower, freqs, tags_coord, mapFileURI, motionModelStdDev);
   cout << "Radar model built." << endl;
 
   // prints reference map with tags
